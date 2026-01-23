@@ -1076,21 +1076,21 @@
                     </div>
                     <div class="brand-text">
                         <h1>MEDICAL & PSYCHOLOGICAL EVALUATION</h1>
-                        <div class="subtitle">U.S. ARMED FORCES • CONFIDENTIAL</div>
+                        <div class="subtitle">U.S. ARMED FORCES • VERTRAULICH</div>
                     </div>
                 </div>
                 <div class="header-stats">
                     <div class="stat-item">
                         <div class="stat-value" id="totalPatients">0</div>
-                        <div class="stat-label">Total</div>
+                        <div class="stat-label">Gesamt</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-value" id="activeAssessments">0</div>
-                        <div class="stat-label">Active</div>
+                        <div class="stat-label">Aktiv</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-value" id="criticalCases">0</div>
-                        <div class="stat-label">Critical</div>
+                        <div class="stat-label">Kritisch</div>
                     </div>
                 </div>
             </div>
@@ -1100,26 +1100,26 @@
         <aside class="sidebar">
             <h3 class="section-title">
                 <i class="fas fa-archive"></i>
-                Patient Archive
+                Patientenarchiv
             </h3>
             
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" id="searchPatients" placeholder="Search patients...">
+                <input type="text" class="search-input" id="searchPatients" placeholder="Patienten suchen...">
             </div>
             
             <div class="patient-cards" id="patientCards">
                 <!-- Patient cards will be loaded here -->
                 <div class="empty-state" id="emptyPatientList">
                     <i class="fas fa-users"></i>
-                    <p>No patients found</p>
-                    <p style="font-size: 14px; margin-top: 8px;">Create your first assessment</p>
+                    <p>Keine Patienten gefunden</p>
+                    <p style="font-size: 14px; margin-top: 8px;">Erstellen Sie Ihre erste Untersuchung</p>
                 </div>
             </div>
             
             <button class="new-patient-btn" onclick="openNewPatientModal()">
                 <i class="fas fa-plus-circle"></i>
-                New Assessment
+                Neue Untersuchung
             </button>
         </aside>
         
@@ -1128,7 +1128,7 @@
             <!-- Patient Header -->
             <div class="content-header" id="patientHeader" style="display: none;">
                 <div class="patient-info">
-                    <h2 id="currentPatientName">Select a Patient</h2>
+                    <h2 id="currentPatientName">Wählen Sie einen Patienten</h2>
                     <div class="patient-meta">
                         <div class="meta-item">
                             <i class="fas fa-id-card"></i>
@@ -1142,21 +1142,17 @@
                             <i class="fas fa-calendar"></i>
                             <span id="currentPatientDate">-</span>
                         </div>
-                        <div class="meta-item">
-                            <i class="fas fa-user-md"></i>
-                            <span id="currentExaminer">Dr. Miller</span>
-                        </div>
                     </div>
                 </div>
                 <div class="action-buttons">
                     <button class="btn btn-secondary" onclick="saveAssessment()">
-                        <i class="fas fa-save"></i> Save
+                        <i class="fas fa-save"></i> Speichern
                     </button>
                     <button class="btn btn-primary" onclick="generateReport()">
-                        <i class="fas fa-file-pdf"></i> Generate Report
+                        <i class="fas fa-file-pdf"></i> Bericht erstellen
                     </button>
                     <button class="btn btn-danger" onclick="deleteAssessment()">
-                        <i class="fas fa-trash"></i> Delete
+                        <i class="fas fa-trash"></i> Löschen
                     </button>
                 </div>
             </div>
@@ -1165,19 +1161,19 @@
             <div class="tabs-container">
                 <div class="tabs">
                     <button class="tab active" data-tab="section1">
-                        <i class="fas fa-info-circle"></i> Section 1
+                        <i class="fas fa-info-circle"></i> Abschnitt 1
                     </button>
                     <button class="tab" data-tab="section2">
-                        <i class="fas fa-brain"></i> Section 2
+                        <i class="fas fa-brain"></i> Abschnitt 2
                     </button>
                     <button class="tab" data-tab="section3">
-                        <i class="fas fa-file-medical"></i> Section 3
+                        <i class="fas fa-file-medical"></i> Abschnitt 3
                     </button>
                     <button class="tab" data-tab="section4">
-                        <i class="fas fa-running"></i> Section 4
+                        <i class="fas fa-running"></i> Abschnitt 4
                     </button>
                     <button class="tab" data-tab="section5">
-                        <i class="fas fa-comments"></i> Section 5
+                        <i class="fas fa-comments"></i> Abschnitt 5
                     </button>
                 </div>
             </div>
@@ -1192,46 +1188,41 @@
                                 <div class="section-icon">
                                     <i class="fas fa-info-circle"></i>
                                 </div>
-                                Section 1 – Information
+                                Abschnitt 1 – Informationen
                             </div>
                         </div>
                         
                         <div class="form-grid">
                             <div class="form-group">
-                                <label class="form-label">Soldier's Name:</label>
-                                <input type="text" class="form-input" id="patientName" placeholder="First Last">
+                                <label class="form-label">Name des Soldaten:</label>
+                                <input type="text" class="form-input" id="patientName" placeholder="Vorname Nachname">
                             </div>
                             
                             <div class="form-group">
                                 <label class="form-label">Rank / Unit:</label>
-                                <input type="text" class="form-input" id="patientRankUnit" placeholder="e.g., Sergeant / Infantry">
+                                <input type="text" class="form-input" id="patientRankUnit" placeholder="Rank / Einheit eingeben">
                             </div>
                             
                             <div class="form-group">
-                                <label class="form-label">Date:</label>
+                                <label class="form-label">Datum:</label>
                                 <input type="date" class="form-input" id="examinationDate">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Examiner:</label>
-                                <input type="text" class="form-input" id="examinerName" placeholder="Examiner's name">
                             </div>
                         </div>
                         
                         <div class="form-group" style="margin-top: 24px;">
-                            <label class="form-label">General Impression:</label>
-                            <textarea class="question-input" id="generalImpression" placeholder="General impression of the soldier..."></textarea>
+                            <label class="form-label">Allgemeiner Eindruck:</label>
+                            <textarea class="question-input" id="generalImpression" placeholder="Allgemeiner Eindruck vom Soldaten..."></textarea>
                         </div>
                     </div>
                     
-                    <!-- Vital Parameters -->
+                    <!-- Vitalparameter -->
                     <div class="section">
                         <div class="section-header">
                             <div class="section-title-main">
                                 <div class="section-icon">
                                     <i class="fas fa-heartbeat"></i>
                                 </div>
-                                Vital Parameters
+                                Vitalparameter
                             </div>
                         </div>
                         
@@ -1239,120 +1230,120 @@
                             <thead>
                                 <tr>
                                     <th>Parameter</th>
-                                    <th>Value</th>
+                                    <th>Wert</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Pulse (bpm)</td>
+                                    <td>Puls (bpm)</td>
                                     <td><input type="number" class="form-input" id="vitalPulse" placeholder="60-100" style="width: 100px;" min="40" max="200"></td>
                                     <td><span class="badge" id="pulseStatus">-</span></td>
                                 </tr>
                                 <tr>
-                                    <td>Blood Pressure (mmHg)</td>
+                                    <td>Blutdruck (mmHg)</td>
                                     <td>
                                         <div style="display: flex; gap: 8px;">
-                                            <input type="number" class="form-input" id="vitalBpHigh" placeholder="Systolic" style="width: 100px;">
+                                            <input type="number" class="form-input" id="vitalBpHigh" placeholder="Systolisch" style="width: 100px;">
                                             <span style="color: var(--gray); align-self: center;">/</span>
-                                            <input type="number" class="form-input" id="vitalBpLow" placeholder="Diastolic" style="width: 100px;">
+                                            <input type="number" class="form-input" id="vitalBpLow" placeholder="Diastolisch" style="width: 100px;">
                                         </div>
                                     </td>
                                     <td><span class="badge" id="bpStatus">-</span></td>
                                 </tr>
                                 <tr>
-                                    <td>Body Temperature (°C)</td>
+                                    <td>Körpertemperatur (°C)</td>
                                     <td><input type="number" class="form-input" id="vitalTemp" placeholder="36.1-37.5" step="0.1" style="width: 100px;"></td>
                                     <td><span class="badge" id="tempStatus">-</span></td>
                                 </tr>
                                 <tr>
-                                    <td>Respiration Rate (breaths/min)</td>
+                                    <td>Atemfrequenz (Atemzüge/min)</td>
                                     <td><input type="number" class="form-input" id="vitalRespiration" placeholder="12-20" style="width: 100px;"></td>
                                     <td><span class="badge" id="respStatus">-</span></td>
                                 </tr>
                                 <tr>
-                                    <td>Oxygen Saturation (SpO2 %)</td>
+                                    <td>Sauerstoffsättigung (SpO2 %)</td>
                                     <td><input type="number" class="form-input" id="vitalOxygen" placeholder="95-100" style="width: 100px;"></td>
                                     <td><span class="badge" id="oxygenStatus">-</span></td>
                                 </tr>
                                 <tr>
-                                    <td>Height (cm)</td>
-                                    <td><input type="number" class="form-input" id="vitalHeight" placeholder="Height in cm" style="width: 100px;"></td>
+                                    <td>Körpergröße (cm)</td>
+                                    <td><input type="number" class="form-input" id="vitalHeight" placeholder="Größe in cm" style="width: 100px;"></td>
                                     <td>-</td>
                                 </tr>
                                 <tr>
-                                    <td>Weight (kg)</td>
-                                    <td><input type="number" class="form-input" id="vitalWeight" placeholder="Weight in kg" style="width: 100px;"></td>
+                                    <td>Gewicht (kg)</td>
+                                    <td><input type="number" class="form-input" id="vitalWeight" placeholder="Gewicht in kg" style="width: 100px;"></td>
                                     <td><span class="badge" id="bmiStatus">-</span></td>
                                 </tr>
                             </tbody>
                         </table>
                         
                         <div class="form-group" style="margin-top: 24px;">
-                            <label class="form-label">Fitness Impression:</label>
+                            <label class="form-label">Fitness-Eindruck:</label>
                             <div class="checkbox-group">
                                 <label class="checkbox-label">
-                                    <input type="checkbox" name="fitness" value="athletic">
-                                    Athletic
+                                    <input type="checkbox" name="fitness" value="sportlich">
+                                    Sportlich
                                 </label>
                                 <label class="checkbox-label">
-                                    <input type="checkbox" name="fitness" value="average">
-                                    Average
+                                    <input type="checkbox" name="fitness" value="durchschnittlich">
+                                    Durchschnittlich
                                 </label>
                                 <label class="checkbox-label">
-                                    <input type="checkbox" name="fitness" value="weak">
-                                    Weak
+                                    <input type="checkbox" name="fitness" value="schwach">
+                                    Schwach
                                 </label>
                             </div>
                         </div>
                         
                         <div class="form-grid" style="margin-top: 24px;">
                             <div class="form-group">
-                                <label class="form-label">Last Meal (hours ago):</label>
-                                <input type="number" class="form-input" id="lastMeal" placeholder="Hours since last meal">
+                                <label class="form-label">Letzte Mahlzeit (Std.):</label>
+                                <input type="number" class="form-input" id="lastMeal" placeholder="Stunden seit letzter Mahlzeit">
                             </div>
                             
                             <div class="form-group">
-                                <label class="form-label">Allergies / Medications:</label>
-                                <textarea class="form-input" id="allergies" placeholder="Allergies or regular medications" style="min-height: 60px;"></textarea>
+                                <label class="form-label">Allergien / Medikamente:</label>
+                                <textarea class="form-input" id="allergies" placeholder="Allergien oder regelmäßige Medikamente" style="min-height: 60px;"></textarea>
                             </div>
                         </div>
                         
                         <div class="form-grid" style="margin-top: 24px;">
                             <div class="form-group">
-                                <label class="form-label">Current Injuries / Scars:</label>
-                                <textarea class="form-input" id="injuries" placeholder="Current injuries or scars" style="min-height: 60px;"></textarea>
+                                <label class="form-label">Aktuelle Verletzungen / Narben:</label>
+                                <textarea class="form-input" id="injuries" placeholder="Aktuelle Verletzungen oder Narben" style="min-height: 60px;"></textarea>
                             </div>
                             
                             <div class="form-group">
-                                <label class="form-label">Mobility:</label>
+                                <label class="form-label">Mobilität:</label>
                                 <div class="checkbox-group">
                                     <label class="checkbox-label">
                                         <input type="checkbox" name="mobility" value="normal">
                                         Normal
                                     </label>
                                     <label class="checkbox-label">
-                                        <input type="checkbox" name="mobility" value="limited">
-                                        Limited
+                                        <input type="checkbox" name="mobility" value="eingeschrankt">
+                                        Eingeschränkt
                                     </label>
                                 </div>
                             </div>
                         </div>
                         
                         <div class="form-group" style="margin-top: 24px;">
-                            <label class="form-label">Other Findings:</label>
-                            <textarea class="question-input" id="otherFindings" placeholder="Additional observations or findings..."></textarea>
+                            <label class="form-label">Sonstige Auffälligkeiten:</label>
+                            <textarea class="question-input" id="otherFindings" placeholder="Weitere Beobachtungen oder Auffälligkeiten..."></textarea>
                         </div>
                     </div>
                     
-                    <!-- Parameters Table -->
+                    <!-- Parameter Tabelle -->
                     <div class="section">
                         <div class="section-header">
                             <div class="section-title-main">
                                 <div class="section-icon">
                                     <i class="fas fa-table"></i>
                                 </div>
-                                Parameters Overview
+                                Parameter-Übersicht
                             </div>
                         </div>
                         
@@ -1360,60 +1351,60 @@
                             <thead>
                                 <tr>
                                     <th>Parameter</th>
-                                    <th>Normal Range (Guideline)</th>
-                                    <th>Abnormalities / Notes</th>
+                                    <th>Normalwert (Orientierung)</th>
+                                    <th>Auffälligkeit / Hinweise</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Pulse</td>
+                                    <td>Puls</td>
                                     <td>60–100 bpm</td>
-                                    <td>Below 60: "Recruit appears calm or exhausted"<br>Above 100: "Stress, anxiety or overexertion"</td>
+                                    <td>Unter 60: "Rekrut wirkt ruhig oder erschöpft"<br>Über 100: "Stress, Angst oder Überanstrengung"</td>
                                 </tr>
                                 <tr>
-                                    <td>Blood Pressure</td>
+                                    <td>Blutdruck</td>
                                     <td>110–140 / 60–90 mmHg</td>
-                                    <td>Low: Weakness, dizziness<br>High: Stress or anxiety</td>
+                                    <td>Niedrig: Schwäche, Schwindel<br>Hoch: Stress oder Angst</td>
                                 </tr>
                                 <tr>
-                                    <td>Body Temperature</td>
-                                    <td>36.1–37.5 °C</td>
-                                    <td>Below 36: "Cold, exhaustion"<br>Above 37.5: "Mild illness, fever"</td>
+                                    <td>Körpertemperatur</td>
+                                    <td>36,1–37,5 °C</td>
+                                    <td>Unter 36: "Kälte, Erschöpfung"<br>Über 37,5: "Leichte Krankheit, Fieber"</td>
                                 </tr>
                                 <tr>
-                                    <td>Respiration Rate</td>
-                                    <td>12–20 breaths/min</td>
-                                    <td>Below 12: Calm<br>Above 20: Excitement</td>
+                                    <td>Atemfrequenz</td>
+                                    <td>12–20 Atemzüge/min</td>
+                                    <td>Unter 12: Ruhig<br>Über 20: Aufregung</td>
                                 </tr>
                                 <tr>
-                                    <td>Oxygen Saturation</td>
+                                    <td>Sauerstoffsättigung</td>
                                     <td>95–100%</td>
-                                    <td>Below 95%: Lung or respiratory diseases</td>
+                                    <td>Unter 95%: Erkrankungen an der Lunge oder Atemwege</td>
                                 </tr>
                                 <tr>
-                                    <td>Height</td>
-                                    <td>no norm</td>
-                                    <td>for documentation only</td>
+                                    <td>Körpergröße</td>
+                                    <td>keine Norm</td>
+                                    <td>nur zur Dokumentation</td>
                                 </tr>
                                 <tr>
-                                    <td>Weight</td>
-                                    <td>no norm</td>
-                                    <td>for documentation only</td>
+                                    <td>Gewicht</td>
+                                    <td>keine Norm</td>
+                                    <td>nur zur Dokumentation</td>
                                 </tr>
                                 <tr>
-                                    <td>Fitness Impression</td>
-                                    <td>Examples:<br>180 cm, 65 kg → Thin<br>175 cm, 70 kg → Normal<br>185 cm, 95 kg → Overweight</td>
-                                    <td>Thin / Underweight: BMI < 18.5<br>Normal / Average: BMI 18.5–24.9<br>Overweight / Heavily built: BMI ≥ 25</td>
+                                    <td>Fitness-Eindruck</td>
+                                    <td>Beispiele:<br>180 cm, 65 kg → Dünn<br>175 cm, 70 kg → Normal<br>185 cm, 95 kg → Übergewichtig</td>
+                                    <td>Dünn / Untergewichtig: BMI < 18,5<br>Normal / Durchschnittlich: BMI 18,5–24,9<br>Übergewichtig / Stark gebaut: BMI ≥ 25</td>
                                 </tr>
                                 <tr>
-                                    <td>Last Meal</td>
-                                    <td>0–6 hours</td>
-                                    <td>Longer fasting period → can increase stress or fatigue feeling</td>
+                                    <td>Letzte Mahlzeit</td>
+                                    <td>0–6 Std.</td>
+                                    <td>Längere Fastenzeit → kann Stress oder Müdigkeitsgefühl verstärken</td>
                                 </tr>
                                 <tr>
-                                    <td>Allergies / Medications</td>
-                                    <td>no norm</td>
-                                    <td>watch for allergies that impair service</td>
+                                    <td>Allergien / Medikamente</td>
+                                    <td>keine Norm</td>
+                                    <td>achten auf Allergien, die den Dienst behindern</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1428,230 +1419,230 @@
                                 <div class="section-icon">
                                     <i class="fas fa-brain"></i>
                                 </div>
-                                Section 2 – Psychological & Motivation Questions
+                                Abschnitt 2 – Psychologische & Motivationsfragen
                             </div>
                             <div class="badge badge-info" style="font-size: 12px;">
-                                Not for applications
+                                Nicht für Bewerbungen
                             </div>
                         </div>
                         
                         <div class="question-card" style="margin-bottom: 24px; background: rgba(26, 35, 126, 0.1); border-left: 4px solid var(--primary);">
                             <div class="question-text" style="color: white; font-style: italic;">
-                                The following questions serve to assess the motivation, teamwork and psychological stability of the soldier.<br>
-                                <strong>Note:</strong> Not all questions need to be answered.
+                                Nachfolgende Fragen dienen der Einschätzung der Motivation, Teamfähigkeit und psychischen Stabilität des Soldaten.<br>
+                                <strong>Hinweis:</strong> Es müssen nicht alle Fragen abgearbeitet werden.
                             </div>
                         </div>
                         
-                        <!-- 1. Personality & Background -->
+                        <!-- 1. Persönlichkeit & Hintergrund -->
                         <div class="section" style="border-left: 4px solid var(--primary);">
                             <div class="section-header">
                                 <div class="section-title-main" style="font-size: 18px;">
-                                    1. Personality & Background
+                                    1. Persönlichkeit & Hintergrund
                                 </div>
                             </div>
                             <div class="questions-grid">
                                 <div class="question-card">
                                     <div class="question-text">
-                                        How would you describe your most important character traits?
+                                        Wie würden Sie Ihre wichtigsten Charaktereigenschaften beschreiben?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="1.1"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Have there been events in your life that have shaped you?
+                                        Gab es in Ihrem Leben Ereignisse, die Sie nachhaltig geprägt haben?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="1.2"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        What long-term goals do you pursue in your life?
+                                        Welche Ziele verfolgen Sie langfristig in Ihrem Leben?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="1.3"></textarea>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- 2. Emotional Stability -->
+                        <!-- 2. Emotionale Stabilität -->
                         <div class="section" style="border-left: 4px solid var(--info); margin-top: 24px;">
                             <div class="section-header">
                                 <div class="section-title-main" style="font-size: 18px;">
-                                    2. Emotional Stability
+                                    2. Emotionale Stabilität
                                 </div>
                             </div>
                             <div class="questions-grid">
                                 <div class="question-card">
                                     <div class="question-text">
-                                        How do you react when you suddenly come under strong pressure?
+                                        Wie reagieren Sie, wenn Sie plötzlich unter starken Druck geraten?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="2.1"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Do you have difficulty calming down when you are stressed?
+                                        Haben Sie Schwierigkeiten, wieder zur Ruhe zu kommen, wenn Sie gestresst sind?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="2.2"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Do you have nightmares or sleep disorders?
+                                        Haben Sie Albträume oder Schlafstörungen?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="2.3"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Can you consciously control strong negative feelings?
+                                        Können Sie starke negative Gefühle bewusst kontrollieren?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="2.4"></textarea>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- 3. Aggression Control -->
+                        <!-- 3. Aggressionskontrolle -->
                         <div class="section" style="border-left: 4px solid var(--warning); margin-top: 24px;">
                             <div class="section-header">
                                 <div class="section-title-main" style="font-size: 18px;">
-                                    3. Aggression Control
+                                    3. Aggressionskontrolle
                                 </div>
                             </div>
                             <div class="questions-grid">
                                 <div class="question-card">
                                     <div class="question-text">
-                                        How do you deal with situations that make you angry?
+                                        Wie gehen Sie mit Situationen um, in denen Sie wütend werden?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="3.1"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Have you ever lost control of your behavior?
+                                        Haben Sie schon einmal die Kontrolle über Ihr Verhalten verloren?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="3.2"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Can you stay calm in conflicts, even when provoked?
+                                        Können Sie in Konflikten ruhig bleiben, selbst wenn Sie provoziert werden?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="3.3"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        What was the most difficult situation in which you had to control your aggression?
+                                        Was war die schwierigste Situation, in der Sie Ihre Aggressionen beherrschen mussten?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="3.4"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        How do you react to disrespect or insults?
+                                        Wie reagieren Sie auf Respektlosigkeit oder Beleidigungen?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="3.5"></textarea>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- 4. Teamwork & Discipline -->
+                        <!-- 4. Teamfähigkeit & Disziplin -->
                         <div class="section" style="border-left: 4px solid var(--success); margin-top: 24px;">
                             <div class="section-header">
                                 <div class="section-title-main" style="font-size: 18px;">
-                                    4. Teamwork & Discipline
+                                    4. Teamfähigkeit & Disziplin
                                 </div>
                             </div>
                             <div class="questions-grid">
                                 <div class="question-card">
                                     <div class="question-text">
-                                        What role do you usually take on in a team?
+                                        Welche Rolle übernehmen Sie üblicherweise in einem Team?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="4.1"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Can you accept decisions even if you disagree?
+                                        Können Sie Entscheidungen akzeptieren, auch wenn Sie anderer Meinung sind?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="4.2"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Do you have problems with authority figures?
+                                        Haben Sie Probleme mit Autoritätspersonen?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="4.3"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        How would you describe your sense of responsibility?
+                                        Wie würden Sie Ihr Verantwortungsbewusstsein beschreiben?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="4.4"></textarea>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- 5. Morality & Decision Making -->
+                        <!-- 5. Moral & Entscheidungsfindung -->
                         <div class="section" style="border-left: 4px solid var(--secondary); margin-top: 24px;">
                             <div class="section-header">
                                 <div class="section-title-main" style="font-size: 18px;">
-                                    5. Morality & Decision Making
+                                    5. Moral & Entscheidungsfindung
                                 </div>
                             </div>
                             <div class="questions-grid">
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Where do you draw your personal moral boundaries in deployment?
+                                        Wo ziehen Sie Ihre persönlichen moralischen Grenzen im Einsatz?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="5.1"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Can you make tough decisions when the situation requires it?
+                                        Können Sie harte Entscheidungen treffen, wenn die Situation es erfordert?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="5.2"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        How do you deal with feelings of guilt after difficult decisions?
+                                        Wie gehen Sie mit Schuldgefühlen nach schwierigen Entscheidungen um?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="5.3"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        What is more important to you: the mission or your conscience?
+                                        Was ist für Sie wichtiger: der Auftrag oder das Gewissen?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="5.4"></textarea>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- 6. Mental Health -->
+                        <!-- 6. Psychische Gesundheit -->
                         <div class="section" style="border-left: 4px solid var(--primary-light); margin-top: 24px;">
                             <div class="section-header">
                                 <div class="section-title-main" style="font-size: 18px;">
-                                    6. Mental Health
+                                    6. Psychische Gesundheit
                                 </div>
                             </div>
                             <div class="questions-grid">
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Have you ever sought psychological help?
+                                        Haben Sie jemals psychologische Hilfe in Anspruch genommen?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="6.1"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Have you noticed any changes in your mood or thinking lately?
+                                        Haben Sie in letzter Zeit Veränderungen in Ihrer Stimmung oder Ihrem Denken bemerkt?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="6.2"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Do you suffer from anxiety, panic or depressive phases?
+                                        Leiden Sie unter Angst, Panik oder depressiven Phasen?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="6.3"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Do you use substances to cope with stress?
+                                        Konsumieren Sie Substanzen zur Stressbewältigung?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="6.4"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Have/had you negative thoughts about others or yourself?
+                                        Haben / hatten Sie negative Gedanken anderen oder Ihnen selbst gegenüber?
                                     </div>
                                     <textarea class="question-input" data-section="psych" data-question="6.5"></textarea>
                                 </div>
@@ -1668,85 +1659,85 @@
                                 <div class="section-icon">
                                     <i class="fas fa-file-medical"></i>
                                 </div>
-                                Section 3 – Medical Assessment
+                                Abschnitt 3 – Medizinisches Gutachten
                             </div>
                         </div>
                         
-                        <!-- 1. General Health Condition -->
+                        <!-- 1. Allgemeiner Gesundheitszustand -->
                         <div class="section" style="border-left: 4px solid var(--primary);">
                             <div class="section-header">
                                 <div class="section-title-main" style="font-size: 18px;">
-                                    1. General Health Condition
+                                    1. Allgemeiner Gesundheitszustand
                                 </div>
                             </div>
                             <div class="questions-grid">
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Do you take medication regularly?
+                                        Nehmen Sie regelmäßig Medikamente ein?
                                     </div>
                                     <textarea class="question-input" data-section="med" data-question="med1"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Have you noticed any weight loss/gain recently?
+                                        Haben Sie in letzter Zeit Gewichtsab-/Zunahme bemerkt?
                                     </div>
                                     <textarea class="question-input" data-section="med" data-question="med2"></textarea>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- 2. Injury History -->
+                        <!-- 2. Verletzungshistorie -->
                         <div class="section" style="border-left: 4px solid var(--warning); margin-top: 24px;">
                             <div class="section-header">
                                 <div class="section-title-main" style="font-size: 18px;">
-                                    2. Injury History
+                                    2. Verletzungshistorie
                                 </div>
                             </div>
                             <div class="questions-grid">
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Have you suffered fractures, surgeries or serious injuries in the past?
+                                        Haben Sie in der Vergangenheit Knochenbrüche, Operationen oder schwere Verletzungen erlitten?
                                     </div>
                                     <textarea class="question-input" data-section="med" data-question="med3"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Have you ever fainted or experienced loss of consciousness?
+                                        Wurden Sie jemals ohnmächtig oder haben Sie Bewusstseinsverluste erlebt?
                                     </div>
                                     <textarea class="question-input" data-section="med" data-question="med4"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Do you have problems with balance, dizziness or coordination disorders?
+                                        Haben Sie Probleme mit dem Gleichgewicht, Schwindel oder Koordinationsstörungen?
                                     </div>
                                     <textarea class="question-input" data-section="med" data-question="med5"></textarea>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- 3. Substances & Dependencies -->
+                        <!-- 3. Substanzen & Abhängigkeiten -->
                         <div class="section" style="border-left: 4px solid var(--secondary); margin-top: 24px;">
                             <div class="section-header">
                                 <div class="section-title-main" style="font-size: 18px;">
-                                    3. Substances & Dependencies
+                                    3. Substanzen & Abhängigkeiten
                                 </div>
                             </div>
                             <div class="questions-grid">
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Do you consume alcohol or other psychoactive substances?
+                                        Konsumieren Sie Alkohol oder andere psychoaktive Stoffe?
                                     </div>
                                     <textarea class="question-input" data-section="med" data-question="med6"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Have you ever been treated for drug or alcohol abuse?
+                                        Wurden Sie jemals wegen Drogen- oder Alkoholmissbrauchs behandelt?
                                     </div>
                                     <textarea class="question-input" data-section="med" data-question="med7"></textarea>
                                 </div>
                                 <div class="question-card">
                                     <div class="question-text">
-                                        Are there known addiction diseases in your family?
+                                        Gibt es in Ihrer Familie bekannte Suchterkrankungen?
                                     </div>
                                     <textarea class="question-input" data-section="med" data-question="med8"></textarea>
                                 </div>
@@ -1763,62 +1754,62 @@
                                 <div class="section-icon">
                                     <i class="fas fa-running"></i>
                                 </div>
-                                Section 4 – Fitness Test (execute at sports field)
+                                Abschnitt 4 – Sportlicher Test (am Sportplatz ausführen)
                             </div>
                         </div>
                         
                         <div class="questions-grid">
                             <div class="question-card">
                                 <div class="question-text">
-                                    1. 15x Push-Ups (Result)
+                                    1. 15x Push-Ups (Ergebnis)
                                 </div>
                                 <select class="question-input" style="height: auto;" data-section="fitness" data-question="fit1">
-                                    <option value="">Select result</option>
-                                    <option value="excellent">Excellent (15 completed)</option>
-                                    <option value="good">Good (10-14 completed)</option>
-                                    <option value="average">Average (5-9 completed)</option>
-                                    <option value="poor">Poor (1-4 completed)</option>
-                                    <option value="failed">Failed (0 completed)</option>
+                                    <option value="">Ergebnis auswählen</option>
+                                    <option value="excellent">Ausgezeichnet (15 vollständig)</option>
+                                    <option value="good">Gut (10-14 vollständig)</option>
+                                    <option value="average">Durchschnittlich (5-9 vollständig)</option>
+                                    <option value="poor">Schwach (1-4 vollständig)</option>
+                                    <option value="failed">Nicht bestanden (0 vollständig)</option>
                                 </select>
                             </div>
                             <div class="question-card">
                                 <div class="question-text">
-                                    2. 10x Sit-Ups (Result)
+                                    2. 10x Sit-Ups (Ergebnis)
                                 </div>
                                 <select class="question-input" style="height: auto;" data-section="fitness" data-question="fit2">
-                                    <option value="">Select result</option>
-                                    <option value="excellent">Excellent (10 completed)</option>
-                                    <option value="good">Good (7-9 completed)</option>
-                                    <option value="average">Average (4-6 completed)</option>
-                                    <option value="poor">Poor (1-3 completed)</option>
-                                    <option value="failed">Failed (0 completed)</option>
+                                    <option value="">Ergebnis auswählen</option>
+                                    <option value="excellent">Ausgezeichnet (10 vollständig)</option>
+                                    <option value="good">Gut (7-9 vollständig)</option>
+                                    <option value="average">Durchschnittlich (4-6 vollständig)</option>
+                                    <option value="poor">Schwach (1-3 vollständig)</option>
+                                    <option value="failed">Nicht bestanden (0 vollständig)</option>
                                 </select>
                             </div>
                             <div class="question-card">
                                 <div class="question-text">
-                                    3. 10x Burpee (Result)
+                                    3. 10x Burpee (Ergebnis)
                                 </div>
                                 <select class="question-input" style="height: auto;" data-section="fitness" data-question="fit3">
-                                    <option value="">Select result</option>
-                                    <option value="excellent">Excellent (10 completed)</option>
-                                    <option value="good">Good (7-9 completed)</option>
-                                    <option value="average">Average (4-6 completed)</option>
-                                    <option value="poor">Poor (1-3 completed)</option>
-                                    <option value="failed">Failed (0 completed)</option>
+                                    <option value="">Ergebnis auswählen</option>
+                                    <option value="excellent">Ausgezeichnet (10 vollständig)</option>
+                                    <option value="good">Gut (7-9 vollständig)</option>
+                                    <option value="average">Durchschnittlich (4-6 vollständig)</option>
+                                    <option value="poor">Schwach (1-3 vollständig)</option>
+                                    <option value="failed">Nicht bestanden (0 vollständig)</option>
                                 </select>
                             </div>
                             <div class="question-card">
                                 <div class="question-text">
-                                    4. 2 rounds running (Time in minutes)
+                                    4. 2 Runden rennen (Zeit in Minuten)
                                 </div>
-                                <input type="number" class="question-input" style="height: auto;" data-section="fitness" data-question="fit4" placeholder="e.g., 8.5">
+                                <input type="number" class="question-input" style="height: auto;" data-section="fitness" data-question="fit4" placeholder="z.B. 8.5">
                             </div>
                         </div>
                         
                         <div class="question-card" style="margin-top: 24px; background: rgba(13, 27, 62, 0.2);">
                             <div class="question-text" style="color: white; font-style: italic;">
-                                <i class="fas fa-info-circle"></i> Note: This test should be conducted under the supervision of a qualified instructor.
-                                The results serve to assess physical fitness for service.
+                                <i class="fas fa-info-circle"></i> Hinweis: Dieser Test sollte unter Aufsicht eines qualifizierten Ausbilders durchgeführt werden.
+                                Die Ergebnisse dienen der Einschätzung der körperlichen Fitness für den Dienst.
                             </div>
                         </div>
                     </div>
@@ -1832,35 +1823,35 @@
                                 <div class="section-icon">
                                     <i class="fas fa-comments"></i>
                                 </div>
-                                Section 5 – Situational Questions for Deployments
+                                Abschnitt 5 – Situative Fragen für Einsätze
                             </div>
                             <div class="badge badge-info" style="font-size: 12px;">
-                                Not for applications
+                                Nicht für Bewerbungen
                             </div>
                         </div>
                         
                         <div class="question-card" style="margin-bottom: 24px; background: rgba(26, 35, 126, 0.1); border-left: 4px solid var(--primary);">
                             <div class="question-text" style="color: white; font-style: italic;">
-                                These questions serve for self-reflection and assessment of satisfaction with previous service time.
+                                Diese Fragen dienen der Selbstreflexion und Einschätzung der Zufriedenheit mit der bisherigen Dienstzeit.
                             </div>
                         </div>
                         
                         <div class="questions-grid">
                             <div class="question-card">
                                 <div class="question-text">
-                                    1. Were you satisfied with the last deployments?
+                                    1. Waren Sie mit den letzten Einsätzen zufrieden?
                                 </div>
                                 <textarea class="question-input" data-section="situational" data-question="sit1" style="min-height: 100px;"></textarea>
                             </div>
                             <div class="question-card">
                                 <div class="question-text">
-                                    2. Are there certain situations in service that particularly bother you?
+                                    2. Gibt es bestimmte Situationen im Dienst, die Sie besonders stören?
                                 </div>
                                 <textarea class="question-input" data-section="situational" data-question="sit2" style="min-height: 100px;"></textarea>
                             </div>
                             <div class="question-card" style="grid-column: 1 / -1;">
                                 <div class="question-text">
-                                    3. Self-reflection of the deployment/normal unit work.
+                                    3. Selbstreflektion des Einsatzes/der normalen Unitarbeit.
                                 </div>
                                 <textarea class="question-input" data-section="situational" data-question="sit3" style="min-height: 150px;"></textarea>
                             </div>
@@ -1876,32 +1867,32 @@
             <div class="quick-actions">
                 <h3 class="section-title">
                     <i class="fas fa-bolt"></i>
-                    Quick Actions
+                    Schnellaktionen
                 </h3>
                 <div class="action-grid">
                     <button class="action-btn" onclick="quickAction('export')">
                         <i class="fas fa-file-export"></i>
-                        Export
+                        Exportieren
                     </button>
                     <button class="action-btn" onclick="quickAction('print')">
                         <i class="fas fa-print"></i>
-                        Print
+                        Drucken
                     </button>
                     <button class="action-btn" onclick="quickAction('template')">
                         <i class="fas fa-copy"></i>
-                        Template
+                        Vorlage
                     </button>
                     <button class="action-btn" onclick="quickAction('stats')">
                         <i class="fas fa-chart-bar"></i>
-                        Stats
+                        Statistik
                     </button>
                     <button class="action-btn" onclick="quickAction('reminder')">
                         <i class="fas fa-bell"></i>
-                        Reminder
+                        Erinnerung
                     </button>
                     <button class="action-btn" onclick="quickAction('settings')">
                         <i class="fas fa-cog"></i>
-                        Settings
+                        Einstellungen
                     </button>
                 </div>
             </div>
@@ -1910,7 +1901,7 @@
             <div class="activity-feed">
                 <h3 class="section-title">
                     <i class="fas fa-history"></i>
-                    Recent Activity
+                    Letzte Aktivitäten
                 </h3>
                 <div class="activity-list" id="activityFeed">
                     <!-- Activities will be loaded here -->
@@ -1924,66 +1915,60 @@
         <div class="modal-content">
             <h2 style="color: white; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
                 <i class="fas fa-user-plus"></i>
-                New Patient Assessment
+                Neue Patientenuntersuchung
             </h2>
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 20px;">
                 <div>
-                    <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">First Name</label>
-                    <input type="text" class="question-input" id="newPatientFirstName" placeholder="John">
+                    <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Name des Soldaten</label>
+                    <input type="text" class="question-input" id="newPatientFullName" placeholder="Vorname Nachname">
                 </div>
-                <div>
-                    <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Last Name</label>
-                    <input type="text" class="question-input" id="newPatientLastName" placeholder="Doe">
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Rank</label>
+                        <select class="question-input" style="height: auto;" id="newPatientRank">
+                            <option value="">Rank wählen</option>
+                            <option value="Private">Private</option>
+                            <option value="Private First Class">Private First Class</option>
+                            <option value="Specialist">Specialist</option>
+                            <option value="Corporal">Corporal</option>
+                            <option value="Sergeant">Sergeant</option>
+                            <option value="Staff Sergeant">Staff Sergeant</option>
+                            <option value="Sergeant First Class">Sergeant First Class</option>
+                            <option value="Master Sergeant">Master Sergeant</option>
+                            <option value="Sergeant Major">Sergeant Major</option>
+                            <option value="Lieutenant">Lieutenant</option>
+                            <option value="Captain">Captain</option>
+                            <option value="Major">Major</option>
+                            <option value="Colonel">Colonel</option>
+                            <option value="Major General">Major General</option>
+                            <option value="Lieutenant General">Lieutenant General</option>
+                            <option value="Vice General of Army">Vice General of Army</option>
+                            <option value="General of Army">General of Army</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Unit</label>
+                        <select class="question-input" style="height: auto;" id="newPatientUnit">
+                            <option value="">Unit wählen</option>
+                            <option value="Infantry">Infantry</option>
+                            <option value="Military Police">Military Police</option>
+                            <option value="Navy Marine">Navy Marine</option>
+                            <option value="Navy SEAL">Navy SEAL</option>
+                            <option value="Air Force">Air Force</option>
+                            <option value="S.O.C">S.O.C</option>
+                        </select>
+                    </div>
                 </div>
-                <div>
-                    <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Rank</label>
-                    <select class="question-input" style="height: auto;" id="newPatientRank">
-                        <option value="">Select Rank</option>
-                        <option value="Private">Private</option>
-                        <option value="Private First Class">Private First Class</option>
-                        <option value="Specialist">Specialist</option>
-                        <option value="Corporal">Corporal</option>
-                        <option value="Sergeant">Sergeant</option>
-                        <option value="Staff Sergeant">Staff Sergeant</option>
-                        <option value="Sergeant First Class">Sergeant First Class</option>
-                        <option value="Master Sergeant">Master Sergeant</option>
-                        <option value="Sergeant Major">Sergeant Major</option>
-                        <option value="Lieutenant">Lieutenant</option>
-                        <option value="Captain">Captain</option>
-                        <option value="Major">Major</option>
-                        <option value="Colonel">Colonel</option>
-                        <option value="Major General">Major General</option>
-                        <option value="Lieutenant General">Lieutenant General</option>
-                        <option value="Vice General of Army">Vice General of Army</option>
-                        <option value="General of Army">General of Army</option>
-                    </select>
-                </div>
-                <div>
-                    <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Unit</label>
-                    <select class="question-input" style="height: auto;" id="newPatientUnit">
-                        <option value="">Select Unit</option>
-                        <option value="Infantry">Infantry</option>
-                        <option value="Military Police">Military Police</option>
-                        <option value="Navy Marine">Navy Marine</option>
-                        <option value="Navy SEAL">Navy SEAL</option>
-                        <option value="Air Force">Air Force</option>
-                        <option value="S.O.C">S.O.C</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Examiner</label>
-                <input type="text" class="question-input" id="newPatientExaminer" placeholder="Dr. Miller">
             </div>
             
             <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px;">
                 <button class="btn btn-secondary" onclick="closeModal('newPatientModal')">
-                    Cancel
+                    Abbrechen
                 </button>
                 <button class="btn btn-primary" onclick="createPatient()">
-                    <i class="fas fa-plus-circle"></i> Create Assessment
+                    <i class="fas fa-plus-circle"></i> Untersuchung erstellen
                 </button>
             </div>
         </div>
@@ -1994,7 +1979,7 @@
         <div class="modal-content">
             <h2 style="color: white; margin-bottom: 24px;">
                 <i class="fas fa-file-export"></i>
-                Export Assessment
+                Untersuchung exportieren
             </h2>
             
             <div style="margin-bottom: 24px;">
@@ -2002,49 +1987,49 @@
                 <div style="display: flex; gap: 12px; margin-bottom: 20px;">
                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                         <input type="radio" name="exportFormat" value="pdf" checked>
-                        <span>PDF Document</span>
+                        <span>PDF-Dokument</span>
                     </label>
                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                         <input type="radio" name="exportFormat" value="word">
-                        <span>Word Document</span>
+                        <span>Word-Dokument</span>
                     </label>
                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                         <input type="radio" name="exportFormat" value="json">
-                        <span>JSON Data</span>
+                        <span>JSON-Daten</span>
                     </label>
                 </div>
                 
-                <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Include Sections</label>
+                <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Abschnitte einbeziehen</label>
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px;">
                     <label style="display: flex; align-items: center; gap: 8px;">
                         <input type="checkbox" checked>
-                        <span>Section 1 - Information</span>
+                        <span>Abschnitt 1 - Informationen</span>
                     </label>
                     <label style="display: flex; align-items: center; gap: 8px;">
                         <input type="checkbox" checked>
-                        <span>Section 2 - Psychology</span>
+                        <span>Abschnitt 2 - Psychologie</span>
                     </label>
                     <label style="display: flex; align-items: center; gap: 8px;">
                         <input type="checkbox" checked>
-                        <span>Section 3 - Medical</span>
+                        <span>Abschnitt 3 - Medizin</span>
                     </label>
                     <label style="display: flex; align-items: center; gap: 8px;">
                         <input type="checkbox" checked>
-                        <span>Section 4 - Fitness</span>
+                        <span>Abschnitt 4 - Fitness</span>
                     </label>
                     <label style="display: flex; align-items: center; gap: 8px;">
                         <input type="checkbox" checked>
-                        <span>Section 5 - Situational</span>
+                        <span>Abschnitt 5 - Situation</span>
                     </label>
                 </div>
             </div>
             
             <div style="display: flex; justify-content: flex-end; gap: 12px;">
                 <button class="btn btn-secondary" onclick="closeModal('exportModal')">
-                    Cancel
+                    Abbrechen
                 </button>
                 <button class="btn btn-primary" onclick="exportAssessment()">
-                    <i class="fas fa-download"></i> Export Now
+                    <i class="fas fa-download"></i> Jetzt exportieren
                 </button>
             </div>
         </div>
@@ -2055,56 +2040,56 @@
         <div class="modal-content">
             <h2 style="color: white; margin-bottom: 24px;">
                 <i class="fas fa-chart-bar"></i>
-                Statistics Overview
+                Statistikübersicht
             </h2>
             
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px;">
                 <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: var(--radius-md); text-align: center;">
                     <div style="font-size: 32px; font-weight: 800; color: var(--primary);" id="statsTotal">0</div>
-                    <div style="font-size: 14px; color: var(--gray-light);">Total Assessments</div>
+                    <div style="font-size: 14px; color: var(--gray-light);">Gesamtuntersuchungen</div>
                 </div>
                 <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: var(--radius-md); text-align: center;">
                     <div style="font-size: 32px; font-weight: 800; color: var(--success);" id="statsOperational">0%</div>
-                    <div style="font-size: 14px; color: var(--gray-light);">Operational Rate</div>
+                    <div style="font-size: 14px; color: var(--gray-light);">Einsatzbereitschaft</div>
                 </div>
                 <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: var(--radius-md); text-align: center;">
                     <div style="font-size: 32px; font-weight: 800; color: var(--warning);" id="statsPending">0</div>
-                    <div style="font-size: 14px; color: var(--gray-light);">Pending Reviews</div>
+                    <div style="font-size: 14px; color: var(--gray-light);">Ausstehende Prüfungen</div>
                 </div>
             </div>
             
             <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: var(--radius-md); margin-bottom: 24px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <div style="color: white; font-weight: 600;">Recommendation Distribution</div>
-                    <div style="font-size: 14px; color: var(--gray-light);">Last 30 Days</div>
+                    <div style="color: white; font-weight: 600;">Verteilung der Empfehlungen</div>
+                    <div style="font-size: 14px; color: var(--gray-light);">Letzte 30 Tage</div>
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
                     <div style="text-align: center;">
                         <div style="height: 60px; background: var(--success); border-radius: var(--radius-sm); margin-bottom: 8px;"></div>
-                        <div style="font-size: 12px; color: var(--gray-light);">Fully Fit</div>
+                        <div style="font-size: 12px; color: var(--gray-light);">Voll einsatzfähig</div>
                     </div>
                     <div style="text-align: center;">
                         <div style="height: 45px; background: var(--warning); border-radius: var(--radius-sm); margin-bottom: 8px;"></div>
-                        <div style="font-size: 12px; color: var(--gray-light);">Limited</div>
+                        <div style="font-size: 12px; color: var(--gray-light);">Eingeschränkt</div>
                     </div>
                     <div style="text-align: center;">
                         <div style="height: 30px; background: var(--secondary); border-radius: var(--radius-sm); margin-bottom: 8px;"></div>
-                        <div style="font-size: 12px; color: var(--gray-light);">Not Fit</div>
+                        <div style="font-size: 12px; color: var(--gray-light);">Nicht einsatzfähig</div>
                     </div>
                     <div style="text-align: center;">
                         <div style="height: 20px; background: var(--info); border-radius: var(--radius-sm); margin-bottom: 8px;"></div>
-                        <div style="font-size: 12px; color: var(--gray-light);">Further Eval</div>
+                        <div style="font-size: 12px; color: var(--gray-light);">Weitere Prüfung</div>
                     </div>
                     <div style="text-align: center;">
                         <div style="height: 10px; background: var(--primary); border-radius: var(--radius-sm); margin-bottom: 8px;"></div>
-                        <div style="font-size: 12px; color: var(--gray-light);">Therapy</div>
+                        <div style="font-size: 12px; color: var(--gray-light);">Therapie empfohlen</div>
                     </div>
                 </div>
             </div>
             
             <div style="display: flex; justify-content: flex-end;">
                 <button class="btn btn-secondary" onclick="closeModal('statsModal')">
-                    Close
+                    Schließen
                 </button>
             </div>
         </div>
@@ -2147,9 +2132,6 @@
         });
 
         function initializeApp() {
-            // Set current user display
-            document.getElementById('currentExaminer').textContent = currentUser.name;
-            
             // Initialize tabs
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', function() {
@@ -2244,8 +2226,8 @@
                 container.innerHTML = `
                     <div class="empty-state" id="emptyPatientList">
                         <i class="fas fa-users"></i>
-                        <p>No patients found</p>
-                        <p style="font-size: 14px; margin-top: 8px;">Create your first assessment</p>
+                        <p>Keine Patienten gefunden</p>
+                        <p style="font-size: 14px; margin-top: 8px;">Erstellen Sie Ihre erste Untersuchung</p>
                     </div>
                 `;
                 return;
@@ -2260,8 +2242,8 @@
                 
                 const statusClass = patient.status === 'active' ? 'status-active' : 
                                   patient.status === 'pending' ? 'status-pending' : 'status-critical';
-                const statusText = patient.status === 'active' ? 'Active' : 
-                                 patient.status === 'pending' ? 'Pending' : 'Critical';
+                const statusText = patient.status === 'active' ? 'Aktiv' : 
+                                 patient.status === 'pending' ? 'Ausstehend' : 'Kritisch';
                 
                 card.innerHTML = `
                     <div class="patient-header">
@@ -2270,7 +2252,7 @@
                     </div>
                     <div class="patient-details">
                         <div>${patient.rank} • ${patient.unit}</div>
-                        <div>Examined by ${patient.examiner}</div>
+                        <div>Untersucht am ${new Date(patient.date).toLocaleDateString('de-DE')}</div>
                     </div>
                     <div class="patient-status ${statusClass}">
                         <i class="fas fa-circle" style="font-size: 8px;"></i>
@@ -2321,8 +2303,7 @@
             document.getElementById('currentPatientName').textContent = `${patient.fullName} (${patient.rank})`;
             document.getElementById('currentPatientId').textContent = patient.id;
             document.getElementById('currentPatientUnit').textContent = patient.unit;
-            document.getElementById('currentPatientDate').textContent = new Date(patient.date).toLocaleDateString('en-US');
-            document.getElementById('currentExaminer').textContent = patient.examiner;
+            document.getElementById('currentPatientDate').textContent = new Date(patient.date).toLocaleDateString('de-DE');
             
             // Update patient cards
             document.querySelectorAll('.patient-card').forEach(card => {
@@ -2334,7 +2315,7 @@
             loadPatientData();
             
             // Add activity
-            addActivity(`Opened assessment for ${patient.fullName}`, 'fas fa-eye');
+            addActivity(`Untersuchung für ${patient.fullName} geöffnet`, 'fas fa-eye');
         }
 
         function loadPatientData() {
@@ -2347,7 +2328,6 @@
                 document.getElementById('patientName').value = fd.name || '';
                 document.getElementById('patientRankUnit').value = fd.rankUnit || '';
                 document.getElementById('examinationDate').value = fd.date || '';
-                document.getElementById('examinerName').value = fd.examiner || '';
                 document.getElementById('generalImpression').value = fd.generalImpression || '';
                 document.getElementById('lastMeal').value = fd.lastMeal || '';
                 document.getElementById('allergies').value = fd.allergies || '';
@@ -2398,7 +2378,6 @@
         // ===== MODAL FUNCTIONS =====
         function openNewPatientModal() {
             document.getElementById('newPatientModal').classList.add('active');
-            document.getElementById('newPatientExaminer').value = currentUser.name;
         }
 
         function closeModal(modalId) {
@@ -2406,37 +2385,38 @@
         }
 
         function createPatient() {
-            const firstName = document.getElementById('newPatientFirstName').value.trim();
-            const lastName = document.getElementById('newPatientLastName').value.trim();
+            const fullName = document.getElementById('newPatientFullName').value.trim();
             const rank = document.getElementById('newPatientRank').value;
             const unit = document.getElementById('newPatientUnit').value;
-            const examiner = document.getElementById('newPatientExaminer').value.trim();
             
-            if (!firstName || !lastName || !rank || !unit) {
-                alert('Please fill all required fields');
+            if (!fullName || !rank || !unit) {
+                alert('Bitte füllen Sie alle erforderlichen Felder aus');
                 return;
             }
             
             const patientId = `PT-${new Date().getFullYear()}-${String(patients.length + 1).padStart(3, '0')}`;
             const today = new Date().toISOString().split('T')[0];
             
+            // Extract first and last name from full name
+            const nameParts = fullName.split(' ');
+            const firstName = nameParts[0] || '';
+            const lastName = nameParts.slice(1).join(' ') || '';
+            
             const newPatient = {
                 id: patientId,
                 firstName: firstName,
                 lastName: lastName,
-                fullName: `${firstName} ${lastName}`,
+                fullName: fullName,
                 rank: rank,
                 unit: unit,
                 status: 'pending',
-                examiner: examiner || currentUser.name,
                 date: new Date().toISOString(),
                 lastUpdated: new Date().toISOString(),
                 vitals: {},
                 formData: {
-                    name: `${firstName} ${lastName}`,
+                    name: fullName,
                     rankUnit: `${rank} / ${unit}`,
-                    date: today,
-                    examiner: examiner || currentUser.name
+                    date: today
                 },
                 answers: {},
                 summary: {}
@@ -2449,12 +2429,11 @@
             selectPatient(newPatient);
             
             // Clear form
-            document.getElementById('newPatientFirstName').value = '';
-            document.getElementById('newPatientLastName').value = '';
+            document.getElementById('newPatientFullName').value = '';
             document.getElementById('newPatientRank').value = '';
             document.getElementById('newPatientUnit').value = '';
             
-            addActivity(`Created new assessment for ${newPatient.fullName}`, 'fas fa-user-plus');
+            addActivity(`Neue Untersuchung für ${newPatient.fullName} erstellt`, 'fas fa-user-plus');
         }
 
         // ===== VITAL PARAMETERS =====
@@ -2472,10 +2451,10 @@
                             statusText = 'Normal';
                         } else if (value < 60) {
                             badgeClass = 'badge-warning';
-                            statusText = 'Low';
+                            statusText = 'Niedrig';
                         } else {
                             badgeClass = 'badge-danger';
-                            statusText = 'High';
+                            statusText = 'Hoch';
                         }
                     } else {
                         badgeClass = '';
@@ -2495,10 +2474,10 @@
                             statusText = 'Normal';
                         } else if (high < 110 || low < 60) {
                             badgeClass = 'badge-warning';
-                            statusText = 'Low';
+                            statusText = 'Niedrig';
                         } else {
                             badgeClass = 'badge-danger';
-                            statusText = 'High';
+                            statusText = 'Hoch';
                         }
                     } else {
                         badgeClass = '';
@@ -2516,10 +2495,10 @@
                             statusText = 'Normal';
                         } else if (value < 36) {
                             badgeClass = 'badge-warning';
-                            statusText = 'Low';
+                            statusText = 'Niedrig';
                         } else {
                             badgeClass = 'badge-danger';
-                            statusText = 'Fever';
+                            statusText = 'Fieber';
                         }
                     } else {
                         badgeClass = '';
@@ -2537,10 +2516,10 @@
                             statusText = 'Normal';
                         } else if (value < 12) {
                             badgeClass = 'badge-warning';
-                            statusText = 'Low';
+                            statusText = 'Niedrig';
                         } else {
                             badgeClass = 'badge-danger';
-                            statusText = 'High';
+                            statusText = 'Hoch';
                         }
                     } else {
                         badgeClass = '';
@@ -2558,10 +2537,10 @@
                             statusText = 'Normal';
                         } else if (value >= 90 && value < 95) {
                             badgeClass = 'badge-warning';
-                            statusText = 'Low';
+                            statusText = 'Niedrig';
                         } else if (value < 90) {
                             badgeClass = 'badge-danger';
-                            statusText = 'Critical';
+                            statusText = 'Kritisch';
                         }
                     } else {
                         badgeClass = '';
@@ -2601,16 +2580,16 @@
                 
                 let statusText, badgeClass;
                 if (bmi < 18.5) {
-                    statusText = 'Underweight';
+                    statusText = 'Untergewichtig';
                     badgeClass = 'badge-warning';
                 } else if (bmi >= 18.5 && bmi <= 24.9) {
                     statusText = 'Normal';
                     badgeClass = 'badge-success';
                 } else if (bmi >= 25 && bmi <= 29.9) {
-                    statusText = 'Overweight';
+                    statusText = 'Übergewichtig';
                     badgeClass = 'badge-warning';
                 } else {
-                    statusText = 'Obese';
+                    statusText = 'Adipös';
                     badgeClass = 'badge-danger';
                 }
                 
@@ -2649,7 +2628,7 @@
             container.innerHTML = '';
             
             if (!window.activities || window.activities.length === 0) {
-                container.innerHTML = '<div style="color: var(--gray); text-align: center; padding: 20px;">No activities</div>';
+                container.innerHTML = '<div style="color: var(--gray); text-align: center; padding: 20px;">Keine Aktivitäten</div>';
                 return;
             }
             
@@ -2677,7 +2656,7 @@
                 id: window.activities.length + 1,
                 patient: currentPatient ? currentPatient.fullName : 'System',
                 action: action,
-                time: 'Just now',
+                time: 'Gerade eben',
                 icon: icon,
                 color: 'var(--primary)'
             };
@@ -2706,7 +2685,7 @@
         function saveAssessment(isAutoSave = false) {
             if (!currentPatient) {
                 if (!isAutoSave) {
-                    alert('Please select a patient first');
+                    alert('Bitte wählen Sie zuerst einen Patienten aus');
                 }
                 return;
             }
@@ -2716,7 +2695,6 @@
                 name: document.getElementById('patientName').value.trim(),
                 rankUnit: document.getElementById('patientRankUnit').value.trim(),
                 date: document.getElementById('examinationDate').value,
-                examiner: document.getElementById('examinerName').value.trim(),
                 generalImpression: document.getElementById('generalImpression').value.trim(),
                 fitness: Array.from(document.querySelectorAll('input[name="fitness"]:checked')).map(cb => cb.value),
                 lastMeal: document.getElementById('lastMeal').value,
@@ -2779,7 +2757,7 @@
             const originalHTML = saveBtn.innerHTML;
             
             if (isAutoSave) {
-                saveBtn.innerHTML = '<i class="fas fa-check"></i> Auto-saved';
+                saveBtn.innerHTML = '<i class="fas fa-check"></i> Autogespeichert';
                 saveBtn.style.background = 'var(--success)';
                 
                 setTimeout(() => {
@@ -2787,7 +2765,7 @@
                     saveBtn.style.background = '';
                 }, 2000);
             } else {
-                saveBtn.innerHTML = '<i class="fas fa-check"></i> Saved';
+                saveBtn.innerHTML = '<i class="fas fa-check"></i> Gespeichert';
                 saveBtn.style.background = 'var(--success)';
                 
                 setTimeout(() => {
@@ -2795,7 +2773,7 @@
                     saveBtn.style.background = '';
                 }, 3000);
                 
-                addActivity(`Saved assessment for ${currentPatient.fullName}`, 'fas fa-save');
+                addActivity(`Untersuchung für ${currentPatient.fullName} gespeichert`, 'fas fa-save');
             }
             
             // Update patient list
@@ -2837,12 +2815,12 @@
 
         function generateReport() {
             if (!currentPatient) {
-                alert('Please select a patient first');
+                alert('Bitte wählen Sie zuerst einen Patienten aus');
                 return;
             }
             
-            addActivity(`Generated report for ${currentPatient.fullName}`, 'fas fa-file-pdf');
-            alert('Report generation started. PDF will be downloaded shortly.');
+            addActivity(`Bericht für ${currentPatient.fullName} erstellt`, 'fas fa-file-pdf');
+            alert('Berichterstellung gestartet. PDF wird in Kürze heruntergeladen.');
             
             // Simulate report generation
             setTimeout(() => {
@@ -2870,38 +2848,37 @@
                     </head>
                     <body>
                         <h1>MEDICAL & PSYCHOLOGICAL EVALUATION</h1>
-                        <p><strong>Generated on:</strong> ${new Date().toLocaleDateString('en-US')}</p>
+                        <p><strong>Erstellt am:</strong> ${new Date().toLocaleDateString('de-DE')}</p>
                         
                         <div class="section">
-                            <h2>Section 1 – Information</h2>
-                            <p><strong>Soldier's Name:</strong> ${currentPatient.formData?.name || '-'}</p>
+                            <h2>Abschnitt 1 – Informationen</h2>
+                            <p><strong>Name des Soldaten:</strong> ${currentPatient.formData?.name || '-'}</p>
                             <p><strong>Rank / Unit:</strong> ${currentPatient.formData?.rankUnit || '-'}</p>
-                            <p><strong>Date:</strong> ${currentPatient.formData?.date || '-'}</p>
-                            <p><strong>Examiner:</strong> ${currentPatient.formData?.examiner || '-'}</p>
-                            <p><strong>General Impression:</strong> ${currentPatient.formData?.generalImpression || '-'}</p>
+                            <p><strong>Datum:</strong> ${currentPatient.formData?.date || '-'}</p>
+                            <p><strong>Allgemeiner Eindruck:</strong> ${currentPatient.formData?.generalImpression || '-'}</p>
                         </div>
                         
                         <div class="section">
-                            <h2>Vital Parameters</h2>
+                            <h2>Vitalparameter</h2>
                             <table class="vital-table">
-                                <tr><th>Parameter</th><th>Value</th><th>Status</th></tr>
-                                <tr><td>Pulse (bpm)</td><td>${currentPatient.vitals?.pulse || '-'}</td><td>-</td></tr>
-                                <tr><td>Blood Pressure (mmHg)</td><td>${currentPatient.vitals?.bpHigh && currentPatient.vitals?.bpLow ? currentPatient.vitals.bpHigh + '/' + currentPatient.vitals.bpLow : '-'}</td><td>-</td></tr>
-                                <tr><td>Body Temperature (°C)</td><td>${currentPatient.vitals?.temperature || '-'}</td><td>-</td></tr>
+                                <tr><th>Parameter</th><th>Wert</th><th>Status</th></tr>
+                                <tr><td>Puls (bpm)</td><td>${currentPatient.vitals?.pulse || '-'}</td><td>-</td></tr>
+                                <tr><td>Blutdruck (mmHg)</td><td>${currentPatient.vitals?.bpHigh && currentPatient.vitals?.bpLow ? currentPatient.vitals.bpHigh + '/' + currentPatient.vitals.bpLow : '-'}</td><td>-</td></tr>
+                                <tr><td>Körpertemperatur (°C)</td><td>${currentPatient.vitals?.temperature || '-'}</td><td>-</td></tr>
                             </table>
                         </div>
                         
                         <div class="section">
-                            <h2>Summary</h2>
-                            <p>This assessment was conducted on ${new Date(currentPatient.lastUpdated).toLocaleDateString('en-US')}.</p>
-                            <p><strong>Status:</strong> ${currentPatient.status === 'active' ? 'Fully operational' : 
-                                                         currentPatient.status === 'pending' ? 'Further evaluation required' : 
-                                                         'Critical - not operational'}</p>
+                            <h2>Zusammenfassung</h2>
+                            <p>Diese Untersuchung wurde am ${new Date(currentPatient.lastUpdated).toLocaleDateString('de-DE')} durchgeführt.</p>
+                            <p><strong>Status:</strong> ${currentPatient.status === 'active' ? 'Voll einsatzfähig' : 
+                                                         currentPatient.status === 'pending' ? 'Weitere Prüfung erforderlich' : 
+                                                         'Kritisch - nicht einsatzfähig'}</p>
                         </div>
                         
                         <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd;">
-                            <p><strong>Examiner's Signature:</strong> _________________________</p>
-                            <p><strong>Date:</strong> ${new Date().toLocaleDateString('en-US')}</p>
+                            <p><strong>Unterschrift:</strong> _________________________</p>
+                            <p><strong>Datum:</strong> ${new Date().toLocaleDateString('de-DE')}</p>
                         </div>
                     </body>
                     </html>
@@ -2911,7 +2888,7 @@
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
-                link.download = `Assessment_${currentPatient.fullName.replace(/\s+/g, '_')}_${new Date().getTime()}.html`;
+                link.download = `Untersuchung_${currentPatient.fullName.replace(/\s+/g, '_')}_${new Date().getTime()}.html`;
                 link.click();
                 URL.revokeObjectURL(url);
             }, 1000);
@@ -2924,7 +2901,7 @@
         function deleteAssessment() {
             if (!currentPatient) return;
             
-            if (confirm(`Are you sure you want to delete the assessment for ${currentPatient.fullName}? This action cannot be undone.`)) {
+            if (confirm(`Sind Sie sicher, dass Sie die Untersuchung für ${currentPatient.fullName} löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.`)) {
                 const patientName = currentPatient.fullName;
                 patients = patients.filter(p => p.id !== currentPatient.id);
                 currentPatient = null;
@@ -2932,7 +2909,7 @@
                 document.getElementById('patientHeader').style.display = 'none';
                 renderPatientList();
                 
-                addActivity(`Deleted assessment for ${patientName}`, 'fas fa-trash');
+                addActivity(`Untersuchung für ${patientName} gelöscht`, 'fas fa-trash');
             }
         }
 
@@ -2946,17 +2923,17 @@
                     window.print();
                     break;
                 case 'template':
-                    alert('Template applied successfully');
+                    alert('Vorlage erfolgreich angewendet');
                     break;
                 case 'stats':
                     openModal('statsModal');
                     updateStatsModal();
                     break;
                 case 'reminder':
-                    alert('Reminder set for follow-up in 7 days');
+                    alert('Erinnerung für Folgeuntersuchung in 7 Tagen gesetzt');
                     break;
                 case 'settings':
-                    alert('Settings would open here');
+                    alert('Einstellungen würden hier geöffnet');
                     break;
             }
         }
@@ -2990,7 +2967,7 @@
 
         function formatDate(dateString) {
             const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', {
+            return date.toLocaleDateString('de-DE', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
@@ -3001,7 +2978,7 @@
 
         // ===== INITIAL RENDER =====
         // Add initial activity
-        addActivity('System started', 'fas fa-power-off');
+        addActivity('System gestartet', 'fas fa-power-off');
         
         // Update stats on load
         setTimeout(() => {
