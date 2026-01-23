@@ -111,7 +111,7 @@
             margin: 0 auto;
             padding: 24px;
             display: grid;
-            grid-template-columns: 320px 1fr 400px;
+            grid-template-columns: 320px 1fr;
             gap: 24px;
             min-height: 100vh;
         }
@@ -177,16 +177,6 @@
         
         .logo:hover {
             transform: rotate(10deg) scale(1.05);
-        }
-        
-        .logo-text {
-            font-family: 'Arial Black', sans-serif;
-            font-size: 12px;
-            text-align: center;
-            line-height: 1.2;
-            font-weight: 900;
-            text-transform: uppercase;
-            color: white;
         }
         
         .brand-text h1 {
@@ -745,90 +735,6 @@
             letter-spacing: 0.5px;
         }
         
-        /* ===== RIGHT PANEL ===== */
-        .right-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-        
-        /* Quick Actions */
-        .quick-actions {
-            background: rgba(30, 30, 30, 0.8);
-            backdrop-filter: blur(20px);
-            border-radius: var(--radius-xl);
-            padding: 24px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .action-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 16px;
-        }
-        
-        .action-btn {
-            padding: 16px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            color: white;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .action-btn:hover {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            transform: translateY(-2px);
-            border-color: transparent;
-        }
-        
-        .action-btn i {
-            font-size: 24px;
-        }
-        
-        /* Recent Activity */
-        .activity-feed {
-            background: rgba(30, 30, 30, 0.8);
-            backdrop-filter: blur(20px);
-            border-radius: var(--radius-xl);
-            padding: 24px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-md);
-            flex: 1;
-        }
-        
-        .activity-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-top: 16px;
-            max-height: 400px;
-            overflow-y: auto;
-            padding-right: 8px;
-        }
-        
-        .activity-item {
-            display: flex;
-            gap: 12px;
-            padding: 16px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: var(--radius-md);
-            border-left: 3px solid var(--primary);
-        }
-        
-        .activity-time {
-            font-size: 12px;
-            color: var(--gray);
-            margin-top: 4px;
-        }
-        
         /* ===== MODALS ===== */
         .modal {
             display: none;
@@ -880,20 +786,13 @@
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1400px) {
             .app-container {
-                grid-template-columns: 280px 1fr 320px;
+                grid-template-columns: 280px 1fr;
             }
         }
         
         @media (max-width: 1200px) {
             .app-container {
                 grid-template-columns: 1fr;
-            }
-            
-            .right-panel {
-                grid-column: 1 / -1;
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 24px;
             }
         }
         
@@ -911,10 +810,6 @@
             .header-stats {
                 width: 100%;
                 justify-content: space-between;
-            }
-            
-            .right-panel {
-                grid-template-columns: 1fr;
             }
             
             .form-grid {
@@ -939,10 +834,6 @@
         }
         
         @media (max-width: 480px) {
-            .action-grid {
-                grid-template-columns: 1fr;
-            }
-            
             .tabs {
                 overflow-x: auto;
                 padding-bottom: 8px;
@@ -1141,7 +1032,7 @@
             <div class="header-content">
                 <div class="brand">
                     <div class="logo">
-                        <div class="logo-text">UNITED STATES<br>ARMY</div>
+                        <i class="fas fa-shield-alt"></i>
                     </div>
                     <div class="brand-text">
                         <h1>MEDICAL & PSYCHOLOGICAL EVALUATION</h1>
@@ -1938,63 +1829,6 @@
                 </div>
             </div>
         </main>
-        
-        <!-- Right Panel -->
-        <aside class="right-panel">
-            <!-- Quick Actions -->
-            <div class="quick-actions">
-                <h3 class="section-title">
-                    <i class="fas fa-bolt"></i>
-                    Schnellaktionen
-                </h3>
-                <div class="action-grid">
-                    <button class="action-btn" onclick="quickAction('export')">
-                        <i class="fas fa-file-export"></i>
-                        Exportieren
-                    </button>
-                    <button class="action-btn" onclick="quickAction('print')">
-                        <i class="fas fa-print"></i>
-                        Drucken
-                    </button>
-                    <button class="action-btn" onclick="quickAction('template')">
-                        <i class="fas fa-copy"></i>
-                        Vorlage
-                    </button>
-                    <button class="action-btn" onclick="quickAction('stats')">
-                        <i class="fas fa-chart-bar"></i>
-                        Statistiken
-                    </button>
-                    <button class="action-btn" onclick="quickAction('reminder')">
-                        <i class="fas fa-bell"></i>
-                        Erinnerung
-                    </button>
-                    <button class="action-btn" onclick="quickAction('settings')">
-                        <i class="fas fa-cog"></i>
-                        Einstellungen
-                    </button>
-                    <button class="action-btn" onclick="quickAction('clearAll')" style="background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);">
-                        <i class="fas fa-trash"></i>
-                        Alles löschen
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Recent Activity -->
-            <div class="activity-feed">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                    <h3 class="section-title">
-                        <i class="fas fa-history"></i>
-                        Letzte Aktivitäten
-                    </h3>
-                    <button class="btn btn-danger" onclick="clearAllActivities()" style="padding: 6px 12px; font-size: 12px;">
-                        <i class="fas fa-trash"></i> Alles löschen
-                    </button>
-                </div>
-                <div class="activity-list" id="activityFeed">
-                    <!-- Activities will be loaded here -->
-                </div>
-            </div>
-        </aside>
     </div>
     
     <!-- Modals -->
@@ -2222,7 +2056,6 @@
             initializeApp();
             setupEventListeners();
             updateStats();
-            updateActivityFeed();
         });
 
         function initializeApp() {
@@ -2470,9 +2303,6 @@
             
             // Patientendaten laden
             loadPatientData();
-            
-            // Aktivität hinzufügen
-            addActivity(`Bewertung geöffnet für ${patient.fullName}`, 'fas fa-eye');
         }
 
         function loadPatientData() {
@@ -2600,7 +2430,6 @@
                 document.getElementById('newPatientUnit').value = '';
                 document.getElementById('newPatientExaminer').value = '';
                 
-                addActivity(`Neue Bewertung erstellt für ${newPatient.fullName}`, 'fas fa-user-plus');
             } else {
                 alert('Fehler beim Erstellen des Patienten. Bitte versuchen Sie es erneut.');
             }
@@ -2790,111 +2619,6 @@
             document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
         }
 
-        // ===== AKTIVITÄTSFEED =====
-        function updateActivityFeed() {
-            const container = document.getElementById('activityFeed');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            
-            if (!window.activities || window.activities.length === 0) {
-                container.innerHTML = '<div style="color: var(--gray); text-align: center; padding: 20px;">Keine Aktivitäten</div>';
-                return;
-            }
-            
-            window.activities.forEach(activity => {
-                const activityElement = document.createElement('div');
-                activityElement.className = 'activity-item';
-                activityElement.innerHTML = `
-                    <div style="color: ${activity.color}; font-size: 20px;">
-                        <i class="${activity.icon}"></i>
-                    </div>
-                    <div style="flex: 1;">
-                        <div style="color: white; font-weight: 500;">${activity.action}</div>
-                        <div style="font-size: 14px; color: var(--gray-light);">${activity.patient}</div>
-                        <div class="activity-time">${activity.time}</div>
-                    </div>
-                `;
-                container.appendChild(activityElement);
-            });
-        }
-
-        function addActivity(action, icon = 'fas fa-history') {
-            if (!window.activities) window.activities = [];
-            
-            const newActivity = {
-                id: window.activities.length + 1,
-                patient: currentPatient ? currentPatient.fullName : 'System',
-                action: action,
-                time: 'Gerade eben',
-                icon: icon,
-                color: 'var(--primary)'
-            };
-            
-            window.activities.unshift(newActivity);
-            if (window.activities.length > 10) window.activities.pop();
-            
-            updateActivityFeed();
-        }
-
-        // ===== SCHNELLAKTIONEN FUNKTIONEN =====
-        function quickAction(action) {
-            switch(action) {
-                case 'export':
-                    exportAssessment();
-                    break;
-                case 'print':
-                    window.print();
-                    break;
-                case 'template':
-                    alert('Vorlage erfolgreich angewendet');
-                    break;
-                case 'stats':
-                    openModal('statsModal');
-                    updateStatsModal();
-                    break;
-                case 'reminder':
-                    alert('Erinnerung für Nachuntersuchung in 7 Tagen gesetzt');
-                    break;
-                case 'settings':
-                    alert('Einstellungen würden hier geöffnet werden');
-                    break;
-                case 'clearAll':
-                    if (confirm('WARNUNG: Diese Aktion löscht ALLE Daten und setzt das System zurück. Sind Sie sicher?')) {
-                        clearAllData();
-                    }
-                    break;
-            }
-        }
-
-        function clearAllActivities() {
-            if (confirm('Möchten Sie wirklich ALLE Aktivitäten löschen?')) {
-                window.activities = [];
-                updateActivityFeed();
-                addActivity('Aktivitätsverlauf gelöscht', 'fas fa-trash');
-            }
-        }
-
-        function clearAllData() {
-            if (confirm('WARNUNG: Diese Aktion ist endgültig und kann nicht rückgängig gemacht werden. ALLE Patienten und Daten werden gelöscht. Fortfahren?')) {
-                // Hier würden in einer echten App alle Daten aus Firebase gelöscht werden
-                // Für Demo-Zwecke setzen wir nur die lokalen Daten zurück
-                
-                patients = [];
-                currentPatient = null;
-                window.activities = [];
-                
-                // UI zurücksetzen
-                document.getElementById('patientHeader').style.display = 'none';
-                renderPatientList();
-                updateActivityFeed();
-                updateStats();
-                
-                addActivity('Alle Daten gelöscht - System zurückgesetzt', 'fas fa-bomb');
-                alert('Alle Daten wurden gelöscht. Das System wurde zurückgesetzt.');
-            }
-        }
-
         // ===== SPEICHERN & EXPORT =====
         function autoSave() {
             if (!currentPatient) return;
@@ -3005,8 +2729,6 @@
                         saveBtn.innerHTML = originalHTML;
                         saveBtn.style.background = '';
                     }, 3000);
-                    
-                    addActivity(`Bewertung gespeichert für ${currentPatient.fullName}`, 'fas fa-save');
                 }
                 
                 // Patientenliste aktualisieren
@@ -3048,7 +2770,6 @@
                 return;
             }
             
-            addActivity(`Bericht generiert für ${currentPatient.fullName}`, 'fas fa-file-pdf');
             alert('Berichterstellung gestartet. PDF wird in Kürze heruntergeladen.');
             
             // Berichterstellung simulieren
@@ -3144,8 +2865,6 @@
                     
                     document.getElementById('patientHeader').style.display = 'none';
                     renderPatientList();
-                    
-                    addActivity(`Bewertung gelöscht für ${patientName}`, 'fas fa-trash');
                 } else {
                     alert('Fehler beim Löschen des Patienten. Bitte versuchen Sie es erneut.');
                 }
@@ -3284,13 +3003,9 @@
         }
 
         // ===== INITIALE DARSTELLUNG =====
-        // Initiale Aktivität hinzufügen
-        addActivity('System gestartet', 'fas fa-power-off');
-        
         // Statistiken beim Laden aktualisieren
         setTimeout(() => {
             updateStats();
-            updateActivityFeed();
         }, 1000);
     </script>
 </body>
