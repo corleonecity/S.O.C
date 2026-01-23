@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚕️ MEDICAL & PSYCHOLOGICAL EVALUATION - USSOCOM</title>
+    <title>⚡ MILSPEC EVAL | Tactical Assessment System</title>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -17,368 +17,442 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     
     <style>
-        /* ===== VARIABLES ===== */
+        /* ===== CYBERPUNK VARIABLES ===== */
         :root {
-            --primary: #0066cc;
-            --primary-dark: #004d99;
-            --primary-light: #3399ff;
-            --secondary: #cc3300;
-            --secondary-dark: #992600;
-            --secondary-light: #ff6633;
-            --success: #00aa66;
-            --warning: #ff9900;
-            --info: #00aaff;
-            --dark: #0a0a14;
-            --dark-card: #1a1a2e;
-            --dark-surface: #2a2a3e;
-            --light: #f0f4f8;
-            --gray: #8899aa;
-            --gray-light: #cce0ff;
-            --border: rgba(255, 255, 255, 0.12);
+            --cyber-blue: #00f3ff;
+            --cyber-purple: #ff00ff;
+            --cyber-green: #00ff9d;
+            --cyber-red: #ff003c;
+            --cyber-yellow: #ffd700;
+            --cyber-white: #f0f8ff;
+            --cyber-black: #0a0a0f;
+            --cyber-gray: #1a1a2e;
+            --cyber-dark: #0f0f1a;
             
-            --shadow-lg: 0 25px 50px rgba(0, 0, 0, 0.4);
-            --shadow-md: 0 15px 35px rgba(0, 0, 0, 0.25);
-            --shadow-sm: 0 5px 15px rgba(0, 0, 0, 0.15);
+            --glow-blue: 0 0 30px rgba(0, 243, 255, 0.7);
+            --glow-purple: 0 0 30px rgba(255, 0, 255, 0.7);
+            --glow-green: 0 0 30px rgba(0, 255, 157, 0.7);
+            --glow-red: 0 0 30px rgba(255, 0, 60, 0.7);
             
-            --radius-xl: 24px;
-            --radius-lg: 18px;
-            --radius-md: 12px;
-            --radius-sm: 8px;
+            --scan-duration: 15s;
+            --pulse-duration: 2s;
             
-            --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-fast: all 0.2s ease;
-            
-            --glow-primary: 0 0 20px rgba(0, 102, 204, 0.4);
-            --glow-secondary: 0 0 20px rgba(204, 51, 0, 0.3);
+            --font-main: 'Orbitron', sans-serif;
+            --font-secondary: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
         }
         
-        /* ===== RESET & BASE ===== */
+        /* ===== RESET ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         
         html {
             scroll-behavior: smooth;
-            font-size: 16px;
+            background: var(--cyber-black);
         }
         
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(145deg, var(--dark) 0%, #0f1525 100%);
-            color: var(--light);
-            line-height: 1.65;
+            font-family: var(--font-secondary);
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(0, 243, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 0, 255, 0.1) 0%, transparent 20%),
+                var(--cyber-black);
+            color: var(--cyber-white);
             min-height: 100vh;
             overflow-x: hidden;
-            letter-spacing: 0.02em;
+            position: relative;
         }
         
-        /* ===== NEON GRADIENTS ===== */
-        .background-effects {
+        /* ===== CYBERPUNK BACKGROUND ===== */
+        .cyber-grid {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -2;
-            overflow: hidden;
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 70%);
+            z-index: -3;
+            pointer-events: none;
         }
         
-        .gradient-overlay {
-            position: absolute;
+        .hologram-effect {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: 
-                radial-gradient(circle at 15% 85%, rgba(0, 102, 204, 0.25) 0%, transparent 60%),
-                radial-gradient(circle at 85% 15%, rgba(204, 51, 0, 0.15) 0%, transparent 60%),
-                radial-gradient(circle at 50% 50%, rgba(0, 170, 255, 0.12) 0%, transparent 70%);
-            filter: blur(60px);
-            opacity: 0.6;
-        }
-        
-        .grid-pattern {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
-            mask-image: radial-gradient(circle at center, black 30%, transparent 70%);
-            -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 70%);
+                repeating-linear-gradient(
+                    0deg,
+                    transparent 0px,
+                    transparent 1px,
+                    rgba(0, 243, 255, 0.03) 1px,
+                    rgba(0, 243, 255, 0.03) 2px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent 0px,
+                    transparent 1px,
+                    rgba(255, 0, 255, 0.03) 1px,
+                    rgba(255, 0, 255, 0.03) 2px
+                );
+            opacity: 0.3;
+            z-index: -2;
+            pointer-events: none;
         }
         
         .scan-line {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, 
-                transparent 0%, 
-                rgba(0, 102, 204, 0.8) 50%, 
-                transparent 100%);
-            animation: scan 4s linear infinite;
+            height: 4px;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                var(--cyber-blue) 50%,
+                transparent 100%
+            );
+            animation: scan var(--scan-duration) linear infinite;
             z-index: -1;
+            filter: blur(1px);
+            box-shadow: var(--glow-blue);
+        }
+        
+        .cyber-orbs {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+        }
+        
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.3;
+        }
+        
+        .orb-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--cyber-blue);
+            top: 10%;
+            left: 10%;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--cyber-purple);
+            top: 60%;
+            right: 10%;
+            animation: float 25s ease-in-out infinite reverse;
+        }
+        
+        .orb-3 {
+            width: 200px;
+            height: 200px;
+            background: var(--cyber-green);
+            bottom: 20%;
+            left: 50%;
+            animation: float 18s ease-in-out infinite;
         }
         
         @keyframes scan {
-            0% { top: 0%; }
-            100% { top: 100%; }
+            0% { transform: translateY(-100px); }
+            100% { transform: translateY(100vh); }
         }
         
-        /* ===== LAYOUT ===== */
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(100px, -50px) rotate(90deg); }
+            50% { transform: translate(0, -100px) rotate(180deg); }
+            75% { transform: translate(-100px, -50px) rotate(270deg); }
+        }
+        
+        /* ===== MAIN LAYOUT ===== */
         .app-container {
             max-width: 1920px;
             margin: 0 auto;
-            padding: 32px;
-            display: grid;
-            grid-template-columns: 360px 1fr;
-            gap: 32px;
-            min-height: 100vh;
-        }
-        
-        /* ===== ENHANCED HEADER ===== */
-        .app-header {
-            grid-column: 1 / -1;
-            background: linear-gradient(135deg, 
-                rgba(0, 102, 204, 0.95) 0%, 
-                rgba(0, 77, 153, 0.98) 100%);
-            backdrop-filter: blur(30px);
-            border-radius: var(--radius-xl);
-            padding: 28px 40px;
-            margin-bottom: 32px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: var(--shadow-lg), var(--glow-primary);
-            position: relative;
-            overflow: hidden;
-            transform: translateY(0);
-            transition: var(--transition);
-        }
-        
-        .app-header:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), var(--glow-primary);
-        }
-        
-        .app-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, 
-                var(--primary) 0%, 
-                var(--secondary) 50%, 
-                var(--info) 100%);
-            animation: shimmer 3s infinite linear;
-        }
-        
-        .app-header::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            transform: translate(30%, -30%);
-        }
-        
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 20px;
             position: relative;
             z-index: 1;
         }
         
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
-        
-        .logo {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            color: white;
-            box-shadow: 0 10px 40px rgba(0, 102, 204, 0.5);
-            transition: var(--transition);
+        /* ===== CYBER HEADER ===== */
+        .cyber-header {
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--cyber-blue);
+            border-image: linear-gradient(45deg, var(--cyber-blue), var(--cyber-purple)) 1;
+            padding: 20px 30px;
+            margin-bottom: 30px;
             position: relative;
             overflow: hidden;
+            box-shadow: 
+                inset 0 0 50px rgba(0, 243, 255, 0.1),
+                0 0 50px rgba(0, 243, 255, 0.2);
         }
         
-        .logo::after {
+        .cyber-header::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, 
-                transparent 30%, 
-                rgba(255, 255, 255, 0.2) 50%, 
-                transparent 70%);
-            animation: shine 3s infinite linear;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%,
+                var(--cyber-blue) 20%,
+                var(--cyber-purple) 50%,
+                var(--cyber-blue) 80%,
+                transparent 100%
+            );
+            animation: shimmer 3s linear infinite;
         }
         
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-        
-        .logo:hover {
-            transform: rotate(15deg) scale(1.1);
-            box-shadow: 0 15px 50px rgba(0, 102, 204, 0.6);
-        }
-        
-        .brand-text h1 {
-            font-size: 32px;
-            font-weight: 900;
-            background: linear-gradient(135deg, #fff 0%, var(--gray-light) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-        
-        .brand-text .subtitle {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.9);
-            font-family: 'Roboto Mono', monospace;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        
-        .header-stats {
-            display: flex;
-            gap: 32px;
-        }
-        
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 16px 28px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: var(--radius-lg);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            min-width: 120px;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .stat-item::before {
+        .cyber-header::after {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
-            opacity: 0;
-            transition: var(--transition);
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(0, 243, 255, 0.1) 50%,
+                transparent 100%
+            );
+            transform: translateX(-100%);
+            animation: slide 5s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        @keyframes slide {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
+        }
+        
+        .header-grid {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .cyber-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, var(--cyber-blue), var(--cyber-purple));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--cyber-black);
+            position: relative;
+            overflow: hidden;
+            animation: rotate 20s linear infinite;
+        }
+        
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.3) 50%,
+                transparent 70%
+            );
+            animation: shine 3s linear infinite;
+        }
+        
+        .logo-text h1 {
+            font-family: var(--font-main);
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, var(--cyber-blue), var(--cyber-purple), var(--cyber-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
+        }
+        
+        .logo-text .subtitle {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--cyber-blue);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        
+        /* ===== STATS WIDGET ===== */
+        .cyber-stats {
+            display: flex;
+            gap: 20px;
+            justify-self: center;
+        }
+        
+        .stat-item {
+            padding: 15px 25px;
+            background: rgba(26, 26, 46, 0.6);
+            border: 1px solid var(--cyber-blue);
+            border-radius: 5px;
+            text-align: center;
+            min-width: 120px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
         
         .stat-item:hover {
             transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.12);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        .stat-item:hover::before {
-            opacity: 1;
+            box-shadow: var(--glow-blue);
+            background: rgba(0, 243, 255, 0.1);
         }
         
         .stat-value {
+            font-family: var(--font-main);
             font-size: 32px;
-            font-weight: 800;
-            color: white;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+            color: var(--cyber-green);
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px var(--cyber-green);
         }
         
         .stat-label {
-            font-size: 13px;
-            color: rgba(255, 255, 255, 0.8);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--cyber-blue);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 4px;
+            letter-spacing: 2px;
         }
         
-        /* ===== MODERN SIDEBAR ===== */
-        .sidebar {
-            background: rgba(26, 26, 46, 0.85);
-            backdrop-filter: blur(25px);
-            border-radius: var(--radius-xl);
-            padding: 28px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-md);
-            height: fit-content;
-            position: sticky;
-            top: 32px;
-            transition: var(--transition);
-        }
-        
-        .sidebar:hover {
-            border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--gray-light);
-            margin-bottom: 20px;
+        /* ===== USER PANEL ===== */
+        .user-panel {
             display: flex;
             align-items: center;
-            gap: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            gap: 15px;
+            justify-self: end;
         }
         
-        .section-title i {
-            color: var(--primary-light);
-        }
-        
-        .search-container {
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--cyber-blue), var(--cyber-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--cyber-black);
             position: relative;
-            margin-bottom: 24px;
+        }
+        
+        .user-info {
+            text-align: right;
+        }
+        
+        .user-name {
+            font-family: var(--font-main);
+            font-size: 14px;
+            color: var(--cyber-green);
+        }
+        
+        .user-rank {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--cyber-blue);
+        }
+        
+        /* ===== MAIN GRID LAYOUT ===== */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 25px;
+            min-height: calc(100vh - 180px);
+        }
+        
+        /* ===== CYBER SIDEBAR ===== */
+        .cyber-sidebar {
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--cyber-purple);
+            border-image: linear-gradient(45deg, var(--cyber-purple), var(--cyber-blue)) 1;
+            border-radius: 10px;
+            padding: 25px;
+            position: sticky;
+            top: 20px;
+            box-shadow: 
+                inset 0 0 30px rgba(255, 0, 255, 0.1),
+                0 0 40px rgba(255, 0, 255, 0.2);
+        }
+        
+        .sidebar-header {
+            font-family: var(--font-main);
+            font-size: 16px;
+            color: var(--cyber-purple);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sidebar-header i {
+            font-size: 20px;
+            filter: drop-shadow(0 0 5px var(--cyber-purple));
+        }
+        
+        /* ===== SEARCH ===== */
+        .cyber-search {
+            position: relative;
+            margin-bottom: 25px;
         }
         
         .search-input {
             width: 100%;
-            padding: 16px 20px 16px 56px;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            color: white;
-            font-size: 15px;
-            transition: var(--transition);
-            backdrop-filter: blur(10px);
+            padding: 15px 20px 15px 50px;
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid var(--cyber-blue);
+            border-radius: 5px;
+            color: var(--cyber-white);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            transition: all 0.3s ease;
         }
         
         .search-input:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.25);
-            background: rgba(255, 255, 255, 0.1);
+            box-shadow: var(--glow-blue);
+            border-color: var(--cyber-green);
         }
         
         .search-icon {
@@ -386,1020 +460,694 @@
             left: 20px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--primary-light);
+            color: var(--cyber-blue);
         }
         
-        /* Enhanced Patient Cards */
-        .patient-cards {
+        /* ===== PATIENT LIST ===== */
+        .cyber-list {
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            max-height: 600px;
+            gap: 15px;
+            max-height: 500px;
             overflow-y: auto;
-            padding-right: 8px;
+            padding-right: 10px;
         }
         
-        .patient-cards::-webkit-scrollbar {
+        .cyber-list::-webkit-scrollbar {
             width: 8px;
         }
         
-        .patient-cards::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
+        .cyber-list::-webkit-scrollbar-track {
+            background: rgba(26, 26, 46, 0.8);
             border-radius: 4px;
         }
         
-        .patient-cards::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        .cyber-list::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--cyber-blue), var(--cyber-purple));
             border-radius: 4px;
         }
         
-        .patient-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: var(--radius-lg);
-            padding: 20px;
-            border: 1px solid transparent;
+        .list-item {
+            padding: 15px;
+            background: rgba(26, 26, 46, 0.6);
+            border: 1px solid var(--cyber-blue);
+            border-radius: 5px;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            backdrop-filter: blur(10px);
         }
         
-        .patient-card::before {
+        .list-item:hover {
+            transform: translateX(5px);
+            border-color: var(--cyber-green);
+            box-shadow: var(--glow-green);
+        }
+        
+        .list-item.active {
+            background: rgba(0, 243, 255, 0.1);
+            border-color: var(--cyber-green);
+            box-shadow: inset 0 0 20px rgba(0, 255, 157, 0.2);
+        }
+        
+        .list-item::before {
             content: '';
             position: absolute;
             left: 0;
             top: 0;
             bottom: 0;
-            width: 6px;
-            background: linear-gradient(to bottom, var(--primary) 0%, var(--primary-light) 100%);
-            transition: var(--transition);
-            transform: translateX(-100%);
+            width: 3px;
+            background: linear-gradient(to bottom, var(--cyber-blue), var(--cyber-purple));
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
         
-        .patient-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateX(8px);
-            border-color: var(--border);
-        }
-        
-        .patient-card:hover::before {
-            transform: translateX(0);
-        }
-        
-        .patient-card.active {
-            background: linear-gradient(135deg, rgba(0, 102, 204, 0.25) 0%, rgba(0, 77, 153, 0.2) 100%);
-            border-color: var(--primary);
-            box-shadow: 0 8px 32px rgba(0, 102, 204, 0.3);
-        }
-        
-        .patient-card.active::before {
-            background: linear-gradient(to bottom, var(--secondary) 0%, var(--secondary-light) 100%);
-            transform: translateX(0);
+        .list-item:hover::before {
+            opacity: 1;
         }
         
         .patient-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         
         .patient-name {
-            font-weight: 700;
-            font-size: 17px;
-            color: white;
+            font-family: var(--font-main);
+            font-size: 14px;
+            color: var(--cyber-white);
         }
         
         .patient-id {
-            font-family: 'Roboto Mono', monospace;
-            font-size: 12px;
-            color: var(--gray);
-            background: rgba(255, 255, 255, 0.07);
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-weight: 500;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--cyber-blue);
+            background: rgba(0, 243, 255, 0.1);
+            padding: 3px 8px;
+            border-radius: 10px;
         }
         
         .patient-details {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            font-size: 14px;
-            color: var(--gray-light);
+            font-family: var(--font-secondary);
+            font-size: 12px;
+            color: var(--cyber-white);
+            opacity: 0.8;
+            margin-bottom: 8px;
         }
         
         .patient-status {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            padding: 6px 16px;
-            border-radius: 16px;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-family: var(--font-mono);
+            font-size: 10px;
             font-weight: 600;
-            width: fit-content;
-            margin-top: 12px;
-            backdrop-filter: blur(10px);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
-        .status-pending { 
-            background: linear-gradient(135deg, rgba(255, 153, 0, 0.25) 0%, rgba(255, 153, 0, 0.15) 100%);
-            color: var(--warning);
-            border: 1px solid rgba(255, 153, 0, 0.3);
-        }
-        .status-active { 
-            background: linear-gradient(135deg, rgba(0, 170, 102, 0.25) 0%, rgba(0, 170, 102, 0.15) 100%);
-            color: var(--success);
-            border: 1px solid rgba(0, 170, 102, 0.3);
-        }
-        .status-critical { 
-            background: linear-gradient(135deg, rgba(204, 51, 0, 0.25) 0%, rgba(204, 51, 0, 0.15) 100%);
-            color: var(--secondary-light);
-            border: 1px solid rgba(204, 51, 0, 0.3);
+        .status-active {
+            background: rgba(0, 255, 157, 0.1);
+            color: var(--cyber-green);
+            border: 1px solid var(--cyber-green);
         }
         
-        .new-patient-btn {
+        .status-pending {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--cyber-yellow);
+            border: 1px solid var(--cyber-yellow);
+        }
+        
+        .status-critical {
+            background: rgba(255, 0, 60, 0.1);
+            color: var(--cyber-red);
+            border: 1px solid var(--cyber-red);
+        }
+        
+        /* ===== ADD BUTTON ===== */
+        .cyber-btn-add {
             width: 100%;
-            padding: 20px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
+            padding: 18px;
+            margin-top: 20px;
+            background: linear-gradient(45deg, var(--cyber-blue), var(--cyber-purple));
             border: none;
-            border-radius: var(--radius-lg);
+            border-radius: 5px;
+            color: var(--cyber-black);
+            font-family: var(--font-main);
+            font-size: 14px;
             font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            transition: var(--transition);
-            margin-top: 24px;
-            font-size: 16px;
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
         
-        .new-patient-btn::after {
+        .cyber-btn-add:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 10px 30px rgba(0, 243, 255, 0.4),
+                0 10px 30px rgba(255, 0, 255, 0.4);
+        }
+        
+        .cyber-btn-add::after {
             content: '';
             position: absolute;
             top: -50%;
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(45deg, 
-                transparent 30%, 
-                rgba(255, 255, 255, 0.2) 50%, 
-                transparent 70%);
-            animation: shine 3s infinite linear;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.4) 50%,
+                transparent 70%
+            );
+            animation: shine 3s linear infinite;
         }
         
-        .new-patient-btn:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0, 102, 204, 0.4);
-            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
-        }
-        
-        /* ===== MAIN CONTENT ENHANCEMENT ===== */
-        .main-content {
-            background: rgba(26, 26, 46, 0.85);
-            backdrop-filter: blur(25px);
-            border-radius: var(--radius-xl);
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-md);
+        /* ===== MAIN CONTENT ===== */
+        .cyber-main {
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--cyber-green);
+            border-image: linear-gradient(45deg, var(--cyber-green), var(--cyber-blue)) 1;
+            border-radius: 10px;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: var(--transition);
+            box-shadow: 
+                inset 0 0 30px rgba(0, 255, 157, 0.1),
+                0 0 40px rgba(0, 255, 157, 0.2);
         }
         
-        .main-content:hover {
-            box-shadow: var(--shadow-lg);
-        }
-        
-        .content-header {
-            padding: 28px 40px;
-            background: linear-gradient(135deg, rgba(0, 77, 153, 0.6) 0%, rgba(0, 102, 204, 0.4) 100%);
-            border-bottom: 1px solid var(--border);
+        /* ===== PATIENT HEADER ===== */
+        .patient-main-header {
+            padding: 25px 30px;
+            background: linear-gradient(
+                90deg,
+                rgba(0, 243, 255, 0.1) 0%,
+                rgba(0, 255, 157, 0.1) 100%
+            );
+            border-bottom: 2px solid var(--cyber-green);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         
         .patient-info h2 {
-            font-size: 28px;
-            font-weight: 800;
-            color: white;
+            font-family: var(--font-main);
+            font-size: 24px;
+            color: var(--cyber-white);
             margin-bottom: 8px;
-            background: linear-gradient(135deg, #fff 0%, var(--gray-light) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
         }
         
         .patient-meta {
             display: flex;
-            gap: 32px;
-            font-size: 15px;
-            color: rgba(255, 255, 255, 0.9);
+            gap: 20px;
         }
         
         .meta-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.07);
-            padding: 8px 16px;
-            border-radius: var(--radius-md);
-            backdrop-filter: blur(10px);
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--cyber-blue);
         }
         
         .meta-item i {
-            color: var(--primary-light);
+            color: var(--cyber-green);
         }
         
-        .action-buttons {
+        /* ===== ACTION BUTTONS ===== */
+        .cyber-actions {
             display: flex;
-            gap: 16px;
+            gap: 15px;
         }
         
-        /* Enhanced Tabs */
-        .tabs-container {
-            padding: 0 40px;
-            background: rgba(255, 255, 255, 0.03);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        
-        .tabs {
-            display: flex;
-            gap: 2px;
-            overflow-x: auto;
-        }
-        
-        .tabs::-webkit-scrollbar {
-            height: 4px;
-        }
-        
-        .tab {
-            padding: 20px 28px;
-            background: transparent;
+        .cyber-btn {
+            padding: 12px 24px;
             border: none;
-            color: var(--gray);
+            border-radius: 5px;
+            font-family: var(--font-main);
+            font-size: 12px;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             cursor: pointer;
-            white-space: nowrap;
-            transition: var(--transition);
-            position: relative;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .tab:hover {
-            color: white;
-            background: rgba(255, 255, 255, 0.05);
-        }
-        
-        .tab.active {
-            color: white;
-            background: linear-gradient(135deg, rgba(0, 102, 204, 0.2) 0%, rgba(0, 77, 153, 0.15) 100%);
-        }
-        
-        .tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
-        }
-        
-        .tab-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
-            color: white;
-            font-size: 11px;
-            padding: 4px 8px;
-            border-radius: 12px;
-            min-width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-        }
-        
-        /* Enhanced Tab Content */
-        .tab-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 40px;
-            background: linear-gradient(180deg, transparent 0%, rgba(0, 102, 204, 0.05) 100%);
-        }
-        
-        /* Enhanced Sections */
-        .section {
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: var(--radius-xl);
-            padding: 32px;
-            margin-bottom: 32px;
-            border: 1px solid var(--border);
-            transition: var(--transition);
-            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
         
-        .section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent 0%, var(--primary) 50%, transparent 100%);
+        .cyber-btn-primary {
+            background: linear-gradient(45deg, var(--cyber-green), var(--cyber-blue));
+            color: var(--cyber-black);
         }
         
-        .section:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.2);
+        .cyber-btn-secondary {
+            background: rgba(26, 26, 46, 0.8);
+            color: var(--cyber-blue);
+            border: 1px solid var(--cyber-blue);
+        }
+        
+        .cyber-btn-danger {
+            background: linear-gradient(45deg, var(--cyber-red), #ff5500);
+            color: var(--cyber-black);
+        }
+        
+        .cyber-btn:hover {
             transform: translateY(-2px);
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 10px 25px rgba(0, 243, 255, 0.3);
+        }
+        
+        /* ===== CYBER TABS ===== */
+        .cyber-tabs {
+            display: flex;
+            background: rgba(26, 26, 46, 0.8);
+            border-bottom: 2px solid var(--cyber-purple);
+            padding: 0 30px;
+        }
+        
+        .cyber-tab {
+            padding: 18px 30px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-family: var(--font-main);
+            font-size: 13px;
+            color: var(--cyber-blue);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .cyber-tab:hover {
+            color: var(--cyber-white);
+            background: rgba(255, 0, 255, 0.1);
+        }
+        
+        .cyber-tab.active {
+            color: var(--cyber-purple);
+            border-bottom-color: var(--cyber-purple);
+            text-shadow: 0 0 10px var(--cyber-purple);
+        }
+        
+        .tab-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--cyber-red);
+            color: var(--cyber-black);
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+        
+        /* ===== TAB CONTENT ===== */
+        .cyber-content {
+            padding: 30px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .cyber-content::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        .cyber-content::-webkit-scrollbar-track {
+            background: rgba(26, 26, 46, 0.8);
+        }
+        
+        .cyber-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--cyber-green), var(--cyber-blue));
+            border-radius: 5px;
+        }
+        
+        /* ===== SECTION CARDS ===== */
+        .cyber-section {
+            background: rgba(26, 26, 46, 0.6);
+            border: 1px solid var(--cyber-blue);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cyber-section:hover {
+            border-color: var(--cyber-green);
+            box-shadow: var(--glow-green);
         }
         
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 32px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.3);
         }
         
-        .section-title-main {
-            font-size: 24px;
-            font-weight: 700;
-            color: white;
+        .section-title {
+            font-family: var(--font-main);
+            font-size: 18px;
+            color: var(--cyber-green);
+            text-transform: uppercase;
+            letter-spacing: 2px;
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 15px;
         }
         
         .section-icon {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            border-radius: var(--radius-lg);
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, var(--cyber-blue), var(--cyber-purple));
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            color: white;
-            box-shadow: 0 8px 24px rgba(0, 102, 204, 0.4);
-            flex-shrink: 0;
+            font-size: 18px;
+            color: var(--cyber-black);
         }
         
-        /* Enhanced Form Styles */
-        .form-grid {
+        /* ===== FORM GRID ===== */
+        .cyber-form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
         }
         
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
         
         .form-label {
-            font-weight: 600;
-            color: var(--gray-light);
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--cyber-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
-        .form-label i {
-            color: var(--primary-light);
+        .cyber-input {
+            padding: 14px 18px;
+            background: rgba(10, 10, 15, 0.8);
+            border: 1px solid var(--cyber-blue);
+            border-radius: 5px;
+            color: var(--cyber-white);
+            font-family: var(--font-secondary);
             font-size: 14px;
+            transition: all 0.3s ease;
         }
         
-        .form-input {
-            padding: 16px 20px;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            color: white;
-            font-size: 15px;
-            transition: var(--transition);
-            backdrop-filter: blur(10px);
-        }
-        
-        .form-input:focus {
+        .cyber-input:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.25);
-            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--cyber-green);
+            box-shadow: var(--glow-green);
         }
         
-        .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            margin-top: 8px;
+        .cyber-textarea {
+            min-height: 100px;
+            resize: vertical;
         }
         
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: var(--radius-md);
-            transition: var(--transition);
-            border: 1px solid transparent;
-        }
-        
-        .checkbox-label:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--border);
-            transform: translateY(-2px);
-        }
-        
-        .checkbox-label input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: var(--primary);
-            border-radius: 4px;
-        }
-        
-        /* Enhanced Vital Parameters Table */
-        .vital-table {
+        /* ===== VITAL TABLE ===== */
+        .cyber-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 24px 0;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            border: 1px solid var(--border);
+            margin: 20px 0;
+            font-family: var(--font-mono);
+            font-size: 13px;
         }
         
-        .vital-table th {
-            background: linear-gradient(135deg, rgba(0, 102, 204, 0.25) 0%, rgba(0, 77, 153, 0.2) 100%);
-            padding: 20px;
+        .cyber-table th {
+            background: rgba(0, 243, 255, 0.1);
+            padding: 15px;
             text-align: left;
-            font-weight: 700;
-            color: white;
-            border-bottom: 1px solid var(--border);
-            font-size: 15px;
+            color: var(--cyber-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid var(--cyber-blue);
         }
         
-        .vital-table td {
-            padding: 20px;
-            border-bottom: 1px solid var(--border);
-            color: var(--gray-light);
-            background: rgba(255, 255, 255, 0.02);
+        .cyber-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+            color: var(--cyber-white);
         }
         
-        .vital-table tr:last-child td {
-            border-bottom: none;
+        .cyber-table tr:hover {
+            background: rgba(0, 243, 255, 0.05);
         }
         
-        .vital-table tr:hover td {
-            background: rgba(255, 255, 255, 0.04);
+        /* ===== CHECKBOX GROUP ===== */
+        .checkbox-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
         }
         
-        /* Enhanced Questions Grid */
-        .questions-grid {
+        .cyber-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background: rgba(10, 10, 15, 0.8);
+            border: 1px solid var(--cyber-blue);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .cyber-checkbox:hover {
+            border-color: var(--cyber-green);
+            background: rgba(0, 255, 157, 0.1);
+        }
+        
+        .cyber-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--cyber-green);
+            cursor: pointer;
+        }
+        
+        /* ===== QUESTION CARDS ===== */
+        .question-grid {
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 20px;
         }
         
-        .question-card {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            border: 1px solid var(--border);
-            transition: var(--transition);
-            backdrop-filter: blur(10px);
+        .cyber-question {
+            background: rgba(10, 10, 15, 0.8);
+            border: 1px solid var(--cyber-purple);
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s ease;
         }
         
-        .question-card:hover {
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-md);
-            background: rgba(255, 255, 255, 0.04);
+        .cyber-question:hover {
+            border-color: var(--cyber-blue);
+            box-shadow: var(--glow-blue);
         }
         
         .question-text {
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: white;
-            line-height: 1.7;
-            font-size: 16px;
+            font-family: var(--font-secondary);
+            font-size: 14px;
+            color: var(--cyber-white);
+            margin-bottom: 15px;
+            line-height: 1.6;
         }
         
-        .question-input {
-            width: 100%;
-            padding: 18px;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            color: white;
-            font-size: 15px;
-            resize: vertical;
-            min-height: 100px;
-            transition: var(--transition);
-            backdrop-filter: blur(10px);
-        }
-        
-        .question-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.25);
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        /* Enhanced Analysis Panel */
-        .analysis-panel {
-            background: linear-gradient(135deg, rgba(0, 77, 153, 0.4) 0%, rgba(0, 102, 204, 0.3) 100%);
-            border-radius: var(--radius-xl);
-            padding: 32px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .analysis-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-top: 24px;
-        }
-        
-        .analysis-card {
-            background: rgba(255, 255, 255, 0.07);
-            border-radius: var(--radius-lg);
-            padding: 28px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: var(--transition);
-            backdrop-filter: blur(10px);
-        }
-        
-        .analysis-card:hover {
-            transform: translateY(-8px);
-            background: rgba(255, 255, 255, 0.09);
-            box-shadow: var(--shadow-md);
-        }
-        
-        .analysis-value {
-            font-size: 48px;
-            font-weight: 900;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #fff 0%, var(--primary-light) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        .analysis-label {
-            font-size: 15px;
-            color: var(--gray-light);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-        }
-        
-        /* Enhanced Modals */
-        .modal {
+        /* ===== MODALS ===== */
+        .cyber-modal {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(20px);
-            z-index: 10000;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
             align-items: center;
             justify-content: center;
-            padding: 32px;
-            animation: fadeIn 0.4s ease-out;
+            padding: 20px;
+            animation: modalFade 0.4s ease;
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; backdrop-filter: blur(0px); }
-            to { opacity: 1; backdrop-filter: blur(20px); }
+        @keyframes modalFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
-        .modal.active {
+        .cyber-modal.active {
             display: flex;
         }
         
         .modal-content {
-            background: linear-gradient(145deg, rgba(26, 26, 46, 0.95) 0%, rgba(10, 10, 20, 0.98) 100%);
-            border-radius: var(--radius-xl);
-            padding: 48px;
+            background: rgba(10, 10, 15, 0.95);
+            border: 2px solid var(--cyber-blue);
+            border-radius: 10px;
+            padding: 40px;
+            max-width: 600px;
             width: 100%;
-            max-width: 680px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: var(--shadow-lg), var(--glow-primary);
-            animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            overflow: hidden;
+            box-shadow: 
+                inset 0 0 50px rgba(0, 243, 255, 0.1),
+                0 0 80px rgba(0, 243, 255, 0.3);
+            animation: modalSlide 0.4s ease;
         }
         
-        .modal-content::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent 0%, var(--primary) 50%, transparent 100%);
-        }
-        
-        @keyframes slideUp {
-            from {
+        @keyframes modalSlide {
+            from { 
                 opacity: 0;
-                transform: translateY(60px) scale(0.95);
+                transform: translateY(-50px) scale(0.9);
             }
-            to {
+            to { 
                 opacity: 1;
                 transform: translateY(0) scale(1);
             }
         }
         
-        /* Modal Inputs */
-        .modal-input {
-            width: 100%;
-            padding: 18px 20px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            color: white;
-            font-size: 15px;
-            transition: var(--transition);
-            margin-bottom: 20px;
-            backdrop-filter: blur(10px);
+        .modal-header {
+            font-family: var(--font-main);
+            font-size: 24px;
+            color: var(--cyber-blue);
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
         
-        .modal-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.25);
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .modal-select {
-            width: 100%;
-            padding: 18px 20px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            color: white;
-            font-size: 15px;
-            transition: var(--transition);
-            margin-bottom: 20px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .modal-select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.25);
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .modal-label {
-            display: block;
-            margin-bottom: 12px;
-            color: var(--gray-light);
-            font-weight: 600;
-            font-size: 15px;
-        }
-        
-        .modal-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-        
-        .dual-select-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        .modal-form {
+            display: flex;
+            flex-direction: column;
             gap: 20px;
         }
         
-        /* ===== ENHANCED BUTTONS ===== */
-        .btn {
-            padding: 16px 32px;
-            border: none;
-            border-radius: var(--radius-lg);
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            font-size: 15px;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
-        }
-        
-        .btn::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, 
-                transparent 30%, 
-                rgba(255, 255, 255, 0.15) 50%, 
-                transparent 70%);
-            animation: shine 3s infinite linear;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0, 102, 204, 0.4);
-            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
-        }
-        
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.07);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.12);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .btn-danger:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(204, 51, 0, 0.4);
-            background: linear-gradient(135deg, var(--secondary-light) 0%, var(--secondary) 100%);
-        }
-        
-        /* Enhanced Badges */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 700;
-            backdrop-filter: blur(10px);
-            border: 1px solid;
-        }
-        
-        .badge-success { 
-            background: linear-gradient(135deg, rgba(0, 170, 102, 0.2) 0%, rgba(0, 170, 102, 0.1) 100%);
-            color: var(--success);
-            border-color: rgba(0, 170, 102, 0.3);
-        }
-        .badge-warning { 
-            background: linear-gradient(135deg, rgba(255, 153, 0, 0.2) 0%, rgba(255, 153, 0, 0.1) 100%);
-            color: var(--warning);
-            border-color: rgba(255, 153, 0, 0.3);
-        }
-        .badge-danger { 
-            background: linear-gradient(135deg, rgba(204, 51, 0, 0.2) 0%, rgba(204, 51, 0, 0.1) 100%);
-            color: var(--secondary-light);
-            border-color: rgba(204, 51, 0, 0.3);
-        }
-        .badge-info { 
-            background: linear-gradient(135deg, rgba(0, 170, 255, 0.2) 0%, rgba(0, 170, 255, 0.1) 100%);
-            color: var(--info);
-            border-color: rgba(0, 170, 255, 0.3);
-        }
-        
-        /* Enhanced Loading States */
-        .loading {
+        .modal-actions {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 80px;
-            color: var(--gray);
-        }
-        
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
-            margin-bottom: 24px;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* Enhanced Empty States */
-        .empty-state {
-            text-align: center;
-            padding: 80px 40px;
-            color: var(--gray);
-        }
-        
-        .empty-state i {
-            font-size: 64px;
-            margin-bottom: 24px;
-            opacity: 0.3;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 243, 255, 0.3);
         }
         
         /* ===== RESPONSIVE ===== */
-        @media (max-width: 1600px) {
-            .app-container {
-                grid-template-columns: 320px 1fr;
-                padding: 24px;
-                gap: 24px;
+        @media (max-width: 1400px) {
+            .main-grid {
+                grid-template-columns: 280px 1fr;
+            }
+            
+            .header-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .cyber-stats {
+                justify-self: start;
+            }
+            
+            .user-panel {
+                justify-self: start;
             }
         }
         
-        @media (max-width: 1200px) {
-            .app-container {
+        @media (max-width: 1024px) {
+            .main-grid {
                 grid-template-columns: 1fr;
             }
             
-            .sidebar {
+            .cyber-sidebar {
                 position: static;
-                height: auto;
+                max-height: 500px;
             }
             
-            .patient-cards {
-                max-height: 400px;
-            }
-        }
-        
-        @media (max-width: 992px) {
-            .header-content {
-                flex-direction: column;
-                gap: 24px;
-                align-items: flex-start;
+            .cyber-tabs {
+                overflow-x: auto;
             }
             
-            .header-stats {
-                width: 100%;
-                justify-content: space-between;
-                flex-wrap: wrap;
-            }
-            
-            .stat-item {
-                min-width: calc(33.333% - 20px);
-            }
-            
-            .content-header {
-                flex-direction: column;
-                gap: 24px;
-                align-items: flex-start;
-            }
-            
-            .action-buttons {
-                width: 100%;
-                justify-content: space-between;
-                flex-wrap: wrap;
+            .cyber-tab {
+                white-space: nowrap;
             }
         }
         
         @media (max-width: 768px) {
             .app-container {
-                padding: 16px;
+                padding: 10px;
             }
             
-            .app-header,
-            .content-header {
-                padding: 24px;
+            .cyber-header {
+                padding: 15px 20px;
             }
             
-            .tab-content {
-                padding: 24px;
+            .cyber-stats {
+                flex-wrap: wrap;
             }
             
-            .section {
-                padding: 24px;
+            .patient-main-header {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
             }
             
-            .form-grid {
+            .cyber-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .cyber-form-grid {
                 grid-template-columns: 1fr;
             }
             
             .modal-content {
-                padding: 32px;
-            }
-            
-            .dual-select-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .brand-text h1 {
-                font-size: 24px;
-            }
-            
-            .logo {
-                width: 60px;
-                height: 60px;
-                font-size: 28px;
+                padding: 25px;
             }
         }
         
-        @media (max-width: 576px) {
-            .header-stats {
-                flex-direction: column;
-                gap: 16px;
+        @media (max-width: 480px) {
+            .logo-text h1 {
+                font-size: 20px;
             }
             
-            .stat-item {
-                width: 100%;
+            .cyber-tabs {
+                padding: 0 15px;
             }
             
-            .tabs {
-                overflow-x: auto;
-                padding-bottom: 12px;
+            .cyber-tab {
+                padding: 15px 20px;
+                font-size: 11px;
             }
             
-            .tab {
-                padding: 16px;
-                font-size: 14px;
+            .cyber-content {
+                padding: 20px;
             }
             
-            .patient-meta {
-                flex-direction: column;
-                gap: 12px;
+            .cyber-section {
+                padding: 20px;
             }
-            
-            .meta-item {
-                width: 100%;
-            }
-        }
-        
-        /* ===== GLOW EFFECTS ===== */
-        .glow {
-            position: relative;
-        }
-        
-        .glow::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: inherit;
-            box-shadow: 0 0 30px var(--primary);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-        
-        .glow:hover::after {
-            opacity: 0.3;
         }
         
         /* ===== ANIMATIONS ===== */
-        .float {
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-        
-        .pulse {
-            animation: pulse 2s infinite;
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         
         @keyframes pulse {
@@ -1407,32 +1155,25 @@
             50% { opacity: 0.5; }
         }
         
-        /* ===== CUSTOM SCROLLBAR ===== */
-        ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
         }
         
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 5px;
+        .pulse {
+            animation: pulse 2s infinite;
         }
         
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            border-radius: 5px;
+        /* ===== CUSTOM ELEMENTS ===== */
+        .neon-text {
+            text-shadow: 0 0 10px currentColor;
         }
         
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
-        }
-        
-        /* ===== CARD GLOW ===== */
-        .card-glow {
+        .glow-border {
             position: relative;
         }
         
-        .card-glow::before {
+        .glow-border::after {
             content: '';
             position: absolute;
             top: -2px;
@@ -1440,322 +1181,430 @@
             right: -2px;
             bottom: -2px;
             background: linear-gradient(45deg, 
-                var(--primary) 0%, 
-                var(--primary-light) 25%, 
-                transparent 50%, 
-                var(--secondary) 75%, 
-                var(--secondary-light) 100%);
+                var(--cyber-blue), 
+                var(--cyber-purple), 
+                var(--cyber-green), 
+                var(--cyber-blue)
+            );
             border-radius: inherit;
             z-index: -1;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
         
-        .card-glow:hover::before {
+        .glow-border:hover::after {
             opacity: 0.5;
-            animation: rotate 2s linear infinite;
         }
         
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        /* ===== LOADING STATES ===== */
+        .cyber-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            gap: 20px;
+        }
+        
+        .cyber-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid transparent;
+            border-top-color: var(--cyber-blue);
+            border-right-color: var(--cyber-purple);
+            border-radius: 50%;
+            animation: rotate 1s linear infinite;
+        }
+        
+        /* ===== EMPTY STATES ===== */
+        .cyber-empty {
+            text-align: center;
+            padding: 60px 30px;
+            color: var(--cyber-blue);
+        }
+        
+        .cyber-empty i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--cyber-blue), var(--cyber-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* ===== UTILITY CLASSES ===== */
+        .text-gradient {
+            background: linear-gradient(45deg, var(--cyber-blue), var(--cyber-purple), var(--cyber-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .border-gradient {
+            border: 2px solid transparent;
+            background: linear-gradient(var(--cyber-black), var(--cyber-black)) padding-box,
+                        linear-gradient(45deg, var(--cyber-blue), var(--cyber-purple)) border-box;
+        }
+        
+        /* ===== NOTIFICATION ===== */
+        .cyber-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 20px 30px;
+            background: rgba(10, 10, 15, 0.95);
+            border: 2px solid var(--cyber-green);
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            color: var(--cyber-green);
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1001;
+            box-shadow: var(--glow-green);
+        }
+        
+        .cyber-notification.show {
+            transform: translateX(0);
+            opacity: 1;
         }
     </style>
 </head>
 <body>
-    <!-- Enhanced Background Effects -->
-    <div class="background-effects">
-        <div class="gradient-overlay"></div>
-        <div class="grid-pattern"></div>
-        <div class="scan-line"></div>
+    <!-- Cyberpunk Background Effects -->
+    <div class="cyber-grid"></div>
+    <div class="hologram-effect"></div>
+    <div class="cyber-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+    <div class="scan-line"></div>
+    
+    <!-- Notification System -->
+    <div id="notification" class="cyber-notification">
+        <i class="fas fa-check-circle"></i>
+        <span>Action completed successfully</span>
     </div>
     
     <!-- Main App Container -->
     <div class="app-container">
-        <!-- Enhanced Header -->
-        <header class="app-header card-glow">
-            <div class="header-content">
-                <div class="brand">
-                    <div class="logo glow">
+        <!-- Cyber Header -->
+        <header class="cyber-header glow-border">
+            <div class="header-grid">
+                <div class="cyber-logo">
+                    <div class="logo-icon">
                         <i class="fas fa-shield-alt"></i>
                     </div>
-                    <div class="brand-text">
-                        <h1>MEDICAL & PSYCHOLOGICAL EVALUATION</h1>
-                        <div class="subtitle">U.S. Special Operations Command • Top Secret</div>
+                    <div class="logo-text">
+                        <h1>MILSPEC EVAL</h1>
+                        <div class="subtitle">TACTICAL ASSESSMENT SYSTEM</div>
                     </div>
                 </div>
-                <div class="header-stats">
-                    <div class="stat-item glow">
+                
+                <div class="cyber-stats">
+                    <div class="stat-item glow-border">
                         <div class="stat-value" id="totalPatients">0</div>
-                        <div class="stat-label">Total Soldiers</div>
+                        <div class="stat-label">TOTAL UNITS</div>
                     </div>
-                    <div class="stat-item glow">
+                    <div class="stat-item glow-border">
                         <div class="stat-value" id="activeAssessments">0</div>
-                        <div class="stat-label">Active Assessments</div>
+                        <div class="stat-label">ACTIVE</div>
                     </div>
-                    <div class="stat-item glow">
+                    <div class="stat-item glow-border">
                         <div class="stat-value" id="criticalCases">0</div>
-                        <div class="stat-label">Critical Cases</div>
+                        <div class="stat-label">CRITICAL</div>
+                    </div>
+                </div>
+                
+                <div class="user-panel">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-secret"></i>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name">DR. MÜLLER</div>
+                        <div class="user-rank">CHIEF MEDICAL OFFICER</div>
                     </div>
                 </div>
             </div>
         </header>
         
-        <!-- Enhanced Sidebar -->
-        <aside class="sidebar">
-            <h3 class="section-title">
-                <i class="fas fa-users-cog"></i>
-                Personnel Database
-            </h3>
-            
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" id="searchPatients" placeholder="Search personnel...">
-            </div>
-            
-            <div class="patient-cards" id="patientCards">
-                <!-- Patient cards will be loaded here -->
-                <div class="empty-state" id="emptyPatientList">
-                    <i class="fas fa-user-secret"></i>
-                    <p>No personnel records found</p>
-                    <p style="font-size: 14px; margin-top: 12px;">Create your first assessment</p>
+        <!-- Main Grid -->
+        <div class="main-grid">
+            <!-- Cyber Sidebar -->
+            <aside class="cyber-sidebar glow-border">
+                <div class="sidebar-header">
+                    <i class="fas fa-database"></i>
+                    UNIT DATABASE
                 </div>
-            </div>
-            
-            <button class="new-patient-btn glow" onclick="openNewPatientModal()">
-                <i class="fas fa-user-plus"></i>
-                New Assessment
-            </button>
-        </aside>
-        
-        <!-- Enhanced Main Content -->
-        <main class="main-content">
-            <!-- Patient Header -->
-            <div class="content-header" id="patientHeader" style="display: none;">
-                <div class="patient-info">
-                    <h2 id="currentPatientName">Select Personnel</h2>
-                    <div class="patient-meta">
-                        <div class="meta-item">
-                            <i class="fas fa-id-badge"></i>
-                            <span id="currentPatientId">-</span>
-                        </div>
-                        <div class="meta-item">
-                            <i class="fas fa-flag"></i>
-                            <span id="currentPatientUnit">-</span>
-                        </div>
-                        <div class="meta-item">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span id="currentPatientDate">-</span>
-                        </div>
-                        <div class="meta-item">
-                            <i class="fas fa-user-md"></i>
-                            <span id="currentExaminer">Dr. Müller</span>
-                        </div>
+                
+                <div class="cyber-search">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" id="searchPatients" placeholder="SEARCH UNIT...">
+                </div>
+                
+                <div class="cyber-list" id="patientCards">
+                    <div class="cyber-empty" id="emptyPatientList">
+                        <i class="fas fa-user-slash"></i>
+                        <p>NO UNITS FOUND</p>
+                        <p style="font-size: 12px; margin-top: 10px;">INITIALIZE NEW ASSESSMENT</p>
                     </div>
                 </div>
-                <div class="action-buttons">
-                    <button class="btn btn-secondary glow" onclick="saveAssessment()">
-                        <i class="fas fa-save"></i> Save
-                    </button>
-                    <button class="btn btn-primary glow" onclick="generateReport()">
-                        <i class="fas fa-file-export"></i> Export
-                    </button>
-                    <button class="btn btn-danger glow" onclick="deleteAssessment()">
-                        <i class="fas fa-trash-alt"></i> Delete
-                    </button>
-                </div>
-            </div>
+                
+                <button class="cyber-btn-add" onclick="openNewPatientModal()">
+                    <i class="fas fa-plus"></i>
+                    NEW ASSESSMENT
+                </button>
+            </aside>
             
-            <!-- Enhanced Tabs -->
-            <div class="tabs-container">
-                <div class="tabs">
-                    <button class="tab active glow" data-tab="section1">
-                        <i class="fas fa-clipboard-check"></i> Section 1
-                    </button>
-                    <button class="tab glow" data-tab="section2">
-                        <i class="fas fa-brain"></i> Section 2
-                    </button>
-                    <button class="tab glow" data-tab="section3">
-                        <i class="fas fa-heartbeat"></i> Section 3
-                    </button>
-                    <button class="tab glow" data-tab="section4">
-                        <i class="fas fa-running"></i> Section 4
-                    </button>
-                    <button class="tab glow" data-tab="section5">
-                        <i class="fas fa-comments"></i> Section 5
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Tab Contents (Rest of the content remains the same but with enhanced styling) -->
-            <div class="tab-content">
-                <!-- The rest of your HTML content goes here with the enhanced styling -->
-                <!-- I've kept all your existing content structure but it will use the enhanced CSS above -->
-                <!-- Section 1 Tab -->
-                <div id="section1Tab" class="tab-pane active">
-                    <div class="section card-glow">
-                        <div class="section-header">
-                            <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-clipboard-check"></i>
-                                </div>
-                                Section 1 – Basic Information
+            <!-- Main Content -->
+            <main class="cyber-main">
+                <!-- Patient Header -->
+                <div class="patient-main-header" id="patientHeader" style="display: none;">
+                    <div class="patient-info">
+                        <h2 id="currentPatientName">SELECT UNIT</h2>
+                        <div class="patient-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-id-badge"></i>
+                                <span id="currentPatientId">-</span>
                             </div>
-                        </div>
-                        
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-user"></i>
-                                    Soldier Name:
-                                </label>
-                                <input type="text" class="form-input" id="patientName" placeholder="Full Name">
+                            <div class="meta-item">
+                                <i class="fas fa-flag"></i>
+                                <span id="currentPatientUnit">-</span>
                             </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-chess-knight"></i>
-                                    Rank / Unit:
-                                </label>
-                                <input type="text" class="form-input" id="patientRankUnit" placeholder="Rank / Unit">
+                            <div class="meta-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span id="currentPatientDate">-</span>
                             </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-calendar"></i>
-                                    Date:
-                                </label>
-                                <input type="date" class="form-input" id="examinationDate">
+                            <div class="meta-item">
+                                <i class="fas fa-user-md"></i>
+                                <span id="currentExaminer">DR. MÜLLER</span>
                             </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">
-                                    <i class="fas fa-user-md"></i>
-                                    Examiner:
-                                </label>
-                                <input type="text" class="form-input" id="examinerName" placeholder="Examiner Name">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group" style="margin-top: 32px;">
-                            <label class="form-label">
-                                <i class="fas fa-eye"></i>
-                                General Impression:
-                            </label>
-                            <textarea class="question-input" id="generalImpression" placeholder="Overall assessment of the soldier..."></textarea>
                         </div>
                     </div>
                     
-                    <!-- Enhanced Vital Parameters -->
-                    <div class="section card-glow">
-                        <div class="section-header">
-                            <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-heartbeat"></i>
-                                </div>
-                                Vital Parameters
-                            </div>
-                        </div>
-                        
-                        <table class="vital-table">
-                            <thead>
-                                <tr>
-                                    <th>Parameter</th>
-                                    <th>Value</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Pulse (bpm)</td>
-                                    <td><input type="number" class="form-input" id="vitalPulse" placeholder="60-100" style="width: 120px;" min="40" max="200"></td>
-                                    <td><span class="badge" id="pulseStatus">-</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Blood Pressure (mmHg)</td>
-                                    <td>
-                                        <div style="display: flex; gap: 12px; align-items: center;">
-                                            <input type="number" class="form-input" id="vitalBpHigh" placeholder="Systolic" style="width: 120px;">
-                                            <span style="color: var(--gray); align-self: center;">/</span>
-                                            <input type="number" class="form-input" id="vitalBpLow" placeholder="Diastolic" style="width: 120px;">
-                                        </div>
-                                    </td>
-                                    <td><span class="badge" id="bpStatus">-</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Body Temperature (°C)</td>
-                                    <td><input type="number" class="form-input" id="vitalTemp" placeholder="36.1-37.5" step="0.1" style="width: 120px;"></td>
-                                    <td><span class="badge" id="tempStatus">-</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Respiration Rate (breaths/min)</td>
-                                    <td><input type="number" class="form-input" id="vitalRespiration" placeholder="12-20" style="width: 120px;"></td>
-                                    <td><span class="badge" id="respStatus">-</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Oxygen Saturation (SpO2 %)</td>
-                                    <td><input type="number" class="form-input" id="vitalOxygen" placeholder="95-100" style="width: 120px;"></td>
-                                    <td><span class="badge" id="oxygenStatus">-</span></td>
-                                </tr>
-                                <tr>
-                                    <td>Height (cm)</td>
-                                    <td><input type="number" class="form-input" id="vitalHeight" placeholder="Height in cm" style="width: 120px;"></td>
-                                    <td>-</td>
-                                </tr>
-                                <tr>
-                                    <td>Weight (kg)</td>
-                                    <td><input type="number" class="form-input" id="vitalWeight" placeholder="Weight in kg" style="width: 120px;"></td>
-                                    <td><span class="badge" id="bmiStatus">-</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        
-                        <!-- The rest of your content continues here with the same structure but enhanced styling -->
-                        <!-- I've omitted the rest for brevity but it follows the same pattern -->
-                        
+                    <div class="cyber-actions">
+                        <button class="cyber-btn cyber-btn-secondary" onclick="saveAssessment()">
+                            <i class="fas fa-save"></i> SAVE
+                        </button>
+                        <button class="cyber-btn cyber-btn-primary" onclick="generateReport()">
+                            <i class="fas fa-file-export"></i> EXPORT
+                        </button>
+                        <button class="cyber-btn cyber-btn-danger" onclick="deleteAssessment()">
+                            <i class="fas fa-trash"></i> DELETE
+                        </button>
                     </div>
                 </div>
                 
-                <!-- Other sections continue here -->
-                <!-- Section 2-5 tabs with enhanced styling -->
-                <div id="section2Tab" class="tab-pane" style="display: none;">
-                    <!-- Section 2 content with enhanced styling -->
+                <!-- Cyber Tabs -->
+                <div class="cyber-tabs">
+                    <button class="cyber-tab active" data-tab="section1">
+                        <i class="fas fa-user-circle"></i> UNIT DATA
+                    </button>
+                    <button class="cyber-tab" data-tab="section2">
+                        <i class="fas fa-brain"></i> PSYCH EVAL
+                    </button>
+                    <button class="cyber-tab" data-tab="section3">
+                        <i class="fas fa-heartbeat"></i> MEDICAL
+                    </button>
+                    <button class="cyber-tab" data-tab="section4">
+                        <i class="fas fa-running"></i> FITNESS
+                    </button>
+                    <button class="cyber-tab" data-tab="section5">
+                        <i class="fas fa-comment-alt"></i> SITUATIONAL
+                    </button>
                 </div>
                 
-                <div id="section3Tab" class="tab-pane" style="display: none;">
-                    <!-- Section 3 content with enhanced styling -->
+                <!-- Tab Content -->
+                <div class="cyber-content">
+                    <!-- Section 1 -->
+                    <div id="section1Tab" class="tab-pane active">
+                        <div class="cyber-section glow-border">
+                            <div class="section-header">
+                                <div class="section-title">
+                                    <div class="section-icon">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                    UNIT INFORMATION
+                                </div>
+                            </div>
+                            
+                            <div class="cyber-form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">UNIT DESIGNATION</label>
+                                    <input type="text" class="cyber-input" id="patientName" placeholder="ENTER UNIT NAME">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">RANK / DIVISION</label>
+                                    <input type="text" class="cyber-input" id="patientRankUnit" placeholder="RANK / DIVISION">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">ASSESSMENT DATE</label>
+                                    <input type="date" class="cyber-input" id="examinationDate">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">EXAMINING OFFICER</label>
+                                    <input type="text" class="cyber-input" id="examinerName" placeholder="OFFICER NAME">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group" style="margin-top: 25px;">
+                                <label class="form-label">INITIAL ASSESSMENT</label>
+                                <textarea class="cyber-input cyber-textarea" id="generalImpression" placeholder="ENTER INITIAL ASSESSMENT..."></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- Vital Parameters -->
+                        <div class="cyber-section glow-border">
+                            <div class="section-header">
+                                <div class="section-title">
+                                    <div class="section-icon">
+                                        <i class="fas fa-heartbeat"></i>
+                                    </div>
+                                    VITAL PARAMETERS
+                                </div>
+                            </div>
+                            
+                            <table class="cyber-table">
+                                <thead>
+                                    <tr>
+                                        <th>PARAMETER</th>
+                                        <th>VALUE</th>
+                                        <th>STATUS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>HEART RATE (BPM)</td>
+                                        <td><input type="number" class="cyber-input" id="vitalPulse" placeholder="60-100" style="width: 100px;"></td>
+                                        <td><span class="patient-status" id="pulseStatus">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>BLOOD PRESSURE (MMHG)</td>
+                                        <td>
+                                            <div style="display: flex; gap: 10px; align-items: center;">
+                                                <input type="number" class="cyber-input" id="vitalBpHigh" placeholder="SYS" style="width: 80px;">
+                                                <span style="color: var(--cyber-blue);">/</span>
+                                                <input type="number" class="cyber-input" id="vitalBpLow" placeholder="DIA" style="width: 80px;">
+                                            </div>
+                                        </td>
+                                        <td><span class="patient-status" id="bpStatus">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>TEMPERATURE (°C)</td>
+                                        <td><input type="number" class="cyber-input" id="vitalTemp" placeholder="36.1-37.5" step="0.1" style="width: 100px;"></td>
+                                        <td><span class="patient-status" id="tempStatus">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>RESPIRATION (B/MIN)</td>
+                                        <td><input type="number" class="cyber-input" id="vitalRespiration" placeholder="12-20" style="width: 100px;"></td>
+                                        <td><span class="patient-status" id="respStatus">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>OXYGEN SATURATION (%)</td>
+                                        <td><input type="number" class="cyber-input" id="vitalOxygen" placeholder="95-100" style="width: 100px;"></td>
+                                        <td><span class="patient-status" id="oxygenStatus">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>HEIGHT (CM)</td>
+                                        <td><input type="number" class="cyber-input" id="vitalHeight" placeholder="HEIGHT" style="width: 100px;"></td>
+                                        <td>-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>WEIGHT (KG)</td>
+                                        <td><input type="number" class="cyber-input" id="vitalWeight" placeholder="WEIGHT" style="width: 100px;"></td>
+                                        <td><span class="patient-status" id="bmiStatus">-</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Additional Info -->
+                        <div class="cyber-section glow-border">
+                            <div class="section-header">
+                                <div class="section-title">
+                                    <div class="section-icon">
+                                        <i class="fas fa-clipboard-check"></i>
+                                    </div>
+                                    ADDITIONAL PARAMETERS
+                                </div>
+                            </div>
+                            
+                            <div class="cyber-form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">LAST MEAL (HOURS AGO)</label>
+                                    <input type="number" class="cyber-input" id="lastMeal" placeholder="HOURS">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">ALLERGIES / MEDICATIONS</label>
+                                    <textarea class="cyber-input" id="allergies" placeholder="ENTER ALLERGIES OR MEDICATIONS" style="min-height: 80px;"></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">INJURIES / SCARS</label>
+                                    <textarea class="cyber-input" id="injuries" placeholder="ENTER INJURIES OR SCARS" style="min-height: 80px;"></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">MOBILITY STATUS</label>
+                                    <div class="checkbox-grid">
+                                        <label class="cyber-checkbox">
+                                            <input type="checkbox" name="mobility" value="normal">
+                                            <span>NORMAL</span>
+                                        </label>
+                                        <label class="cyber-checkbox">
+                                            <input type="checkbox" name="mobility" value="limited">
+                                            <span>LIMITED</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Other sections would go here... -->
+                    <div id="section2Tab" class="tab-pane" style="display: none;">
+                        <!-- Psychological Evaluation -->
+                    </div>
+                    
+                    <div id="section3Tab" class="tab-pane" style="display: none;">
+                        <!-- Medical Evaluation -->
+                    </div>
+                    
+                    <div id="section4Tab" class="tab-pane" style="display: none;">
+                        <!-- Fitness Test -->
+                    </div>
+                    
+                    <div id="section5Tab" class="tab-pane" style="display: none;">
+                        <!-- Situational Questions -->
+                    </div>
                 </div>
-                
-                <div id="section4Tab" class="tab-pane" style="display: none;">
-                    <!-- Section 4 content with enhanced styling -->
-                </div>
-                
-                <div id="section5Tab" class="tab-pane" style="display: none;">
-                    <!-- Section 5 content with enhanced styling -->
-                </div>
-            </div>
-        </main>
+            </main>
+        </div>
     </div>
     
-    <!-- Enhanced Modals -->
-    <div id="newPatientModal" class="modal" onclick="if(event.target===this)closeModal('newPatientModal')">
+    <!-- Modals -->
+    <div id="newPatientModal" class="cyber-modal" onclick="if(event.target===this)closeModal('newPatientModal')">
         <div class="modal-content">
-            <h2 style="color: white; margin-bottom: 32px; display: flex; align-items: center; gap: 16px;">
+            <div class="modal-header">
                 <i class="fas fa-user-plus"></i>
-                New Personnel Assessment
-            </h2>
+                INITIALIZE NEW ASSESSMENT
+            </div>
             
-            <div class="modal-grid">
-                <div>
-                    <label class="modal-label">Soldier Name:</label>
-                    <input type="text" class="modal-input" id="newPatientName" placeholder="">
+            <div class="modal-form">
+                <div class="form-group">
+                    <label class="form-label">UNIT DESIGNATION</label>
+                    <input type="text" class="cyber-input" id="newPatientName" placeholder="ENTER FULL NAME">
                 </div>
                 
-                <div class="dual-select-container">
-                    <div>
-                        <label class="modal-label">Rank:</label>
-                        <select class="modal-select" id="newPatientRank">
-                            <option value="">Select Rank</option>
+                <div class="cyber-form-grid">
+                    <div class="form-group">
+                        <label class="form-label">RANK</label>
+                        <select class="cyber-input" id="newPatientRank">
+                            <option value="">SELECT RANK</option>
                             <option value="Private">Private</option>
                             <option value="Private First Class">Private First Class</option>
                             <option value="Specialist">Specialist</option>
@@ -1765,131 +1614,132 @@
                             <option value="Sergeant First Class">Sergeant First Class</option>
                             <option value="Master Sergeant">Master Sergeant</option>
                             <option value="Sergeant Major">Sergeant Major</option>
-                            <option value="Lieutenant">Lieutenant</option>
-                            <option value="Captain">Captain</option>
-                            <option value="Major">Major</option>
-                            <option value="Colonel">Colonel</option>
-                            <option value="Major General">Major General</option>
-                            <option value="Lieutenant General">Lieutenant General</option>
-                            <option value="Vice General of Army">Vice General of Army</option>
-                            <option value="General of Army">General of Army</option>
                         </select>
                     </div>
                     
-                    <div>
-                        <label class="modal-label">Unit:</label>
-                        <select class="modal-select" id="newPatientUnit">
-                            <option value="">Select Unit</option>
+                    <div class="form-group">
+                        <label class="form-label">DIVISION</label>
+                        <select class="cyber-input" id="newPatientUnit">
+                            <option value="">SELECT DIVISION</option>
                             <option value="Infantry">Infantry</option>
                             <option value="Military Police">Military Police</option>
                             <option value="Navy Marine">Marine Corps</option>
                             <option value="Navy SEAL">Navy SEAL</option>
                             <option value="Air Force">Air Force</option>
-                            <option value="S.O.C">Special Operations Command</option>
+                            <option value="S.O.C">Special Operations</option>
                         </select>
                     </div>
                 </div>
                 
-                <div>
-                    <label class="modal-label">Examiner:</label>
-                    <input type="text" class="modal-input" id="newPatientExaminer" placeholder="Dr. Müller">
+                <div class="form-group">
+                    <label class="form-label">EXAMINING OFFICER</label>
+                    <input type="text" class="cyber-input" id="newPatientExaminer" placeholder="DR. MÜLLER">
                 </div>
             </div>
             
-            <div style="display: flex; justify-content: flex-end; gap: 16px; margin-top: 40px;">
-                <button class="btn btn-secondary glow" onclick="closeModal('newPatientModal')">
-                    Cancel
+            <div class="modal-actions">
+                <button class="cyber-btn cyber-btn-secondary" onclick="closeModal('newPatientModal')">
+                    CANCEL
                 </button>
-                <button class="btn btn-primary glow" onclick="createPatient()">
-                    <i class="fas fa-plus-circle"></i> Create Assessment
+                <button class="cyber-btn cyber-btn-primary" onclick="createPatient()">
+                    <i class="fas fa-play"></i> INITIALIZE
                 </button>
             </div>
         </div>
     </div>
     
-    <!-- JavaScript remains the same but will work with enhanced UI -->
+    <!-- JavaScript -->
     <script>
-        // Your existing JavaScript code remains exactly the same
-        // It will work perfectly with the enhanced UI
-        // ===== FIREBASE CONFIGURATION =====
-        const firebaseConfig = {
-            apiKey: "AIzaSyBTnsLNw68UuOd5Xa2ymMffWk4SYGDQjso",
-            authDomain: "cc-shop-finanzsystem.firebaseapp.com",
-            projectId: "cc-shop-finanzsystem",
-            storageBucket: "cc-shop-finanzsystem.firebasestorage.app",
-            messagingSenderId: "575918945925",
-            appId: "1:575918945925:web:bf9d973d5cd9fc547e5bec",
-            measurementId: "G-9SZREFTJS6"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        // ===== APPLICATION STATE =====
-        let currentUser = {
-            name: "Dr. Müller",
-            rank: "Major",
-            role: "Chief Medical Officer",
-            email: "dr.mueller@us.army.mil"
-        };
+        // ===== CYBERPUNK NOTIFICATION SYSTEM =====
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const icon = notification.querySelector('i');
+            const text = notification.querySelector('span');
+            
+            // Set notification content
+            text.textContent = message;
+            
+            // Set color based on type
+            switch(type) {
+                case 'success':
+                    notification.style.borderColor = 'var(--cyber-green)';
+                    notification.style.color = 'var(--cyber-green)';
+                    icon.className = 'fas fa-check-circle';
+                    break;
+                case 'error':
+                    notification.style.borderColor = 'var(--cyber-red)';
+                    notification.style.color = 'var(--cyber-red)';
+                    icon.className = 'fas fa-exclamation-circle';
+                    break;
+                case 'warning':
+                    notification.style.borderColor = 'var(--cyber-yellow)';
+                    notification.style.color = 'var(--cyber-yellow)';
+                    icon.className = 'fas fa-exclamation-triangle';
+                    break;
+                case 'info':
+                    notification.style.borderColor = 'var(--cyber-blue)';
+                    notification.style.color = 'var(--cyber-blue)';
+                    icon.className = 'fas fa-info-circle';
+                    break;
+            }
+            
+            // Show notification
+            notification.classList.add('show');
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
         
-        let currentPatient = null;
-        let patients = [];
-        let autoSaveTimer = null;
-
         // ===== INITIALIZATION =====
         document.addEventListener('DOMContentLoaded', function() {
-            initializeApp();
-            setupEventListeners();
-            updateStats();
-        });
-
-        function initializeApp() {
-            // Current user display
-            document.getElementById('currentExaminer').textContent = currentUser.name;
+            // Initialize Firebase
+            const firebaseConfig = {
+                apiKey: "AIzaSyBTnsLNw68UuOd5Xa2ymMffWk4SYGDQjso",
+                authDomain: "cc-shop-finanzsystem.firebaseapp.com",
+                projectId: "cc-shop-finanzsystem",
+                storageBucket: "cc-shop-finanzsystem.firebasestorage.app",
+                messagingSenderId: "575918945925",
+                appId: "1:575918945925:web:bf9d973d5cd9fc547e5bec",
+                measurementId: "G-9SZREFTJS6"
+            };
             
-            // Tabs initialization
-            document.querySelectorAll('.tab').forEach(tab => {
+            firebase.initializeApp(firebaseConfig);
+            window.db = firebase.firestore();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Load mock data (replace with Firebase in production)
+            loadMockData();
+            
+            // Set current date
+            document.getElementById('examinationDate').valueAsDate = new Date();
+            
+            // Setup tab switching
+            document.querySelectorAll('.cyber-tab').forEach(tab => {
                 tab.addEventListener('click', function() {
-                    switchTab(this.getAttribute('data-tab'));
+                    const tabId = this.getAttribute('data-tab');
+                    switchTab(tabId);
                 });
             });
             
-            // Search initialization
+            // Setup vital input listeners
+            setupVitalListeners();
+        });
+        
+        // ===== EVENT LISTENERS =====
+        function setupEventListeners() {
+            // Search functionality
             document.getElementById('searchPatients').addEventListener('input', function(e) {
                 filterPatients(e.target.value);
             });
             
-            // Date field initialization
-            document.getElementById('examinationDate').valueAsDate = new Date();
-            
-            // Vital parameters inputs initialization
-            setupVitalInputs();
-            
-            // Load patients from Firebase
-            loadPatientsFromFirebase();
-        }
-
-        function setupEventListeners() {
-            // Auto-save on input
-            document.addEventListener('input', debounce(function(e) {
-                if (currentPatient) {
-                    autoSave();
-                }
-            }, 1500));
-            
-            // Auto-save on change
-            document.addEventListener('change', debounce(function(e) {
-                if (currentPatient) {
-                    autoSave();
-                }
-            }, 1000));
-            
             // Keyboard shortcuts
             document.addEventListener('keydown', function(e) {
                 if (e.ctrlKey || e.metaKey) {
-                    switch(e.key) {
+                    switch(e.key.toLowerCase()) {
                         case 's':
                             e.preventDefault();
                             saveAssessment();
@@ -1898,495 +1748,43 @@
                             e.preventDefault();
                             openNewPatientModal();
                             break;
-                        case 'p':
+                        case 'e':
                             e.preventDefault();
                             generateReport();
                             break;
                     }
                 }
             });
-        }
-
-        function setupVitalInputs() {
-            // Setup vital parameter input listeners
-            const vitalInputs = [
-                'vitalPulse', 'vitalBpHigh', 'vitalBpLow', 'vitalTemp',
-                'vitalRespiration', 'vitalOxygen', 'vitalHeight', 'vitalWeight'
-            ];
             
-            vitalInputs.forEach(id => {
+            // Auto-save on input
+            let saveTimeout;
+            document.addEventListener('input', function() {
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(() => {
+                    if (window.currentPatient) {
+                        saveAssessment(true);
+                    }
+                }, 1500);
+            });
+        }
+        
+        function setupVitalListeners() {
+            const vitalIds = ['vitalPulse', 'vitalBpHigh', 'vitalBpLow', 'vitalTemp', 
+                             'vitalRespiration', 'vitalOxygen', 'vitalHeight', 'vitalWeight'];
+            
+            vitalIds.forEach(id => {
                 const element = document.getElementById(id);
                 if (element) {
                     element.addEventListener('input', function() {
                         updateVitalStatus(id);
-                        calculateBMI();
+                        if (id === 'vitalHeight' || id === 'vitalWeight') {
+                            calculateBMI();
+                        }
                     });
                 }
             });
         }
-
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        // ===== FIREBASE FUNCTIONS =====
-        async function loadPatientsFromFirebase() {
-            try {
-                const snapshot = await db.collection('patients').orderBy('lastUpdated', 'desc').get();
-                patients = [];
-                
-                snapshot.forEach(doc => {
-                    patients.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
-                });
-                
-                renderPatientList();
-                updateStats();
-                
-            } catch (error) {
-                console.error('Error loading patients:', error);
-                // Fallback to mock data if Firebase fails
-                loadMockPatients();
-            }
-        }
-
-        async function savePatientToFirebase(patient) {
-            try {
-                await db.collection('patients').doc(patient.id).set({
-                    firstName: patient.firstName,
-                    lastName: patient.lastName,
-                    fullName: patient.fullName,
-                    rank: patient.rank,
-                    unit: patient.unit,
-                    status: patient.status,
-                    examiner: patient.examiner,
-                    date: patient.date,
-                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
-                    vitals: patient.vitals || {},
-                    formData: patient.formData || {},
-                    answers: patient.answers || {},
-                    summary: patient.summary || {}
-                });
-                return true;
-            } catch (error) {
-                console.error('Error saving patient:', error);
-                return false;
-            }
-        }
-
-        async function deletePatientFromFirebase(patientId) {
-            try {
-                await db.collection('patients').doc(patientId).delete();
-                return true;
-            } catch (error) {
-                console.error('Error deleting patient:', error);
-                return false;
-            }
-        }
-
-        // ===== PATIENT MANAGEMENT =====
-        function renderPatientList() {
-            const container = document.getElementById('patientCards');
-            const emptyState = document.getElementById('emptyPatientList');
-            
-            if (patients.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state" id="emptyPatientList">
-                        <i class="fas fa-user-secret"></i>
-                        <p>No personnel records found</p>
-                        <p style="font-size: 14px; margin-top: 12px;">Create your first assessment</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = '';
-            
-            patients.forEach(patient => {
-                const card = document.createElement('div');
-                card.className = `patient-card ${currentPatient?.id === patient.id ? 'active' : ''} card-glow`;
-                card.onclick = () => selectPatient(patient);
-                
-                const statusClass = patient.status === 'active' ? 'status-active' : 
-                                  patient.status === 'pending' ? 'status-pending' : 'status-critical';
-                const statusText = patient.status === 'active' ? 'Active' : 
-                                 patient.status === 'pending' ? 'Pending' : 'Critical';
-                
-                card.innerHTML = `
-                    <div class="patient-header">
-                        <div class="patient-name">${patient.fullName}</div>
-                        <div class="patient-id">${patient.id}</div>
-                    </div>
-                    <div class="patient-details">
-                        <div>${patient.rank} • ${patient.unit}</div>
-                        <div>Examined by ${patient.examiner}</div>
-                    </div>
-                    <div class="patient-status ${statusClass}">
-                        <i class="fas fa-circle" style="font-size: 8px;"></i>
-                        ${statusText}
-                    </div>
-                `;
-                
-                container.appendChild(card);
-            });
-            
-            updateStats();
-        }
-
-        function filterPatients(searchTerm) {
-            const cards = document.querySelectorAll('.patient-card');
-            const emptyState = document.getElementById('emptyPatientList');
-            const term = searchTerm.toLowerCase();
-            
-            if (patients.length === 0) {
-                if (emptyState) {
-                    emptyState.style.display = 'block';
-                }
-                return;
-            }
-            
-            let visibleCount = 0;
-            
-            cards.forEach(card => {
-                const text = card.textContent.toLowerCase();
-                if (text.includes(term)) {
-                    card.style.display = 'block';
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-            
-            if (emptyState) {
-                emptyState.style.display = visibleCount === 0 && term !== '' ? 'block' : 'none';
-            }
-        }
-
-        function selectPatient(patient) {
-            currentPatient = patient;
-            
-            // Update UI
-            document.getElementById('patientHeader').style.display = 'flex';
-            document.getElementById('currentPatientName').textContent = `${patient.fullName} (${patient.rank})`;
-            document.getElementById('currentPatientId').textContent = patient.id;
-            document.getElementById('currentPatientUnit').textContent = patient.unit;
-            document.getElementById('currentPatientDate').textContent = new Date(patient.date).toLocaleDateString('en-US');
-            document.getElementById('currentExaminer').textContent = patient.examiner;
-            
-            // Update patient cards
-            document.querySelectorAll('.patient-card').forEach(card => {
-                card.classList.remove('active');
-            });
-            
-            // Load patient data
-            loadPatientData();
-        }
-
-        function loadPatientData() {
-            if (!currentPatient) return;
-            
-            // Load form data
-            if (currentPatient.formData) {
-                const fd = currentPatient.formData;
-                
-                document.getElementById('patientName').value = fd.name || '';
-                document.getElementById('patientRankUnit').value = fd.rankUnit || '';
-                document.getElementById('examinationDate').value = fd.date || '';
-                document.getElementById('examinerName').value = fd.examiner || '';
-                document.getElementById('generalImpression').value = fd.generalImpression || '';
-                document.getElementById('lastMeal').value = fd.lastMeal || '';
-                document.getElementById('allergies').value = fd.allergies || '';
-                document.getElementById('injuries').value = fd.injuries || '';
-                document.getElementById('otherFindings').value = fd.otherFindings || '';
-                
-                // Checkboxes
-                if (fd.fitness) {
-                    document.querySelectorAll('input[name="fitness"]').forEach(cb => {
-                        cb.checked = fd.fitness.includes(cb.value);
-                    });
-                }
-                
-                if (fd.mobility) {
-                    document.querySelectorAll('input[name="mobility"]').forEach(cb => {
-                        cb.checked = fd.mobility.includes(cb.value);
-                    });
-                }
-            }
-            
-            // Load vital parameters
-            if (currentPatient.vitals) {
-                const v = currentPatient.vitals;
-                
-                document.getElementById('vitalPulse').value = v.pulse || '';
-                document.getElementById('vitalBpHigh').value = v.bpHigh || '';
-                document.getElementById('vitalBpLow').value = v.bpLow || '';
-                document.getElementById('vitalTemp').value = v.temperature || '';
-                document.getElementById('vitalRespiration').value = v.respiration || '';
-                document.getElementById('vitalOxygen').value = v.oxygen || '';
-                document.getElementById('vitalHeight').value = v.height || '';
-                document.getElementById('vitalWeight').value = v.weight || '';
-                
-                // Update status badges
-                updateAllVitalStatuses();
-                calculateBMI();
-            }
-            
-            // Load answers
-            if (currentPatient.answers) {
-                Object.keys(currentPatient.answers).forEach(key => {
-                    const input = document.querySelector(`[data-question="${key}"]`);
-                    if (input) input.value = currentPatient.answers[key];
-                });
-            }
-        }
-
-        // ===== MODAL FUNCTIONS =====
-        function openNewPatientModal() {
-            document.getElementById('newPatientModal').classList.add('active');
-            document.getElementById('newPatientExaminer').value = currentUser.name;
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
-
-        async function createPatient() {
-            const fullName = document.getElementById('newPatientName').value.trim();
-            const rank = document.getElementById('newPatientRank').value;
-            const unit = document.getElementById('newPatientUnit').value;
-            const examiner = document.getElementById('newPatientExaminer').value.trim();
-            
-            if (!fullName || !rank || !unit) {
-                alert('Please fill in all required fields');
-                return;
-            }
-            
-            // Split name into first and last
-            const nameParts = fullName.split(' ');
-            const firstName = nameParts[0] || '';
-            const lastName = nameParts.slice(1).join(' ') || '';
-            
-            const patientId = `PT-${new Date().getFullYear()}-${String(patients.length + 1).padStart(4, '0')}`;
-            const today = new Date().toISOString().split('T')[0];
-            
-            const newPatient = {
-                id: patientId,
-                firstName: firstName,
-                lastName: lastName,
-                fullName: fullName,
-                rank: rank,
-                unit: unit,
-                status: 'pending',
-                examiner: examiner || currentUser.name,
-                date: new Date().toISOString(),
-                lastUpdated: new Date().toISOString(),
-                vitals: {},
-                formData: {
-                    name: fullName,
-                    rankUnit: `${rank} / ${unit}`,
-                    date: today,
-                    examiner: examiner || currentUser.name
-                },
-                answers: {},
-                summary: {}
-            };
-            
-            // Save to Firebase
-            const success = await savePatientToFirebase(newPatient);
-            
-            if (success) {
-                patients.unshift(newPatient);
-                
-                closeModal('newPatientModal');
-                renderPatientList();
-                selectPatient(newPatient);
-                
-                // Clear form
-                document.getElementById('newPatientName').value = '';
-                document.getElementById('newPatientRank').value = '';
-                document.getElementById('newPatientUnit').value = '';
-                document.getElementById('newPatientExaminer').value = '';
-                
-            } else {
-                alert('Error creating patient. Please try again.');
-            }
-        }
-
-        // ===== VITAL PARAMETERS =====
-        function updateVitalStatus(inputId) {
-            let value, statusElement, badgeClass, statusText;
-            
-            switch(inputId) {
-                case 'vitalPulse':
-                    value = parseInt(document.getElementById('vitalPulse').value);
-                    statusElement = document.getElementById('pulseStatus');
-                    
-                    if (value) {
-                        if (value >= 60 && value <= 100) {
-                            badgeClass = 'badge-success';
-                            statusText = 'Normal';
-                        } else if (value < 60) {
-                            badgeClass = 'badge-warning';
-                            statusText = 'Low';
-                        } else {
-                            badgeClass = 'badge-danger';
-                            statusText = 'High';
-                        }
-                    } else {
-                        badgeClass = '';
-                        statusText = '-';
-                    }
-                    break;
-                    
-                case 'vitalBpHigh':
-                case 'vitalBpLow':
-                    const high = parseInt(document.getElementById('vitalBpHigh').value);
-                    const low = parseInt(document.getElementById('vitalBpLow').value);
-                    statusElement = document.getElementById('bpStatus');
-                    
-                    if (high && low) {
-                        if (high >= 110 && high <= 140 && low >= 60 && low <= 90) {
-                            badgeClass = 'badge-success';
-                            statusText = 'Normal';
-                        } else if (high < 110 || low < 60) {
-                            badgeClass = 'badge-warning';
-                            statusText = 'Low';
-                        } else {
-                            badgeClass = 'badge-danger';
-                            statusText = 'High';
-                        }
-                    } else {
-                        badgeClass = '';
-                        statusText = '-';
-                    }
-                    break;
-                    
-                case 'vitalTemp':
-                    value = parseFloat(document.getElementById('vitalTemp').value);
-                    statusElement = document.getElementById('tempStatus');
-                    
-                    if (value) {
-                        if (value >= 36.1 && value <= 37.5) {
-                            badgeClass = 'badge-success';
-                            statusText = 'Normal';
-                        } else if (value < 36) {
-                            badgeClass = 'badge-warning';
-                            statusText = 'Low';
-                        } else {
-                            badgeClass = 'badge-danger';
-                            statusText = 'Fever';
-                        }
-                    } else {
-                        badgeClass = '';
-                        statusText = '-';
-                    }
-                    break;
-                    
-                case 'vitalRespiration':
-                    value = parseInt(document.getElementById('vitalRespiration').value);
-                    statusElement = document.getElementById('respStatus');
-                    
-                    if (value) {
-                        if (value >= 12 && value <= 20) {
-                            badgeClass = 'badge-success';
-                            statusText = 'Normal';
-                        } else if (value < 12) {
-                            badgeClass = 'badge-warning';
-                            statusText = 'Low';
-                        } else {
-                            badgeClass = 'badge-danger';
-                            statusText = 'High';
-                        }
-                    } else {
-                        badgeClass = '';
-                        statusText = '-';
-                    }
-                    break;
-                    
-                case 'vitalOxygen':
-                    value = parseInt(document.getElementById('vitalOxygen').value);
-                    statusElement = document.getElementById('oxygenStatus');
-                    
-                    if (value) {
-                        if (value >= 95 && value <= 100) {
-                            badgeClass = 'badge-success';
-                            statusText = 'Normal';
-                        } else if (value >= 90 && value < 95) {
-                            badgeClass = 'badge-warning';
-                            statusText = 'Low';
-                        } else if (value < 90) {
-                            badgeClass = 'badge-danger';
-                            statusText = 'Critical';
-                        }
-                    } else {
-                        badgeClass = '';
-                        statusText = '-';
-                    }
-                    break;
-                    
-                default:
-                    return;
-            }
-            
-            if (statusElement) {
-                statusElement.textContent = statusText;
-                statusElement.className = 'badge ' + badgeClass;
-                
-                // Add pulse animation for changes
-                if (value) {
-                    statusElement.classList.add('pulse');
-                    setTimeout(() => statusElement.classList.remove('pulse'), 1000);
-                }
-            }
-        }
-
-        function updateAllVitalStatuses() {
-            ['vitalPulse', 'vitalBpHigh', 'vitalTemp', 'vitalRespiration', 'vitalOxygen'].forEach(id => {
-                updateVitalStatus(id);
-            });
-        }
-
-        function calculateBMI() {
-            const height = parseFloat(document.getElementById('vitalHeight').value) / 100;
-            const weight = parseFloat(document.getElementById('vitalWeight').value);
-            const statusElement = document.getElementById('bmiStatus');
-            
-            if (height && weight && height > 0) {
-                const bmi = weight / (height * height);
-                
-                let statusText, badgeClass;
-                if (bmi < 18.5) {
-                    statusText = 'Underweight';
-                    badgeClass = 'badge-warning';
-                } else if (bmi >= 18.5 && bmi <= 24.9) {
-                    statusText = 'Normal';
-                    badgeClass = 'badge-success';
-                } else if (bmi >= 25 && bmi <= 29.9) {
-                    statusText = 'Overweight';
-                    badgeClass = 'badge-warning';
-                } else {
-                    statusText = 'Obese';
-                    badgeClass = 'badge-danger';
-                }
-                
-                statusElement.textContent = statusText;
-                statusElement.className = 'badge ' + badgeClass;
-            } else {
-                statusElement.textContent = '-';
-                statusElement.className = 'badge';
-            }
-        }
-
+        
         // ===== TAB MANAGEMENT =====
         function switchTab(tabName) {
             // Hide all tabs
@@ -2395,263 +1793,244 @@
             });
             
             // Remove active class from all tabs
-            document.querySelectorAll('.tab').forEach(tab => {
+            document.querySelectorAll('.cyber-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             
             // Show selected tab
-            document.getElementById(`${tabName}Tab`).style.display = 'block';
+            const targetTab = document.getElementById(`${tabName}Tab`);
+            if (targetTab) {
+                targetTab.style.display = 'block';
+            }
             
             // Add active class to selected tab
-            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-        }
-
-        // ===== SAVE & EXPORT =====
-        function autoSave() {
-            if (!currentPatient) return;
-            
-            // Clear existing timer
-            if (autoSaveTimer) {
-                clearTimeout(autoSaveTimer);
+            const activeTab = document.querySelector(`[data-tab="${tabName}"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
             }
-            
-            // Set new timer
-            autoSaveTimer = setTimeout(() => {
-                saveAssessment(true);
-            }, 2000);
         }
-
-        async function saveAssessment(isAutoSave = false) {
-            if (!currentPatient) {
-                if (!isAutoSave) {
-                    alert('Please select a patient first');
+        
+        // ===== PATIENT MANAGEMENT =====
+        let patients = [];
+        let currentPatient = null;
+        
+        function loadMockData() {
+            // Mock data for demonstration
+            patients = [
+                {
+                    id: "UNIT-2024-001",
+                    name: "JOHANN KAISER",
+                    rank: "Sergeant",
+                    unit: "Special Operations",
+                    status: "active",
+                    examiner: "DR. MÜLLER",
+                    date: "2024-01-15"
+                },
+                {
+                    id: "UNIT-2024-002",
+                    name: "SARAH MÜLLER",
+                    rank: "Corporal",
+                    unit: "Military Police",
+                    status: "pending",
+                    examiner: "DR. SCHMIDT",
+                    date: "2024-01-16"
+                },
+                {
+                    id: "UNIT-2024-003",
+                    name: "MICHAEL RODRIGUEZ",
+                    rank: "Private First Class",
+                    unit: "Marine Corps",
+                    status: "critical",
+                    examiner: "DR. MÜLLER",
+                    date: "2024-01-14"
                 }
+            ];
+            
+            renderPatientList();
+            updateStats();
+        }
+        
+        function renderPatientList() {
+            const container = document.getElementById('patientCards');
+            const emptyState = document.getElementById('emptyPatientList');
+            
+            if (patients.length === 0) {
+                emptyState.style.display = 'block';
                 return;
             }
             
-            // Collect form data
-            const formData = {
-                name: document.getElementById('patientName').value.trim(),
-                rankUnit: document.getElementById('patientRankUnit').value.trim(),
-                date: document.getElementById('examinationDate').value,
-                examiner: document.getElementById('examinerName').value.trim(),
-                generalImpression: document.getElementById('generalImpression').value.trim(),
-                fitness: Array.from(document.querySelectorAll('input[name="fitness"]:checked')).map(cb => cb.value),
-                lastMeal: document.getElementById('lastMeal').value,
-                allergies: document.getElementById('allergies').value.trim(),
-                injuries: document.getElementById('injuries').value.trim(),
-                mobility: Array.from(document.querySelectorAll('input[name="mobility"]:checked')).map(cb => cb.value),
-                otherFindings: document.getElementById('otherFindings').value.trim()
-            };
+            emptyState.style.display = 'none';
+            container.innerHTML = '';
             
-            // Collect vital parameters
-            const vitals = {
-                pulse: parseInt(document.getElementById('vitalPulse').value) || null,
-                bpHigh: parseInt(document.getElementById('vitalBpHigh').value) || null,
-                bpLow: parseInt(document.getElementById('vitalBpLow').value) || null,
-                temperature: parseFloat(document.getElementById('vitalTemp').value) || null,
-                respiration: parseInt(document.getElementById('vitalRespiration').value) || null,
-                oxygen: parseInt(document.getElementById('vitalOxygen').value) || null,
-                height: parseFloat(document.getElementById('vitalHeight').value) || null,
-                weight: parseFloat(document.getElementById('vitalWeight').value) || null
-            };
-            
-            // Calculate BMI
-            if (vitals.height && vitals.weight && vitals.height > 0) {
-                const heightInM = vitals.height / 100;
-                vitals.bmi = vitals.weight / (heightInM * heightInM);
-            } else {
-                vitals.bmi = null;
-            }
-            
-            // Collect answers
-            const answers = {};
-            document.querySelectorAll('.question-input').forEach(input => {
-                const question = input.getAttribute('data-question');
-                if (question && input.value.trim()) {
-                    answers[question] = input.value.trim();
-                }
-            });
-            
-            // Update patient data
-            currentPatient.formData = formData;
-            currentPatient.vitals = vitals;
-            currentPatient.answers = answers;
-            currentPatient.lastUpdated = new Date().toISOString();
-            
-            // Update name in form data if patient name was changed
-            if (formData.name && formData.name !== currentPatient.fullName) {
-                const nameParts = formData.name.split(' ');
-                if (nameParts.length >= 2) {
-                    currentPatient.firstName = nameParts[0];
-                    currentPatient.lastName = nameParts.slice(1).join(' ');
-                    currentPatient.fullName = formData.name;
-                }
-            }
-            
-            // Update status based on vital parameters
-            updatePatientStatus();
-            
-            // Save to Firebase
-            const success = await savePatientToFirebase(currentPatient);
-            
-            if (success) {
-                // Update UI
-                const saveBtn = document.querySelector('.btn-secondary');
-                const originalHTML = saveBtn.innerHTML;
+            patients.forEach(patient => {
+                const item = document.createElement('div');
+                item.className = `list-item ${currentPatient?.id === patient.id ? 'active' : ''}`;
+                item.onclick = () => selectPatient(patient);
                 
-                if (isAutoSave) {
-                    saveBtn.innerHTML = '<i class="fas fa-check"></i> Auto-saved';
-                    saveBtn.style.background = 'var(--success)';
-                    
-                    setTimeout(() => {
-                        saveBtn.innerHTML = originalHTML;
-                        saveBtn.style.background = '';
-                    }, 2000);
-                } else {
-                    saveBtn.innerHTML = '<i class="fas fa-check"></i> Saved';
-                    saveBtn.style.background = 'var(--success)';
-                    
-                    setTimeout(() => {
-                        saveBtn.innerHTML = originalHTML;
-                        saveBtn.style.background = '';
-                    }, 3000);
-                }
+                const statusClass = patient.status === 'active' ? 'status-active' :
+                                  patient.status === 'pending' ? 'status-pending' : 'status-critical';
+                const statusText = patient.status.toUpperCase();
                 
-                // Update patient list
-                renderPatientList();
-            } else {
-                if (!isAutoSave) {
-                    alert('Error saving data. Please check your connection.');
-                }
-            }
-        }
-
-        function updatePatientStatus() {
-            if (!currentPatient || !currentPatient.vitals) return;
-            
-            const v = currentPatient.vitals;
-            let abnormalCount = 0;
-            
-            // Check each vital parameter
-            if (v.pulse && (v.pulse < 60 || v.pulse > 100)) abnormalCount++;
-            if (v.bpHigh && v.bpLow && (v.bpHigh < 110 || v.bpHigh > 140 || v.bpLow < 60 || v.bpLow > 90)) abnormalCount++;
-            if (v.temperature && (v.temperature < 36.1 || v.temperature > 37.5)) abnormalCount++;
-            if (v.respiration && (v.respiration < 12 || v.respiration > 20)) abnormalCount++;
-            if (v.oxygen && v.oxygen < 95) abnormalCount++;
-            if (v.bmi && (v.bmi < 18.5 || v.bmi > 25)) abnormalCount++;
-            
-            // Update status
-            if (abnormalCount >= 3) {
-                currentPatient.status = 'critical';
-            } else if (abnormalCount >= 1) {
-                currentPatient.status = 'pending';
-            } else {
-                currentPatient.status = 'active';
-            }
-        }
-
-        function generateReport() {
-            if (!currentPatient) {
-                alert('Please select a patient first');
-                return;
-            }
-            
-            alert('Report generation started. PDF will download shortly.');
-            
-            // Simulate report generation
-            setTimeout(() => {
-                const reportContent = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>MEDICAL & PSYCHOLOGICAL EVALUATION - ${currentPatient.fullName}</title>
-                        <style>
-                            body { font-family: Arial, sans-serif; margin: 40px; }
-                            h1 { color: #0066cc; border-bottom: 2px solid #0066cc; padding-bottom: 10px; }
-                            h2 { color: #004d99; margin-top: 30px; }
-                            .section { margin-bottom: 30px; }
-                            .vital-table { border-collapse: collapse; width: 100%; margin: 20px 0; }
-                            .vital-table th, .vital-table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-                            .vital-table th { background-color: #f0f4f8; }
-                            .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
-                            .badge-success { background-color: #d4edda; color: #155724; }
-                            .badge-warning { background-color: #fff3cd; color: #856404; }
-                            .badge-danger { background-color: #f8d7da; color: #721c24; }
-                        </style>
-                    </head>
-                    <body>
-                        <h1>MEDICAL & PSYCHOLOGICAL EVALUATION</h1>
-                        <p><strong>Generated on:</strong> ${new Date().toLocaleDateString('en-US')}</p>
-                        
-                        <div class="section">
-                            <h2>Section 1 – Basic Information</h2>
-                            <p><strong>Soldier Name:</strong> ${currentPatient.formData?.name || '-'}</p>
-                            <p><strong>Rank / Unit:</strong> ${currentPatient.formData?.rankUnit || '-'}</p>
-                            <p><strong>Date:</strong> ${currentPatient.formData?.date || '-'}</p>
-                            <p><strong>Examiner:</strong> ${currentPatient.formData?.examiner || '-'}</p>
-                            <p><strong>General Impression:</strong> ${currentPatient.formData?.generalImpression || '-'}</p>
-                        </div>
-                        
-                        <div class="section">
-                            <h2>Vital Parameters</h2>
-                            <table class="vital-table">
-                                <tr><th>Parameter</th><th>Value</th><th>Status</th></tr>
-                                <tr><td>Pulse (bpm)</td><td>${currentPatient.vitals?.pulse || '-'}</td><td>-</td></tr>
-                                <tr><td>Blood Pressure (mmHg)</td><td>${currentPatient.vitals?.bpHigh && currentPatient.vitals?.bpLow ? currentPatient.vitals.bpHigh + '/' + currentPatient.vitals.bpLow : '-'}</td><td>-</td></tr>
-                                <tr><td>Body Temperature (°C)</td><td>${currentPatient.vitals?.temperature || '-'}</td><td>-</td></tr>
-                            </table>
-                        </div>
-                        
-                        <div class="section">
-                            <h2>Summary</h2>
-                            <p>This assessment was conducted on ${new Date(currentPatient.lastUpdated).toLocaleDateString('en-US')}.</p>
-                            <p><strong>Status:</strong> ${currentPatient.status === 'active' ? 'Fully Operational' : 
-                                                         currentPatient.status === 'pending' ? 'Further Evaluation Required' : 
-                                                         'Critical - Not Operational'}</p>
-                        </div>
-                        
-                        <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd;">
-                            <p><strong>Examiner Signature:</strong> _________________________</p>
-                            <p><strong>Date:</strong> ${new Date().toLocaleDateString('en-US')}</p>
-                        </div>
-                    </body>
-                    </html>
+                item.innerHTML = `
+                    <div class="patient-header">
+                        <div class="patient-name">${patient.name}</div>
+                        <div class="patient-id">${patient.id}</div>
+                    </div>
+                    <div class="patient-details">${patient.rank} • ${patient.unit}</div>
+                    <div class="patient-status ${statusClass}">
+                        <i class="fas fa-circle" style="font-size: 6px;"></i>
+                        ${statusText}
+                    </div>
                 `;
                 
-                const blob = new Blob([reportContent], { type: 'text/html' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `Assessment_${currentPatient.fullName.replace(/\s+/g, '_')}_${new Date().getTime()}.html`;
-                link.click();
-                URL.revokeObjectURL(url);
-            }, 1000);
+                container.appendChild(item);
+            });
         }
-
-        function deleteAssessment() {
-            if (!currentPatient) return;
+        
+        function filterPatients(searchTerm) {
+            const items = document.querySelectorAll('.list-item');
+            const term = searchTerm.toLowerCase();
             
-            if (confirm(`Are you sure you want to delete the assessment for ${currentPatient.fullName}? This action cannot be undone.`)) {
-                const patientName = currentPatient.fullName;
-                const patientId = currentPatient.id;
-                
-                // Delete from Firebase
-                const success = deletePatientFromFirebase(patientId);
-                
-                if (success) {
-                    patients = patients.filter(p => p.id !== patientId);
-                    currentPatient = null;
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(term) ? 'block' : 'none';
+            });
+        }
+        
+        function selectPatient(patient) {
+            currentPatient = patient;
+            
+            // Update UI
+            const header = document.getElementById('patientHeader');
+            header.style.display = 'flex';
+            
+            document.getElementById('currentPatientName').textContent = patient.name;
+            document.getElementById('currentPatientId').textContent = patient.id;
+            document.getElementById('currentPatientUnit').textContent = `${patient.rank} | ${patient.unit}`;
+            document.getElementById('currentPatientDate').textContent = patient.date;
+            
+            // Update active state in list
+            document.querySelectorAll('.list-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            event.currentTarget.classList.add('active');
+            
+            showNotification(`Loaded unit: ${patient.name}`, 'info');
+        }
+        
+        // ===== VITAL STATUS =====
+        function updateVitalStatus(inputId) {
+            let value, statusElement, statusClass, statusText;
+            
+            switch(inputId) {
+                case 'vitalPulse':
+                    value = parseInt(document.getElementById('vitalPulse').value);
+                    statusElement = document.getElementById('pulseStatus');
                     
-                    document.getElementById('patientHeader').style.display = 'none';
-                    renderPatientList();
-                } else {
-                    alert('Error deleting patient. Please try again.');
-                }
+                    if (value) {
+                        if (value >= 60 && value <= 100) {
+                            statusClass = 'status-active';
+                            statusText = 'NORMAL';
+                        } else if (value < 60) {
+                            statusClass = 'status-warning';
+                            statusText = 'LOW';
+                        } else {
+                            statusClass = 'status-critical';
+                            statusText = 'HIGH';
+                        }
+                    } else {
+                        statusText = '-';
+                    }
+                    break;
+                    
+                // Add cases for other vital parameters...
+            }
+            
+            if (statusElement) {
+                statusElement.textContent = statusText;
+                statusElement.className = `patient-status ${statusClass}`;
             }
         }
-
+        
+        function calculateBMI() {
+            const height = parseFloat(document.getElementById('vitalHeight').value);
+            const weight = parseFloat(document.getElementById('vitalWeight').value);
+            const statusElement = document.getElementById('bmiStatus');
+            
+            if (height && weight && height > 0) {
+                const heightM = height / 100;
+                const bmi = weight / (heightM * heightM);
+                
+                let statusClass, statusText;
+                if (bmi < 18.5) {
+                    statusClass = 'status-warning';
+                    statusText = 'UNDERWEIGHT';
+                } else if (bmi <= 24.9) {
+                    statusClass = 'status-active';
+                    statusText = 'NORMAL';
+                } else if (bmi <= 29.9) {
+                    statusClass = 'status-warning';
+                    statusText = 'OVERWEIGHT';
+                } else {
+                    statusClass = 'status-critical';
+                    statusText = 'OBESE';
+                }
+                
+                statusElement.textContent = statusText;
+                statusElement.className = `patient-status ${statusClass}`;
+            } else {
+                statusElement.textContent = '-';
+                statusElement.className = 'patient-status';
+            }
+        }
+        
+        // ===== MODAL FUNCTIONS =====
+        function openNewPatientModal() {
+            document.getElementById('newPatientModal').classList.add('active');
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+        
+        function createPatient() {
+            const name = document.getElementById('newPatientName').value.trim();
+            const rank = document.getElementById('newPatientRank').value;
+            const unit = document.getElementById('newPatientUnit').value;
+            const examiner = document.getElementById('newPatientExaminer').value.trim();
+            
+            if (!name || !rank || !unit) {
+                showNotification('Please fill all required fields', 'error');
+                return;
+            }
+            
+            const newPatient = {
+                id: `UNIT-${new Date().getFullYear()}-${String(patients.length + 1).padStart(3, '0')}`,
+                name: name.toUpperCase(),
+                rank: rank,
+                unit: unit,
+                status: 'pending',
+                examiner: examiner || 'DR. MÜLLER',
+                date: new Date().toISOString().split('T')[0]
+            };
+            
+            patients.unshift(newPatient);
+            
+            closeModal('newPatientModal');
+            renderPatientList();
+            selectPatient(newPatient);
+            updateStats();
+            
+            showNotification(`Unit ${name} initialized`, 'success');
+            
+            // Clear form
+            document.getElementById('newPatientName').value = '';
+            document.getElementById('newPatientRank').value = '';
+            document.getElementById('newPatientUnit').value = '';
+            document.getElementById('newPatientExaminer').value = '';
+        }
+        
         // ===== STATISTICS =====
         function updateStats() {
             const total = patients.length;
@@ -2662,120 +2041,78 @@
             document.getElementById('activeAssessments').textContent = active;
             document.getElementById('criticalCases').textContent = critical;
         }
-
-        // ===== HELPER FUNCTIONS =====
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-        }
-
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-
-        // ===== MOCK DATA (Fallback) =====
-        function loadMockPatients() {
-            patients = [
-                {
-                    id: "PT-2024-0001",
-                    firstName: "Johann",
-                    lastName: "Kaiser",
-                    fullName: "Johann Kaiser",
-                    rank: "Sergeant",
-                    unit: "Infantry",
-                    status: "active",
-                    examiner: "Dr. Müller",
-                    date: "2024-01-15",
-                    vitals: {
-                        pulse: 72,
-                        bpHigh: 120,
-                        bpLow: 80,
-                        temperature: 36.8,
-                        respiration: 16,
-                        oxygen: 98,
-                        height: 182,
-                        weight: 78,
-                        bmi: 23.5
-                    },
-                    formData: {
-                        name: "Johann Kaiser",
-                        rankUnit: "Sergeant / Infantry",
-                        date: "2024-01-15",
-                        examiner: "Dr. Müller"
-                    }
-                },
-                {
-                    id: "PT-2024-0002",
-                    firstName: "Sarah",
-                    lastName: "Müller",
-                    fullName: "Sarah Müller",
-                    rank: "Corporal",
-                    unit: "Military Police",
-                    status: "pending",
-                    examiner: "Dr. Schmidt",
-                    date: "2024-01-16",
-                    vitals: {
-                        pulse: 88,
-                        bpHigh: 130,
-                        bpLow: 85,
-                        temperature: 37.2,
-                        respiration: 18,
-                        oxygen: 96,
-                        height: 168,
-                        weight: 65,
-                        bmi: 23.0
-                    },
-                    formData: {
-                        name: "Sarah Müller",
-                        rankUnit: "Corporal / Military Police",
-                        date: "2024-01-16",
-                        examiner: "Dr. Schmidt"
-                    }
-                },
-                {
-                    id: "PT-2024-0003",
-                    firstName: "Michael",
-                    lastName: "Rodriguez",
-                    fullName: "Michael Rodriguez",
-                    rank: "Private First Class",
-                    unit: "Marine Corps",
-                    status: "critical",
-                    examiner: "Dr. Müller",
-                    date: "2024-01-14",
-                    vitals: {
-                        pulse: 110,
-                        bpHigh: 145,
-                        bpLow: 95,
-                        temperature: 37.8,
-                        respiration: 22,
-                        oxygen: 92,
-                        height: 175,
-                        weight: 85,
-                        bmi: 27.8
-                    },
-                    formData: {
-                        name: "Michael Rodriguez",
-                        rankUnit: "Private First Class / Marine Corps",
-                        date: "2024-01-14",
-                        examiner: "Dr. Müller"
-                    }
-                }
-            ];
+        
+        // ===== ACTIONS =====
+        function saveAssessment(isAutoSave = false) {
+            if (!currentPatient) {
+                showNotification('Select a unit first', 'warning');
+                return;
+            }
             
-            renderPatientList();
-            updateStats();
+            // Here you would save to Firebase
+            if (isAutoSave) {
+                showNotification('Auto-saved successfully', 'success');
+            } else {
+                showNotification('Assessment saved', 'success');
+            }
         }
-
-        // ===== INITIAL DISPLAY =====
-        setTimeout(() => {
-            updateStats();
-        }, 1000);
+        
+        function generateReport() {
+            if (!currentPatient) {
+                showNotification('Select a unit first', 'warning');
+                return;
+            }
+            
+            showNotification('Report generation started', 'info');
+            
+            // Simulate report generation
+            setTimeout(() => {
+                const reportContent = `
+                    MILSPEC EVAL REPORT
+                    ===================
+                    
+                    UNIT: ${currentPatient.name}
+                    ID: ${currentPatient.id}
+                    DATE: ${new Date().toLocaleDateString()}
+                    
+                    [Report content would be generated here...]
+                `;
+                
+                const blob = new Blob([reportContent], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `MILSPEC-${currentPatient.id}-${Date.now()}.txt`;
+                link.click();
+                URL.revokeObjectURL(url);
+                
+                showNotification('Report downloaded', 'success');
+            }, 1000);
+        }
+        
+        function deleteAssessment() {
+            if (!currentPatient) return;
+            
+            if (confirm(`DELETE UNIT ${currentPatient.name}? This cannot be undone.`)) {
+                patients = patients.filter(p => p.id !== currentPatient.id);
+                currentPatient = null;
+                
+                document.getElementById('patientHeader').style.display = 'none';
+                renderPatientList();
+                updateStats();
+                
+                showNotification('Unit deleted', 'info');
+            }
+        }
+        
+        // ===== ANIMATION HELPERS =====
+        function addGlow(element) {
+            element.classList.add('glow-border');
+        }
+        
+        function removeGlow(element) {
+            element.classList.remove('glow-border');
+        }
     </script>
 </body>
 </html>
