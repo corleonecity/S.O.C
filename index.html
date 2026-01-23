@@ -3,84 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Assessment System | Spezialkräfte</title>
+    <title>⚕️ Military Medical Assessment System</title>
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
-    
-    <!-- Icons -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
     
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     
     <style>
-        /* ===== BASE STYLES ===== */
+        /* ===== VARIABLES ===== */
         :root {
-            /* Professional Color Palette */
-            --primary: #0052cc;
-            --primary-dark: #0747a6;
-            --primary-light: #4c9aff;
-            --secondary: #de350b;
-            --secondary-light: #ff5630;
-            --success: #36b37e;
-            --warning: #ffab00;
-            --danger: #ff5630;
-            --info: #00b8d9;
+            --primary: #1a237e;
+            --primary-dark: #0d1b3e;
+            --primary-light: #534bae;
+            --secondary: #d32f2f;
+            --secondary-dark: #b71c1c;
+            --secondary-light: #ff6659;
+            --success: #2e7d32;
+            --warning: #f57c00;
+            --info: #0288d1;
+            --dark: #121212;
+            --dark-card: #1e1e1e;
+            --dark-surface: #2d2d2d;
+            --light: #f5f7fa;
+            --gray: #64748b;
+            --gray-light: #e2e8f0;
+            --border: rgba(255, 255, 255, 0.1);
             
-            /* Neutrals */
-            --gray-0: #ffffff;
-            --gray-10: #fafbfc;
-            --gray-20: #f4f5f7;
-            --gray-30: #ebecf0;
-            --gray-40: #dfe1e6;
-            --gray-50: #c1c7d0;
-            --gray-60: #b3bac5;
-            --gray-70: #a5adba;
-            --gray-80: #97a0af;
-            --gray-90: #8993a4;
-            --gray-100: #7a869a;
-            --gray-200: #6b778c;
-            --gray-300: #5e6c84;
-            --gray-400: #505f79;
-            --gray-500: #42526e;
-            --gray-600: #344563;
-            --gray-700: #253858;
-            --gray-800: #172b4d;
-            --gray-900: #091e42;
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.2);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.1);
             
-            /* Typography */
-            --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            --font-mono: 'Source Code Pro', 'SF Mono', Monaco, Consolas, monospace;
+            --radius-xl: 20px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
             
-            /* Spacing */
-            --space-xs: 4px;
-            --space-sm: 8px;
-            --space-md: 16px;
-            --space-lg: 24px;
-            --space-xl: 32px;
-            --space-2xl: 48px;
-            --space-3xl: 64px;
-            
-            /* Borders */
-            --border-radius-sm: 4px;
-            --border-radius-md: 6px;
-            --border-radius-lg: 8px;
-            --border-radius-xl: 12px;
-            
-            /* Shadows */
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-            --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
-            --shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.1);
-            
-            /* Transitions */
-            --transition-fast: 150ms ease;
-            --transition-base: 250ms ease;
-            --transition-slow: 350ms ease;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.15s ease;
         }
         
+        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
@@ -88,1328 +57,1888 @@
         }
         
         html {
-            font-size: 16px;
             scroll-behavior: smooth;
+            font-size: 16px;
         }
         
         body {
-            font-family: var(--font-primary);
-            font-size: 14px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--dark) 0%, #0f172a 100%);
+            color: var(--light);
             line-height: 1.6;
-            color: var(--gray-800);
-            background: var(--gray-10);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* ===== BACKGROUND EFFECTS ===== */
+        .background-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .gradient-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(26, 35, 126, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(211, 47, 47, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(2, 136, 209, 0.08) 0%, transparent 50%);
+        }
+        
+        .grid-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
         }
         
         /* ===== LAYOUT ===== */
         .app-container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 24px;
             display: grid;
-            grid-template-columns: 280px 1fr;
-            grid-template-rows: auto 1fr;
+            grid-template-columns: 320px 1fr 400px;
+            gap: 24px;
             min-height: 100vh;
         }
         
         /* ===== HEADER ===== */
         .app-header {
             grid-column: 1 / -1;
-            background: var(--gray-0);
-            border-bottom: 1px solid var(--gray-30);
-            padding: var(--space-md) var(--space-xl);
+            background: linear-gradient(135deg, rgba(26, 35, 126, 0.9) 0%, rgba(13, 27, 62, 0.95) 100%);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-xl);
+            padding: 24px 32px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .app-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                var(--primary) 0%, 
+                var(--secondary) 50%, 
+                var(--info) 100%);
+            animation: shimmer 3s infinite linear;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .brand {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            box-shadow: var(--shadow-sm);
-            z-index: 100;
+            gap: 20px;
         }
         
         .logo {
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-        }
-        
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            border-radius: var(--border-radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 18px;
-        }
-        
-        .logo-text h1 {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--gray-900);
-            line-height: 1.2;
-        }
-        
-        .logo-text .subtitle {
-            font-size: 12px;
-            color: var(--gray-500);
-            font-family: var(--font-mono);
-            letter-spacing: 0.5px;
-        }
-        
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: var(--space-md);
-        }
-        
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-            padding: var(--space-sm) var(--space-md);
-            background: var(--gray-10);
-            border-radius: var(--border-radius-md);
-            border: 1px solid var(--gray-30);
-            transition: var(--transition-fast);
-            cursor: pointer;
-        }
-        
-        .user-profile:hover {
-            background: var(--gray-20);
-        }
-        
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+            width: 64px;
+            height: 64px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 28px;
             color: white;
-            font-weight: 600;
-            font-size: 14px;
+            box-shadow: 0 8px 32px rgba(26, 35, 126, 0.4);
+            transition: var(--transition);
         }
         
-        .user-info {
+        .logo:hover {
+            transform: rotate(10deg) scale(1.05);
+        }
+        
+        .brand-text h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, var(--gray-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+        
+        .brand-text .subtitle {
+            font-size: 14px;
+            color: var(--gray-light);
+            opacity: 0.8;
+            font-family: 'Roboto Mono', monospace;
+        }
+        
+        .header-stats {
+            display: flex;
+            gap: 24px;
+        }
+        
+        .stat-item {
             display: flex;
             flex-direction: column;
+            align-items: center;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
         }
         
-        .user-name {
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--gray-900);
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
         }
         
-        .user-role {
+        .stat-label {
             font-size: 12px;
-            color: var(--gray-500);
+            color: var(--gray-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         /* ===== SIDEBAR ===== */
         .sidebar {
-            background: var(--gray-0);
-            border-right: 1px solid var(--gray-30);
-            padding: var(--space-xl) 0;
-            display: flex;
-            flex-direction: column;
-            height: calc(100vh - 73px);
+            background: rgba(30, 30, 30, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+            height: fit-content;
             position: sticky;
-            top: 73px;
+            top: 24px;
         }
         
-        .nav-section {
-            padding: 0 var(--space-xl);
-            margin-bottom: var(--space-xl);
-        }
-        
-        .nav-title {
-            font-size: 11px;
+        .section-title {
+            font-size: 16px;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--gray-500);
-            margin-bottom: var(--space-md);
-            padding-left: var(--space-sm);
-        }
-        
-        .nav-item {
+            color: var(--gray-light);
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            gap: var(--space-md);
-            padding: var(--space-sm) var(--space-sm);
-            color: var(--gray-700);
-            text-decoration: none;
-            border-radius: var(--border-radius-md);
-            transition: var(--transition-fast);
-            margin-bottom: var(--space-xs);
-            cursor: pointer;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
-        .nav-item:hover {
-            background: var(--gray-10);
-            color: var(--gray-900);
-        }
-        
-        .nav-item.active {
-            background: var(--primary-light);
-            color: var(--primary-dark);
-            font-weight: 500;
-        }
-        
-        .nav-item i {
-            width: 20px;
-            text-align: center;
-            font-size: 16px;
-        }
-        
-        /* Search */
         .search-container {
-            padding: 0 var(--space-xl);
-            margin-bottom: var(--space-xl);
-        }
-        
-        .search-box {
             position: relative;
-        }
-        
-        .search-icon {
-            position: absolute;
-            left: var(--space-md);
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray-400);
-            font-size: 16px;
+            margin-bottom: 20px;
         }
         
         .search-input {
             width: 100%;
-            padding: var(--space-sm) var(--space-md) var(--space-sm) 40px;
-            background: var(--gray-10);
-            border: 1px solid var(--gray-30);
-            border-radius: var(--border-radius-md);
+            padding: 14px 16px 14px 48px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: white;
             font-size: 14px;
-            color: var(--gray-800);
-            transition: var(--transition-fast);
+            transition: var(--transition);
         }
         
         .search-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(0, 82, 204, 0.1);
-            background: var(--gray-0);
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.2);
         }
         
-        /* Patient List */
-        .patient-list {
-            flex: 1;
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        /* Patient Cards */
+        .patient-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 500px;
             overflow-y: auto;
-            padding: 0 var(--space-xl);
+            padding-right: 8px;
         }
         
-        .patient-item {
-            padding: var(--space-md);
-            background: var(--gray-0);
-            border: 1px solid var(--gray-30);
-            border-radius: var(--border-radius-md);
-            margin-bottom: var(--space-sm);
+        .patient-cards::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .patient-cards::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+        
+        .patient-cards::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+        
+        .patient-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            border: 1px solid transparent;
             cursor: pointer;
-            transition: var(--transition-fast);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
         }
         
-        .patient-item:hover {
-            border-color: var(--primary-light);
-            box-shadow: var(--shadow-sm);
+        .patient-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--primary);
+            transition: var(--transition);
         }
         
-        .patient-item.selected {
+        .patient-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(4px);
+            border-color: var(--border);
+        }
+        
+        .patient-card.active {
+            background: rgba(26, 35, 126, 0.2);
             border-color: var(--primary);
-            background: var(--gray-10);
-            box-shadow: 0 0 0 1px var(--primary);
+        }
+        
+        .patient-card.active::before {
+            background: var(--secondary);
         }
         
         .patient-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: var(--space-xs);
+            margin-bottom: 8px;
         }
         
         .patient-name {
             font-weight: 600;
-            color: var(--gray-900);
-            font-size: 14px;
+            font-size: 16px;
+            color: white;
         }
         
         .patient-id {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--gray-500);
-            background: var(--gray-10);
+            font-family: 'Roboto Mono', monospace;
+            font-size: 12px;
+            color: var(--gray);
+            background: rgba(255, 255, 255, 0.05);
             padding: 2px 8px;
             border-radius: 10px;
         }
         
         .patient-details {
-            font-size: 12px;
-            color: var(--gray-600);
-            margin-bottom: var(--space-sm);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 13px;
+            color: var(--gray-light);
         }
         
         .patient-status {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 2px 8px;
-            border-radius: 10px;
+            gap: 6px;
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-weight: 500;
+            width: fit-content;
+            margin-top: 8px;
         }
         
-        .status-completed {
-            background: rgba(54, 179, 126, 0.1);
-            color: var(--success);
-        }
+        .status-pending { background: rgba(245, 124, 0, 0.2); color: var(--warning); }
+        .status-active { background: rgba(46, 125, 50, 0.2); color: var(--success); }
+        .status-critical { background: rgba(211, 47, 47, 0.2); color: var(--secondary); }
         
-        .status-pending {
-            background: rgba(255, 171, 0, 0.1);
-            color: var(--warning);
-        }
-        
-        .status-critical {
-            background: rgba(255, 86, 48, 0.1);
-            color: var(--danger);
-        }
-        
-        /* New Patient Button */
-        .new-patient-section {
-            padding: var(--space-xl);
-            border-top: 1px solid var(--gray-30);
-            margin-top: auto;
-        }
-        
-        .btn-new {
+        .new-patient-btn {
             width: 100%;
-            padding: var(--space-md);
-            background: var(--primary);
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             border: none;
-            border-radius: var(--border-radius-md);
-            font-size: 14px;
-            font-weight: 500;
+            border-radius: var(--radius-md);
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: var(--space-sm);
-            transition: var(--transition-fast);
+            gap: 8px;
+            transition: var(--transition);
+            margin-top: 16px;
         }
         
-        .btn-new:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
+        .new-patient-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(26, 35, 126, 0.3);
         }
         
         /* ===== MAIN CONTENT ===== */
         .main-content {
-            padding: var(--space-xl);
-            overflow-y: auto;
-            height: calc(100vh - 73px);
+            background: rgba(30, 30, 30, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
         
-        /* Content Header */
         .content-header {
+            padding: 24px 32px;
+            background: rgba(13, 27, 62, 0.5);
+            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: var(--space-xl);
-            padding-bottom: var(--space-md);
-            border-bottom: 1px solid var(--gray-30);
+            align-items: center;
         }
         
         .patient-info h2 {
             font-size: 24px;
-            font-weight: 600;
-            color: var(--gray-900);
-            margin-bottom: var(--space-xs);
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
         }
         
         .patient-meta {
             display: flex;
-            gap: var(--space-xl);
-            font-size: 13px;
-            color: var(--gray-600);
+            gap: 24px;
+            font-size: 14px;
+            color: var(--gray-light);
         }
         
         .meta-item {
             display: flex;
             align-items: center;
-            gap: var(--space-xs);
-        }
-        
-        .meta-item i {
-            color: var(--gray-400);
-            font-size: 16px;
+            gap: 6px;
         }
         
         .action-buttons {
             display: flex;
-            gap: var(--space-sm);
+            gap: 12px;
         }
         
         /* Tabs */
         .tabs-container {
-            margin-bottom: var(--space-xl);
+            padding: 0 32px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--border);
         }
         
         .tabs {
             display: flex;
             gap: 2px;
-            background: var(--gray-10);
-            border-radius: var(--border-radius-md);
-            padding: 4px;
-            border: 1px solid var(--gray-30);
+            overflow-x: auto;
         }
         
         .tab {
-            flex: 1;
-            padding: var(--space-sm) var(--space-md);
+            padding: 16px 24px;
             background: transparent;
             border: none;
-            border-radius: var(--border-radius-sm);
-            font-size: 13px;
+            color: var(--gray-light);
             font-weight: 500;
-            color: var(--gray-600);
             cursor: pointer;
-            transition: var(--transition-fast);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--space-sm);
-            min-width: 140px;
+            white-space: nowrap;
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+            position: relative;
         }
         
         .tab:hover {
-            color: var(--gray-900);
-            background: var(--gray-20);
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
         }
         
         .tab.active {
-            background: var(--gray-0);
-            color: var(--gray-900);
-            box-shadow: var(--shadow-sm);
+            color: white;
+            border-bottom-color: var(--primary);
         }
         
         .tab-badge {
-            background: var(--gray-200);
-            color: var(--gray-0);
-            font-size: 11px;
-            padding: 1px 6px;
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--secondary);
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
             border-radius: 10px;
-            min-width: 20px;
-            height: 20px;
+            min-width: 18px;
+            height: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        
-        .tab.active .tab-badge {
-            background: var(--primary);
         }
         
         /* Tab Content */
         .tab-content {
-            background: var(--gray-0);
-            border: 1px solid var(--gray-30);
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--shadow-sm);
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px;
         }
         
-        /* Section */
+        /* Sections */
         .section {
-            padding: var(--space-xl);
-            border-bottom: 1px solid var(--gray-30);
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
         }
         
-        .section:last-child {
-            border-bottom: none;
+        .section:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.15);
         }
         
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: var(--space-xl);
+            margin-bottom: 24px;
         }
         
-        .section-title {
-            font-size: 18px;
+        .section-title-main {
+            font-size: 20px;
             font-weight: 600;
-            color: var(--gray-900);
+            color: white;
             display: flex;
             align-items: center;
-            gap: var(--space-sm);
+            gap: 12px;
         }
         
-        .section-title i {
-            color: var(--primary);
-            font-size: 20px;
-        }
-        
-        .section-badge {
-            background: var(--gray-10);
-            color: var(--gray-600);
-            font-size: 11px;
-            font-weight: 600;
-            padding: 4px 8px;
-            border-radius: 4px;
-            border: 1px solid var(--gray-30);
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
         }
         
         /* Questions Grid */
         .questions-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-            gap: var(--space-md);
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
         }
         
-        .question-group {
-            margin-bottom: var(--space-lg);
+        .question-card {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
         }
         
-        .question-label {
+        .question-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .question-text {
             font-weight: 500;
-            color: var(--gray-800);
-            margin-bottom: var(--space-sm);
-            font-size: 14px;
+            margin-bottom: 16px;
+            color: white;
             line-height: 1.5;
         }
         
         .question-input {
             width: 100%;
-            padding: var(--space-md);
-            background: var(--gray-10);
-            border: 1px solid var(--gray-30);
-            border-radius: var(--border-radius-md);
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: white;
             font-size: 14px;
-            color: var(--gray-900);
-            font-family: var(--font-primary);
             resize: vertical;
             min-height: 80px;
-            transition: var(--transition-fast);
+            transition: var(--transition);
         }
         
         .question-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(0, 82, 204, 0.1);
-            background: var(--gray-0);
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.2);
         }
         
-        .question-select {
-            width: 100%;
-            padding: var(--space-sm) var(--space-md);
-            background: var(--gray-10);
-            border: 1px solid var(--gray-30);
-            border-radius: var(--border-radius-md);
-            font-size: 14px;
-            color: var(--gray-900);
-            transition: var(--transition-fast);
-            cursor: pointer;
-        }
-        
-        .question-select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(0, 82, 204, 0.1);
-            background: var(--gray-0);
-        }
-        
-        /* Vital Parameters */
-        .vital-grid {
+        /* Vital Parameters Dashboard */
+        .vital-dashboard {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: var(--space-md);
-            margin-bottom: var(--space-xl);
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
         }
         
         .vital-card {
-            background: var(--gray-10);
-            border: 1px solid var(--gray-30);
-            border-radius: var(--border-radius-md);
-            padding: var(--space-md);
-            transition: var(--transition-fast);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
         }
         
-        .vital-card:hover {
-            border-color: var(--primary-light);
-            box-shadow: var(--shadow-sm);
+        .vital-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--info));
+        }
+        
+        .vital-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
         }
         
         .vital-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--gray-600);
+            font-size: 14px;
+            color: var(--gray-light);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: var(--space-sm);
         }
         
         .vital-value {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--gray-900);
-            margin-bottom: var(--space-sm);
+            font-size: 32px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 8px;
         }
         
         .vital-input {
             width: 100%;
-            padding: var(--space-sm) var(--space-md);
-            background: var(--gray-0);
-            border: 1px solid var(--gray-30);
-            border-radius: var(--border-radius-md);
-            font-size: 14px;
-            color: var(--gray-900);
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 16px;
             text-align: center;
-            transition: var(--transition-fast);
+            transition: var(--transition);
         }
         
         .vital-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(0, 82, 204, 0.1);
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.2);
         }
         
-        .vital-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 11px;
-            font-weight: 600;
-            padding: 2px 8px;
-            border-radius: 10px;
-            margin-top: var(--space-xs);
+        /* Analysis Panel */
+        .analysis-panel {
+            background: linear-gradient(135deg, rgba(13, 27, 62, 0.5) 0%, rgba(26, 35, 126, 0.3) 100%);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        /* Analysis */
         .analysis-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: var(--space-md);
-            margin-top: var(--space-lg);
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
         }
         
         .analysis-card {
-            background: var(--gray-10);
-            border: 1px solid var(--gray-30);
-            border-radius: var(--border-radius-md);
-            padding: var(--space-md);
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-md);
+            padding: 20px;
             text-align: center;
         }
         
         .analysis-value {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--gray-900);
-            margin-bottom: var(--space-xs);
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #fff 0%, var(--gray-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
         .analysis-label {
-            font-size: 11px;
-            color: var(--gray-600);
+            font-size: 14px;
+            color: var(--gray-light);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         
-        /* Summary */
-        .summary-section {
-            background: var(--gray-10);
-            border: 1px solid var(--gray-30);
-            border-radius: var(--border-radius-md);
-            padding: var(--space-xl);
-            margin-top: var(--space-xl);
-        }
-        
-        .summary-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--gray-900);
-            margin-bottom: var(--space-md);
-        }
-        
-        /* Notes */
-        .notes-container {
+        /* ===== RIGHT PANEL ===== */
+        .right-panel {
             display: flex;
             flex-direction: column;
-            gap: var(--space-md);
+            gap: 24px;
         }
         
-        .note-item {
-            background: var(--gray-10);
-            border: 1px solid var(--gray-30);
-            border-radius: var(--border-radius-md);
-            padding: var(--space-md);
+        /* Quick Actions */
+        .quick-actions {
+            background: rgba(30, 30, 30, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
         }
         
-        .note-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: var(--space-sm);
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
         }
         
-        .note-author {
-            font-weight: 600;
-            color: var(--gray-900);
-        }
-        
-        .note-time {
-            font-size: 11px;
-            color: var(--gray-500);
-        }
-        
-        .note-content {
-            color: var(--gray-700);
-            line-height: 1.6;
-        }
-        
-        /* ===== BUTTONS ===== */
-        .btn {
-            padding: var(--space-sm) var(--space-md);
-            border-radius: var(--border-radius-md);
-            font-size: 14px;
-            font-weight: 500;
+        .action-btn {
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: white;
             cursor: pointer;
-            transition: var(--transition-fast);
-            border: 1px solid transparent;
-            display: inline-flex;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: var(--space-sm);
+            gap: 8px;
         }
         
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
+        .action-btn:hover {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            transform: translateY(-2px);
+            border-color: transparent;
         }
         
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
+        .action-btn i {
+            font-size: 24px;
+        }
+        
+        /* Recent Activity */
+        .activity-feed {
+            background: rgba(30, 30, 30, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            border: 1px solid var(--border);
             box-shadow: var(--shadow-md);
+            flex: 1;
         }
         
-        .btn-secondary {
-            background: var(--gray-0);
-            color: var(--gray-700);
-            border-color: var(--gray-30);
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 8px;
         }
         
-        .btn-secondary:hover {
-            background: var(--gray-10);
-            color: var(--gray-800);
+        .activity-item {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-md);
+            border-left: 3px solid var(--primary);
         }
         
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-            border-color: var(--danger);
-        }
-        
-        .btn-danger:hover {
-            background: var(--secondary);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
+        .activity-time {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 4px;
         }
         
         /* ===== MODALS ===== */
-        .modal-overlay {
+        .modal {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(9, 30, 66, 0.8);
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
-            padding: var(--space-xl);
-            backdrop-filter: blur(4px);
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
         }
         
-        .modal-overlay.active {
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal.active {
             display: flex;
         }
         
-        .modal {
-            background: var(--gray-0);
-            border-radius: var(--border-radius-lg);
+        .modal-content {
+            background: linear-gradient(135deg, rgba(30, 30, 30, 0.95) 0%, rgba(13, 27, 62, 0.95) 100%);
+            border-radius: var(--radius-xl);
+            padding: 40px;
             width: 100%;
             max-width: 600px;
-            max-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: var(--shadow-xl);
-            animation: modalSlideIn 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        @keyframes modalSlideIn {
+        @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(40px) scale(0.95);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
         
-        .modal-header {
-            padding: var(--space-xl);
-            border-bottom: 1px solid var(--gray-30);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1400px) {
+            .app-container {
+                grid-template-columns: 280px 1fr 320px;
+            }
         }
         
-        .modal-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--gray-900);
+        @media (max-width: 1200px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .right-panel {
+                grid-column: 1 / -1;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+            }
         }
         
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--gray-400);
-            font-size: 20px;
-            cursor: pointer;
-            padding: var(--space-xs);
-            border-radius: var(--border-radius-sm);
-            transition: var(--transition-fast);
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 16px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+            
+            .header-stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .right-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .questions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .vital-dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .content-header {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+            
+            .action-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
         }
         
-        .modal-close:hover {
-            background: var(--gray-10);
-            color: var(--gray-600);
-        }
-        
-        .modal-body {
-            padding: var(--space-xl);
-            overflow-y: auto;
-            flex: 1;
-        }
-        
-        .modal-footer {
-            padding: var(--space-xl);
-            border-top: 1px solid var(--gray-30);
-            display: flex;
-            justify-content: flex-end;
-            gap: var(--space-sm);
-        }
-        
-        /* Form Groups */
-        .form-group {
-            margin-bottom: var(--space-lg);
-        }
-        
-        .form-label {
-            display: block;
-            font-weight: 500;
-            color: var(--gray-700);
-            margin-bottom: var(--space-xs);
-            font-size: 14px;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: var(--space-sm) var(--space-md);
-            background: var(--gray-0);
-            border: 1px solid var(--gray-30);
-            border-radius: var(--border-radius-md);
-            font-size: 14px;
-            color: var(--gray-900);
-            transition: var(--transition-fast);
-        }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(0, 82, 204, 0.1);
+        @media (max-width: 480px) {
+            .vital-dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                overflow-x: auto;
+                padding-bottom: 8px;
+            }
+            
+            .tab {
+                padding: 12px 16px;
+            }
         }
         
         /* ===== UTILITIES ===== */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(26, 35, 126, 0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(211, 47, 47, 0.3);
+        }
+        
         .badge {
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 11px;
-            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
         }
         
-        .badge-success {
-            background: rgba(54, 179, 126, 0.1);
-            color: var(--success);
-        }
-        
-        .badge-warning {
-            background: rgba(255, 171, 0, 0.1);
-            color: var(--warning);
-        }
-        
-        .badge-danger {
-            background: rgba(255, 86, 48, 0.1);
-            color: var(--danger);
-        }
-        
-        .badge-info {
-            background: rgba(0, 184, 217, 0.1);
-            color: var(--info);
-        }
-        
-        .text-success { color: var(--success); }
-        .text-warning { color: var(--warning); }
-        .text-danger { color: var(--danger); }
-        .text-info { color: var(--info); }
-        .text-muted { color: var(--gray-500); }
-        
-        .empty-state {
-            text-align: center;
-            padding: var(--space-3xl) var(--space-xl);
-            color: var(--gray-500);
-        }
-        
-        .empty-state i {
-            font-size: 48px;
-            margin-bottom: var(--space-md);
-            opacity: 0.3;
-        }
+        .badge-success { background: rgba(46, 125, 50, 0.2); color: var(--success); }
+        .badge-warning { background: rgba(245, 124, 0, 0.2); color: var(--warning); }
+        .badge-danger { background: rgba(211, 47, 47, 0.2); color: var(--secondary); }
+        .badge-info { background: rgba(2, 136, 209, 0.2); color: var(--info); }
         
         .loading {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: var(--space-3xl);
-            color: var(--gray-400);
+            padding: 60px;
+            color: var(--gray);
         }
         
         .loading-spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--gray-200);
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
             border-top-color: var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-right: var(--space-sm);
+            margin-bottom: 16px;
         }
         
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
         
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 1200px) {
-            .questions-grid {
-                grid-template-columns: 1fr;
-            }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
         }
         
-        @media (max-width: 768px) {
-            .app-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .sidebar {
-                display: none;
-            }
-            
-            .content-header {
-                flex-direction: column;
-                gap: var(--space-md);
-            }
-            
-            .patient-meta {
-                flex-wrap: wrap;
-                gap: var(--space-md);
-            }
-            
-            .tabs {
-                overflow-x: auto;
-                padding-bottom: 4px;
-            }
-            
-            .tab {
-                min-width: 120px;
-            }
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.3;
         }
         
-        /* ===== PRINT STYLES ===== */
-        @media print {
-            .app-header,
-            .sidebar,
-            .action-buttons,
-            .tabs-container {
-                display: none;
-            }
-            
-            .app-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .main-content {
-                padding: 0;
-                height: auto;
-            }
-            
-            .tab-content {
-                border: none;
-                box-shadow: none;
-            }
-            
-            .section {
-                break-inside: avoid;
-            }
+        /* ===== ANIMATIONS ===== */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
         }
     </style>
 </head>
 <body>
+    <!-- Background Effects -->
+    <div class="background-effects">
+        <div class="gradient-overlay"></div>
+        <div class="grid-pattern"></div>
+    </div>
+    
+    <!-- Main App Container -->
     <div class="app-container">
         <!-- Header -->
         <header class="app-header">
-            <div class="logo">
-                <div class="logo-icon">
-                    <i class="fas fa-user-md"></i>
-                </div>
-                <div class="logo-text">
-                    <h1>Medical Assessment System</h1>
-                    <div class="subtitle">Spezialkräfte • Vertraulich</div>
-                </div>
-            </div>
-            
-            <div class="header-actions">
-                <div class="user-profile" onclick="openUserMenu()">
-                    <div class="user-avatar">AM</div>
-                    <div class="user-info">
-                        <div class="user-name">Dr. Alexander Miller</div>
-                        <div class="user-role">Chief Medical Officer</div>
+            <div class="header-content">
+                <div class="brand">
+                    <div class="logo">
+                        <i class="fas fa-shield-alt"></i>
                     </div>
-                    <i class="fas fa-chevron-down"></i>
+                    <div class="brand-text">
+                        <h1>Military Medical Assessment System</h1>
+                        <div class="subtitle">SPECIAL OPERATIONS • CONFIDENTIAL • v2.1</div>
+                    </div>
+                </div>
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalPatients">0</div>
+                        <div class="stat-label">Total Patients</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="activeAssessments">0</div>
+                        <div class="stat-label">Active</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="criticalCases">0</div>
+                        <div class="stat-label">Critical</div>
+                    </div>
                 </div>
             </div>
         </header>
         
-        <!-- Sidebar -->
+        <!-- Left Sidebar -->
         <aside class="sidebar">
-            <!-- Navigation -->
-            <div class="nav-section">
-                <div class="nav-title">Navigation</div>
-                <div class="nav-item active" onclick="switchTab('dashboard')">
-                    <i class="fas fa-home"></i>
-                    <span>Dashboard</span>
-                </div>
-                <div class="nav-item" onclick="switchTab('assessments')">
-                    <i class="fas fa-clipboard-check"></i>
-                    <span>Assessments</span>
-                    <span class="tab-badge">4</span>
-                </div>
-                <div class="nav-item" onclick="switchTab('patients')">
-                    <i class="fas fa-users"></i>
-                    <span>Patients</span>
-                </div>
-                <div class="nav-item" onclick="switchTab('reports')">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>Reports</span>
-                </div>
-            </div>
+            <h3 class="section-title">
+                <i class="fas fa-archive"></i>
+                Patient Archive
+            </h3>
             
-            <!-- Search -->
             <div class="search-container">
-                <div class="search-box">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" placeholder="Search patients..." id="searchInput">
-                </div>
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="searchPatients" placeholder="Search patients...">
             </div>
             
-            <!-- Patient List -->
-            <div class="nav-section">
-                <div class="nav-title">Active Assessments</div>
-                <div class="patient-list" id="patientList">
-                    <!-- Patient items will be loaded here -->
-                </div>
+            <div class="patient-cards" id="patientCards">
+                <!-- Patient cards will be loaded here -->
             </div>
             
-            <!-- New Patient Button -->
-            <div class="new-patient-section">
-                <button class="btn-new" onclick="openNewPatientModal()">
-                    <i class="fas fa-plus"></i>
-                    New Assessment
-                </button>
-            </div>
+            <button class="new-patient-btn" onclick="openNewPatientModal()">
+                <i class="fas fa-plus-circle"></i>
+                New Assessment
+            </button>
         </aside>
         
         <!-- Main Content -->
-        <main class="main-content" id="mainContent">
-            <!-- Content will be loaded dynamically -->
-            <div class="empty-state">
-                <i class="fas fa-clipboard-list"></i>
-                <h3>Select a patient to begin assessment</h3>
-                <p>Choose from the list on the left or create a new assessment</p>
+        <main class="main-content">
+            <!-- Patient Header -->
+            <div class="content-header" id="patientHeader" style="display: none;">
+                <div class="patient-info">
+                    <h2 id="currentPatientName">Select a Patient</h2>
+                    <div class="patient-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-id-card"></i>
+                            <span id="currentPatientId">-</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-users"></i>
+                            <span id="currentPatientUnit">-</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span id="currentPatientDate">-</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-user-md"></i>
+                            <span id="currentExaminer">Dr. Miller</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="saveAssessment()">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                    <button class="btn btn-primary" onclick="generateReport()">
+                        <i class="fas fa-file-pdf"></i> Generate Report
+                    </button>
+                    <button class="btn btn-danger" onclick="deleteAssessment()">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Tabs -->
+            <div class="tabs-container">
+                <div class="tabs">
+                    <button class="tab active" data-tab="psychology">
+                        <i class="fas fa-brain"></i> Psychology
+                        <span class="tab-badge" id="psychBadge">0</span>
+                    </button>
+                    <button class="tab" data-tab="medical">
+                        <i class="fas fa-heartbeat"></i> Medical
+                        <span class="tab-badge" id="medBadge">0</span>
+                    </button>
+                    <button class="tab" data-tab="vitals">
+                        <i class="fas fa-chart-line"></i> Vitals
+                        <span class="tab-badge" id="vitalBadge">0</span>
+                    </button>
+                    <button class="tab" data-tab="fitness">
+                        <i class="fas fa-running"></i> Fitness Test
+                    </button>
+                    <button class="tab" data-tab="summary">
+                        <i class="fas fa-clipboard-check"></i> Summary
+                    </button>
+                    <button class="tab" data-tab="notes">
+                        <i class="fas fa-comments"></i> Notes
+                        <span class="tab-badge" id="notesBadge">0</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Tab Contents -->
+            <div class="tab-content">
+                <!-- Psychology Tab -->
+                <div id="psychologyTab" class="tab-pane active">
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title-main">
+                                <div class="section-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                Personality & Background
+                            </div>
+                            <span class="badge badge-info">Section 1</span>
+                        </div>
+                        <div class="questions-grid">
+                            <div class="question-card">
+                                <div class="question-text">
+                                    1. How would you describe your most important character traits?
+                                </div>
+                                <textarea class="question-input" data-section="psych" data-question="1.1"></textarea>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">
+                                    2. Have there been events in your life that have shaped you?
+                                </div>
+                                <textarea class="question-input" data-section="psych" data-question="1.2"></textarea>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">
+                                    3. What long-term goals do you pursue in your life?
+                                </div>
+                                <textarea class="question-input" data-section="psych" data-question="1.3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Emotional Stability -->
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title-main">
+                                <div class="section-icon">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                Emotional Stability
+                            </div>
+                            <span class="badge badge-info">Section 2</span>
+                        </div>
+                        <div class="questions-grid">
+                            <div class="question-card">
+                                <div class="question-text">
+                                    1. How do you react when you suddenly come under strong pressure?
+                                </div>
+                                <textarea class="question-input" data-section="psych" data-question="2.1"></textarea>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">
+                                    2. Do you have difficulty calming down when you are stressed?
+                                </div>
+                                <textarea class="question-input" data-section="psych" data-question="2.2"></textarea>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">
+                                    3. Do you have nightmares or sleep disorders?
+                                </div>
+                                <textarea class="question-input" data-section="psych" data-question="2.3"></textarea>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">
+                                    4. Can you consciously control strong negative feelings?
+                                </div>
+                                <textarea class="question-input" data-section="psych" data-question="2.4"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Aggression Control -->
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title-main">
+                                <div class="section-icon">
+                                    <i class="fas fa-angry"></i>
+                                </div>
+                                Aggression Control
+                            </div>
+                            <span class="badge badge-info">Section 3</span>
+                        </div>
+                        <div class="questions-grid">
+                            <!-- Questions 3.1 to 3.5 -->
+                            <div class="question-card">
+                                <div class="question-text">
+                                    1. How do you deal with situations that make you angry?
+                                </div>
+                                <textarea class="question-input" data-section="psych" data-question="3.1"></textarea>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">
+                                    2. Have you ever lost control of your behavior?
+                                </div>
+                                <textarea class="question-input" data-section="psych" data-question="3.2"></textarea>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">
+                                    3. Can you stay calm in conflicts, even when provoked?
+                                </div>
+                                <textarea class="question-input" data-section="psych" data-question="3.3"></textarea>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">
+                                    4. What was the most difficult situation in which you had to control your aggression?
+                                </div>
+                                <textarea class="question-input" data-section="psych" data-question="3.4"></textarea>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">
+                                    5. How do you react to disrespect or insults?
+                                </div>
+                                <textarea class="question-input" data-section="psych" data-question="3.5"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Medical Tab -->
+                <div id="medicalTab" class="tab-pane" style="display: none;">
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title-main">
+                                <div class="section-icon">
+                                    <i class="fas fa-file-medical"></i>
+                                </div>
+                                Medical History & Examination
+                            </div>
+                            <span class="badge badge-info">Section 3</span>
+                        </div>
+                        
+                        <!-- Vital Parameters Dashboard -->
+                        <div class="vital-dashboard">
+                            <div class="vital-card">
+                                <div class="vital-header">
+                                    <div class="vital-label">Pulse (bpm)</div>
+                                    <span class="badge badge-success" id="pulseStatus">Normal</span>
+                                </div>
+                                <div class="vital-value" id="pulseValue">-</div>
+                                <input type="number" class="vital-input" id="vitalPulse" placeholder="Enter value" min="40" max="200" oninput="updateVital('pulse')">
+                            </div>
+                            
+                            <div class="vital-card">
+                                <div class="vital-header">
+                                    <div class="vital-label">Blood Pressure</div>
+                                    <span class="badge badge-success" id="bpStatus">Normal</span>
+                                </div>
+                                <div class="vital-value" id="bpValue">-</div>
+                                <div style="display: flex; gap: 10px;">
+                                    <input type="number" class="vital-input" id="vitalBpHigh" placeholder="Systolic" style="flex: 1;" oninput="updateVital('bp')">
+                                    <span style="color: var(--gray); align-self: center;">/</span>
+                                    <input type="number" class="vital-input" id="vitalBpLow" placeholder="Diastolic" style="flex: 1;" oninput="updateVital('bp')">
+                                </div>
+                            </div>
+                            
+                            <div class="vital-card">
+                                <div class="vital-header">
+                                    <div class="vital-label">Temperature (°C)</div>
+                                    <span class="badge badge-success" id="tempStatus">Normal</span>
+                                </div>
+                                <div class="vital-value" id="tempValue">-</div>
+                                <input type="number" class="vital-input" id="vitalTemp" placeholder="Enter value" min="35" max="42" step="0.1" oninput="updateVital('temp')">
+                            </div>
+                            
+                            <div class="vital-card">
+                                <div class="vital-header">
+                                    <div class="vital-label">Respiration (/min)</div>
+                                    <span class="badge badge-success" id="respStatus">Normal</span>
+                                </div>
+                                <div class="vital-value" id="respValue">-</div>
+                                <input type="number" class="vital-input" id="vitalRespiration" placeholder="Enter value" min="8" max="40" oninput="updateVital('resp')">
+                            </div>
+                            
+                            <div class="vital-card">
+                                <div class="vital-header">
+                                    <div class="vital-label">Oxygen (%)</div>
+                                    <span class="badge badge-success" id="oxygenStatus">Normal</span>
+                                </div>
+                                <div class="vital-value" id="oxygenValue">-</div>
+                                <input type="number" class="vital-input" id="vitalOxygen" placeholder="Enter value" min="80" max="100" oninput="updateVital('oxygen')">
+                            </div>
+                            
+                            <div class="vital-card">
+                                <div class="vital-header">
+                                    <div class="vital-label">BMI</div>
+                                    <span class="badge" id="bmiStatus">-</span>
+                                </div>
+                                <div class="vital-value" id="bmiValue">-</div>
+                                <div style="display: flex; gap: 10px;">
+                                    <input type="number" class="vital-input" id="vitalHeight" placeholder="Height (cm)" style="flex: 1;" oninput="calculateBMI()">
+                                    <input type="number" class="vital-input" id="vitalWeight" placeholder="Weight (kg)" style="flex: 1;" oninput="calculateBMI()">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Medical Questions -->
+                        <div class="questions-grid">
+                            <div class="question-card">
+                                <div class="question-text">
+                                    1. Do you take medication regularly?
+                                </div>
+                                <textarea class="question-input" data-section="med" data-question="med1"></textarea>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">
+                                    2. Have you noticed any weight loss/gain recently?
+                                </div>
+                                <textarea class="question-input" data-section="med" data-question="med2"></textarea>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">
+                                    3. Have you suffered fractures, surgeries or serious injuries in the past?
+                                </div>
+                                <textarea class="question-input" data-section="med" data-question="med3"></textarea>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">
+                                    4. Have you ever fainted or experienced loss of consciousness?
+                                </div>
+                                <textarea class="question-input" data-section="med" data-question="med4"></textarea>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">
+                                    5. Do you have problems with balance, dizziness or coordination disorders?
+                                </div>
+                                <textarea class="question-input" data-section="med" data-question="med5"></textarea>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">
+                                    6. Do you consume alcohol or other psychoactive substances?
+                                </div>
+                                <textarea class="question-input" data-section="med" data-question="med6"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Vitals Analysis Tab -->
+                <div id="vitalsTab" class="tab-pane" style="display: none;">
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title-main">
+                                <div class="section-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                Vital Parameters Analysis
+                            </div>
+                            <button class="btn btn-secondary" onclick="analyzeVitals()">
+                                <i class="fas fa-sync"></i> Re-analyze
+                            </button>
+                        </div>
+                        
+                        <div id="vitalsAnalysis">
+                            <!-- Analysis will be generated here -->
+                        </div>
+                        
+                        <div class="analysis-panel">
+                            <h3 style="color: white; margin-bottom: 20px;">Overall Health Assessment</h3>
+                            <div class="analysis-grid">
+                                <div class="analysis-card">
+                                    <div class="analysis-value" id="healthScore">-</div>
+                                    <div class="analysis-label">Health Score</div>
+                                </div>
+                                <div class="analysis-card">
+                                    <div class="analysis-value" id="riskLevel">-</div>
+                                    <div class="analysis-label">Risk Level</div>
+                                </div>
+                                <div class="analysis-card">
+                                    <div class="analysis-value" id="normalityScore">-</div>
+                                    <div class="analysis-label">Normality %</div>
+                                </div>
+                                <div class="analysis-card">
+                                    <div class="analysis-value" id="abnormalParams">-</div>
+                                    <div class="analysis-label">Abnormal Values</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Fitness Test Tab -->
+                <div id="fitnessTab" class="tab-pane" style="display: none;">
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title-main">
+                                <div class="section-icon">
+                                    <i class="fas fa-running"></i>
+                                </div>
+                                Physical Fitness Test
+                            </div>
+                            <span class="badge badge-info">Section 4</span>
+                        </div>
+                        
+                        <div class="questions-grid">
+                            <div class="question-card">
+                                <div class="question-text">
+                                    1. 15x Push-Ups (Result)
+                                </div>
+                                <select class="question-input" style="height: auto;" data-section="fitness" data-question="fit1">
+                                    <option value="">Select result</option>
+                                    <option value="excellent">Excellent (15 completed)</option>
+                                    <option value="good">Good (10-14 completed)</option>
+                                    <option value="average">Average (5-9 completed)</option>
+                                    <option value="poor">Poor (1-4 completed)</option>
+                                    <option value="failed">Failed (0 completed)</option>
+                                </select>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">
+                                    2. 10x Sit-Ups (Result)
+                                </div>
+                                <select class="question-input" style="height: auto;" data-section="fitness" data-question="fit2">
+                                    <option value="">Select result</option>
+                                    <option value="excellent">Excellent (10 completed)</option>
+                                    <option value="good">Good (7-9 completed)</option>
+                                    <option value="average">Average (4-6 completed)</option>
+                                    <option value="poor">Poor (1-3 completed)</option>
+                                    <option value="failed">Failed (0 completed)</option>
+                                </select>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">
+                                    3. 10x Burpee (Result)
+                                </div>
+                                <select class="question-input" style="height: auto;" data-section="fitness" data-question="fit3">
+                                    <option value="">Select result</option>
+                                    <option value="excellent">Excellent (10 completed)</option>
+                                    <option value="good">Good (7-9 completed)</option>
+                                    <option value="average">Average (4-6 completed)</option>
+                                    <option value="poor">Poor (1-3 completed)</option>
+                                    <option value="failed">Failed (0 completed)</option>
+                                </select>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">
+                                    4. 2 rounds running (Time in minutes)
+                                </div>
+                                <input type="number" class="question-input" style="height: auto;" data-section="fitness" data-question="fit4" placeholder="e.g., 8.5">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Summary Tab -->
+                <div id="summaryTab" class="tab-pane" style="display: none;">
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title-main">
+                                <div class="section-icon">
+                                    <i class="fas fa-clipboard-check"></i>
+                                </div>
+                                Final Assessment & Recommendation
+                            </div>
+                        </div>
+                        
+                        <div class="questions-grid">
+                            <div class="question-card" style="grid-column: 1 / -1;">
+                                <div class="question-text">
+                                    Overall Impression & Strengths/Weaknesses
+                                </div>
+                                <textarea class="question-input" style="min-height: 120px;" id="summaryOverall"></textarea>
+                            </div>
+                            
+                            <div class="question-card">
+                                <div class="question-text">
+                                    Psychological Assessment
+                                </div>
+                                <textarea class="question-input" id="summaryPsych"></textarea>
+                            </div>
+                            
+                            <div class="question-card">
+                                <div class="question-text">
+                                    Medical Assessment
+                                </div>
+                                <textarea class="question-input" id="summaryMedical"></textarea>
+                            </div>
+                            
+                            <div class="question-card">
+                                <div class="question-text">
+                                    Recommendation
+                                </div>
+                                <select class="question-input" style="height: auto;" id="summaryRecommendation">
+                                    <option value="">Select recommendation</option>
+                                    <option value="fully_fit">Fully operational</option>
+                                    <option value="limited_fit">Limited operational</option>
+                                    <option value="not_fit">Not operational</option>
+                                    <option value="further_eval">Further evaluation needed</option>
+                                    <option value="therapy">Psychological therapy recommended</option>
+                                    <option value="medical_treatment">Medical treatment required</option>
+                                </select>
+                            </div>
+                            
+                            <div class="question-card">
+                                <div class="question-text">
+                                    Recommended Actions
+                                </div>
+                                <textarea class="question-input" id="summaryActions"></textarea>
+                            </div>
+                            
+                            <div class="question-card">
+                                <div class="question-text">
+                                    Examiner's Signature
+                                </div>
+                                <input type="text" class="question-input" style="height: auto;" id="summarySignature" placeholder="Name & Rank">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notes Tab -->
+                <div id="notesTab" class="tab-pane" style="display: none;">
+                    <div class="section">
+                        <div class="section-header">
+                            <div class="section-title-main">
+                                <div class="section-icon">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                Notes & Comments
+                            </div>
+                            <button class="btn btn-primary" onclick="addNote()">
+                                <i class="fas fa-plus"></i> Add Note
+                            </button>
+                        </div>
+                        
+                        <div id="notesContainer">
+                            <!-- Notes will be added here -->
+                        </div>
+                        
+                        <div class="question-card" style="margin-top: 20px;">
+                            <div class="question-text">
+                                Add new note
+                            </div>
+                            <textarea class="question-input" id="newNote" placeholder="Type your note here..."></textarea>
+                            <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+                                <button class="btn btn-primary" onclick="saveNote()">
+                                    <i class="fas fa-save"></i> Save Note
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
+        
+        <!-- Right Panel -->
+        <aside class="right-panel">
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h3 class="section-title">
+                    <i class="fas fa-bolt"></i>
+                    Quick Actions
+                </h3>
+                <div class="action-grid">
+                    <button class="action-btn" onclick="quickAction('export')">
+                        <i class="fas fa-file-export"></i>
+                        Export
+                    </button>
+                    <button class="action-btn" onclick="quickAction('print')">
+                        <i class="fas fa-print"></i>
+                        Print
+                    </button>
+                    <button class="action-btn" onclick="quickAction('template')">
+                        <i class="fas fa-copy"></i>
+                        Template
+                    </button>
+                    <button class="action-btn" onclick="quickAction('stats')">
+                        <i class="fas fa-chart-bar"></i>
+                        Stats
+                    </button>
+                    <button class="action-btn" onclick="quickAction('reminder')">
+                        <i class="fas fa-bell"></i>
+                        Reminder
+                    </button>
+                    <button class="action-btn" onclick="quickAction('settings')">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Activity Feed -->
+            <div class="activity-feed">
+                <h3 class="section-title">
+                    <i class="fas fa-history"></i>
+                    Recent Activity
+                </h3>
+                <div class="activity-list" id="activityFeed">
+                    <!-- Activities will be loaded here -->
+                </div>
+            </div>
+        </aside>
     </div>
     
-    <!-- New Patient Modal -->
-    <div class="modal-overlay" id="newPatientModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h2 class="modal-title">New Patient Assessment</h2>
-                <button class="modal-close" onclick="closeModal('newPatientModal')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">First Name</label>
-                    <input type="text" class="form-control" id="patientFirstName">
+    <!-- Modals -->
+    <div id="newPatientModal" class="modal" onclick="if(event.target===this)closeModal('newPatientModal')">
+        <div class="modal-content">
+            <h2 style="color: white; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+                <i class="fas fa-user-plus"></i>
+                New Patient Assessment
+            </h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div>
+                    <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">First Name</label>
+                    <input type="text" class="question-input" id="newPatientFirstName" placeholder="John">
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Last Name</label>
-                    <input type="text" class="form-control" id="patientLastName">
+                <div>
+                    <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Last Name</label>
+                    <input type="text" class="question-input" id="newPatientLastName" placeholder="Miller">
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Rank</label>
-                    <select class="form-control" id="patientRank">
-                        <option value="">Select rank</option>
+                <div>
+                    <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Rank</label>
+                    <select class="question-input" style="height: auto;" id="newPatientRank">
+                        <option value="">Select Rank</option>
                         <option value="Private">Private</option>
+                        <option value="Specialist">Specialist</option>
                         <option value="Corporal">Corporal</option>
                         <option value="Sergeant">Sergeant</option>
+                        <option value="Staff Sergeant">Staff Sergeant</option>
                         <option value="Lieutenant">Lieutenant</option>
                         <option value="Captain">Captain</option>
                         <option value="Major">Major</option>
                         <option value="Colonel">Colonel</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Unit</label>
-                    <select class="form-control" id="patientUnit">
-                        <option value="">Select unit</option>
+                <div>
+                    <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Unit</label>
+                    <select class="question-input" style="height: auto;" id="newPatientUnit">
+                        <option value="">Select Unit</option>
                         <option value="Delta Force">Delta Force</option>
                         <option value="Navy SEALs">Navy SEALs</option>
-                        <option value="Special Forces">Special Forces</option>
                         <option value="Air Force SpecOps">Air Force SpecOps</option>
+                        <option value="Rangers">Rangers</option>
+                        <option value="Marines">Marines</option>
+                        <option value="Special Forces">Special Forces</option>
                     </select>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal('newPatientModal')">Cancel</button>
-                <button class="btn btn-primary" onclick="createPatient()">Create Assessment</button>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Examiner</label>
+                <input type="text" class="question-input" id="newPatientExaminer" placeholder="Dr. Miller">
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px;">
+                <button class="btn btn-secondary" onclick="closeModal('newPatientModal')">
+                    Cancel
+                </button>
+                <button class="btn btn-primary" onclick="createPatient()">
+                    <i class="fas fa-plus-circle"></i> Create Assessment
+                </button>
             </div>
         </div>
     </div>
     
-    <!-- Assessment Template -->
-    <template id="assessmentTemplate">
-        <div class="content-header">
-            <div class="patient-info">
-                <h2 id="assessmentPatientName">John Miller (Major)</h2>
-                <div class="patient-meta">
-                    <div class="meta-item">
-                        <i class="fas fa-id-card"></i>
-                        <span id="assessmentPatientId">PT-2024-001</span>
+    <!-- Export Modal -->
+    <div id="exportModal" class="modal" onclick="if(event.target===this)closeModal('exportModal')">
+        <div class="modal-content">
+            <h2 style="color: white; margin-bottom: 24px;">
+                <i class="fas fa-file-export"></i>
+                Export Assessment
+            </h2>
+            
+            <div style="margin-bottom: 24px;">
+                <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Format</label>
+                <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="radio" name="exportFormat" value="pdf" checked>
+                        <span>PDF Document</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="radio" name="exportFormat" value="word">
+                        <span>Word Document</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="radio" name="exportFormat" value="json">
+                        <span>JSON Data</span>
+                    </label>
+                </div>
+                
+                <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Include Sections</label>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px;">
+                    <label style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" checked>
+                        <span>Psychology</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" checked>
+                        <span>Medical Data</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" checked>
+                        <span>Vital Parameters</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" checked>
+                        <span>Fitness Test</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" checked>
+                        <span>Summary</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox">
+                        <span>Notes</span>
+                    </label>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Password Protection (Optional)</label>
+                    <input type="password" class="question-input" placeholder="Enter password">
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                <button class="btn btn-secondary" onclick="closeModal('exportModal')">
+                    Cancel
+                </button>
+                <button class="btn btn-primary" onclick="exportAssessment()">
+                    <i class="fas fa-download"></i> Export Now
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Modal -->
+    <div id="statsModal" class="modal" onclick="if(event.target===this)closeModal('statsModal')">
+        <div class="modal-content">
+            <h2 style="color: white; margin-bottom: 24px;">
+                <i class="fas fa-chart-bar"></i>
+                Statistics Overview
+            </h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px;">
+                <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: var(--radius-md); text-align: center;">
+                    <div style="font-size: 32px; font-weight: 800; color: var(--primary);">127</div>
+                    <div style="font-size: 14px; color: var(--gray-light);">Total Assessments</div>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: var(--radius-md); text-align: center;">
+                    <div style="font-size: 32px; font-weight: 800; color: var(--success);">84%</div>
+                    <div style="font-size: 14px; color: var(--gray-light);">Operational Rate</div>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: var(--radius-md); text-align: center;">
+                    <div style="font-size: 32px; font-weight: 800; color: var(--warning);">23</div>
+                    <div style="font-size: 14px; color: var(--gray-light);">Pending Reviews</div>
+                </div>
+            </div>
+            
+            <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: var(--radius-md); margin-bottom: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <div style="color: white; font-weight: 600;">Recommendation Distribution</div>
+                    <div style="font-size: 14px; color: var(--gray-light);">Last 30 Days</div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
+                    <div style="text-align: center;">
+                        <div style="height: 60px; background: var(--success); border-radius: var(--radius-sm); margin-bottom: 8px;"></div>
+                        <div style="font-size: 12px; color: var(--gray-light);">Fit</div>
                     </div>
-                    <div class="meta-item">
-                        <i class="fas fa-users"></i>
-                        <span id="assessmentPatientUnit">Delta Force</span>
+                    <div style="text-align: center;">
+                        <div style="height: 45px; background: var(--warning); border-radius: var(--radius-sm); margin-bottom: 8px;"></div>
+                        <div style="font-size: 12px; color: var(--gray-light);">Limited</div>
                     </div>
-                    <div class="meta-item">
-                        <i class="fas fa-calendar"></i>
-                        <span id="assessmentDate">Today, 10:30 AM</span>
+                    <div style="text-align: center;">
+                        <div style="height: 30px; background: var(--secondary); border-radius: var(--radius-sm); margin-bottom: 8px;"></div>
+                        <div style="font-size: 12px; color: var(--gray-light);">Not Fit</div>
                     </div>
-                    <div class="meta-item">
-                        <i class="fas fa-user-md"></i>
-                        <span id="assessmentExaminer">Dr. Alexander Miller</span>
+                    <div style="text-align: center;">
+                        <div style="height: 20px; background: var(--info); border-radius: var(--radius-sm); margin-bottom: 8px;"></div>
+                        <div style="font-size: 12px; color: var(--gray-light);">Further Eval</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="height: 10px; background: var(--primary); border-radius: var(--radius-sm); margin-bottom: 8px;"></div>
+                        <div style="font-size: 12px; color: var(--gray-light);">Therapy</div>
                     </div>
                 </div>
             </div>
-            <div class="action-buttons">
-                <button class="btn btn-secondary" onclick="saveAssessment()">
-                    <i class="fas fa-save"></i> Save
-                </button>
-                <button class="btn btn-primary" onclick="generateReport()">
-                    <i class="fas fa-file-pdf"></i> Export
-                </button>
-                <button class="btn btn-danger" onclick="deleteAssessment()">
-                    <i class="fas fa-trash"></i> Delete
+            
+            <div style="display: flex; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="closeModal('statsModal')">
+                    Close
                 </button>
             </div>
         </div>
-        
-        <div class="tabs-container">
-            <div class="tabs">
-                <button class="tab active" data-tab="psychology">
-                    <i class="fas fa-brain"></i> Psychology
-                    <span class="tab-badge" id="psychBadge">0</span>
-                </button>
-                <button class="tab" data-tab="medical">
-                    <i class="fas fa-heartbeat"></i> Medical
-                    <span class="tab-badge" id="medBadge">0</span>
-                </button>
-                <button class="tab" data-tab="vitals">
-                    <i class="fas fa-chart-line"></i> Vitals
-                    <span class="tab-badge" id="vitalBadge">0</span>
-                </button>
-                <button class="tab" data-tab="summary">
-                    <i class="fas fa-clipboard-check"></i> Summary
-                </button>
-            </div>
-        </div>
-        
-        <div class="tab-content">
-            <!-- Psychology Tab -->
-            <div class="tab-pane active" id="psychologyTab">
-                <!-- Psychology content will be loaded here -->
-            </div>
-            
-            <!-- Medical Tab -->
-            <div class="tab-pane" id="medicalTab" style="display: none;">
-                <!-- Medical content will be loaded here -->
-            </div>
-            
-            <!-- Vitals Tab -->
-            <div class="tab-pane" id="vitalsTab" style="display: none;">
-                <!-- Vitals content will be loaded here -->
-            </div>
-            
-            <!-- Summary Tab -->
-            <div class="tab-pane" id="summaryTab" style="display: none;">
-                <!-- Summary content will be loaded here -->
-            </div>
-        </div>
-    </template>
-    
+    </div>
+
+    <!-- JavaScript -->
     <script>
-        // ===== STATE MANAGEMENT =====
+        // ===== FIREBASE CONFIGURATION =====
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEXAMPLE1234567890",
+            authDomain: "military-medical-system.firebaseapp.com",
+            projectId: "military-medical-system",
+            storageBucket: "military-medical-system.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef1234567890"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // ===== APPLICATION STATE =====
         let currentUser = {
             name: "Dr. Alexander Miller",
+            rank: "Major",
             role: "Chief Medical Officer",
-            email: "a.miller@medical.mil"
+            email: "dr.miller@us.army.mil"
         };
         
         let currentPatient = null;
         let patients = [];
-        let assessments = new Map();
-        let autoSaveTimeout = null;
-        
+        let notes = [];
+        let activities = [];
+        let autoSaveTimer = null;
+
         // ===== INITIALIZATION =====
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
-            loadSampleData();
             setupEventListeners();
+            loadSampleData();
+            updateStats();
+            updateActivityFeed();
         });
-        
+
         function initializeApp() {
-            // Set current user
-            updateUserDisplay();
+            // Set current user display
+            document.getElementById('currentExaminer').textContent = currentUser.name;
             
-            // Setup search
-            document.getElementById('searchInput').addEventListener('input', function(e) {
+            // Initialize tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    switchTab(this.getAttribute('data-tab'));
+                });
+            });
+            
+            // Initialize search
+            document.getElementById('searchPatients').addEventListener('input', function(e) {
                 filterPatients(e.target.value);
             });
         }
-        
-        function loadSampleData() {
-            // Sample patients
-            patients = [
-                {
-                    id: "PT-2024-001",
-                    firstName: "John",
-                    lastName: "Miller",
-                    fullName: "John Miller",
-                    rank: "Major",
-                    unit: "Delta Force",
-                    status: "pending",
-                    createdAt: new Date(),
-                    examiner: "Dr. Alexander Miller",
-                    vitals: {
-                        pulse: 72,
-                        bpHigh: 125,
-                        bpLow: 85,
-                        temperature: 36.8,
-                        respiration: 16,
-                        oxygen: 98,
-                        height: 182,
-                        weight: 85
-                    }
-                },
-                {
-                    id: "PT-2024-002",
-                    firstName: "Sarah",
-                    lastName: "Connor",
-                    fullName: "Sarah Connor",
-                    rank: "Captain",
-                    unit: "Air Force SpecOps",
-                    status: "completed",
-                    createdAt: new Date(Date.now() - 86400000),
-                    examiner: "Dr. Alexander Miller",
-                    vitals: {
-                        pulse: 68,
-                        bpHigh: 118,
-                        bpLow: 78,
-                        temperature: 36.5,
-                        respiration: 14,
-                        oxygen: 99,
-                        height: 175,
-                        weight: 68
-                    }
-                },
-                {
-                    id: "PT-2024-003",
-                    firstName: "Michael",
-                    lastName: "Rodriguez",
-                    fullName: "Michael Rodriguez",
-                    rank: "Sergeant",
-                    unit: "Navy SEALs",
-                    status: "critical",
-                    createdAt: new Date(Date.now() - 172800000),
-                    examiner: "Dr. James Wilson",
-                    vitals: {
-                        pulse: 92,
-                        bpHigh: 145,
-                        bpLow: 95,
-                        temperature: 37.8,
-                        respiration: 22,
-                        oxygen: 92,
-                        height: 188,
-                        weight: 95
-                    }
-                }
-            ];
-            
-            renderPatientList();
-        }
-        
+
         function setupEventListeners() {
-            // Auto-save
+            // Auto-save on input
             document.addEventListener('input', debounce(function(e) {
                 if (currentPatient && e.target.classList.contains('question-input')) {
                     autoSave();
                 }
             }, 1500));
             
-            // Tab switching
-            document.addEventListener('click', function(e) {
-                if (e.target.closest('.tab')) {
-                    const tab = e.target.closest('.tab');
-                    const tabName = tab.getAttribute('data-tab');
-                    switchAssessmentTab(tabName);
+            // Auto-save on vital changes
+            document.addEventListener('change', debounce(function(e) {
+                if (currentPatient && e.target.classList.contains('vital-input')) {
+                    autoSave();
+                }
+            }, 1000));
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey || e.metaKey) {
+                    switch(e.key) {
+                        case 's':
+                            e.preventDefault();
+                            saveAssessment();
+                            break;
+                        case 'n':
+                            e.preventDefault();
+                            openNewPatientModal();
+                            break;
+                        case 'p':
+                            e.preventDefault();
+                            generateReport();
+                            break;
+                    }
                 }
             });
         }
-        
+
         function debounce(func, wait) {
             let timeout;
             return function executedFunction(...args) {
@@ -1421,540 +1950,327 @@
                 timeout = setTimeout(later, wait);
             };
         }
-        
+
         // ===== PATIENT MANAGEMENT =====
+        function loadSampleData() {
+            // Sample patient data
+            patients = [
+                {
+                    id: "PT-2024-001",
+                    firstName: "John",
+                    lastName: "Miller",
+                    fullName: "John Miller",
+                    rank: "Major",
+                    unit: "Delta Force",
+                    status: "active",
+                    examiner: "Dr. Sarah Johnson",
+                    date: new Date().toISOString(),
+                    lastUpdated: new Date().toISOString(),
+                    vitals: {
+                        pulse: 72,
+                        bpHigh: 125,
+                        bpLow: 85,
+                        temperature: 36.8,
+                        respiration: 16,
+                        oxygen: 98,
+                        height: 182,
+                        weight: 85,
+                        bmi: 25.7
+                    },
+                    answers: {},
+                    summary: {
+                        overall: "Highly competent soldier with excellent psychological profile.",
+                        recommendation: "fully_fit"
+                    }
+                },
+                {
+                    id: "PT-2024-002",
+                    firstName: "Sarah",
+                    lastName: "Connor",
+                    fullName: "Sarah Connor",
+                    rank: "Captain",
+                    unit: "Air Force SpecOps",
+                    status: "pending",
+                    examiner: "Dr. Alexander Miller",
+                    date: new Date(Date.now() - 86400000).toISOString(),
+                    lastUpdated: new Date(Date.now() - 86400000).toISOString(),
+                    vitals: {
+                        pulse: 68,
+                        bpHigh: 118,
+                        bpLow: 78,
+                        temperature: 36.5,
+                        respiration: 14,
+                        oxygen: 99,
+                        height: 175,
+                        weight: 68,
+                        bmi: 22.2
+                    },
+                    answers: {},
+                    summary: {
+                        overall: "Requires follow-up evaluation for stress management.",
+                        recommendation: "further_eval"
+                    }
+                },
+                {
+                    id: "PT-2024-003",
+                    firstName: "Michael",
+                    lastName: "Rodriguez",
+                    fullName: "Michael Rodriguez",
+                    rank: "Sergeant",
+                    unit: "Navy SEALs",
+                    status: "critical",
+                    examiner: "Dr. James Wilson",
+                    date: new Date(Date.now() - 172800000).toISOString(),
+                    lastUpdated: new Date(Date.now() - 172800000).toISOString(),
+                    vitals: {
+                        pulse: 92,
+                        bpHigh: 145,
+                        bpLow: 95,
+                        temperature: 37.8,
+                        respiration: 22,
+                        oxygen: 92,
+                        height: 188,
+                        weight: 95,
+                        bmi: 26.9
+                    },
+                    answers: {},
+                    summary: {
+                        overall: "Medical intervention required before clearance.",
+                        recommendation: "medical_treatment"
+                    }
+                },
+                {
+                    id: "PT-2024-004",
+                    firstName: "Emma",
+                    lastName: "Chen",
+                    fullName: "Emma Chen",
+                    rank: "Lieutenant",
+                    unit: "Special Forces",
+                    status: "active",
+                    examiner: "Dr. Alexander Miller",
+                    date: new Date(Date.now() - 259200000).toISOString(),
+                    lastUpdated: new Date(Date.now() - 259200000).toISOString(),
+                    vitals: {
+                        pulse: 65,
+                        bpHigh: 112,
+                        bpLow: 72,
+                        temperature: 36.3,
+                        respiration: 12,
+                        oxygen: 100,
+                        height: 170,
+                        weight: 62,
+                        bmi: 21.5
+                    },
+                    answers: {},
+                    summary: {
+                        overall: "Excellent physical and psychological condition.",
+                        recommendation: "fully_fit"
+                    }
+                }
+            ];
+            
+            renderPatientList();
+            
+            // Add sample activities
+            activities = [
+                {
+                    id: 1,
+                    patient: "John Miller",
+                    action: "Assessment completed",
+                    time: "10 minutes ago",
+                    icon: "fas fa-check-circle",
+                    color: "var(--success)"
+                },
+                {
+                    id: 2,
+                    patient: "Sarah Connor",
+                    action: "Follow-up scheduled",
+                    time: "1 hour ago",
+                    icon: "fas fa-calendar-plus",
+                    color: "var(--info)"
+                },
+                {
+                    id: 3,
+                    patient: "Michael Rodriguez",
+                    action: "Critical alert raised",
+                    time: "2 hours ago",
+                    icon: "fas fa-exclamation-triangle",
+                    color: "var(--secondary)"
+                },
+                {
+                    id: 4,
+                    patient: "Emma Chen",
+                    action: "Report generated",
+                    time: "Yesterday",
+                    icon: "fas fa-file-pdf",
+                    color: "var(--primary)"
+                }
+            ];
+            
+            // Add sample notes
+            notes = [
+                {
+                    id: 1,
+                    text: "Patient shows excellent stress management skills during simulated combat scenarios.",
+                    author: "Dr. Miller",
+                    time: "Today, 09:30",
+                    section: "psychology"
+                },
+                {
+                    id: 2,
+                    text: "Slight elevation in blood pressure noted. Recommend monitoring over next 48 hours.",
+                    author: "Dr. Johnson",
+                    time: "Yesterday, 14:15",
+                    section: "medical"
+                }
+            ];
+        }
+
         function renderPatientList() {
-            const container = document.getElementById('patientList');
+            const container = document.getElementById('patientCards');
             container.innerHTML = '';
             
             patients.forEach(patient => {
-                const item = document.createElement('div');
-                item.className = `patient-item ${currentPatient?.id === patient.id ? 'selected' : ''}`;
-                item.onclick = () => selectPatient(patient);
+                const card = document.createElement('div');
+                card.className = `patient-card ${currentPatient?.id === patient.id ? 'active' : ''}`;
+                card.onclick = () => selectPatient(patient);
                 
-                const statusClass = patient.status === 'completed' ? 'status-completed' :
+                const statusClass = patient.status === 'active' ? 'status-active' : 
                                   patient.status === 'pending' ? 'status-pending' : 'status-critical';
                 
-                item.innerHTML = `
+                card.innerHTML = `
                     <div class="patient-header">
                         <div class="patient-name">${patient.fullName}</div>
                         <div class="patient-id">${patient.id}</div>
                     </div>
                     <div class="patient-details">
-                        ${patient.rank} • ${patient.unit}
+                        <div>${patient.rank} • ${patient.unit}</div>
+                        <div>Examined by ${patient.examiner}</div>
                     </div>
-                    <div class="${statusClass} patient-status">
-                        <i class="fas fa-circle"></i>
+                    <div class="patient-status ${statusClass}">
+                        <i class="fas fa-circle" style="font-size: 8px;"></i>
                         ${patient.status.charAt(0).toUpperCase() + patient.status.slice(1)}
                     </div>
                 `;
                 
-                container.appendChild(item);
+                container.appendChild(card);
             });
+            
+            updateStats();
         }
-        
+
         function filterPatients(searchTerm) {
-            const items = document.querySelectorAll('.patient-item');
+            const cards = document.querySelectorAll('.patient-card');
             const term = searchTerm.toLowerCase();
             
-            items.forEach(item => {
-                const text = item.textContent.toLowerCase();
-                item.style.display = text.includes(term) ? 'block' : 'none';
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(term) ? 'block' : 'none';
             });
         }
-        
+
         function selectPatient(patient) {
             currentPatient = patient;
             
             // Update UI
-            document.querySelectorAll('.patient-item').forEach(item => {
-                item.classList.remove('selected');
+            document.getElementById('patientHeader').style.display = 'flex';
+            document.getElementById('currentPatientName').textContent = `${patient.fullName} (${patient.rank})`;
+            document.getElementById('currentPatientId').textContent = patient.id;
+            document.getElementById('currentPatientUnit').textContent = patient.unit;
+            document.getElementById('currentPatientDate').textContent = new Date(patient.date).toLocaleDateString('de-DE');
+            document.getElementById('currentExaminer').textContent = patient.examiner;
+            
+            // Update patient cards
+            document.querySelectorAll('.patient-card').forEach(card => {
+                card.classList.remove('active');
             });
-            event.currentTarget.classList.add('selected');
+            event.currentTarget.classList.add('active');
             
-            // Load assessment
-            loadAssessment(patient);
-        }
-        
-        // ===== ASSESSMENT MANAGEMENT =====
-        function loadAssessment(patient) {
-            const mainContent = document.getElementById('mainContent');
-            const template = document.getElementById('assessmentTemplate').content.cloneNode(true);
+            // Load patient data
+            loadPatientData();
             
-            mainContent.innerHTML = '';
-            mainContent.appendChild(template);
-            
-            // Update patient info
-            document.getElementById('assessmentPatientName').textContent = 
-                `${patient.fullName} (${patient.rank})`;
-            document.getElementById('assessmentPatientId').textContent = patient.id;
-            document.getElementById('assessmentPatientUnit').textContent = patient.unit;
-            document.getElementById('assessmentDate').textContent = 
-                new Date(patient.createdAt).toLocaleString('de-DE', {
-                    weekday: 'long',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            document.getElementById('assessmentExaminer').textContent = patient.examiner;
-            
-            // Load assessment data
-            if (assessments.has(patient.id)) {
-                const assessment = assessments.get(patient.id);
-                loadAssessmentData(assessment);
-            } else {
-                // Initialize empty assessment
-                const assessment = {
-                    psychology: {},
-                    medical: {},
-                    vitals: patient.vitals || {},
-                    summary: {}
-                };
-                assessments.set(patient.id, assessment);
-                loadAssessmentData(assessment);
-            }
-            
-            // Render psychology tab first
-            renderPsychologyTab();
+            // Update tab badges
             updateTabBadges();
+            
+            // Add activity
+            addActivity(`Viewed assessment for ${patient.fullName}`, 'fas fa-eye');
         }
-        
-        function loadAssessmentData(assessment) {
-            // This function would load data into forms
-            // Implementation depends on your data structure
-        }
-        
-        function renderPsychologyTab() {
-            const tabContent = document.getElementById('psychologyTab');
-            
-            const psychologyQuestions = [
-                {
-                    section: "Persönlichkeit & Hintergrund",
-                    questions: [
-                        "Wie würden Sie Ihre wichtigsten Charaktereigenschaften beschreiben?",
-                        "Gab es in Ihrem Leben Ereignisse, die Sie nachhaltig geprägt haben?",
-                        "Welche Ziele verfolgen Sie langfristig in Ihrem Leben?"
-                    ]
-                },
-                {
-                    section: "Emotionale Stabilität",
-                    questions: [
-                        "Wie reagieren Sie, wenn Sie plötzlich unter starken Druck geraten?",
-                        "Haben Sie Schwierigkeiten, wieder zur Ruhe zu kommen, wenn Sie gestresst sind?",
-                        "Haben Sie Albträume oder Schlafstörungen?",
-                        "Können Sie starke negative Gefühle bewusst kontrollieren?"
-                    ]
-                },
-                {
-                    section: "Aggressionskontrolle",
-                    questions: [
-                        "Wie gehen Sie mit Situationen um, in denen Sie wütend werden?",
-                        "Haben Sie schon einmal die Kontrolle über Ihr Verhalten verloren?",
-                        "Können Sie in Konflikten ruhig bleiben, selbst wenn Sie provoziert werden?",
-                        "Was war die schwierigste Situation, in der Sie Ihre Aggressionen beherrschen mussten?",
-                        "Wie reagieren Sie auf Respektlosigkeit oder Beleidigungen?"
-                    ]
-                }
-            ];
-            
-            let html = '';
-            
-            psychologyQuestions.forEach((section, sectionIndex) => {
-                html += `
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-title">
-                                <i class="fas fa-${sectionIndex === 0 ? 'user' : sectionIndex === 1 ? 'brain' : 'angry'}"></i>
-                                ${section.section}
-                            </div>
-                            <div class="section-badge">Section ${sectionIndex + 1}</div>
-                        </div>
-                        <div class="questions-grid">
-                `;
-                
-                section.questions.forEach((question, questionIndex) => {
-                    html += `
-                        <div class="question-group">
-                            <div class="question-label">
-                                ${question}
-                            </div>
-                            <textarea class="question-input" 
-                                      data-section="psychology" 
-                                      data-question="${sectionIndex + 1}.${questionIndex + 1}"
-                                      placeholder="Enter response..."></textarea>
-                        </div>
-                    `;
-                });
-                
-                html += `
-                        </div>
-                    </div>
-                `;
-            });
-            
-            tabContent.innerHTML = html;
-        }
-        
-        function renderMedicalTab() {
-            const tabContent = document.getElementById('medicalTab');
-            
-            const medicalQuestions = [
-                "Nehmen Sie regelmäßig Medikamente ein?",
-                "Haben Sie in letzter Zeit Gewichtsab-/Zunahme bemerkt?",
-                "Haben Sie in der Vergangenheit Knochenbrüche, Operationen oder schwere Verletzungen erlitten?",
-                "Wurden Sie jemals ohnmächtig oder haben Sie Bewusstseinsverluste erlebt?",
-                "Haben Sie Probleme mit dem Gleichgewicht, Schwindel oder Koordinationsstörungen?",
-                "Konsumieren Sie Alkohol oder andere psychoaktive Stoffe?",
-                "Wurden Sie jemals wegen Drogen- oder Alkoholmissbrauchs behandelt?",
-                "Gibt es in Ihrer Familie bekannte Suchterkrankungen?"
-            ];
-            
-            let html = `
-                <div class="section">
-                    <div class="section-header">
-                        <div class="section-title">
-                            <i class="fas fa-file-medical"></i>
-                            Medical History
-                        </div>
-                        <div class="section-badge">Section 3</div>
-                    </div>
-                    <div class="questions-grid">
-            `;
-            
-            medicalQuestions.forEach((question, index) => {
-                html += `
-                    <div class="question-group">
-                        <div class="question-label">
-                            ${question}
-                        </div>
-                        <textarea class="question-input" 
-                                  data-section="medical" 
-                                  data-question="med${index + 1}"
-                                  placeholder="Enter response..."></textarea>
-                    </div>
-                `;
-            });
-            
-            html += `
-                    </div>
-                </div>
-                
-                <div class="section">
-                    <div class="section-header">
-                        <div class="section-title">
-                            <i class="fas fa-heartbeat"></i>
-                            Vital Parameters
-                        </div>
-                    </div>
-                    <div class="vital-grid">
-                        <div class="vital-card">
-                            <div class="vital-label">Pulse (bpm)</div>
-                            <div class="vital-value" id="displayPulse">-</div>
-                            <input type="number" class="vital-input" id="inputPulse" placeholder="Enter value" 
-                                   min="40" max="200" oninput="updateVitalDisplay('pulse')">
-                            <div class="vital-status badge-success" id="pulseStatus">Normal</div>
-                        </div>
-                        
-                        <div class="vital-card">
-                            <div class="vital-label">Blood Pressure</div>
-                            <div class="vital-value" id="displayBP">-</div>
-                            <div style="display: flex; gap: 8px;">
-                                <input type="number" class="vital-input" id="inputBPHigh" placeholder="Systolic" 
-                                       style="flex: 1;" oninput="updateVitalDisplay('bp')">
-                                <span style="color: var(--gray-400); align-self: center;">/</span>
-                                <input type="number" class="vital-input" id="inputBPLow" placeholder="Diastolic" 
-                                       style="flex: 1;" oninput="updateVitalDisplay('bp')">
-                            </div>
-                            <div class="vital-status badge-success" id="bpStatus">Normal</div>
-                        </div>
-                        
-                        <div class="vital-card">
-                            <div class="vital-label">Temperature (°C)</div>
-                            <div class="vital-value" id="displayTemp">-</div>
-                            <input type="number" class="vital-input" id="inputTemp" placeholder="Enter value" 
-                                   min="35" max="42" step="0.1" oninput="updateVitalDisplay('temp')">
-                            <div class="vital-status badge-success" id="tempStatus">Normal</div>
-                        </div>
-                        
-                        <div class="vital-card">
-                            <div class="vital-label">Respiration (/min)</div>
-                            <div class="vital-value" id="displayResp">-</div>
-                            <input type="number" class="vital-input" id="inputResp" placeholder="Enter value" 
-                                   min="8" max="40" oninput="updateVitalDisplay('resp')">
-                            <div class="vital-status badge-success" id="respStatus">Normal</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            tabContent.innerHTML = html;
-            
-            // Load existing vital values
-            if (currentPatient && currentPatient.vitals) {
-                const v = currentPatient.vitals;
-                if (v.pulse) {
-                    document.getElementById('inputPulse').value = v.pulse;
-                    updateVitalDisplay('pulse');
-                }
-                if (v.bpHigh && v.bpLow) {
-                    document.getElementById('inputBPHigh').value = v.bpHigh;
-                    document.getElementById('inputBPLow').value = v.bpLow;
-                    updateVitalDisplay('bp');
-                }
-                if (v.temperature) {
-                    document.getElementById('inputTemp').value = v.temperature;
-                    updateVitalDisplay('temp');
-                }
-                if (v.respiration) {
-                    document.getElementById('inputResp').value = v.respiration;
-                    updateVitalDisplay('resp');
-                }
-            }
-        }
-        
-        function renderSummaryTab() {
-            const tabContent = document.getElementById('summaryTab');
-            
-            const html = `
-                <div class="section">
-                    <div class="section-header">
-                        <div class="section-title">
-                            <i class="fas fa-clipboard-check"></i>
-                            Assessment Summary
-                        </div>
-                    </div>
-                    
-                    <div class="question-group">
-                        <div class="question-label">Overall Assessment</div>
-                        <textarea class="question-input" id="summaryOverall" 
-                                  placeholder="Enter overall assessment and key findings..." 
-                                  style="min-height: 120px;"></textarea>
-                    </div>
-                    
-                    <div class="questions-grid">
-                        <div class="question-group">
-                            <div class="question-label">Psychological Evaluation</div>
-                            <textarea class="question-input" id="summaryPsych" 
-                                      placeholder="Psychological evaluation..."></textarea>
-                        </div>
-                        
-                        <div class="question-group">
-                            <div class="question-label">Medical Evaluation</div>
-                            <textarea class="question-input" id="summaryMedical" 
-                                      placeholder="Medical evaluation..."></textarea>
-                        </div>
-                        
-                        <div class="question-group">
-                            <div class="question-label">Recommendation</div>
-                            <select class="question-select" id="summaryRecommendation">
-                                <option value="">Select recommendation</option>
-                                <option value="fully_fit">Fully operational</option>
-                                <option value="limited">Limited operational</option>
-                                <option value="not_fit">Not operational</option>
-                                <option value="further_eval">Further evaluation needed</option>
-                            </select>
-                        </div>
-                        
-                        <div class="question-group">
-                            <div class="question-label">Follow-up Actions</div>
-                            <textarea class="question-input" id="summaryActions" 
-                                      placeholder="Recommended follow-up actions..."></textarea>
-                        </div>
-                    </div>
-                    
-                    <div class="summary-section">
-                        <div class="summary-title">Examiner's Conclusion</div>
-                        <div class="question-group">
-                            <div class="question-label">Signature</div>
-                            <input type="text" class="question-input" id="summarySignature" 
-                                   placeholder="Name and rank" style="min-height: auto;">
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            tabContent.innerHTML = html;
-        }
-        
-        // ===== VITAL PARAMETERS =====
-        function updateVitalDisplay(type) {
-            let value, displayElement, statusElement;
-            
-            switch(type) {
-                case 'pulse':
-                    value = parseInt(document.getElementById('inputPulse').value);
-                    displayElement = document.getElementById('displayPulse');
-                    statusElement = document.getElementById('pulseStatus');
-                    
-                    if (value) {
-                        displayElement.textContent = value;
-                        if (value >= 60 && value <= 100) {
-                            statusElement.textContent = 'Normal';
-                            statusElement.className = 'vital-status badge-success';
-                        } else if (value < 60) {
-                            statusElement.textContent = 'Low';
-                            statusElement.className = 'vital-status badge-warning';
-                        } else {
-                            statusElement.textContent = 'High';
-                            statusElement.className = 'vital-status badge-danger';
-                        }
-                    } else {
-                        displayElement.textContent = '-';
-                        statusElement.textContent = 'Not set';
-                        statusElement.className = 'vital-status';
-                    }
-                    break;
-                    
-                case 'bp':
-                    const high = parseInt(document.getElementById('inputBPHigh').value);
-                    const low = parseInt(document.getElementById('inputBPLow').value);
-                    displayElement = document.getElementById('displayBP');
-                    statusElement = document.getElementById('bpStatus');
-                    
-                    if (high && low) {
-                        displayElement.textContent = `${high}/${low}`;
-                        if (high >= 110 && high <= 140 && low >= 60 && low <= 90) {
-                            statusElement.textContent = 'Normal';
-                            statusElement.className = 'vital-status badge-success';
-                        } else if (high < 110 || low < 60) {
-                            statusElement.textContent = 'Low';
-                            statusElement.className = 'vital-status badge-warning';
-                        } else {
-                            statusElement.textContent = 'High';
-                            statusElement.className = 'vital-status badge-danger';
-                        }
-                    } else {
-                        displayElement.textContent = '-';
-                        statusElement.textContent = 'Not set';
-                        statusElement.className = 'vital-status';
-                    }
-                    break;
-                    
-                case 'temp':
-                    value = parseFloat(document.getElementById('inputTemp').value);
-                    displayElement = document.getElementById('displayTemp');
-                    statusElement = document.getElementById('tempStatus');
-                    
-                    if (value) {
-                        displayElement.textContent = value;
-                        if (value >= 36.1 && value <= 37.5) {
-                            statusElement.textContent = 'Normal';
-                            statusElement.className = 'vital-status badge-success';
-                        } else if (value < 36) {
-                            statusElement.textContent = 'Low';
-                            statusElement.className = 'vital-status badge-warning';
-                        } else {
-                            statusElement.textContent = 'Fever';
-                            statusElement.className = 'vital-status badge-danger';
-                        }
-                    } else {
-                        displayElement.textContent = '-';
-                        statusElement.textContent = 'Not set';
-                        statusElement.className = 'vital-status';
-                    }
-                    break;
-                    
-                case 'resp':
-                    value = parseInt(document.getElementById('inputResp').value);
-                    displayElement = document.getElementById('displayResp');
-                    statusElement = document.getElementById('respStatus');
-                    
-                    if (value) {
-                        displayElement.textContent = value;
-                        if (value >= 12 && value <= 20) {
-                            statusElement.textContent = 'Normal';
-                            statusElement.className = 'vital-status badge-success';
-                        } else if (value < 12) {
-                            statusElement.textContent = 'Low';
-                            statusElement.className = 'vital-status badge-warning';
-                        } else {
-                            statusElement.textContent = 'High';
-                            statusElement.className = 'vital-status badge-danger';
-                        }
-                    } else {
-                        displayElement.textContent = '-';
-                        statusElement.textContent = 'Not set';
-                        statusElement.className = 'vital-status';
-                    }
-                    break;
-            }
-            
-            autoSave();
-        }
-        
-        // ===== TAB MANAGEMENT =====
-        function switchAssessmentTab(tabName) {
-            // Update active tab
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-            
-            // Hide all tab panes
-            document.querySelectorAll('.tab-pane').forEach(pane => {
-                pane.style.display = 'none';
-            });
-            
-            // Show selected tab
-            const tabPane = document.getElementById(`${tabName}Tab`);
-            if (tabPane) {
-                tabPane.style.display = 'block';
-                
-                // Load content if empty
-                if (tabPane.innerHTML === '' && currentPatient) {
-                    switch(tabName) {
-                        case 'psychology':
-                            renderPsychologyTab();
-                            break;
-                        case 'medical':
-                            renderMedicalTab();
-                            break;
-                        case 'summary':
-                            renderSummaryTab();
-                            break;
-                    }
-                }
-            }
-        }
-        
-        function updateTabBadges() {
+
+        function loadPatientData() {
             if (!currentPatient) return;
             
-            // Count answered questions
-            const psychInputs = document.querySelectorAll('[data-section="psychology"]');
-            const psychAnswered = Array.from(psychInputs).filter(input => input.value.trim() !== '').length;
-            
-            const medInputs = document.querySelectorAll('[data-section="medical"]');
-            const medAnswered = Array.from(medInputs).filter(input => input.value.trim() !== '').length;
-            
-            // Update badges
-            const psychBadge = document.getElementById('psychBadge');
-            const medBadge = document.getElementById('medBadge');
-            
-            if (psychBadge) {
-                psychBadge.textContent = psychAnswered;
-                psychBadge.style.display = psychAnswered > 0 ? 'flex' : 'none';
+            // Load vitals
+            if (currentPatient.vitals) {
+                const v = currentPatient.vitals;
+                
+                // Update display values
+                document.getElementById('pulseValue').textContent = v.pulse || '-';
+                document.getElementById('bpValue').textContent = v.bpHigh && v.bpLow ? `${v.bpHigh}/${v.bpLow}` : '-';
+                document.getElementById('tempValue').textContent = v.temperature || '-';
+                document.getElementById('respValue').textContent = v.respiration || '-';
+                document.getElementById('oxygenValue').textContent = v.oxygen || '-';
+                document.getElementById('bmiValue').textContent = v.bmi ? v.bmi.toFixed(1) : '-';
+                
+                // Update inputs
+                document.getElementById('vitalPulse').value = v.pulse || '';
+                document.getElementById('vitalBpHigh').value = v.bpHigh || '';
+                document.getElementById('vitalBpLow').value = v.bpLow || '';
+                document.getElementById('vitalTemp').value = v.temperature || '';
+                document.getElementById('vitalRespiration').value = v.respiration || '';
+                document.getElementById('vitalOxygen').value = v.oxygen || '';
+                document.getElementById('vitalHeight').value = v.height || '';
+                document.getElementById('vitalWeight').value = v.weight || '';
+                
+                // Update status badges
+                updateVital('pulse');
+                updateVital('bp');
+                updateVital('temp');
+                updateVital('resp');
+                updateVital('oxygen');
+                calculateBMI();
             }
             
-            if (medBadge) {
-                medBadge.textContent = medAnswered;
-                medBadge.style.display = medAnswered > 0 ? 'flex' : 'none';
+            // Load answers
+            if (currentPatient.answers) {
+                Object.keys(currentPatient.answers).forEach(key => {
+                    const input = document.querySelector(`[data-question="${key}"]`);
+                    if (input) input.value = currentPatient.answers[key];
+                });
             }
+            
+            // Load summary
+            if (currentPatient.summary) {
+                document.getElementById('summaryOverall').value = currentPatient.summary.overall || '';
+                document.getElementById('summaryPsych').value = currentPatient.summary.psych || '';
+                document.getElementById('summaryMedical').value = currentPatient.summary.medical || '';
+                document.getElementById('summaryRecommendation').value = currentPatient.summary.recommendation || '';
+                document.getElementById('summaryActions').value = currentPatient.summary.actions || '';
+                document.getElementById('summarySignature').value = currentPatient.summary.signature || '';
+            }
+            
+            // Load notes
+            renderNotes();
+            
+            // Analyze vitals
+            analyzeVitals();
         }
-        
+
         // ===== MODAL FUNCTIONS =====
         function openNewPatientModal() {
             document.getElementById('newPatientModal').classList.add('active');
+            document.getElementById('newPatientExaminer').value = currentUser.name;
         }
-        
+
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
         }
-        
+
         function createPatient() {
-            const firstName = document.getElementById('patientFirstName').value.trim();
-            const lastName = document.getElementById('patientLastName').value.trim();
-            const rank = document.getElementById('patientRank').value;
-            const unit = document.getElementById('patientUnit').value;
+            const firstName = document.getElementById('newPatientFirstName').value.trim();
+            const lastName = document.getElementById('newPatientLastName').value.trim();
+            const rank = document.getElementById('newPatientRank').value;
+            const unit = document.getElementById('newPatientUnit').value;
+            const examiner = document.getElementById('newPatientExaminer').value.trim();
             
             if (!firstName || !lastName || !rank || !unit) {
                 alert('Please fill all required fields');
@@ -1971,9 +2287,12 @@
                 rank: rank,
                 unit: unit,
                 status: 'pending',
-                createdAt: new Date(),
-                examiner: currentUser.name,
-                vitals: {}
+                examiner: examiner || currentUser.name,
+                date: new Date().toISOString(),
+                lastUpdated: new Date().toISOString(),
+                vitals: {},
+                answers: {},
+                summary: {}
             };
             
             patients.unshift(newPatient);
@@ -1983,165 +2302,705 @@
             selectPatient(newPatient);
             
             // Clear form
-            document.getElementById('patientFirstName').value = '';
-            document.getElementById('patientLastName').value = '';
-            document.getElementById('patientRank').value = '';
-            document.getElementById('patientUnit').value = '';
+            document.getElementById('newPatientFirstName').value = '';
+            document.getElementById('newPatientLastName').value = '';
+            document.getElementById('newPatientRank').value = '';
+            document.getElementById('newPatientUnit').value = '';
+            
+            addActivity(`Created new assessment for ${newPatient.fullName}`, 'fas fa-user-plus');
         }
-        
+
+        // ===== VITAL PARAMETERS =====
+        function updateVital(type) {
+            if (!currentPatient) return;
+            
+            let value, statusElement, badgeElement;
+            
+            switch(type) {
+                case 'pulse':
+                    value = parseInt(document.getElementById('vitalPulse').value);
+                    statusElement = document.getElementById('pulseStatus');
+                    badgeElement = statusElement;
+                    document.getElementById('pulseValue').textContent = value || '-';
+                    
+                    if (value) {
+                        if (value >= 60 && value <= 100) {
+                            statusElement.textContent = 'Normal';
+                            statusElement.className = 'badge badge-success';
+                        } else if (value < 60) {
+                            statusElement.textContent = 'Low';
+                            statusElement.className = 'badge badge-warning';
+                        } else {
+                            statusElement.textContent = 'High';
+                            statusElement.className = 'badge badge-danger';
+                        }
+                    } else {
+                        statusElement.textContent = 'Not set';
+                        statusElement.className = 'badge';
+                    }
+                    break;
+                    
+                case 'bp':
+                    const high = parseInt(document.getElementById('vitalBpHigh').value);
+                    const low = parseInt(document.getElementById('vitalBpLow').value);
+                    statusElement = document.getElementById('bpStatus');
+                    badgeElement = statusElement;
+                    
+                    if (high && low) {
+                        document.getElementById('bpValue').textContent = `${high}/${low}`;
+                        
+                        if (high >= 110 && high <= 140 && low >= 60 && low <= 90) {
+                            statusElement.textContent = 'Normal';
+                            statusElement.className = 'badge badge-success';
+                        } else if (high < 110 || low < 60) {
+                            statusElement.textContent = 'Low';
+                            statusElement.className = 'badge badge-warning';
+                        } else {
+                            statusElement.textContent = 'High';
+                            statusElement.className = 'badge badge-danger';
+                        }
+                    } else {
+                        document.getElementById('bpValue').textContent = '-';
+                        statusElement.textContent = 'Not set';
+                        statusElement.className = 'badge';
+                    }
+                    break;
+                    
+                case 'temp':
+                    value = parseFloat(document.getElementById('vitalTemp').value);
+                    statusElement = document.getElementById('tempStatus');
+                    badgeElement = statusElement;
+                    document.getElementById('tempValue').textContent = value || '-';
+                    
+                    if (value) {
+                        if (value >= 36.1 && value <= 37.5) {
+                            statusElement.textContent = 'Normal';
+                            statusElement.className = 'badge badge-success';
+                        } else if (value < 36) {
+                            statusElement.textContent = 'Low';
+                            statusElement.className = 'badge badge-warning';
+                        } else {
+                            statusElement.textContent = 'Fever';
+                            statusElement.className = 'badge badge-danger';
+                        }
+                    } else {
+                        statusElement.textContent = 'Not set';
+                        statusElement.className = 'badge';
+                    }
+                    break;
+                    
+                case 'resp':
+                    value = parseInt(document.getElementById('vitalRespiration').value);
+                    statusElement = document.getElementById('respStatus');
+                    badgeElement = statusElement;
+                    document.getElementById('respValue').textContent = value || '-';
+                    
+                    if (value) {
+                        if (value >= 12 && value <= 20) {
+                            statusElement.textContent = 'Normal';
+                            statusElement.className = 'badge badge-success';
+                        } else if (value < 12) {
+                            statusElement.textContent = 'Low';
+                            statusElement.className = 'badge badge-warning';
+                        } else {
+                            statusElement.textContent = 'High';
+                            statusElement.className = 'badge badge-danger';
+                        }
+                    } else {
+                        statusElement.textContent = 'Not set';
+                        statusElement.className = 'badge';
+                    }
+                    break;
+                    
+                case 'oxygen':
+                    value = parseInt(document.getElementById('vitalOxygen').value);
+                    statusElement = document.getElementById('oxygenStatus');
+                    badgeElement = statusElement;
+                    document.getElementById('oxygenValue').textContent = value || '-';
+                    
+                    if (value) {
+                        if (value >= 95 && value <= 100) {
+                            statusElement.textContent = 'Normal';
+                            statusElement.className = 'badge badge-success';
+                        } else if (value >= 90 && value < 95) {
+                            statusElement.textContent = 'Low';
+                            statusElement.className = 'badge badge-warning';
+                        } else if (value < 90) {
+                            statusElement.textContent = 'Critical';
+                            statusElement.className = 'badge badge-danger';
+                        }
+                    } else {
+                        statusElement.textContent = 'Not set';
+                        statusElement.className = 'badge';
+                    }
+                    break;
+            }
+            
+            // Update badge with pulse animation
+            if (badgeElement && value) {
+                badgeElement.classList.add('pulse');
+                setTimeout(() => badgeElement.classList.remove('pulse'), 1000);
+            }
+            
+            // Auto-save
+            autoSave();
+        }
+
+        function calculateBMI() {
+            const height = parseFloat(document.getElementById('vitalHeight').value) / 100; // cm to m
+            const weight = parseFloat(document.getElementById('vitalWeight').value);
+            const statusElement = document.getElementById('bmiStatus');
+            
+            if (height && weight && height > 0) {
+                const bmi = weight / (height * height);
+                document.getElementById('bmiValue').textContent = bmi.toFixed(1);
+                
+                if (bmi < 18.5) {
+                    statusElement.textContent = 'Underweight';
+                    statusElement.className = 'badge badge-warning';
+                } else if (bmi >= 18.5 && bmi <= 24.9) {
+                    statusElement.textContent = 'Normal';
+                    statusElement.className = 'badge badge-success';
+                } else if (bmi >= 25 && bmi <= 29.9) {
+                    statusElement.textContent = 'Overweight';
+                    statusElement.className = 'badge badge-warning';
+                } else {
+                    statusElement.textContent = 'Obese';
+                    statusElement.className = 'badge badge-danger';
+                }
+            } else {
+                document.getElementById('bmiValue').textContent = '-';
+                statusElement.textContent = 'Not set';
+                statusElement.className = 'badge';
+            }
+            
+            autoSave();
+        }
+
+        function analyzeVitals() {
+            if (!currentPatient) return;
+            
+            const analysisDiv = document.getElementById('vitalsAnalysis');
+            const vitals = currentPatient.vitals || {};
+            
+            let abnormalities = [];
+            let healthScore = 100;
+            let abnormalCount = 0;
+            
+            // Check each vital parameter
+            if (vitals.pulse) {
+                if (vitals.pulse < 60 || vitals.pulse > 100) {
+                    abnormalities.push(`Pulse: ${vitals.pulse} bpm (Normal: 60-100)`);
+                    abnormalCount++;
+                    healthScore -= 15;
+                }
+            }
+            
+            if (vitals.bpHigh && vitals.bpLow) {
+                if (vitals.bpHigh < 110 || vitals.bpHigh > 140 || vitals.bpLow < 60 || vitals.bpLow > 90) {
+                    abnormalities.push(`Blood Pressure: ${vitals.bpHigh}/${vitals.bpLow} mmHg (Normal: 110-140/60-90)`);
+                    abnormalCount++;
+                    healthScore -= 20;
+                }
+            }
+            
+            if (vitals.temperature) {
+                if (vitals.temperature < 36.1 || vitals.temperature > 37.5) {
+                    abnormalities.push(`Temperature: ${vitals.temperature}°C (Normal: 36.1-37.5)`);
+                    abnormalCount++;
+                    healthScore -= 10;
+                }
+            }
+            
+            if (vitals.respiration) {
+                if (vitals.respiration < 12 || vitals.respiration > 20) {
+                    abnormalities.push(`Respiration: ${vitals.respiration} /min (Normal: 12-20)`);
+                    abnormalCount++;
+                    healthScore -= 10;
+                }
+            }
+            
+            if (vitals.oxygen) {
+                if (vitals.oxygen < 95) {
+                    abnormalities.push(`Oxygen: ${vitals.oxygen}% (Normal: 95-100%)`);
+                    abnormalCount++;
+                    healthScore -= (95 - vitals.oxygen) * 2;
+                }
+            }
+            
+            if (vitals.bmi) {
+                if (vitals.bmi < 18.5 || vitals.bmi > 25) {
+                    abnormalities.push(`BMI: ${vitals.bmi.toFixed(1)} (Normal: 18.5-25)`);
+                    abnormalCount++;
+                    healthScore -= 5;
+                }
+            }
+            
+            // Ensure health score doesn't go below 0
+            healthScore = Math.max(0, Math.round(healthScore));
+            
+            // Calculate normality percentage
+            const totalParams = 6; // Number of vital parameters we check
+            const normalParams = totalParams - abnormalCount;
+            const normalityScore = Math.round((normalParams / totalParams) * 100);
+            
+            // Determine risk level
+            let riskLevel = 'Low';
+            let riskColor = 'var(--success)';
+            
+            if (abnormalCount >= 3) {
+                riskLevel = 'High';
+                riskColor = 'var(--secondary)';
+            } else if (abnormalCount >= 1) {
+                riskLevel = 'Medium';
+                riskColor = 'var(--warning)';
+            }
+            
+            // Update analysis display
+            analysisDiv.innerHTML = `
+                <div style="margin-bottom: 24px;">
+                    <h3 style="color: white; margin-bottom: 16px;">Vital Parameters Analysis</h3>
+                    ${abnormalities.length > 0 ? `
+                        <div style="background: rgba(211, 47, 47, 0.1); border-left: 4px solid var(--secondary); padding: 16px; border-radius: var(--radius-md); margin-bottom: 16px;">
+                            <div style="color: white; font-weight: 600; margin-bottom: 8px;">
+                                <i class="fas fa-exclamation-triangle"></i> Abnormal Values Detected
+                            </div>
+                            <ul style="color: var(--gray-light); padding-left: 20px; margin: 0;">
+                                ${abnormalities.map(ab => `<li>${ab}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : `
+                        <div style="background: rgba(46, 125, 50, 0.1); border-left: 4px solid var(--success); padding: 16px; border-radius: var(--radius-md); margin-bottom: 16px;">
+                            <div style="color: white; font-weight: 600;">
+                                <i class="fas fa-check-circle"></i> All vital parameters within normal ranges
+                            </div>
+                        </div>
+                    `}
+                </div>
+            `;
+            
+            // Update analysis cards
+            document.getElementById('healthScore').textContent = healthScore;
+            document.getElementById('healthScore').style.color = healthScore >= 80 ? 'var(--success)' : 
+                                                                healthScore >= 60 ? 'var(--warning)' : 'var(--secondary)';
+            
+            document.getElementById('riskLevel').textContent = riskLevel;
+            document.getElementById('riskLevel').style.color = riskColor;
+            
+            document.getElementById('normalityScore').textContent = `${normalityScore}%`;
+            document.getElementById('normalityScore').style.color = normalityScore >= 80 ? 'var(--success)' : 
+                                                                   normalityScore >= 60 ? 'var(--warning)' : 'var(--secondary)';
+            
+            document.getElementById('abnormalParams').textContent = abnormalCount;
+            document.getElementById('abnormalParams').style.color = abnormalCount > 0 ? 'var(--secondary)' : 'var(--success)';
+        }
+
+        // ===== NOTES SYSTEM =====
+        function renderNotes() {
+            const container = document.getElementById('notesContainer');
+            container.innerHTML = '';
+            
+            notes.filter(note => !currentPatient || note.patientId === currentPatient.id).forEach(note => {
+                const noteElement = document.createElement('div');
+                noteElement.className = 'question-card';
+                noteElement.style.marginBottom = '16px';
+                
+                noteElement.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-weight: 600; color: white;">${note.author}</div>
+                            <div style="font-size: 12px; color: var(--gray);">${note.time}</div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="editNote(${note.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger" style="padding: 4px 8px; font-size: 12px;" onclick="deleteNote(${note.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div style="color: var(--gray-light); line-height: 1.6;">${note.text}</div>
+                    ${note.section ? `<div style="margin-top: 8px;"><span class="badge badge-info">${note.section}</span></div>` : ''}
+                `;
+                
+                container.appendChild(noteElement);
+            });
+            
+            updateNotesBadge();
+        }
+
+        function addNote() {
+            document.getElementById('newNote').focus();
+        }
+
+        function saveNote() {
+            const text = document.getElementById('newNote').value.trim();
+            if (!text || !currentPatient) return;
+            
+            const newNote = {
+                id: notes.length + 1,
+                text: text,
+                author: currentUser.name,
+                time: new Date().toLocaleString('de-DE'),
+                patientId: currentPatient.id,
+                patientName: currentPatient.fullName,
+                section: 'General'
+            };
+            
+            notes.push(newNote);
+            document.getElementById('newNote').value = '';
+            
+            renderNotes();
+            addActivity(`Added note for ${currentPatient.fullName}`, 'fas fa-comment');
+        }
+
+        function deleteNote(noteId) {
+            if (confirm('Are you sure you want to delete this note?')) {
+                notes = notes.filter(note => note.id !== noteId);
+                renderNotes();
+                addActivity('Deleted a note', 'fas fa-trash');
+            }
+        }
+
+        // ===== TAB MANAGEMENT =====
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-pane').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(`${tabName}Tab`).style.display = 'block';
+            
+            // Add active class to selected tab
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            // Special handling for certain tabs
+            if (tabName === 'vitals') {
+                analyzeVitals();
+            }
+        }
+
+        function updateTabBadges() {
+            if (!currentPatient) return;
+            
+            // Count answered questions
+            const psychInputs = document.querySelectorAll('#psychologyTab .question-input');
+            const psychAnswered = Array.from(psychInputs).filter(input => input.value.trim() !== '').length;
+            
+            const medInputs = document.querySelectorAll('#medicalTab .question-input');
+            const medAnswered = Array.from(medInputs).filter(input => input.value.trim() !== '').length;
+            
+            const vitalInputs = document.querySelectorAll('.vital-input');
+            const vitalFilled = Array.from(vitalInputs).filter(input => input.value.trim() !== '').length;
+            
+            const noteCount = notes.filter(note => note.patientId === currentPatient.id).length;
+            
+            // Update badges
+            document.getElementById('psychBadge').textContent = psychAnswered;
+            document.getElementById('medBadge').textContent = medAnswered;
+            document.getElementById('vitalBadge').textContent = vitalFilled;
+            document.getElementById('notesBadge').textContent = noteCount;
+            
+            // Style badges
+            styleBadge('psychBadge', psychAnswered, psychInputs.length);
+            styleBadge('medBadge', medAnswered, medInputs.length);
+            styleBadge('vitalBadge', vitalFilled, vitalInputs.length);
+            styleBadge('notesBadge', noteCount, 0);
+        }
+
+        function styleBadge(badgeId, count, total) {
+            const badge = document.getElementById(badgeId);
+            if (!badge) return;
+            
+            if (count === 0) {
+                badge.style.display = 'none';
+            } else {
+                badge.style.display = 'flex';
+                if (total > 0) {
+                    const percentage = (count / total) * 100;
+                    if (percentage >= 80) {
+                        badge.style.background = 'var(--success)';
+                    } else if (percentage >= 50) {
+                        badge.style.background = 'var(--warning)';
+                    } else {
+                        badge.style.background = 'var(--secondary)';
+                    }
+                }
+            }
+        }
+
+        function updateNotesBadge() {
+            if (!currentPatient) return;
+            
+            const noteCount = notes.filter(note => note.patientId === currentPatient.id).length;
+            const badge = document.getElementById('notesBadge');
+            
+            if (noteCount === 0) {
+                badge.style.display = 'none';
+            } else {
+                badge.style.display = 'flex';
+                badge.textContent = noteCount;
+                badge.style.background = noteCount > 5 ? 'var(--secondary)' : 'var(--info)';
+            }
+        }
+
+        // ===== ACTIVITY FEED =====
+        function updateActivityFeed() {
+            const container = document.getElementById('activityFeed');
+            container.innerHTML = '';
+            
+            activities.forEach(activity => {
+                const activityElement = document.createElement('div');
+                activityElement.className = 'activity-item';
+                activityElement.innerHTML = `
+                    <div style="color: ${activity.color}; font-size: 20px;">
+                        <i class="${activity.icon}"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="color: white; font-weight: 500;">${activity.action}</div>
+                        <div style="font-size: 14px; color: var(--gray-light);">${activity.patient}</div>
+                        <div class="activity-time">${activity.time}</div>
+                    </div>
+                `;
+                container.appendChild(activityElement);
+            });
+        }
+
+        function addActivity(action, icon = 'fas fa-history') {
+            const newActivity = {
+                id: activities.length + 1,
+                patient: currentPatient ? currentPatient.fullName : 'System',
+                action: action,
+                time: 'Just now',
+                icon: icon,
+                color: 'var(--primary)'
+            };
+            
+            activities.unshift(newActivity);
+            if (activities.length > 10) activities.pop();
+            
+            updateActivityFeed();
+        }
+
         // ===== SAVE & EXPORT =====
         function autoSave() {
             if (!currentPatient) return;
             
-            if (autoSaveTimeout) {
-                clearTimeout(autoSaveTimeout);
+            // Clear existing timer
+            if (autoSaveTimer) {
+                clearTimeout(autoSaveTimer);
             }
             
-            autoSaveTimeout = setTimeout(() => {
+            // Set new timer
+            autoSaveTimer = setTimeout(() => {
                 saveAssessment(true);
             }, 2000);
         }
-        
+
         function saveAssessment(isAutoSave = false) {
             if (!currentPatient) return;
             
-            // Collect all data
-            const assessment = {
-                psychology: collectSectionData('psychology'),
-                medical: collectSectionData('medical'),
-                vitals: collectVitalData(),
-                summary: collectSummaryData(),
-                lastUpdated: new Date()
+            // Collect answers
+            const answers = {};
+            document.querySelectorAll('.question-input').forEach(input => {
+                const question = input.getAttribute('data-question');
+                if (question && input.value.trim()) {
+                    answers[question] = input.value.trim();
+                }
+            });
+            
+            // Collect vitals
+            const vitals = {
+                pulse: parseInt(document.getElementById('vitalPulse').value) || null,
+                bpHigh: parseInt(document.getElementById('vitalBpHigh').value) || null,
+                bpLow: parseInt(document.getElementById('vitalBpLow').value) || null,
+                temperature: parseFloat(document.getElementById('vitalTemp').value) || null,
+                respiration: parseInt(document.getElementById('vitalRespiration').value) || null,
+                oxygen: parseInt(document.getElementById('vitalOxygen').value) || null,
+                height: parseFloat(document.getElementById('vitalHeight').value) || null,
+                weight: parseFloat(document.getElementById('vitalWeight').value) || null,
+                bmi: document.getElementById('bmiValue').textContent !== '-' ? 
+                     parseFloat(document.getElementById('bmiValue').textContent) : null
             };
             
-            // Save to state
-            assessments.set(currentPatient.id, assessment);
+            // Collect summary
+            const summary = {
+                overall: document.getElementById('summaryOverall').value.trim(),
+                psych: document.getElementById('summaryPsych').value.trim(),
+                medical: document.getElementById('summaryMedical').value.trim(),
+                recommendation: document.getElementById('summaryRecommendation').value,
+                actions: document.getElementById('summaryActions').value.trim(),
+                signature: document.getElementById('summarySignature').value.trim() || currentUser.name
+            };
+            
+            // Update patient data
+            currentPatient.answers = answers;
+            currentPatient.vitals = vitals;
+            currentPatient.summary = summary;
+            currentPatient.lastUpdated = new Date().toISOString();
+            
+            // Update status based on recommendation
+            if (summary.recommendation === 'fully_fit') {
+                currentPatient.status = 'active';
+            } else if (summary.recommendation === 'not_fit' || summary.recommendation === 'medical_treatment') {
+                currentPatient.status = 'critical';
+            } else {
+                currentPatient.status = 'pending';
+            }
             
             // Update UI
             const saveBtn = document.querySelector('.btn-secondary');
-            if (saveBtn && !isAutoSave) {
-                const originalHTML = saveBtn.innerHTML;
-                saveBtn.innerHTML = '<i class="fas fa-check"></i> Saved';
+            const originalHTML = saveBtn.innerHTML;
+            
+            if (isAutoSave) {
+                saveBtn.innerHTML = '<i class="fas fa-check"></i> Auto-saved';
                 saveBtn.style.background = 'var(--success)';
-                saveBtn.style.borderColor = 'var(--success)';
                 
                 setTimeout(() => {
                     saveBtn.innerHTML = originalHTML;
                     saveBtn.style.background = '';
-                    saveBtn.style.borderColor = '';
                 }, 2000);
+            } else {
+                saveBtn.innerHTML = '<i class="fas fa-check"></i> Saved';
+                saveBtn.style.background = 'var(--success)';
+                
+                setTimeout(() => {
+                    saveBtn.innerHTML = originalHTML;
+                    saveBtn.style.background = '';
+                }, 3000);
+                
+                addActivity(`Saved assessment for ${currentPatient.fullName}`, 'fas fa-save');
             }
             
+            // Update patient list
+            renderPatientList();
             updateTabBadges();
-        }
-        
-        function collectSectionData(section) {
-            const data = {};
-            const inputs = document.querySelectorAll(`[data-section="${section}"]`);
             
-            inputs.forEach(input => {
-                const question = input.getAttribute('data-question');
-                if (question && input.value.trim()) {
-                    data[question] = input.value.trim();
-                }
-            });
-            
-            return data;
+            // In a real app, save to Firebase
+            // await db.collection('patients').doc(currentPatient.id).update({
+            //     answers: answers,
+            //     vitals: vitals,
+            //     summary: summary,
+            //     status: currentPatient.status,
+            //     lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+            // });
         }
-        
-        function collectVitalData() {
-            return {
-                pulse: parseInt(document.getElementById('inputPulse')?.value) || null,
-                bpHigh: parseInt(document.getElementById('inputBPHigh')?.value) || null,
-                bpLow: parseInt(document.getElementById('inputBPLow')?.value) || null,
-                temperature: parseFloat(document.getElementById('inputTemp')?.value) || null,
-                respiration: parseInt(document.getElementById('inputResp')?.value) || null
-            };
-        }
-        
-        function collectSummaryData() {
-            return {
-                overall: document.getElementById('summaryOverall')?.value.trim() || '',
-                psych: document.getElementById('summaryPsych')?.value.trim() || '',
-                medical: document.getElementById('summaryMedical')?.value.trim() || '',
-                recommendation: document.getElementById('summaryRecommendation')?.value || '',
-                actions: document.getElementById('summaryActions')?.value.trim() || '',
-                signature: document.getElementById('summarySignature')?.value.trim() || ''
-            };
-        }
-        
+
         function generateReport() {
             if (!currentPatient) {
                 alert('Please select a patient first');
                 return;
             }
             
-            // Create a simple report
-            const reportContent = `
-                Medical Assessment Report
-                ========================
-                
-                Patient: ${currentPatient.fullName}
-                ID: ${currentPatient.id}
-                Unit: ${currentPatient.unit}
-                Date: ${new Date().toLocaleDateString('de-DE')}
-                
-                Generated by: ${currentUser.name}
-                ${new Date().toLocaleString('de-DE')}
-            `;
+            addActivity(`Generated report for ${currentPatient.fullName}`, 'fas fa-file-pdf');
+            alert('Report generation started. PDF will be downloaded shortly.');
             
-            // Create download link
-            const blob = new Blob([reportContent], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Assessment_${currentPatient.id}_${new Date().getTime()}.txt`;
-            a.click();
-            URL.revokeObjectURL(url);
+            // Simulate report generation
+            setTimeout(() => {
+                const link = document.createElement('a');
+                link.href = 'data:text/html;charset=utf-8,' + encodeURIComponent(`
+                    <html>
+                    <head><title>Medical Assessment Report - ${currentPatient.fullName}</title></head>
+                    <body>
+                        <h1>Medical Assessment Report</h1>
+                        <p><strong>Patient:</strong> ${currentPatient.fullName}</p>
+                        <p><strong>Date:</strong> ${new Date().toLocaleDateString('de-DE')}</p>
+                    </body>
+                    </html>
+                `);
+                link.download = `Assessment_${currentPatient.id}_${new Date().getTime()}.html`;
+                link.click();
+            }, 1000);
         }
-        
+
+        function exportAssessment() {
+            openModal('exportModal');
+        }
+
         function deleteAssessment() {
             if (!currentPatient) return;
             
-            if (confirm(`Are you sure you want to delete the assessment for ${currentPatient.fullName}?`)) {
+            if (confirm(`Are you sure you want to delete the assessment for ${currentPatient.fullName}? This action cannot be undone.`)) {
+                const patientName = currentPatient.fullName;
                 patients = patients.filter(p => p.id !== currentPatient.id);
-                assessments.delete(currentPatient.id);
                 currentPatient = null;
                 
-                // Reset UI
-                const mainContent = document.getElementById('mainContent');
-                mainContent.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-clipboard-list"></i>
-                        <h3>Select a patient to begin assessment</h3>
-                        <p>Choose from the list on the left or create a new assessment</p>
-                    </div>
-                `;
-                
+                document.getElementById('patientHeader').style.display = 'none';
                 renderPatientList();
+                
+                addActivity(`Deleted assessment for ${patientName}`, 'fas fa-trash');
             }
         }
-        
-        // ===== USER MANAGEMENT =====
-        function updateUserDisplay() {
-            // Update user info in header
-            const userName = document.querySelector('.user-name');
-            const userRole = document.querySelector('.user-role');
+
+        // ===== QUICK ACTIONS =====
+        function quickAction(action) {
+            switch(action) {
+                case 'export':
+                    exportAssessment();
+                    break;
+                case 'print':
+                    window.print();
+                    break;
+                case 'template':
+                    alert('Template applied successfully');
+                    break;
+                case 'stats':
+                    openModal('statsModal');
+                    break;
+                case 'reminder':
+                    alert('Reminder set for follow-up in 7 days');
+                    break;
+                case 'settings':
+                    alert('Settings would open here');
+                    break;
+            }
+        }
+
+        // ===== STATISTICS =====
+        function updateStats() {
+            const total = patients.length;
+            const active = patients.filter(p => p.status === 'active').length;
+            const critical = patients.filter(p => p.status === 'critical').length;
             
-            if (userName) userName.textContent = currentUser.name;
-            if (userRole) userRole.textContent = currentUser.role;
+            document.getElementById('totalPatients').textContent = total;
+            document.getElementById('activeAssessments').textContent = active;
+            document.getElementById('criticalCases').textContent = critical;
         }
+
+        // ===== HELPER FUNCTIONS =====
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('de-DE', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function generatePatientId() {
+            const year = new Date().getFullYear();
+            const count = patients.length + 1;
+            return `PT-${year}-${String(count).padStart(3, '0')}`;
+        }
+
+        // ===== INITIAL RENDER =====
+        // Add initial activity
+        addActivity('System initialized', 'fas fa-power-off');
         
-        function openUserMenu() {
-            // Simple user menu
-            alert(`Logged in as: ${currentUser.name}\nRole: ${currentUser.role}\nEmail: ${currentUser.email}`);
-        }
-        
-        // ===== NAVIGATION =====
-        function switchTab(tab) {
-            // Simple tab switching for main navigation
-            alert(`Switching to ${tab} tab`);
-        }
+        // Update stats on load
+        setTimeout(() => {
+            updateStats();
+            updateActivityFeed();
+        }, 1000);
     </script>
 </body>
 </html>
