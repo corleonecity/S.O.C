@@ -10,7 +10,6 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     
     <style>
         :root {
@@ -80,6 +79,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            color: var(--army-tan);
         }
         
         /* Sidebar - Aktenarchiv */
@@ -485,40 +485,6 @@
             min-height: 60px;
         }
         
-        /* Login */
-        .login-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, var(--army-dark), var(--dark));
-        }
-        
-        .login-box {
-            background: var(--gray);
-            padding: 40px;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 400px;
-            border: 2px solid var(--army-green);
-        }
-        
-        .login-box h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: var(--army-tan);
-        }
-        
-        .login-input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            background: var(--dark);
-            border: 1px solid var(--army-green);
-            border-radius: 5px;
-            color: white;
-        }
-        
         /* Loading */
         .loading {
             text-align: center;
@@ -579,23 +545,8 @@
     </style>
 </head>
 <body>
-    <!-- Login Screen -->
-    <div id="loginScreen" class="login-container">
-        <div class="login-box">
-            <h2><i class="fas fa-shield-alt"></i> U.S. Army Medical System</h2>
-            <input type="text" id="email" class="login-input" placeholder="Militär Email">
-            <input type="password" id="password" class="login-input" placeholder="Passwort">
-            <button onclick="login()" class="btn btn-primary" style="width: 100%;">
-                <i class="fas fa-sign-in-alt"></i> Einloggen
-            </button>
-            <p style="text-align: center; margin-top: 20px; color: #999; font-size: 12px;">
-                Zugang nur für autorisiertes Personal
-            </p>
-        </div>
-    </div>
-    
-    <!-- Main App -->
-    <div id="appContainer" style="display: none;">
+    <!-- Main App - Direkter Zugang -->
+    <div id="appContainer">
         <div class="header">
             <div class="logo">
                 <i class="fas fa-shield-alt fa-2x"></i>
@@ -605,9 +556,9 @@
                 </div>
             </div>
             <div class="user-info">
-                <span id="userEmail"></span>
-                <button onclick="logout()" class="btn btn-secondary">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+                <span id="currentUser">Aktueller Gutachter: Dr. Miller</span>
+                <button onclick="changeExaminer()" class="btn btn-secondary">
+                    <i class="fas fa-user-edit"></i> Gutachter ändern
                 </button>
             </div>
         </div>
@@ -942,7 +893,7 @@
                                     <input type="number" class="vital-input" id="vitalOxygen" min="80" max="100" step="1" oninput="updateVitalStatus('oxygen')">
                                 </div>
                                 
-<div class="vital-item">
+                                <div class="vital-item">
                                     <div class="vital-label">
                                         Körpergröße (cm)
                                         <span class="vital-status">Info</span>
@@ -1229,7 +1180,7 @@
     </div>
 
     <script>
-        // Firebase Configuration - HINWEIS: Ersetzen Sie diese mit Ihren eigenen Firebase-Daten!
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBpJhQ9JY4Q2Xq4Q9JY4Q2Xq4Q9JY4Q2Xq4",
             authDomain: "army-medical-system.firebaseapp.com",
@@ -1242,10 +1193,12 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const auth = firebase.auth();
 
         // App State
-        let currentUser = null;
+        let currentUser = {
+            displayName: "Dr. Miller",
+            email: "dr.miller@us.army.mil"
+        };
         let currentPatient = null;
         let currentQuestion = null;
         let patients = [];
@@ -1253,24 +1206,27 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            // For demo purposes - using mock authentication
-            // In production, replace with real Firebase auth
-            mockAuthentication();
-            
-            // Load initial data
             loadPatients();
-            
-            // Setup event listeners
             setupEventListeners();
+            updateExaminerDisplay();
         });
 
-        function mockAuthentication() {
-            // Mock authentication for demo
-            currentUser = {
-                email: "arzt@us.army.mil",
-                displayName: "Dr. Miller"
-            };
-            showApp();
+        function updateExaminerDisplay() {
+            document.getElementById('currentUser').textContent = `Aktueller Gutachter: ${currentUser.displayName}`;
+        }
+
+        function changeExaminer() {
+            const name = prompt("Name des Gutachters:", currentUser.displayName);
+            const email = prompt("Email des Gutachters:", currentUser.email);
+            
+            if (name && email) {
+                currentUser = {
+                    displayName: name,
+                    email: email
+                };
+                updateExaminerDisplay();
+                alert(`Gutachter geändert zu: ${name}`);
+            }
         }
 
         function setupEventListeners() {
@@ -1307,6 +1263,7 @@
                         firstName: "John",
                         lastName: "Miller",
                         unit: "Delta Force",
+                        rank: "Major",
                         status: "completed",
                         createdAt: new Date(),
                         examiner: "Dr. Smith",
@@ -1316,7 +1273,12 @@
                             bpLow: 85,
                             temperature: 36.8,
                             respiration: 16,
-                            oxygen: 98
+                            oxygen: 98,
+                            height: 182,
+                            weight: 85,
+                            fitness: "athletic",
+                            lastMeal: 3,
+                            mobility: "normal"
                         }
                     },
                     {
@@ -1324,6 +1286,7 @@
                         firstName: "Sarah",
                         lastName: "Connor",
                         unit: "Air Force SpecOps",
+                        rank: "Captain",
                         status: "pending",
                         createdAt: new Date(),
                         examiner: "Dr. Miller"
@@ -1333,6 +1296,7 @@
                         firstName: "Mike",
                         lastName: "Johnson",
                         unit: "Navy SEALs",
+                        rank: "Chief Petty Officer",
                         status: "critical",
                         createdAt: new Date(),
                         examiner: "Dr. Brown"
@@ -1353,7 +1317,7 @@
             container.innerHTML = '';
             
             const filteredPatients = patients.filter(patient => {
-                const searchStr = `${patient.firstName} ${patient.lastName} ${patient.unit} ${patient.id}`.toLowerCase();
+                const searchStr = `${patient.firstName} ${patient.lastName} ${patient.unit} ${patient.id} ${patient.rank || ''}`.toLowerCase();
                 return searchStr.includes(searchTerm);
             });
             
@@ -1371,7 +1335,7 @@
                 const statusClass = `status-${patient.status}`;
                 
                 card.innerHTML = `
-                    <div class="patient-id">${patient.id}</div>
+                    <div class="patient-id">${patient.id} • ${patient.rank || 'Soldat'}</div>
                     <div class="patient-name">${patient.firstName} ${patient.lastName}</div>
                     <div style="font-size: 13px; color: #ccc;">${patient.unit}</div>
                     <div class="patient-status ${statusClass}" style="margin-top: 8px;">
@@ -1396,7 +1360,7 @@
             document.getElementById('patientContent').style.display = 'block';
             
             // Update patient header
-            document.getElementById('patientFullName').textContent = `${currentPatient.firstName} ${currentPatient.lastName}`;
+            document.getElementById('patientFullName').textContent = `${currentPatient.firstName} ${currentPatient.lastName} (${currentPatient.rank || 'Soldat'})`;
             document.getElementById('patientId').textContent = currentPatient.id;
             document.getElementById('patientUnit').textContent = currentPatient.unit;
             document.getElementById('examinationDate').textContent = new Date(currentPatient.createdAt).toLocaleDateString('de-DE');
@@ -1458,8 +1422,8 @@
         async function createNewPatient() {
             const firstName = prompt('Vorname des Soldaten:');
             const lastName = prompt('Nachname des Soldaten:');
+            const rank = prompt('Dienstgrad:', 'Soldat');
             const unit = prompt('Einheit:');
-            const rank = prompt('Dienstgrad:');
             
             if (!firstName || !lastName || !unit) {
                 alert('Bitte alle erforderlichen Felder ausfüllen');
@@ -1472,11 +1436,12 @@
                 id: patientId,
                 firstName: firstName,
                 lastName: lastName,
-                rank: rank || '',
+                rank: rank || 'Soldat',
                 unit: unit,
                 status: 'pending',
                 createdAt: new Date(),
-                examiner: currentUser.email,
+                examiner: currentUser.displayName,
+                examinerEmail: currentUser.email,
                 answers: {},
                 vitals: {},
                 comments: {},
@@ -1491,7 +1456,7 @@
                 renderPatientList();
                 selectPatient(patientData);
                 
-                alert(`Neue Untersuchung für ${firstName} ${lastName} erstellt`);
+                alert(`Neue Untersuchung für ${firstName} ${lastName} (${rank}) erstellt`);
             } catch (error) {
                 console.error('Error creating patient:', error);
                 alert('Fehler beim Erstellen der Untersuchung');
@@ -1535,7 +1500,7 @@
                     recommendation: document.getElementById('finalRecommendation').value,
                     reason: document.getElementById('summaryReason').value,
                     measures: document.getElementById('summaryMeasures').value,
-                    signature: document.getElementById('summarySignature').value
+                    signature: document.getElementById('summarySignature').value || currentUser.displayName
                 };
                 
                 // Update patient data
@@ -1543,14 +1508,14 @@
                 currentPatient.vitals = vitals;
                 currentPatient.summary = summary;
                 currentPatient.comments = comments;
+                currentPatient.examiner = currentUser.displayName;
+                currentPatient.examinerEmail = currentUser.email;
+                currentPatient.updatedAt = new Date();
                 
                 // Update status based on recommendation
                 if (summary.recommendation === 'fit') currentPatient.status = 'completed';
                 else if (summary.recommendation === 'notfit') currentPatient.status = 'critical';
                 else currentPatient.status = 'pending';
-                
-                // Update timestamp
-                currentPatient.updatedAt = new Date();
                 
                 // In a real app, save to Firebase
                 // await db.collection('patients').doc(currentPatient.id).update({
@@ -1558,6 +1523,8 @@
                 //     vitals: vitals,
                 //     summary: summary,
                 //     comments: comments,
+                //     examiner: currentUser.displayName,
+                //     examinerEmail: currentUser.email,
                 //     status: currentPatient.status,
                 //     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 // });
@@ -1566,7 +1533,16 @@
                 document.getElementById('patientStatus').textContent = getStatusText(currentPatient.status);
                 document.getElementById('patientStatus').className = `patient-status status-${currentPatient.status}`;
                 
-                alert('Patientendaten gespeichert!');
+                // Show success message
+                const saveBtn = document.querySelector('.btn-primary');
+                const originalHTML = saveBtn.innerHTML;
+                saveBtn.innerHTML = '<i class="fas fa-check"></i> Gespeichert';
+                saveBtn.style.background = 'var(--success)';
+                
+                setTimeout(() => {
+                    saveBtn.innerHTML = originalHTML;
+                    saveBtn.style.background = '';
+                }, 2000);
                 
                 // Refresh patient list
                 renderPatientList();
@@ -1593,14 +1569,11 @@
             
             // Show auto-save indicator
             const saveBtn = document.querySelector('.btn-primary');
-            const originalHTML = saveBtn.innerHTML;
-            saveBtn.innerHTML = '<i class="fas fa-check"></i> Autogespeichert';
-            saveBtn.style.background = 'var(--success)';
+            saveBtn.innerHTML = '<i class="fas fa-sync fa-spin"></i> Speichern...';
             
             setTimeout(() => {
-                saveBtn.innerHTML = originalHTML;
-                saveBtn.style.background = '';
-            }, 1000);
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Speichern';
+            }, 500);
         }
 
         function updateVitalStatus(type) {
@@ -1618,6 +1591,9 @@
                     pulseStatus.textContent = 'Hoch';
                     pulseStatus.className = 'vital-status status-danger';
                 }
+            } else {
+                pulseStatus.textContent = 'Normal';
+                pulseStatus.className = 'vital-status status-normal';
             }
             
             // Blood Pressure
@@ -1635,6 +1611,9 @@
                     bpStatus.textContent = 'Hoch';
                     bpStatus.className = 'vital-status status-danger';
                 }
+            } else {
+                bpStatus.textContent = 'Normal';
+                bpStatus.className = 'vital-status status-normal';
             }
             
             // Temperature
@@ -1651,6 +1630,9 @@
                     tempStatus.textContent = 'Fieber';
                     tempStatus.className = 'vital-status status-danger';
                 }
+            } else {
+                tempStatus.textContent = 'Normal';
+                tempStatus.className = 'vital-status status-normal';
             }
             
             // Respiration
@@ -1667,6 +1649,9 @@
                     respStatus.textContent = 'Schnell';
                     respStatus.className = 'vital-status status-danger';
                 }
+            } else {
+                respStatus.textContent = 'Normal';
+                respStatus.className = 'vital-status status-normal';
             }
             
             // Oxygen
@@ -1683,6 +1668,9 @@
                     oxygenStatus.textContent = 'Kritisch';
                     oxygenStatus.className = 'vital-status status-danger';
                 }
+            } else {
+                oxygenStatus.textContent = 'Normal';
+                oxygenStatus.className = 'vital-status status-normal';
             }
         }
 
@@ -1708,6 +1696,10 @@
                     bmiStatus.textContent = 'Adipositas';
                     bmiStatus.className = 'vital-status status-danger';
                 }
+            } else {
+                document.getElementById('vitalBMI').value = '';
+                bmiStatus.textContent = 'Berechnen';
+                bmiStatus.className = 'vital-status';
             }
         }
 
@@ -1766,7 +1758,19 @@
             params.forEach(param => {
                 let status;
                 if (param.name === 'Blutdruck') {
-                    status = {text: 'Manuell prüfen', class: ''};
+                    if (bpHigh && bpLow) {
+                        const high = parseFloat(bpHigh);
+                        const low = parseFloat(bpLow);
+                        if (high >= 110 && high <= 140 && low >= 60 && low <= 90) {
+                            status = {text: 'Normal', class: 'status-normal'};
+                        } else if (high < 110 || low < 60) {
+                            status = {text: 'Niedrig', class: 'status-warning'};
+                        } else {
+                            status = {text: 'Hoch', class: 'status-danger'};
+                        }
+                    } else {
+                        status = {text: 'Nicht gemessen', class: ''};
+                    }
                 } else {
                     status = getStatus(param.value, param.min, param.max);
                 }
@@ -1836,6 +1840,27 @@
                 `;
             }
             
+            // Add mobility row
+            if (mobility) {
+                const mobilityText = {
+                    normal: 'Normal',
+                    limited: 'Eingeschränkt'
+                }[mobility] || mobility;
+                
+                const mobilityStatus = mobility === 'normal' ? 
+                    {text: 'Normal', class: 'status-normal'} : 
+                    {text: 'Eingeschränkt', class: 'status-warning'};
+                
+                analysisHTML += `
+                    <tr>
+                        <td>Mobilität</td>
+                        <td>${mobilityText}</td>
+                        <td>Normal</td>
+                        <td><span class="patient-status ${mobilityStatus.class}">${mobilityStatus.text}</span></td>
+                    </tr>
+                `;
+            }
+            
             analysisHTML += `
                     </tbody>
                 </table>
@@ -1851,11 +1876,11 @@
             const abnormalCount = document.querySelectorAll('.vital-status.status-warning, .vital-status.status-danger').length;
             
             if (abnormalCount === 0) {
-                analysisHTML += `<p>Alle Vitalparameter im Normalbereich. Keine medizinischen Bedenken.</p>`;
+                analysisHTML += `<p>✅ Alle Vitalparameter im Normalbereich. Keine medizinischen Bedenken.</p>`;
             } else if (abnormalCount <= 2) {
-                analysisHTML += `<p>${abnormalCount} Parameter außerhalb des Normbereichs. Weitere Beobachtung empfohlen.</p>`;
+                analysisHTML += `<p>⚠️ ${abnormalCount} Parameter außerhalb des Normbereichs. Weitere Beobachtung empfohlen.</p>`;
             } else {
-                analysisHTML += `<p>${abnormalCount} Parameter außerhalb des Normbereichs. Dringende medizinische Untersuchung empfohlen.</p>`;
+                analysisHTML += `<p>🚨 ${abnormalCount} Parameter außerhalb des Normbereichs. Dringende medizinische Untersuchung empfohlen.</p>`;
             }
             
             analysisHTML += `</div>`;
@@ -1929,7 +1954,7 @@
             // Add new comment
             const newComment = {
                 text: commentText,
-                author: currentUser.displayName || currentUser.email,
+                author: currentUser.displayName,
                 timestamp: new Date().toISOString()
             };
             
@@ -2013,22 +2038,27 @@
                         .signature { margin-top: 50px; border-top: 1px solid #333; padding-top: 20px; }
                         @media print {
                             .no-print { display: none; }
+                            body { margin: 20px; }
                         }
                     </style>
                 </head>
                 <body>
                     <div class="header">
                         <h1>U.S. ARMY - Medizinisches Gutachten</h1>
-                        <h2>${currentPatient.firstName} ${currentPatient.lastName} - ${currentPatient.unit}</h2>
-                        <p>Untersuchungsdatum: ${new Date(currentPatient.createdAt).toLocaleDateString('de-DE')}</p>
-                        <p>Gutachter: ${currentUser.displayName || currentUser.email}</p>
+                        <h2>${currentPatient.firstName} ${currentPatient.lastName} - ${currentPatient.rank || 'Soldat'}</h2>
+                        <p><strong>Einheit:</strong> ${currentPatient.unit}</p>
+                        <p><strong>Untersuchungsdatum:</strong> ${new Date(currentPatient.createdAt).toLocaleDateString('de-DE')}</p>
+                        <p><strong>Gutachter:</strong> ${currentUser.displayName}</p>
                     </div>
                     
                     <div class="section">
                         <h3 class="section-title">Zusammenfassung & Empfehlung</h3>
                         <p><strong>Gesamteindruck:</strong><br>${document.getElementById('summaryAssessment').value || 'Nicht bewertet'}</p>
+                        <p><strong>Psychologische Einschätzung:</strong><br>${document.getElementById('summaryPsychological').value || 'Nicht bewertet'}</p>
+                        <p><strong>Medizinische Einschätzung:</strong><br>${document.getElementById('summaryMedical').value || 'Nicht bewertet'}</p>
                         <p><strong>Empfehlung:</strong> ${document.getElementById('finalRecommendation').selectedOptions[0]?.text || 'Nicht ausgewählt'}</p>
                         <p><strong>Begründung:</strong><br>${document.getElementById('summaryReason').value || ''}</p>
+                        <p><strong>Empfohlene Maßnahmen:</strong><br>${document.getElementById('summaryMeasures').value || ''}</p>
                     </div>
                     
                     <div class="section">
@@ -2040,17 +2070,18 @@
                             <tr><td>Körpertemperatur</td><td>${document.getElementById('vitalTemp').value || '-'} °C</td><td>36.1-37.5 °C</td></tr>
                             <tr><td>Atemfrequenz</td><td>${document.getElementById('vitalRespiration').value || '-'} /min</td><td>12-20 /min</td></tr>
                             <tr><td>Sauerstoffsättigung</td><td>${document.getElementById('vitalOxygen').value || '-'} %</td><td>95-100%</td></tr>
+                            <tr><td>BMI</td><td>${document.getElementById('vitalBMI').value || '-'}</td><td>18.5-24.9</td></tr>
                         </table>
                     </div>
                     
                     <div class="section">
-                        <h3 class="section-title">Psychologische Einschätzung</h3>
-                        <p>${document.getElementById('summaryPsychological').value || 'Nicht bewertet'}</p>
+                        <h3 class="section-title">Psychologische Bewertung</h3>
+                        ${getPsychologicalSummary()}
                     </div>
                     
                     <div class="section">
-                        <h3 class="section-title">Medizinische Einschätzung</h3>
-                        <p>${document.getElementById('summaryMedical').value || 'Nicht bewertet'}</p>
+                        <h3 class="section-title">Medizinische Bewertung</h3>
+                        ${getMedicalSummary()}
                     </div>
                     
                     <div class="signature">
@@ -2065,6 +2096,40 @@
                 </html>
             `);
             printWindow.document.close();
+        }
+
+        function getPsychologicalSummary() {
+            let summary = '';
+            const sections = ['1.1', '1.2', '1.3', '2.1', '2.2', '2.3', '2.4', '3.1', '3.2', '3.3', '3.4', '3.5', '4.1', '4.2', '4.3', '4.4', '5.1', '5.2', '5.3', '5.4', '6.1', '6.2', '6.3', '6.4', '6.5'];
+            
+            sections.forEach(qId => {
+                const input = document.querySelector(`[data-question="${qId}"]`);
+                if (input && input.value) {
+                    const questionText = input.closest('.question-item')?.querySelector('.question-text')?.textContent;
+                    if (questionText) {
+                        summary += `<p><strong>${questionText}</strong><br>${input.value}</p>`;
+                    }
+                }
+            });
+            
+            return summary || '<p>Keine psychologischen Daten erfasst.</p>';
+        }
+
+        function getMedicalSummary() {
+            let summary = '';
+            const sections = ['med1', 'med2', 'med3', 'med4', 'med5', 'med6', 'med7', 'med8', 'medAllergies', 'medInjuries', 'medOther'];
+            
+            sections.forEach(qId => {
+                const input = document.querySelector(`[data-question="${qId}"]`);
+                if (input && input.value) {
+                    const questionText = input.closest('.question-item')?.querySelector('.question-text')?.textContent;
+                    if (questionText) {
+                        summary += `<p><strong>${questionText}</strong><br>${input.value}</p>`;
+                    }
+                }
+            });
+            
+            return summary || '<p>Keine medizinischen Daten erfasst.</p>';
         }
 
         function deletePatient() {
@@ -2086,36 +2151,6 @@
                 renderPatientList();
                 
                 alert('Untersuchung gelöscht');
-            }
-        }
-
-        function login() {
-            // For demo purposes
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            if (!email || !password) {
-                alert('Bitte Email und Passwort eingeben');
-                return;
-            }
-            
-            // Mock login
-            currentUser = {
-                email: email,
-                displayName: email.split('@')[0]
-            };
-            
-            showApp();
-        }
-
-        function logout() {
-            if (confirm('Möchten Sie sich wirklich ausloggen?')) {
-                currentUser = null;
-                currentPatient = null;
-                patients = [];
-                comments = {};
-                
-                showLogin();
             }
         }
 
