@@ -1056,6 +1056,59 @@
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-20px); }
         }
+        
+        /* ===== MODAL SPECIFIC STYLES ===== */
+        .modal-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: #000000 !important; /* Schwarzer Text */
+            font-size: 14px;
+            transition: var(--transition);
+            margin-bottom: 16px;
+        }
+        
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .modal-select {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: #000000 !important; /* Schwarzer Text */
+            font-size: 14px;
+            transition: var(--transition);
+            margin-bottom: 16px;
+        }
+        
+        .modal-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .modal-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--gray-light);
+            font-weight: 500;
+        }
+        
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -1927,55 +1980,21 @@
                 New Patient Assessment
             </h2>
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div class="modal-grid">
                 <div>
-                    <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">First Name</label>
-                    <input type="text" class="question-input" id="newPatientFirstName" placeholder="John">
+                    <label class="modal-label">Soldier's Name:</label>
+                    <input type="text" class="modal-input" id="newPatientName" placeholder="First Last" style="color: #000000 !important;">
                 </div>
+                
                 <div>
-                    <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Last Name</label>
-                    <input type="text" class="question-input" id="newPatientLastName" placeholder="Doe">
+                    <label class="modal-label">Rank / Unit:</label>
+                    <input type="text" class="modal-input" id="newPatientRankUnit" placeholder="e.g., Sergeant / Infantry" style="color: #000000 !important;">
                 </div>
+                
                 <div>
-                    <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Rank</label>
-                    <select class="question-input" style="height: auto;" id="newPatientRank">
-                        <option value="">Select Rank</option>
-                        <option value="Private">Private</option>
-                        <option value="Private First Class">Private First Class</option>
-                        <option value="Specialist">Specialist</option>
-                        <option value="Corporal">Corporal</option>
-                        <option value="Sergeant">Sergeant</option>
-                        <option value="Staff Sergeant">Staff Sergeant</option>
-                        <option value="Sergeant First Class">Sergeant First Class</option>
-                        <option value="Master Sergeant">Master Sergeant</option>
-                        <option value="Sergeant Major">Sergeant Major</option>
-                        <option value="Lieutenant">Lieutenant</option>
-                        <option value="Captain">Captain</option>
-                        <option value="Major">Major</option>
-                        <option value="Colonel">Colonel</option>
-                        <option value="Major General">Major General</option>
-                        <option value="Lieutenant General">Lieutenant General</option>
-                        <option value="Vice General of Army">Vice General of Army</option>
-                        <option value="General of Army">General of Army</option>
-                    </select>
+                    <label class="modal-label">Examiner:</label>
+                    <input type="text" class="modal-input" id="newPatientExaminer" placeholder="Dr. Miller" style="color: #000000 !important;">
                 </div>
-                <div>
-                    <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Unit</label>
-                    <select class="question-input" style="height: auto;" id="newPatientUnit">
-                        <option value="">Select Unit</option>
-                        <option value="Infantry">Infantry</option>
-                        <option value="Military Police">Military Police</option>
-                        <option value="Navy Marine">Navy Marine</option>
-                        <option value="Navy SEAL">Navy SEAL</option>
-                        <option value="Air Force">Air Force</option>
-                        <option value="S.O.C">S.O.C</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; color: var(--gray-light);">Examiner</label>
-                <input type="text" class="question-input" id="newPatientExaminer" placeholder="Dr. Miller">
             </div>
             
             <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px;">
@@ -2466,16 +2485,24 @@
         }
 
         async function createPatient() {
-            const firstName = document.getElementById('newPatientFirstName').value.trim();
-            const lastName = document.getElementById('newPatientLastName').value.trim();
-            const rank = document.getElementById('newPatientRank').value;
-            const unit = document.getElementById('newPatientUnit').value;
+            const fullName = document.getElementById('newPatientName').value.trim();
+            const rankUnit = document.getElementById('newPatientRankUnit').value.trim();
             const examiner = document.getElementById('newPatientExaminer').value.trim();
             
-            if (!firstName || !lastName || !rank || !unit) {
+            if (!fullName || !rankUnit) {
                 alert('Please fill all required fields');
                 return;
             }
+            
+            // Parse name into first and last name
+            const nameParts = fullName.split(' ');
+            const firstName = nameParts[0] || '';
+            const lastName = nameParts.slice(1).join(' ') || '';
+            
+            // Parse rank and unit
+            const rankUnitParts = rankUnit.split('/');
+            const rank = rankUnitParts[0] ? rankUnitParts[0].trim() : '';
+            const unit = rankUnitParts[1] ? rankUnitParts[1].trim() : '';
             
             const patientId = `PT-${new Date().getFullYear()}-${String(patients.length + 1).padStart(3, '0')}`;
             const today = new Date().toISOString().split('T')[0];
@@ -2484,7 +2511,7 @@
                 id: patientId,
                 firstName: firstName,
                 lastName: lastName,
-                fullName: `${firstName} ${lastName}`,
+                fullName: fullName,
                 rank: rank,
                 unit: unit,
                 status: 'pending',
@@ -2493,8 +2520,8 @@
                 lastUpdated: new Date().toISOString(),
                 vitals: {},
                 formData: {
-                    name: `${firstName} ${lastName}`,
-                    rankUnit: `${rank} / ${unit}`,
+                    name: fullName,
+                    rankUnit: rankUnit,
                     date: today,
                     examiner: examiner || currentUser.name
                 },
@@ -2513,10 +2540,9 @@
                 selectPatient(newPatient);
                 
                 // Clear form
-                document.getElementById('newPatientFirstName').value = '';
-                document.getElementById('newPatientLastName').value = '';
-                document.getElementById('newPatientRank').value = '';
-                document.getElementById('newPatientUnit').value = '';
+                document.getElementById('newPatientName').value = '';
+                document.getElementById('newPatientRankUnit').value = '';
+                document.getElementById('newPatientExaminer').value = '';
                 
                 addActivity(`Created new assessment for ${newPatient.fullName}`, 'fas fa-user-plus');
             } else {
