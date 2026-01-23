@@ -179,6 +179,16 @@
             transform: rotate(10deg) scale(1.05);
         }
         
+        .logo-text {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.2;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: white;
+        }
+        
         .brand-text h1 {
             font-size: 28px;
             font-weight: 800;
@@ -1131,7 +1141,7 @@
             <div class="header-content">
                 <div class="brand">
                     <div class="logo">
-                        <i class="fas fa-shield-alt"></i>
+                        <div class="logo-text">UNITED STATES<br>ARMY</div>
                     </div>
                     <div class="brand-text">
                         <h1>MEDICAL & PSYCHOLOGICAL EVALUATION</h1>
@@ -1962,15 +1972,24 @@
                         <i class="fas fa-cog"></i>
                         Einstellungen
                     </button>
+                    <button class="action-btn" onclick="quickAction('clearAll')" style="background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);">
+                        <i class="fas fa-trash"></i>
+                        Alles löschen
+                    </button>
                 </div>
             </div>
             
             <!-- Recent Activity -->
             <div class="activity-feed">
-                <h3 class="section-title">
-                    <i class="fas fa-history"></i>
-                    Letzte Aktivitäten
-                </h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 class="section-title">
+                        <i class="fas fa-history"></i>
+                        Letzte Aktivitäten
+                    </h3>
+                    <button class="btn btn-danger" onclick="clearAllActivities()" style="padding: 6px 12px; font-size: 12px;">
+                        <i class="fas fa-trash"></i> Alles löschen
+                    </button>
+                </div>
                 <div class="activity-list" id="activityFeed">
                     <!-- Activities will be loaded here -->
                 </div>
@@ -2188,7 +2207,7 @@
 
         // ===== ANWENDUNGSZUSTAND =====
         let currentUser = {
-            name: "",
+            name: "Dr. Müller",
             rank: "Major",
             role: "Chefarzt",
             email: "dr.mueller@us.army.mil"
@@ -2365,7 +2384,7 @@
                     <div class="empty-state" id="emptyPatientList">
                         <i class="fas fa-users"></i>
                         <p>Keine Soldaten gefunden</p>
-                        <p style="font-size: 14px; margin-top: 8px;">Erstellen Sie Ihre erste Bewertung</p>
+                        <p style="font-size: 14px; margin-top: 8px;">Erstellen Sie Ihre erste Akte</p>
                     </div>
                 `;
                 return;
@@ -2818,6 +2837,64 @@
             updateActivityFeed();
         }
 
+        // ===== SCHNELLAKTIONEN FUNKTIONEN =====
+        function quickAction(action) {
+            switch(action) {
+                case 'export':
+                    exportAssessment();
+                    break;
+                case 'print':
+                    window.print();
+                    break;
+                case 'template':
+                    alert('Vorlage erfolgreich angewendet');
+                    break;
+                case 'stats':
+                    openModal('statsModal');
+                    updateStatsModal();
+                    break;
+                case 'reminder':
+                    alert('Erinnerung für Nachuntersuchung in 7 Tagen gesetzt');
+                    break;
+                case 'settings':
+                    alert('Einstellungen würden hier geöffnet werden');
+                    break;
+                case 'clearAll':
+                    if (confirm('WARNUNG: Diese Aktion löscht ALLE Daten und setzt das System zurück. Sind Sie sicher?')) {
+                        clearAllData();
+                    }
+                    break;
+            }
+        }
+
+        function clearAllActivities() {
+            if (confirm('Möchten Sie wirklich ALLE Aktivitäten löschen?')) {
+                window.activities = [];
+                updateActivityFeed();
+                addActivity('Aktivitätsverlauf gelöscht', 'fas fa-trash');
+            }
+        }
+
+        function clearAllData() {
+            if (confirm('WARNUNG: Diese Aktion ist endgültig und kann nicht rückgängig gemacht werden. ALLE Patienten und Daten werden gelöscht. Fortfahren?')) {
+                // Hier würden in einer echten App alle Daten aus Firebase gelöscht werden
+                // Für Demo-Zwecke setzen wir nur die lokalen Daten zurück
+                
+                patients = [];
+                currentPatient = null;
+                window.activities = [];
+                
+                // UI zurücksetzen
+                document.getElementById('patientHeader').style.display = 'none';
+                renderPatientList();
+                updateActivityFeed();
+                updateStats();
+                
+                addActivity('Alle Daten gelöscht - System zurückgesetzt', 'fas fa-bomb');
+                alert('Alle Daten wurden gelöscht. Das System wurde zurückgesetzt.');
+            }
+        }
+
         // ===== SPEICHERN & EXPORT =====
         function autoSave() {
             if (!currentPatient) return;
@@ -3072,31 +3149,6 @@
                 } else {
                     alert('Fehler beim Löschen des Patienten. Bitte versuchen Sie es erneut.');
                 }
-            }
-        }
-
-        // ===== SCHNELLAKTIONEN =====
-        function quickAction(action) {
-            switch(action) {
-                case 'export':
-                    exportAssessment();
-                    break;
-                case 'print':
-                    window.print();
-                    break;
-                case 'template':
-                    alert('Vorlage erfolgreich angewendet');
-                    break;
-                case 'stats':
-                    openModal('statsModal');
-                    updateStatsModal();
-                    break;
-                case 'reminder':
-                    alert('Erinnerung für Nachuntersuchung in 7 Tagen gesetzt');
-                    break;
-                case 'settings':
-                    alert('Einstellungen würden hier geöffnet werden');
-                    break;
             }
         }
 
