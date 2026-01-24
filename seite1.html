@@ -3,156 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔧 SOC MECHANIC & MAINTENANCE MANAGEMENT</title>
+    <title>📋 HR Einweisungsmanagement</title>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
     <style>
-        /* ===== VARIABLES ===== */
-        :root {
-            --primary: #1a1f2e;
-            --primary-dark: #0d1117;
-            --primary-light: #2d3748;
-            --secondary: #d4af37;
-            --secondary-dark: #b8941f;
-            --secondary-light: #e6c158;
-            --mech-blue: #1e40af;
-            --mech-red: #dc2626;
-            --mech-green: #059669;
-            --mech-orange: #ea580c;
-            --mech-gray: #6b7280;
-            --dark: #0a0a0f;
-            --dark-card: #151a23;
-            --dark-surface: #1e2532;
-            --light: #e5e7eb;
-            --gray: #9ca3af;
-            --gray-light: #d1d5db;
-            --border: rgba(255, 255, 255, 0.1);
-            
-            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
-            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.3);
-            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
-            
-            --radius-xl: 16px;
-            --radius-lg: 12px;
-            --radius-md: 8px;
-            --radius-sm: 4px;
-            
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-fast: all 0.15s ease;
-        }
-        
-        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         
-        html {
-            scroll-behavior: smooth;
-            font-size: 16px;
-        }
-        
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, var(--dark) 0%, #0f172a 100%);
-            color: var(--light);
-            line-height: 1.6;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9;
             min-height: 100vh;
-            overflow-x: hidden;
         }
         
-        /* ===== BACKGROUND EFFECTS ===== */
-        .background-effects {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }
-        
-        .grid-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
-            background-size: 30px 30px;
-            opacity: 0.3;
-        }
-        
-        .scan-line {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--secondary), transparent);
-            animation: scan 3s linear infinite;
-            opacity: 0.5;
-        }
-        
-        @keyframes scan {
-            0% { top: 0%; }
-            100% { top: 100%; }
-        }
-        
-        /* ===== LAYOUT ===== */
-        .app-container {
-            max-width: 2000px;
+        .container {
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
             display: grid;
-            grid-template-columns: 350px 1fr;
+            grid-template-columns: 320px 1fr;
             gap: 20px;
-            min-height: 100vh;
         }
         
-        /* ===== HEADER ===== */
-        .app-header {
+        /* Header */
+        .header {
             grid-column: 1 / -1;
-            background: linear-gradient(135deg, rgba(26, 31, 46, 0.95) 0%, rgba(13, 17, 23, 0.98) 100%);
-            backdrop-filter: blur(20px);
-            border-radius: var(--radius-xl);
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            border-radius: 16px;
             padding: 20px 28px;
             margin-bottom: 20px;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            box-shadow: var(--shadow-lg);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .app-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, 
-                var(--secondary) 0%, 
-                var(--mech-blue) 50%, 
-                var(--mech-red) 100%);
-            animation: shimmer 3s infinite linear;
-        }
-        
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
         
         .header-content {
@@ -170,40 +64,29 @@
         .logo {
             width: 56px;
             height: 56px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
             color: white;
-            box-shadow: 0 6px 24px rgba(212, 175, 55, 0.3);
-            transition: var(--transition);
-        }
-        
-        .logo:hover {
-            transform: rotate(15deg) scale(1.1);
+            box-shadow: 0 6px 24px rgba(30, 58, 138, 0.4);
         }
         
         .brand-text h1 {
             font-size: 22px;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: white;
             margin-bottom: 4px;
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: 0.5px;
         }
         
         .brand-text .subtitle {
             font-size: 12px;
-            color: var(--gray);
-            opacity: 0.8;
-            font-family: 'Roboto Mono', monospace;
+            color: rgba(255, 255, 255, 0.7);
         }
         
-        .header-stats {
+        .stats {
             display: flex;
             gap: 20px;
         }
@@ -212,51 +95,46 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 12px 20px;
-            background: rgba(212, 175, 55, 0.1);
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
             min-width: 120px;
         }
         
         .stat-value {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
-            color: var(--secondary);
-            font-family: 'Orbitron', sans-serif;
+            color: white;
         }
         
         .stat-label {
             font-size: 11px;
-            color: var(--gray);
+            color: rgba(255, 255, 255, 0.7);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
         
-        /* ===== SIDEBAR ===== */
+        /* Sidebar */
         .sidebar {
-            background: rgba(21, 26, 35, 0.9);
-            backdrop-filter: blur(20px);
-            border-radius: var(--radius-xl);
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 16px;
             padding: 20px;
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             height: fit-content;
             position: sticky;
             top: 20px;
         }
         
-        .section-title {
+        .sidebar-title {
             font-size: 14px;
             font-weight: 600;
-            color: var(--secondary);
+            color: #3b82f6;
             margin-bottom: 16px;
             display: flex;
             align-items: center;
             gap: 8px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.5px;
         }
         
         .search-container {
@@ -266,20 +144,18 @@
         
         .search-input {
             width: 100%;
-            padding: 14px 16px 14px 48px;
+            padding: 12px 16px 12px 42px;
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
             color: white;
-            font-size: 13px;
-            transition: var(--transition);
-            font-family: 'Roboto Mono', monospace;
+            font-size: 14px;
         }
         
         .search-input:focus {
             outline: none;
-            border-color: var(--secondary);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
         
         .search-icon {
@@ -287,153 +163,116 @@
             left: 16px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--secondary);
+            color: #94a3b8;
         }
         
-        /* Vehicle Cards */
-        .vehicle-cards {
+        /* Employee Cards */
+        .employee-cards {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            max-height: 550px;
+            max-height: 500px;
             overflow-y: auto;
             padding-right: 8px;
         }
         
-        .vehicle-cards::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        .vehicle-cards::-webkit-scrollbar-track {
-            background: rgba(212, 175, 55, 0.1);
-            border-radius: 3px;
-        }
-        
-        .vehicle-cards::-webkit-scrollbar-thumb {
-            background: var(--secondary);
-            border-radius: 3px;
-        }
-        
-        .vehicle-card {
-            background: linear-gradient(135deg, rgba(30, 40, 175, 0.1) 0%, rgba(26, 31, 46, 0.3) 100%);
-            border-radius: var(--radius-md);
+        .employee-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
             padding: 16px;
             border: 1px solid transparent;
             cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
+            transition: all 0.3s ease;
         }
         
-        .vehicle-card::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--mech-blue);
-            transition: var(--transition);
-        }
-        
-        .vehicle-card:hover {
-            background: linear-gradient(135deg, rgba(30, 40, 175, 0.2) 0%, rgba(26, 31, 46, 0.4) 100%);
+        .employee-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(59, 130, 246, 0.3);
             transform: translateX(4px);
-            border-color: var(--secondary);
         }
         
-        .vehicle-card.active {
-            background: linear-gradient(135deg, rgba(30, 40, 175, 0.3) 0%, rgba(26, 31, 46, 0.5) 100%);
-            border-color: var(--secondary);
+        .employee-card.active {
+            background: rgba(30, 58, 138, 0.2);
+            border-color: #3b82f6;
         }
         
-        .vehicle-card.active::before {
-            background: var(--secondary);
-        }
-        
-        .vehicle-header {
+        .employee-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 8px;
         }
         
-        .vehicle-name {
-            font-weight: 700;
+        .employee-name {
+            font-weight: 600;
             font-size: 15px;
             color: white;
-            font-family: 'Orbitron', sans-serif;
         }
         
-        .vehicle-id {
-            font-family: 'Roboto Mono', monospace;
+        .employee-dn {
             font-size: 11px;
-            color: var(--secondary);
-            background: rgba(212, 175, 55, 0.1);
+            color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
             padding: 3px 8px;
             border-radius: 10px;
         }
         
-        .vehicle-details {
+        .employee-details {
             display: flex;
             flex-direction: column;
             gap: 4px;
-            font-size: 12px;
-            color: var(--gray);
+            font-size: 13px;
+            color: #94a3b8;
             margin-bottom: 12px;
         }
         
-        .vehicle-status {
-            display: inline-flex;
+        .induction-status {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .status-badge {
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            padding: 4px 12px;
+            gap: 4px;
+        }
+        
+        .status-completed { background: rgba(5, 150, 105, 0.2); color: #10b981; }
+        .status-pending { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .status-missing { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        
+        .new-employee-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+            color: white;
+            border: none;
             border-radius: 12px;
             font-weight: 600;
-            width: fit-content;
-        }
-        
-        .status-operational { background: rgba(5, 150, 105, 0.2); color: var(--mech-green); border: 1px solid rgba(5, 150, 105, 0.3); }
-        .status-maintenance { background: rgba(234, 88, 12, 0.2); color: var(--mech-orange); border: 1px solid rgba(234, 88, 12, 0.3); }
-        .status-critical { background: rgba(220, 38, 38, 0.2); color: var(--mech-red); border: 1px solid rgba(220, 38, 38, 0.3); }
-        .status-storage { background: rgba(107, 114, 128, 0.2); color: var(--mech-gray); border: 1px solid rgba(107, 114, 128, 0.3); }
-        
-        .quick-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .quick-btn {
-            padding: 12px;
-            background: rgba(212, 175, 55, 0.1);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: var(--radius-md);
-            color: var(--secondary);
-            font-size: 12px;
-            font-weight: 600;
             cursor: pointer;
-            transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
+            transition: all 0.3s ease;
+            margin-top: 20px;
         }
         
-        .quick-btn:hover {
-            background: rgba(212, 175, 55, 0.2);
+        .new-employee-btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 58, 138, 0.3);
         }
         
-        /* ===== MAIN CONTENT ===== */
+        /* Main Content */
         .main-content {
-            background: rgba(21, 26, 35, 0.9);
-            backdrop-filter: blur(20px);
-            border-radius: var(--radius-xl);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            box-shadow: var(--shadow-md);
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -441,36 +280,35 @@
         
         .content-header {
             padding: 20px 28px;
-            background: linear-gradient(135deg, rgba(30, 40, 175, 0.2) 0%, rgba(26, 31, 46, 0.4) 100%);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-            display: flex;
+            background: linear-gradient(135deg, rgba(30, 64, 175, 0.2) 0%, rgba(30, 41, 59, 0.4) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
             justify-content: space-between;
             align-items: center;
         }
         
-        .vehicle-info h2 {
+        .employee-info h2 {
             font-size: 22px;
-            font-weight: 800;
+            font-weight: 700;
             color: white;
-            margin-bottom: 6px;
-            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 8px;
         }
         
-        .vehicle-meta {
+        .employee-meta {
             display: flex;
             gap: 20px;
-            font-size: 13px;
-            color: var(--gray);
+            font-size: 14px;
+            color: #94a3b8;
         }
         
         .meta-item {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
         
         .meta-value {
-            color: var(--secondary);
+            color: #3b82f6;
             font-weight: 600;
         }
         
@@ -479,92 +317,62 @@
             gap: 12px;
         }
         
-        /* Tabs */
-        .tabs-container {
-            padding: 0 28px;
-            background: rgba(255, 255, 255, 0.02);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-        }
-        
-        .tabs {
-            display: flex;
-            gap: 2px;
-            overflow-x: auto;
-        }
-        
-        .tab {
-            padding: 16px 24px;
-            background: transparent;
+        .btn {
+            padding: 12px 20px;
             border: none;
-            color: var(--gray);
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            white-space: nowrap;
-            transition: var(--transition);
-            border-bottom: 3px solid transparent;
-            position: relative;
-            font-size: 13px;
-            font-family: 'Orbitron', sans-serif;
-        }
-        
-        .tab:hover {
-            color: var(--secondary);
-            background: rgba(212, 175, 55, 0.05);
-        }
-        
-        .tab.active {
-            color: var(--secondary);
-            border-bottom-color: var(--secondary);
-        }
-        
-        .tab-badge {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: var(--mech-red);
-            color: white;
-            font-size: 10px;
-            padding: 2px 6px;
-            border-radius: 8px;
-            min-width: 18px;
-            height: 18px;
-            display: flex;
+            transition: all 0.3s ease;
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
         }
         
-        /* Tab Content */
-        .tab-content {
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        /* Induction Forms */
+        .induction-section {
+            padding: 28px;
             flex: 1;
             overflow-y: auto;
-            padding: 28px;
         }
         
-        /* Sections */
-        .section {
-            background: linear-gradient(135deg, rgba(30, 40, 175, 0.05) 0%, rgba(26, 31, 46, 0.2) 100%);
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            margin-bottom: 24px;
-            border: 1px solid rgba(212, 175, 55, 0.1);
-            transition: var(--transition);
-        }
-        
-        .section:hover {
-            border-color: rgba(212, 175, 55, 0.3);
-        }
-        
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-        
-        .section-title-main {
+        .section-title {
             font-size: 18px;
             font-weight: 700;
             color: white;
+            margin-bottom: 24px;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -573,8 +381,8 @@
         .section-icon {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
-            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -582,11 +390,19 @@
             color: white;
         }
         
-        /* Form Styles */
+        .induction-form {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 24px;
+        }
+        
         .form-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
+            margin-bottom: 24px;
         }
         
         .form-group {
@@ -597,285 +413,115 @@
         
         .form-label {
             font-weight: 600;
-            color: var(--secondary);
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            color: #94a3b8;
+            font-size: 14px;
         }
         
-        .form-input {
+        .form-input, .form-select, .form-textarea {
             padding: 12px 16px;
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            color: white;
-            font-size: 14px;
-            transition: var(--transition);
-            font-family: 'Roboto Mono', monospace;
-        }
-        
-        .form-input:focus {
-            outline: none;
-            border-color: var(--secondary);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
-        }
-        
-        .form-select {
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            color: white;
-            font-size: 14px;
-            transition: var(--transition);
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d4af37'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
-            background-size: 16px;
-        }
-        
-        .form-select:focus {
-            outline: none;
-            border-color: var(--secondary);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
-        }
-        
-        /* Maintenance Grid */
-        .maintenance-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-        
-        .maintenance-card {
-            background: linear-gradient(135deg, rgba(30, 40, 175, 0.1) 0%, rgba(26, 31, 46, 0.3) 100%);
-            border-radius: var(--radius-md);
-            padding: 20px;
-            border: 1px solid rgba(212, 175, 55, 0.1);
-            transition: var(--transition);
-        }
-        
-        .maintenance-card.overdue {
-            border-color: var(--mech-red);
-            background: linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, rgba(26, 31, 46, 0.3) 100%);
-            animation: pulse 2s infinite;
-        }
-        
-        .maintenance-card.due-soon {
-            border-color: var(--mech-orange);
-            background: linear-gradient(135deg, rgba(234, 88, 12, 0.1) 0%, rgba(26, 31, 46, 0.3) 100%);
-        }
-        
-        .maintenance-card.completed {
-            border-color: var(--mech-green);
-            background: linear-gradient(135deg, rgba(5, 150, 105, 0.1) 0%, rgba(26, 31, 46, 0.3) 100%);
-        }
-        
-        .maintenance-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        
-        .maintenance-title {
-            font-weight: 700;
-            color: white;
-            font-size: 15px;
-        }
-        
-        .maintenance-status {
-            font-size: 11px;
-            padding: 4px 10px;
-            border-radius: 10px;
-            font-weight: 600;
-        }
-        
-        .maintenance-details {
-            font-size: 13px;
-            color: var(--gray);
-            margin-bottom: 16px;
-            line-height: 1.6;
-        }
-        
-        .maintenance-progress {
-            margin-top: 16px;
-        }
-        
-        .progress-bar {
-            height: 6px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 8px;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--secondary) 0%, var(--secondary-light) 100%);
-            border-radius: 3px;
-            transition: width 0.6s ease;
-        }
-        
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: var(--gray);
-        }
-        
-        /* Parts Inventory */
-        .parts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 16px;
-        }
-        
-        .part-card {
-            background: linear-gradient(135deg, rgba(30, 40, 175, 0.05) 0%, rgba(26, 31, 46, 0.2) 100%);
-            border-radius: var(--radius-md);
-            padding: 16px;
-            border: 1px solid rgba(212, 175, 55, 0.1);
-        }
-        
-        .part-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        
-        .part-name {
-            font-weight: 700;
-            color: white;
-            font-size: 14px;
-        }
-        
-        .part-stock {
-            font-size: 12px;
-            padding: 3px 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
-            font-weight: 600;
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
         }
         
-        .stock-low { background: rgba(220, 38, 38, 0.2); color: var(--mech-red); }
-        .stock-medium { background: rgba(234, 88, 12, 0.2); color: var(--mech-orange); }
-        .stock-high { background: rgba(5, 150, 105, 0.2); color: var(--mech-green); }
-        
-        .part-details {
-            font-size: 12px;
-            color: var(--gray);
-            margin-bottom: 12px;
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
         
-        /* Damage Report */
-        .damage-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .checkbox-group {
+            display: flex;
             gap: 20px;
+            margin-top: 8px;
         }
         
-        .damage-card {
-            background: linear-gradient(135deg, rgba(30, 40, 175, 0.05) 0%, rgba(26, 31, 46, 0.2) 100%);
-            border-radius: var(--radius-md);
-            padding: 20px;
-            border: 1px solid rgba(212, 175, 55, 0.1);
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
         
-        .damage-severity {
-            display: inline-block;
-            padding: 6px 12px;
+        .checkbox-label:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .checkbox-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #3b82f6;
+        }
+        
+        /* Induction Templates */
+        .template-box {
+            background: rgba(255, 255, 255, 0.03);
             border-radius: 12px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 24px;
+            position: relative;
+        }
+        
+        .template-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .template-content {
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #e2e8f0;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 6px;
+            color: #3b82f6;
             font-size: 12px;
             font-weight: 600;
-            margin-bottom: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         
-        .severity-low { background: rgba(5, 150, 105, 0.2); color: var(--mech-green); }
-        .severity-medium { background: rgba(234, 88, 12, 0.2); color: var(--mech-orange); }
-        .severity-high { background: rgba(220, 38, 38, 0.2); color: var(--mech-red); }
-        
-        /* Fuel & Consumption */
-        .fuel-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 24px;
+        .copy-btn:hover {
+            background: rgba(59, 130, 246, 0.2);
         }
         
-        .fuel-stat {
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(135deg, rgba(30, 40, 175, 0.1) 0%, rgba(26, 31, 46, 0.3) 100%);
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(212, 175, 55, 0.1);
-        }
-        
-        .fuel-value {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--secondary);
-            margin-bottom: 8px;
-            font-family: 'Orbitron', sans-serif;
-        }
-        
-        .fuel-label {
-            font-size: 13px;
-            color: var(--gray);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        /* Service History */
-        .history-timeline {
-            position: relative;
-            padding-left: 30px;
-        }
-        
-        .history-timeline::before {
-            content: '';
-            position: absolute;
-            left: 11px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--secondary);
-            opacity: 0.3;
-        }
-        
-        .history-item {
-            position: relative;
-            margin-bottom: 24px;
-        }
-        
-        .history-item::before {
-            content: '';
-            position: absolute;
-            left: -30px;
-            top: 6px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--secondary);
-            border: 3px solid var(--primary);
-        }
-        
-        .history-date {
-            color: var(--secondary);
-            font-weight: 600;
-            font-size: 13px;
-            margin-bottom: 6px;
-        }
-        
-        .history-content {
-            background: linear-gradient(135deg, rgba(30, 40, 175, 0.05) 0%, rgba(26, 31, 46, 0.2) 100%);
-            border-radius: var(--radius-md);
-            padding: 16px;
-            border: 1px solid rgba(212, 175, 55, 0.1);
-        }
-        
-        /* ===== MODALS ===== */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -883,18 +529,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(0, 0, 0, 0.9);
             backdrop-filter: blur(10px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
         
         .modal.active {
@@ -902,37 +542,25 @@
         }
         
         .modal-content {
-            background: linear-gradient(135deg, rgba(21, 26, 35, 0.98) 0%, rgba(26, 31, 46, 0.95) 100%);
-            border-radius: var(--radius-xl);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(30, 64, 175, 0.95) 100%);
+            border-radius: 16px;
             padding: 32px;
             width: 100%;
-            max-width: 600px;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            box-shadow: var(--shadow-lg);
-            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 500px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
         
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+        .modal-title {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 700;
         }
         
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 1400px) {
-            .app-container {
-                grid-template-columns: 320px 1fr;
-                gap: 16px;
-            }
-        }
-        
+        /* Responsive */
         @media (max-width: 1200px) {
-            .app-container {
+            .container {
                 grid-template-columns: 1fr;
             }
             
@@ -942,14 +570,8 @@
         }
         
         @media (max-width: 768px) {
-            .app-container {
+            .container {
                 padding: 12px;
-                gap: 12px;
-            }
-            
-            .app-header {
-                padding: 16px 20px;
-                margin-bottom: 12px;
             }
             
             .header-content {
@@ -958,19 +580,9 @@
                 align-items: flex-start;
             }
             
-            .header-stats {
+            .stats {
                 width: 100%;
                 justify-content: space-between;
-                gap: 12px;
-            }
-            
-            .stat-item {
-                padding: 10px 16px;
-                min-width: 100px;
-            }
-            
-            .stat-value {
-                font-size: 20px;
             }
             
             .form-grid {
@@ -989,140 +601,30 @@
                 justify-content: space-between;
             }
             
-            .tabs-container {
-                padding: 0 16px;
-            }
-            
-            .tab-content {
+            .induction-section {
                 padding: 20px;
             }
         }
         
-        @media (max-width: 480px) {
-            .tabs {
-                overflow-x: auto;
-                padding-bottom: 6px;
-            }
-            
-            .tab {
-                padding: 12px 16px;
-                font-size: 12px;
-            }
-            
-            .section {
-                padding: 20px;
-            }
-            
-            .vehicle-meta {
-                flex-wrap: wrap;
-                gap: 12px;
-            }
-            
-            .quick-actions {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        /* ===== UTILITIES ===== */
-        .btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: var(--radius-md);
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 13px;
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: 0.5px;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
-            color: var(--primary-dark);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
-        }
-        
-        .btn-secondary {
-            background: rgba(212, 175, 55, 0.1);
-            color: var(--secondary);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(212, 175, 55, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, var(--mech-red) 0%, #b91c1c 100%);
-            color: white;
-        }
-        
-        .btn-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, var(--mech-green) 0%, #047857 100%);
-            color: white;
-        }
-        
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(5, 150, 105, 0.3);
-        }
-        
+        /* Utilities */
         .badge {
             display: inline-flex;
             align-items: center;
             gap: 4px;
             padding: 4px 12px;
             border-radius: 12px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
         }
         
-        .badge-success { background: rgba(5, 150, 105, 0.2); color: var(--mech-green); border: 1px solid rgba(5, 150, 105, 0.3); }
-        .badge-warning { background: rgba(234, 88, 12, 0.2); color: var(--mech-orange); border: 1px solid rgba(234, 88, 12, 0.3); }
-        .badge-danger { background: rgba(220, 38, 38, 0.2); color: var(--mech-red); border: 1px solid rgba(220, 38, 38, 0.3); }
-        .badge-info { background: rgba(30, 40, 175, 0.2); color: var(--mech-blue); border: 1px solid rgba(30, 40, 175, 0.3); }
-        
-        .loading {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 60px;
-            color: var(--gray);
-        }
-        
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(212, 175, 55, 0.1);
-            border-top-color: var(--secondary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 16px;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .badge-warning { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
         
         .empty-state {
             text-align: center;
             padding: 60px 20px;
-            color: var(--gray);
+            color: #64748b;
         }
         
         .empty-state i {
@@ -1131,765 +633,247 @@
             opacity: 0.3;
         }
         
-        /* ===== ANIMATIONS ===== */
-        .pulse {
-            animation: pulse 2s infinite;
+        .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 24px 0;
         }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        
-        .glow {
-            animation: glow 3s ease-in-out infinite alternate;
-        }
-        
-        @keyframes glow {
-            from { box-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
-            to { box-shadow: 0 0 20px rgba(212, 175, 55, 0.5); }
-        }
-        
-        /* ===== TECH SPECIFIC STYLES ===== */
-        .spec-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-top: 20px;
-        }
-        
-        .spec-item {
-            padding: 16px;
-            background: rgba(212, 175, 55, 0.05);
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(212, 175, 55, 0.1);
-        }
-        
-        .spec-label {
-            font-size: 12px;
-            color: var(--gray);
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .spec-value {
-            font-size: 16px;
-            color: var(--secondary);
-            font-weight: 700;
-            font-family: 'Roboto Mono', monospace;
-        }
-        
-        /* System Status */
-        .system-status {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
-            margin-top: 20px;
-        }
-        
-        .system-item {
-            text-align: center;
-            padding: 16px;
-            background: rgba(212, 175, 55, 0.05);
-            border-radius: var(--radius-md);
-            border: 1px solid rgba(212, 175, 55, 0.1);
-            transition: var(--transition);
-        }
-        
-        .system-item:hover {
-            background: rgba(212, 175, 55, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        .system-icon {
-            font-size: 24px;
-            color: var(--secondary);
-            margin-bottom: 10px;
-        }
-        
-        .system-name {
-            font-size: 13px;
-            color: var(--gray);
-            margin-bottom: 6px;
-        }
-        
-        .system-state {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--mech-green);
-        }
-        
-        .system-state.warning { color: var(--mech-orange); }
-        .system-state.critical { color: var(--mech-red); }
     </style>
 </head>
 <body>
-    <!-- Background Effects -->
-    <div class="background-effects">
-        <div class="grid-overlay"></div>
-        <div class="scan-line"></div>
-    </div>
-    
-    <!-- Main App Container -->
-    <div class="app-container">
+    <div class="container">
         <!-- Header -->
-        <header class="app-header">
+        <header class="header">
             <div class="header-content">
                 <div class="brand">
                     <div class="logo">
-                        <i class="fas fa-tools"></i>
+                        <i class="fas fa-users"></i>
                     </div>
                     <div class="brand-text">
-                        <h1>SOC MECHANIC & MAINTENANCE</h1>
-                        <div class="subtitle">Special Operations Command • Technical Division</div>
+                        <h1>HR EINWEISUNGSMANAGEMENT</h1>
+                        <div class="subtitle">Mitarbeiter-Einweisungen • Compliance • Dokumentation</div>
                     </div>
                 </div>
-                <div class="header-stats">
+                <div class="stats">
                     <div class="stat-item">
-                        <div class="stat-value" id="totalVehicles">0</div>
-                        <div class="stat-label">Fahrzeuge</div>
+                        <div class="stat-value" id="totalEmployees">0</div>
+                        <div class="stat-label">Mitarbeiter</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value" id="operationalVehicles">0</div>
-                        <div class="stat-label">Einsatzbereit</div>
+                        <div class="stat-value" id="completedInductions">0</div>
+                        <div class="stat-label">Eingewiesen</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-value" id="criticalMaintenance">0</div>
-                        <div class="stat-label">Kritische Wartung</div>
+                        <div class="stat-value" id="pendingInductions">0</div>
+                        <div class="stat-label">Ausstehend</div>
                     </div>
                 </div>
             </div>
         </header>
         
-        <!-- Left Sidebar -->
+        <!-- Sidebar -->
         <aside class="sidebar">
-            <h3 class="section-title">
-                <i class="fas fa-warehouse"></i>
-                Fahrzeugbestand
+            <h3 class="sidebar-title">
+                <i class="fas fa-address-book"></i>
+                Mitarbeiterliste
             </h3>
             
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" id="searchVehicles" placeholder="Fahrzeug suchen...">
+                <input type="text" class="search-input" id="searchEmployees" placeholder="Mitarbeiter suchen...">
             </div>
             
-            <div class="vehicle-cards" id="vehicleCards">
-                <!-- Vehicle cards will be loaded here -->
-                <div class="empty-state" id="emptyVehicleList">
-                    <i class="fas fa-car"></i>
-                    <p>Keine Fahrzeuge gefunden</p>
-                    <p style="font-size: 12px; margin-top: 6px;">Erstellen Sie Ihren ersten Fahrzeugeintrag</p>
+            <div class="employee-cards" id="employeeCards">
+                <div class="empty-state" id="emptyEmployeeList">
+                    <i class="fas fa-users"></i>
+                    <p>Keine Mitarbeiter gefunden</p>
+                    <p style="font-size: 12px; margin-top: 6px;">Erstellen Sie Ihren ersten Mitarbeiter</p>
                 </div>
             </div>
             
-            <div class="quick-actions">
-                <button class="quick-btn" onclick="openNewVehicleModal()">
-                    <i class="fas fa-plus"></i>
-                    Neues Fahrzeug
-                </button>
-                <button class="quick-btn" onclick="openMaintenanceModal()">
-                    <i class="fas fa-wrench"></i>
-                    Wartung
-                </button>
-                <button class="quick-btn" onclick="openPartsModal()">
-                    <i class="fas fa-cogs"></i>
-                    Ersatzteile
-                </button>
-                <button class="quick-btn" onclick="generateReport()">
-                    <i class="fas fa-file-export"></i>
-                    Report
-                </button>
-            </div>
+            <button class="new-employee-btn" onclick="openNewEmployeeModal()">
+                <i class="fas fa-user-plus"></i>
+                Neuer Mitarbeiter
+            </button>
         </aside>
         
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Vehicle Header -->
-            <div class="content-header" id="vehicleHeader" style="display: none;">
-                <div class="vehicle-info">
-                    <h2 id="currentVehicleName">Fahrzeug auswählen</h2>
-                    <div class="vehicle-meta">
+            <!-- Employee Header -->
+            <div class="content-header" id="employeeHeader">
+                <div class="employee-info">
+                    <h2 id="currentEmployeeName">Mitarbeiter auswählen</h2>
+                    <div class="employee-meta">
                         <div class="meta-item">
-                            <i class="fas fa-fingerprint"></i>
-                            <span>ID: <span class="meta-value" id="currentVehicleId">-</span></span>
+                            <i class="fas fa-hashtag"></i>
+                            <span>DN: <span class="meta-value" id="currentEmployeeDN">-</span></span>
                         </div>
                         <div class="meta-item">
-                            <i class="fas fa-car"></i>
-                            <span>Typ: <span class="meta-value" id="currentVehicleType">-</span></span>
+                            <i class="fas fa-building"></i>
+                            <span>Unit: <span class="meta-value" id="currentEmployeeUnit">-</span></span>
                         </div>
                         <div class="meta-item">
-                            <i class="fas fa-flag"></i>
-                            <span>Einheit: <span class="meta-value" id="currentVehicleUnit">-</span></span>
+                            <i class="fas fa-user-tie"></i>
+                            <span>Rang: <span class="meta-value" id="currentEmployeeRank">-</span></span>
                         </div>
                         <div class="meta-item">
-                            <i class="fas fa-tachometer-alt"></i>
-                            <span>Status: <span class="meta-value" id="currentVehicleStatus">-</span></span>
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Eingestellt: <span class="meta-value" id="currentEmployeeHireDate">-</span></span>
                         </div>
                     </div>
                 </div>
                 <div class="action-buttons">
-                    <button class="btn btn-secondary" onclick="saveVehicleData()">
+                    <button class="btn btn-secondary" onclick="saveEmployeeData()">
                         <i class="fas fa-save"></i> Speichern
                     </button>
-                    <button class="btn btn-primary" onclick="markAsOperational()">
-                        <i class="fas fa-check"></i> Einsatzbereit
+                    <button class="btn btn-primary" onclick="generateInductionReport()">
+                        <i class="fas fa-file-export"></i> Vorlage kopieren
                     </button>
-                    <button class="btn btn-danger" onclick="openDamageReportModal()">
-                        <i class="fas fa-exclamation-triangle"></i> Schaden melden
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Tabs -->
-            <div class="tabs-container">
-                <div class="tabs">
-                    <button class="tab active" data-tab="overview">
-                        <i class="fas fa-eye"></i> Übersicht
-                    </button>
-                    <button class="tab" data-tab="maintenance">
-                        <i class="fas fa-wrench"></i> Wartung
-                        <span class="tab-badge" id="maintenanceBadge">0</span>
-                    </button>
-                    <button class="tab" data-tab="specs">
-                        <i class="fas fa-cogs"></i> Technische Daten
-                    </button>
-                    <button class="tab" data-tab="damage">
-                        <i class="fas fa-exclamation-triangle"></i> Schadensberichte
-                        <span class="tab-badge" id="damageBadge">0</span>
-                    </button>
-                    <button class="tab" data-tab="fuel">
-                        <i class="fas fa-gas-pump"></i> Kraftstoff & Verbrauch
-                    </button>
-                    <button class="tab" data-tab="history">
-                        <i class="fas fa-history"></i> Servicehistorie
+                    <button class="btn btn-success" onclick="markBothInductionsComplete()">
+                        <i class="fas fa-check-double"></i> Beide Einweisungen
                     </button>
                 </div>
             </div>
             
-            <!-- Tab Contents -->
-            <div class="tab-content">
-                <!-- Overview Tab -->
-                <div id="overviewTab" class="tab-pane active">
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-info-circle"></i>
-                                </div>
-                                Fahrzeuginformationen
-                            </div>
-                            <div class="badge" id="overviewStatusBadge">Status</div>
+            <!-- Induction Forms -->
+            <div class="induction-section" id="inductionSection" style="display: none;">
+                <!-- Oral Induction -->
+                <div class="induction-form">
+                    <div class="section-title">
+                        <div class="section-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        Mündliche Einweisung
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="oralInductionCheck" onchange="updateInductionStatus('oral', this.checked)">
+                            <span>Mündliche Einweisung bestanden</span>
+                        </label>
+                    </div>
+                    
+                    <div class="divider"></div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Datum:</label>
+                            <input type="date" class="form-input" id="oralDate" onchange="updateTemplate()">
                         </div>
                         
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label class="form-label">Fahrzeugbezeichnung:</label>
-                                <input type="text" class="form-input" id="vehicleName" placeholder="z.B. Panzerwagen A-001">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Fahrzeugtyp:</label>
-                                <select class="form-select" id="vehicleType">
-                                    <option value="">Typ auswählen</option>
-                                    <option value="Humvee">Humvee</option>
-                                    <option value="MRAP">MRAP</option>
-                                    <option value="JLTV">JLTV</option>
-                                    <option value="Stryker">Stryker</option>
-                                    <option value="Bradley">Bradley IFV</option>
-                                    <option value="Abrams">M1 Abrams</option>
-                                    <option value="Helikopter">Helikopter</option>
-                                    <option value="Boot">Boot</option>
-                                    <option value="LKW">Transport LKW</option>
-                                    <option value="Spezialfahrzeug">Spezialfahrzeug</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Kennzeichen/Seriennummer:</label>
-                                <input type="text" class="form-input" id="vehicleSerial" placeholder="z.B. SOC-001">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Einheit/Zug:</label>
-                                <input type="text" class="form-input" id="vehicleUnit" placeholder="z.B. Alpha Company, 1st Platoon">
+                        <div class="form-group">
+                            <label class="form-label">Uhrzeit (von - bis):</label>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="time" class="form-input" id="oralTimeStart" onchange="updateTemplate()" style="flex: 1;">
+                                <span style="align-self: center; color: #94a3b8;">bis</span>
+                                <input type="time" class="form-input" id="oralTimeEnd" onchange="updateTemplate()" style="flex: 1;">
                             </div>
                         </div>
                         
-                        <div class="form-grid" style="margin-top: 20px;">
-                            <div class="form-group">
-                                <label class="form-label">Fahrzeugstatus:</label>
-                                <select class="form-select" id="vehicleStatus">
-                                    <option value="operational">Einsatzbereit</option>
-                                    <option value="maintenance">In Wartung</option>
-                                    <option value="critical">Kritisch (Nicht einsatzbereit)</option>
-                                    <option value="storage">Eingelagert</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Letzter Check:</label>
-                                <input type="datetime-local" class="form-input" id="lastCheck">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Nächste Wartung:</label>
-                                <input type="date" class="form-input" id="nextMaintenance">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Verantwortlicher Mechaniker:</label>
-                                <input type="text" class="form-input" id="assignedMechanic" placeholder="Name des Mechanikers">
-                            </div>
+                        <div class="form-group">
+                            <label class="form-label">Beteiligte Person:</label>
+                            <input type="text" class="form-input" id="oralPerson" placeholder="Name der einweisenden Person" onchange="updateTemplate()">
                         </div>
                     </div>
                     
-                    <!-- System Status -->
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-microchip"></i>
-                                </div>
-                                Systemstatus
-                            </div>
-                        </div>
-                        
-                        <div class="system-status">
-                            <div class="system-item">
-                                <div class="system-icon">
-                                    <i class="fas fa-engine"></i>
-                                </div>
-                                <div class="system-name">Motor</div>
-                                <div class="system-state" id="engineStatus">OK</div>
-                            </div>
-                            <div class="system-item">
-                                <div class="system-icon">
-                                    <i class="fas fa-tachometer-alt"></i>
-                                </div>
-                                <div class="system-name">Getriebe</div>
-                                <div class="system-state" id="transmissionStatus">OK</div>
-                            </div>
-                            <div class="system-item">
-                                <div class="system-icon">
-                                    <i class="fas fa-car-battery"></i>
-                                </div>
-                                <div class="system-name">Elektrik</div>
-                                <div class="system-state" id="electricalStatus">OK</div>
-                            </div>
-                            <div class="system-item">
-                                <div class="system-icon">
-                                    <i class="fas fa-shield-alt"></i>
-                                </div>
-                                <div class="system-name">Panzerung</div>
-                                <div class="system-state" id="armorStatus">OK</div>
-                            </div>
-                            <div class="system-item">
-                                <div class="system-icon">
-                                    <i class="fas fa-satellite-dish"></i>
-                                </div>
-                                <div class="system-name">Kommunikation</div>
-                                <div class="system-state" id="commsStatus">OK</div>
-                            </div>
-                            <div class="system-item">
-                                <div class="system-icon">
-                                    <i class="fas fa-crosshairs"></i>
-                                </div>
-                                <div class="system-name">Bewaffnung</div>
-                                <div class="system-state" id="weaponsStatus">OK</div>
-                            </div>
-                        </div>
+                    <div class="form-group">
+                        <label class="form-label">Sonstige Bemerkungen:</label>
+                        <textarea class="form-textarea" id="oralNotes" placeholder="Sonstige Informationen..." onchange="updateTemplate()"></textarea>
                     </div>
                 </div>
                 
-                <!-- Maintenance Tab -->
-                <div id="maintenanceTab" class="tab-pane" style="display: none;">
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-wrench"></i>
-                                </div>
-                                Wartungsübersicht
-                            </div>
-                            <button class="btn btn-primary" onclick="addMaintenanceTask()">
-                                <i class="fas fa-plus"></i> Neue Wartung
-                            </button>
+                <!-- Organizational Induction -->
+                <div class="induction-form">
+                    <div class="section-title">
+                        <div class="section-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        Organisatorische Einweisung
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="orgInductionCheck" onchange="updateInductionStatus('org', this.checked)">
+                            <span>Organisatorische Einweisung bestanden</span>
+                        </label>
+                    </div>
+                    
+                    <div class="divider"></div>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Datum:</label>
+                            <input type="date" class="form-input" id="orgDate" onchange="updateTemplate()">
                         </div>
                         
-                        <div class="maintenance-grid" id="maintenanceTasks">
-                            <!-- Maintenance tasks will be loaded here -->
-                            <div class="empty-state">
-                                <i class="fas fa-wrench"></i>
-                                <p>Keine Wartungsaufgaben vorhanden</p>
-                                <p style="font-size: 12px; margin-top: 6px;">Fügen Sie eine neue Wartungsaufgabe hinzu</p>
+                        <div class="form-group">
+                            <label class="form-label">Uhrzeit (von - bis):</label>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="time" class="form-input" id="orgTimeStart" onchange="updateTemplate()" style="flex: 1;">
+                                <span style="align-self: center; color: #94a3b8;">bis</span>
+                                <input type="time" class="form-input" id="orgTimeEnd" onchange="updateTemplate()" style="flex: 1;">
                             </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Beteiligte Person:</label>
+                            <input type="text" class="form-input" id="orgPerson" placeholder="Name der einweisenden Person" onchange="updateTemplate()">
                         </div>
                     </div>
                     
-                    <!-- Parts Inventory -->
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-cogs"></i>
-                                </div>
-                                Ersatzteile & Verbrauchsmaterial
-                            </div>
-                            <button class="btn btn-secondary" onclick="openPartsModal()">
-                                <i class="fas fa-boxes"></i> Inventar
-                            </button>
-                        </div>
-                        
-                        <div class="parts-grid" id="partsInventory">
-                            <div class="part-card">
-                                <div class="part-header">
-                                    <div class="part-name">Motoröl 10W-40</div>
-                                    <div class="part-stock stock-low">Kritisch</div>
-                                </div>
-                                <div class="part-details">Synthetisches Hochleistungsöl</div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 20%"></div>
-                                </div>
-                                <div class="progress-label">
-                                    <span>Bestand: 2 Einheiten</span>
-                                    <span>Mindestbestand: 10</span>
-                                </div>
-                            </div>
-                            
-                            <div class="part-card">
-                                <div class="part-header">
-                                    <div class="part-name">Luftfilter</div>
-                                    <div class="part-stock stock-medium">Mittel</div>
-                                </div>
-                                <div class="part-details">Staub- und Sandfilter</div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 50%"></div>
-                                </div>
-                                <div class="progress-label">
-                                    <span>Bestand: 8 Einheiten</span>
-                                    <span>Mindestbestand: 5</span>
-                                </div>
-                            </div>
-                            
-                            <div class="part-card">
-                                <div class="part-header">
-                                    <div class="part-name">Batterien</div>
-                                    <div class="part-stock stock-high">Hoch</div>
-                                </div>
-                                <div class="part-details">12V Spezialbatterien</div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 80%"></div>
-                                </div>
-                                <div class="progress-label">
-                                    <span>Bestand: 16 Einheiten</span>
-                                    <span>Mindestbestand: 10</span>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="form-group">
+                        <label class="form-label">Sonstige Bemerkungen:</label>
+                        <textarea class="form-textarea" id="orgNotes" placeholder="Sonstige Informationen..." onchange="updateTemplate()"></textarea>
                     </div>
                 </div>
                 
-                <!-- Specs Tab -->
-                <div id="specsTab" class="tab-pane" style="display: none;">
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-cogs"></i>
-                                </div>
-                                Technische Spezifikationen
-                            </div>
-                            <button class="btn btn-primary" onclick="editSpecs()">
-                                <i class="fas fa-edit"></i> Bearbeiten
-                            </button>
-                        </div>
-                        
-                        <div class="spec-grid">
-                            <div class="spec-item">
-                                <div class="spec-label">Motorleistung</div>
-                                <div class="spec-value" id="specPower">-</div>
-                            </div>
-                            <div class="spec-item">
-                                <div class="spec-label">Höchstgeschwindigkeit</div>
-                                <div class="spec-value" id="specSpeed">-</div>
-                            </div>
-                            <div class="spec-item">
-                                <div class="spec-label">Reichweite</div>
-                                <div class="spec-value" id="specRange">-</div>
-                            </div>
-                            <div class="spec-item">
-                                <div class="spec-label">Gewicht</div>
-                                <div class="spec-value" id="specWeight">-</div>
-                            </div>
-                            <div class="spec-item">
-                                <div class="spec-label">Treibstoffkapazität</div>
-                                <div class="spec-value" id="specFuelCapacity">-</div>
-                            </div>
-                            <div class="spec-item">
-                                <div class="spec-label">Besatzung</div>
-                                <div class="spec-value" id="specCrew">-</div>
-                            </div>
-                            <div class="spec-item">
-                                <div class="spec-label">Bewaffnung</div>
-                                <div class="spec-value" id="specArmament">-</div>
-                            </div>
-                            <div class="spec-item">
-                                <div class="spec-label">Panzerung</div>
-                                <div class="spec-value" id="specArmor">-</div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-grid" style="margin-top: 24px; display: none;" id="specsEditForm">
-                            <div class="form-group">
-                                <label class="form-label">Motorleistung (PS/kW):</label>
-                                <input type="text" class="form-input" id="editPower" placeholder="z.B. 450 PS / 330 kW">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Höchstgeschwindigkeit:</label>
-                                <input type="text" class="form-input" id="editSpeed" placeholder="z.B. 100 km/h">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Reichweite:</label>
-                                <input type="text" class="form-input" id="editRange" placeholder="z.B. 500 km">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Gewicht:</label>
-                                <input type="text" class="form-input" id="editWeight" placeholder="z.B. 12.000 kg">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Treibstoffkapazität:</label>
-                                <input type="text" class="form-input" id="editFuelCapacity" placeholder="z.B. 200 Liter">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Besatzung:</label>
-                                <input type="text" class="form-input" id="editCrew" placeholder="z.B. 3 + 7">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Bewaffnung:</label>
-                                <textarea class="form-input" id="editArmament" placeholder="z.B. M2 .50 Cal, M240"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Panzerung:</label>
-                                <input type="text" class="form-input" id="editArmor" placeholder="z.B. STANAG 4569 Level 2">
-                            </div>
-                            <div class="form-group" style="grid-column: 1 / -1; display: flex; gap: 12px; margin-top: 16px;">
-                                <button class="btn btn-success" onclick="saveSpecs()">Speichern</button>
-                                <button class="btn btn-secondary" onclick="cancelEditSpecs()">Abbrechen</button>
-                            </div>
-                        </div>
+                <!-- Templates -->
+                <div class="template-box">
+                    <div class="template-title">
+                        <i class="fas fa-clipboard"></i>
+                        Vorlage für Discord
                     </div>
                     
-                    <!-- Additional Specifications -->
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-file-alt"></i>
-                                </div>
-                                Zusätzliche Informationen
-                            </div>
-                        </div>
-                        
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label class="form-label">Hersteller:</label>
-                                <input type="text" class="form-input" id="vehicleManufacturer" placeholder="z.B. General Dynamics">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Baujahr:</label>
-                                <input type="number" class="form-input" id="vehicleYear" placeholder="z.B. 2022">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Letzte Generalüberholung:</label>
-                                <input type="date" class="form-input" id="lastOverhaul">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Gesamtkilometerstand:</label>
-                                <input type="number" class="form-input" id="totalMileage" placeholder="z.B. 15000">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group" style="margin-top: 20px;">
-                            <label class="form-label">Besonderheiten/Modifikationen:</label>
-                            <textarea class="form-input" id="vehicleSpecial" placeholder="Spezielle Ausrüstung oder Modifikationen" rows="4"></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Damage Tab -->
-                <div id="damageTab" class="tab-pane" style="display: none;">
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                </div>
-                                Schadensberichte
-                            </div>
-                            <button class="btn btn-danger" onclick="openDamageReportModal()">
-                                <i class="fas fa-plus"></i> Neuer Schaden
-                            </button>
-                        </div>
-                        
-                        <div class="damage-grid" id="damageReports">
-                            <!-- Damage reports will be loaded here -->
-                            <div class="empty-state">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <p>Keine Schadensberichte vorhanden</p>
-                                <p style="font-size: 12px; margin-top: 6px;">Melden Sie den ersten Schaden</p>
-                            </div>
-                        </div>
+                    <button class="copy-btn" onclick="copyToClipboard()">
+                        <i class="fas fa-copy"></i> Kopieren
+                    </button>
+                    
+                    <div class="template-content" id="oralTemplate">
+                        ╔══════════════════╗
+                        /////////////////////////////////////////
+                        Mündliche Einweisung / bestanden
+
+                        Name: -
+                        DN: -
+                        Hauptunit: -
+                        Rang: -
+                        Datum: -
+                        Uhrzeit: - bis -
+                        Beteiligte: -
+                        Sonstiges: -
+
+                        /////////////////////////////////////////
+                        <@&1097625910242447422>
+                        ╚══════════════════╝
                     </div>
                     
-                    <!-- Repair History -->
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-hammer"></i>
-                                </div>
-                                Reparaturhistorie
-                            </div>
-                        </div>
-                        
-                        <div id="repairHistory">
-                            <div class="empty-state">
-                                <i class="fas fa-hammer"></i>
-                                <p>Keine Reparaturen durchgeführt</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Fuel Tab -->
-                <div id="fuelTab" class="tab-pane" style="display: none;">
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-gas-pump"></i>
-                                </div>
-                                Kraftstoffmanagement
-                            </div>
-                            <button class="btn btn-primary" onclick="addFuelRecord()">
-                                <i class="fas fa-plus"></i> Tanken
-                            </button>
-                        </div>
-                        
-                        <div class="fuel-stats">
-                            <div class="fuel-stat">
-                                <div class="fuel-value" id="currentFuel">0%</div>
-                                <div class="fuel-label">Aktueller Füllstand</div>
-                            </div>
-                            <div class="fuel-stat">
-                                <div class="fuel-value" id="avgConsumption">-</div>
-                                <div class="fuel-label">Ø Verbrauch (L/100km)</div>
-                            </div>
-                            <div class="fuel-stat">
-                                <div class="fuel-value" id="lastRefuel">-</div>
-                                <div class="fuel-label">Letztes Tanken</div>
-                            </div>
-                            <div class="fuel-stat">
-                                <div class="fuel-value" id="fuelCosts">-</div>
-                                <div class="fuel-label">Kosten (Monat)</div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-grid" style="margin-top: 24px;">
-                            <div class="form-group">
-                                <label class="form-label">Aktueller Füllstand (%):</label>
-                                <input type="range" class="form-input" id="fuelLevel" min="0" max="100" value="0" oninput="updateFuelValue(this.value)">
-                                <div style="display: flex; justify-content: space-between; margin-top: 8px;">
-                                    <span style="font-size: 12px; color: var(--gray);">0%</span>
-                                    <span id="fuelLevelValue" style="color: var(--secondary); font-weight: 600;">0%</span>
-                                    <span style="font-size: 12px; color: var(--gray);">100%</span>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Treibstofftyp:</label>
-                                <select class="form-select" id="fuelType">
-                                    <option value="diesel">Diesel</option>
-                                    <option value="petrol">Benzin</option>
-                                    <option value="jet">JP-8</option>
-                                    <option value="avgas">AvGas</option>
-                                    <option value="electric">Elektrisch</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Verbrauch (L/100km):</label>
-                                <input type="number" class="form-input" id="fuelConsumption" placeholder="z.B. 15" step="0.1">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Kraftstoffkosten pro Liter (€):</label>
-                                <input type="number" class="form-input" id="fuelPrice" placeholder="z.B. 1.85" step="0.01">
-                            </div>
-                        </div>
-                        
-                        <div class="form-group" style="margin-top: 20px;">
-                            <label class="form-label">Kraftstoffnotizen:</label>
-                            <textarea class="form-input" id="fuelNotes" placeholder="Besondere Hinweise zum Kraftstoff" rows="3"></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- History Tab -->
-                <div id="historyTab" class="tab-pane" style="display: none;">
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-history"></i>
-                                </div>
-                                Servicehistorie
-                            </div>
-                            <button class="btn btn-primary" onclick="addHistoryEntry()">
-                                <i class="fas fa-plus"></i> Eintrag hinzufügen
-                            </button>
-                        </div>
-                        
-                        <div class="history-timeline" id="serviceHistory">
-                            <!-- History items will be loaded here -->
-                            <div class="empty-state">
-                                <i class="fas fa-history"></i>
-                                <p>Keine Serviceeinträge vorhanden</p>
-                                <p style="font-size: 12px; margin-top: 6px;">Fügen Sie den ersten Eintrag hinzu</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Statistics -->
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-chart-line"></i>
-                                </div>
-                                Wartungsstatistiken
-                            </div>
-                        </div>
-                        
-                        <div class="spec-grid">
-                            <div class="spec-item">
-                                <div class="spec-label">Gesamte Wartungskosten</div>
-                                <div class="spec-value" id="totalMaintenanceCost">0 €</div>
-                            </div>
-                            <div class="spec-item">
-                                <div class="spec-label">Durchschnittliche Reparaturzeit</div>
-                                <div class="spec-value" id="avgRepairTime">-</div>
-                            </div>
-                            <div class="spec-item">
-                                <div class="spec-label">Letzte 30 Tage (Wartungen)</div>
-                                <div class="spec-value" id="last30Days">0</div>
-                            </div>
-                            <div class="spec-item">
-                                <div class="spec-label">Verfügbarkeit</div>
-                                <div class="spec-value" id="availability">-</div>
-                            </div>
-                        </div>
+                    <div class="template-content" id="orgTemplate" style="margin-top: 20px;">
+                        ╔══════════════════╗
+                        /////////////////////////////////////////
+                        Organisatorische Einweisung / bestanden
+
+                        Name: -
+                        DN: -
+                        Hauptunit: -
+                        Rang: -
+                        Datum: -
+                        Uhrzeit: - bis -
+                        Beteiligte: -
+                        Sonstiges: -
+
+                        /////////////////////////////////////////
+                        <@&1097625910242447422>
+                        ╚══════════════════╝
                     </div>
                 </div>
             </div>
@@ -1897,255 +881,63 @@
     </div>
     
     <!-- Modals -->
-    <div id="newVehicleModal" class="modal" onclick="if(event.target===this)closeModal('newVehicleModal')">
+    <div id="newEmployeeModal" class="modal" onclick="if(event.target===this)closeModal('newEmployeeModal')">
         <div class="modal-content">
-            <h2 style="color: white; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 18px; font-family: 'Orbitron', sans-serif;">
-                <i class="fas fa-plus"></i>
-                Neues Fahrzeug erfassen
+            <h2 class="modal-title">
+                <i class="fas fa-user-plus"></i>
+                Neuer Mitarbeiter
             </h2>
             
             <div class="form-grid">
                 <div class="form-group">
-                    <label class="form-label">Fahrzeugbezeichnung:</label>
-                    <input type="text" class="form-input" id="newVehicleName" placeholder="z.B. Panzerwagen A-001">
+                    <label class="form-label">Vollständiger Name:</label>
+                    <input type="text" class="form-input" id="newEmployeeName" placeholder="Vorname Nachname">
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Fahrzeugtyp:</label>
-                    <select class="form-select" id="newVehicleType">
-                        <option value="">Typ auswählen</option>
-                        <option value="Humvee">Humvee</option>
-                        <option value="MRAP">MRAP</option>
-                        <option value="JLTV">JLTV</option>
-                        <option value="Stryker">Stryker</option>
-                        <option value="Bradley">Bradley IFV</option>
-                        <option value="Abrams">M1 Abrams</option>
-                        <option value="Helikopter">Helikopter</option>
-                        <option value="Boot">Boot</option>
-                        <option value="LKW">Transport LKW</option>
-                        <option value="Spezialfahrzeug">Spezialfahrzeug</option>
+                    <label class="form-label">Discord Nummer (DN):</label>
+                    <input type="number" class="form-input" id="newEmployeeDN" placeholder="z.B. 43">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Hauptunit:</label>
+                    <select class="form-select" id="newEmployeeUnit">
+                        <option value="">Unit auswählen</option>
+                        <option value="<@&1269229762400878675>">Unit 1</option>
+                        <option value="<@&1187756956425920645>">Unit 2</option>
+                        <option value="<@&1097625921516748830>">Unit 3</option>
                     </select>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Kennzeichen/Seriennummer:</label>
-                    <input type="text" class="form-input" id="newVehicleSerial" placeholder="SOC-XXX">
+                    <label class="form-label">Rang:</label>
+                    <select class="form-select" id="newEmployeeRank">
+                        <option value="">Rang auswählen</option>
+                        <option value="<@&1097625913274933298>">Rang 1</option>
+                        <option value="<@&1097625921516748830>">Rang 2</option>
+                        <option value="<@&1097625910242447422>">Rang 3</option>
+                    </select>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Einheit/Zug:</label>
-                    <input type="text" class="form-input" id="newVehicleUnit" placeholder="z.B. Alpha Company">
+                    <label class="form-label">Einstellungsdatum:</label>
+                    <input type="date" class="form-input" id="newEmployeeHireDate">
                 </div>
             </div>
             
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px;">
-                <button class="btn btn-secondary" onclick="closeModal('newVehicleModal')">
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+                <button class="btn btn-secondary" onclick="closeModal('newEmployeeModal')">
                     Abbrechen
                 </button>
-                <button class="btn btn-primary" onclick="createVehicle()">
-                    <i class="fas fa-plus"></i> Fahrzeug erfassen
+                <button class="btn btn-primary" onclick="createEmployee()">
+                    <i class="fas fa-plus"></i> Mitarbeiter erstellen
                 </button>
             </div>
         </div>
     </div>
     
-    <!-- Maintenance Modal -->
-    <div id="maintenanceModal" class="modal" onclick="if(event.target===this)closeModal('maintenanceModal')">
-        <div class="modal-content">
-            <h2 style="color: white; margin-bottom: 20px; font-size: 18px; font-family: 'Orbitron', sans-serif;">
-                <i class="fas fa-wrench"></i>
-                Neue Wartungsaufgabe
-            </h2>
-            
-            <div class="form-grid">
-                <div class="form-group">
-                    <label class="form-label">Wartungstyp:</label>
-                    <select class="form-select" id="maintenanceType">
-                        <option value="">Typ auswählen</option>
-                        <option value="oil">Ölwechsel</option>
-                        <option value="filter">Filterwechsel</option>
-                        <option value="brakes">Bremsen</option>
-                        <option value="tires">Reifen</option>
-                        <option value="battery">Batterie</option>
-                        <option value="inspection">Inspektion</option>
-                        <option value="repair">Reparatur</option>
-                        <option value="overhaul">Generalüberholung</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Priorität:</label>
-                    <select class="form-select" id="maintenancePriority">
-                        <option value="low">Niedrig</option>
-                        <option value="medium">Mittel</option>
-                        <option value="high">Hoch</option>
-                        <option value="critical">Kritisch</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Geplantes Datum:</label>
-                    <input type="date" class="form-input" id="maintenanceDate">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Verantwortlicher:</label>
-                    <input type="text" class="form-input" id="maintenanceResponsible" placeholder="Name des Mechanikers">
-                </div>
-            </div>
-            
-            <div class="form-group" style="margin-top: 16px;">
-                <label class="form-label">Beschreibung:</label>
-                <textarea class="form-input" id="maintenanceDescription" placeholder="Details zur Wartung..." rows="3"></textarea>
-            </div>
-            
-            <div class="form-group" style="margin-top: 16px;">
-                <label class="form-label">Benötigte Ersatzteile:</label>
-                <textarea class="form-input" id="maintenanceParts" placeholder="Liste der benötigten Teile..." rows="2"></textarea>
-            </div>
-            
-            <div class="form-group" style="margin-top: 16px;">
-                <label class="form-label">Geschätzte Dauer (Stunden):</label>
-                <input type="number" class="form-input" id="maintenanceDuration" placeholder="z.B. 4" min="1">
-            </div>
-            
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px;">
-                <button class="btn btn-secondary" onclick="closeModal('maintenanceModal')">
-                    Abbrechen
-                </button>
-                <button class="btn btn-success" onclick="saveMaintenanceTask()">
-                    <i class="fas fa-save"></i> Wartung speichern
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Damage Report Modal -->
-    <div id="damageModal" class="modal" onclick="if(event.target===this)closeModal('damageModal')">
-        <div class="modal-content">
-            <h2 style="color: white; margin-bottom: 20px; font-size: 18px; font-family: 'Orbitron', sans-serif;">
-                <i class="fas fa-exclamation-triangle"></i>
-                Schadensmeldung
-            </h2>
-            
-            <div class="form-grid">
-                <div class="form-group">
-                    <label class="form-label">Schweregrad:</label>
-                    <select class="form-select" id="damageSeverity">
-                        <option value="low">Gering</option>
-                        <option value="medium">Mittel</option>
-                        <option value="high">Hoch</option>
-                        <option value="critical">Kritisch</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Betroffenes System:</label>
-                    <select class="form-select" id="damageSystem">
-                        <option value="">System auswählen</option>
-                        <option value="engine">Motor</option>
-                        <option value="transmission">Getriebe</option>
-                        <option value="electrical">Elektrik</option>
-                        <option value="suspension">Fahrwerk</option>
-                        <option value="brakes">Bremsen</option>
-                        <option value="armor">Panzerung</option>
-                        <option value="weapons">Bewaffnung</option>
-                        <option value="comms">Kommunikation</option>
-                        <option value="other">Sonstiges</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Datum des Schadens:</label>
-                    <input type="datetime-local" class="form-input" id="damageDate">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Meldender:</label>
-                    <input type="text" class="form-input" id="damageReporter" placeholder="Name des Meldenden">
-                </div>
-            </div>
-            
-            <div class="form-group" style="margin-top: 16px;">
-                <label class="form-label">Beschreibung des Schadens:</label>
-                <textarea class="form-input" id="damageDescription" placeholder="Detaillierte Beschreibung des Schadens..." rows="4"></textarea>
-            </div>
-            
-            <div class="form-group" style="margin-top: 16px;">
-                <label class="form-label">Ursache (falls bekannt):</label>
-                <textarea class="form-input" id="damageCause" placeholder="Vermutete Ursache..." rows="2"></textarea>
-            </div>
-            
-            <div class="form-group" style="margin-top: 16px;">
-                <label class="form-label">Geschätzte Reparaturzeit (Tage):</label>
-                <input type="number" class="form-input" id="repairEstimate" placeholder="z.B. 3" min="1">
-            </div>
-            
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px;">
-                <button class="btn btn-secondary" onclick="closeModal('damageModal')">
-                    Abbrechen
-                </button>
-                <button class="btn btn-danger" onclick="saveDamageReport()">
-                    <i class="fas fa-save"></i> Schaden melden
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Parts Inventory Modal -->
-    <div id="partsModal" class="modal" onclick="if(event.target===this)closeModal('partsModal')">
-        <div class="modal-content">
-            <h2 style="color: white; margin-bottom: 20px; font-size: 18px; font-family: 'Orbitron', sans-serif;">
-                <i class="fas fa-boxes"></i>
-                Ersatzteil-Inventar
-            </h2>
-            
-            <div class="form-grid">
-                <div class="form-group">
-                    <label class="form-label">Teilenummer:</label>
-                    <input type="text" class="form-input" id="partNumber" placeholder="z.B. SOC-MOT-001">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Teilname:</label>
-                    <input type="text" class="form-input" id="partName" placeholder="z.B. Ölfilter">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Lagerbestand:</label>
-                    <input type="number" class="form-input" id="partStock" placeholder="Anzahl" min="0">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Mindestbestand:</label>
-                    <input type="number" class="form-input" id="partMinStock" placeholder="Mindestanzahl" min="0">
-                </div>
-            </div>
-            
-            <div class="form-group" style="margin-top: 16px;">
-                <label class="form-label">Beschreibung:</label>
-                <textarea class="form-input" id="partDescription" placeholder="Details zum Ersatzteil..." rows="3"></textarea>
-            </div>
-            
-            <div class="form-group" style="margin-top: 16px;">
-                <label class="form-label">Kompatible Fahrzeuge:</label>
-                <textarea class="form-input" id="partCompatible" placeholder="z.B. Humvee, MRAP..." rows="2"></textarea>
-            </div>
-            
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px;">
-                <button class="btn btn-secondary" onclick="closeModal('partsModal')">
-                    Abbrechen
-                </button>
-                <button class="btn btn-primary" onclick="addPartToInventory()">
-                    <i class="fas fa-plus"></i> Teil hinzufügen
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- JavaScript -->
     <script>
-        // ===== FIREBASE CONFIGURATION =====
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBTnsLNw68UuOd5Xa2ymMffWk4SYGDQjso",
             authDomain: "cc-shop-finanzsystem.firebaseapp.com",
@@ -2156,23 +948,16 @@
             measurementId: "G-9SZREFTJS6"
         };
 
-        // Firebase initialisieren
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // ===== ANWENDUNGSZUSTAND =====
-        let currentUser = {
-            name: "Sgt. Miller",
-            rank: "Meister",
-            role: "Werkstattleitung",
-            unit: "SOC Technical Division"
-        };
-        
-        let currentVehicle = null;
-        let vehicles = [];
+        // App State
+        let currentEmployee = null;
+        let employees = [];
         let autoSaveTimer = null;
 
-        // ===== INITIALISIERUNG =====
+        // Initialize App
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
             setupEventListeners();
@@ -2180,74 +965,56 @@
         });
 
         function initializeApp() {
-            // Aktuellen Benutzer anzeigen
-            document.getElementById('assignedMechanic').value = currentUser.name;
+            // Set current date for forms
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('oralDate').value = today;
+            document.getElementById('orgDate').value = today;
+            document.getElementById('newEmployeeHireDate').value = today;
             
-            // Tabs initialisieren
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    switchTab(this.getAttribute('data-tab'));
-                });
-            });
-            
-            // Suche initialisieren
-            document.getElementById('searchVehicles').addEventListener('input', function(e) {
-                filterVehicles(e.target.value);
-            });
-            
-            // Datumsfelder initialisieren
+            // Set default times
             const now = new Date();
-            const today = now.toISOString().split('T')[0];
-            const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            const startTime = "16:40";
+            const endTime = "18:00";
             
-            document.getElementById('lastCheck').value = formatDateTimeLocal(now);
-            document.getElementById('nextMaintenance').value = nextWeek;
-            document.getElementById('maintenanceDate').value = today;
-            document.getElementById('damageDate').value = formatDateTimeLocal(now);
+            document.getElementById('oralTimeStart').value = startTime;
+            document.getElementById('oralTimeEnd').value = endTime;
+            document.getElementById('orgTimeStart').value = "22:10";
+            document.getElementById('orgTimeEnd').value = "23:05";
             
-            // Systemstatus initialisieren
-            initializeSystemStatus();
+            // Setup search
+            document.getElementById('searchEmployees').addEventListener('input', function(e) {
+                filterEmployees(e.target.value);
+            });
             
-            // Fahrzeuge aus Firebase laden
-            loadVehiclesFromFirebase();
+            // Load employees from Firebase
+            loadEmployeesFromFirebase();
         }
 
         function setupEventListeners() {
-            // Auto-Save bei Eingabe
+            // Auto-save on input
             document.addEventListener('input', debounce(function(e) {
-                if (currentVehicle) {
+                if (currentEmployee) {
                     autoSave();
-                }
-            }, 1500));
-            
-            // Auto-Save bei Änderung
-            document.addEventListener('change', debounce(function(e) {
-                if (currentVehicle) {
-                    autoSave();
+                    updateTemplate();
                 }
             }, 1000));
             
-            // Tastaturkürzel
+            document.addEventListener('change', debounce(function(e) {
+                if (currentEmployee) {
+                    autoSave();
+                    updateTemplate();
+                }
+            }, 500));
+            
+            // Keyboard shortcuts
             document.addEventListener('keydown', function(e) {
-                if (e.ctrlKey || e.metaKey) {
-                    switch(e.key) {
-                        case 's':
-                            e.preventDefault();
-                            saveVehicleData();
-                            break;
-                        case 'n':
-                            e.preventDefault();
-                            openNewVehicleModal();
-                            break;
-                        case 'm':
-                            e.preventDefault();
-                            openMaintenanceModal();
-                            break;
-                        case 'd':
-                            e.preventDefault();
-                            openDamageReportModal();
-                            break;
-                    }
+                if (e.ctrlKey && e.key === 'n') {
+                    e.preventDefault();
+                    openNewEmployeeModal();
+                }
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault();
+                    saveEmployeeData();
                 }
             });
         }
@@ -2264,81 +1031,59 @@
             };
         }
 
-        function formatDateTimeLocal(date) {
-            const d = new Date(date);
-            d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-            return d.toISOString().slice(0, 16);
-        }
-
-        // ===== FIREBASE FUNKTIONEN =====
-        async function loadVehiclesFromFirebase() {
+        // Firebase Functions
+        async function loadEmployeesFromFirebase() {
             try {
-                const snapshot = await db.collection('socVehicles').orderBy('lastUpdated', 'desc').get();
-                vehicles = [];
+                const snapshot = await db.collection('hrEmployees').orderBy('lastUpdated', 'desc').get();
+                employees = [];
                 
                 snapshot.forEach(doc => {
-                    vehicles.push({
+                    employees.push({
                         id: doc.id,
                         ...doc.data()
                     });
                 });
                 
-                renderVehicleList();
+                renderEmployeeList();
                 updateStats();
                 
             } catch (error) {
-                console.error('Fehler beim Laden der Fahrzeuge:', error);
-                loadMockVehicles();
+                console.error('Fehler beim Laden der Mitarbeiter:', error);
+                loadMockEmployees();
             }
         }
 
-        async function saveVehicleToFirebase(vehicle) {
+        async function saveEmployeeToFirebase(employee) {
             try {
-                await db.collection('socVehicles').doc(vehicle.id).set({
-                    name: vehicle.name,
-                    type: vehicle.type,
-                    serial: vehicle.serial,
-                    unit: vehicle.unit,
-                    status: vehicle.status,
-                    lastCheck: vehicle.lastCheck,
-                    nextMaintenance: vehicle.nextMaintenance,
-                    assignedMechanic: vehicle.assignedMechanic,
+                await db.collection('hrEmployees').doc(employee.id).set({
+                    name: employee.name,
+                    dn: employee.dn,
+                    unit: employee.unit,
+                    rank: employee.rank,
+                    hireDate: employee.hireDate,
                     lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
-                    specs: vehicle.specs || {},
-                    maintenance: vehicle.maintenance || [],
-                    damageReports: vehicle.damageReports || [],
-                    fuelData: vehicle.fuelData || {},
-                    history: vehicle.history || [],
-                    systemStatus: vehicle.systemStatus || {}
+                    inductions: employee.inductions || {},
+                    oralData: employee.oralData || {},
+                    orgData: employee.orgData || {}
                 });
                 return true;
             } catch (error) {
-                console.error('Fehler beim Speichern des Fahrzeugs:', error);
+                console.error('Fehler beim Speichern des Mitarbeiters:', error);
                 return false;
             }
         }
 
-        async function deleteVehicleFromFirebase(vehicleId) {
-            try {
-                await db.collection('socVehicles').doc(vehicleId).delete();
-                return true;
-            } catch (error) {
-                console.error('Fehler beim Löschen des Fahrzeugs:', error);
-                return false;
-            }
-        }
-
-        // ===== FAHRZEUGEVERWALTUNG =====
-        function renderVehicleList() {
-            const container = document.getElementById('vehicleCards');
-            const emptyState = document.getElementById('emptyVehicleList');
+        // Employee Management
+        function renderEmployeeList() {
+            const container = document.getElementById('employeeCards');
+            const emptyState = document.getElementById('emptyEmployeeList');
             
-            if (vehicles.length === 0) {
+            if (employees.length === 0) {
                 container.innerHTML = `
-                    <div class="empty-state" id="emptyVehicleList">
-                        <i class="fas fa-car"></i>
-                        <p>Keine Fahrzeuge gefunden</p>
-                        <p style="font-size: 12px; margin-top: 6px;">Erstellen Sie Ihren ersten Fahrzeugeintrag</p>
+                    <div class="empty-state" id="emptyEmployeeList">
+                        <i class="fas fa-users"></i>
+                        <p>Keine Mitarbeiter gefunden</p>
+                        <p style="font-size: 12px; margin-top: 6px;">Erstellen Sie Ihren ersten Mitarbeiter</p>
                     </div>
                 `;
                 return;
@@ -2346,29 +1091,36 @@
             
             container.innerHTML = '';
             
-            vehicles.forEach(vehicle => {
+            employees.forEach(employee => {
                 const card = document.createElement('div');
-                card.className = `vehicle-card ${currentVehicle?.id === vehicle.id ? 'active' : ''}`;
-                card.onclick = () => selectVehicle(vehicle);
+                card.className = `employee-card ${currentEmployee?.id === employee.id ? 'active' : ''}`;
+                card.onclick = () => selectEmployee(employee);
                 
-                const statusClass = `status-${vehicle.status}`;
-                const statusText = vehicle.status === 'operational' ? 'Einsatzbereit' : 
-                                  vehicle.status === 'maintenance' ? 'In Wartung' :
-                                  vehicle.status === 'critical' ? 'Kritisch' : 'Eingelagert';
+                // Calculate induction status
+                const oralCompleted = employee.inductions?.oral?.completed || false;
+                const orgCompleted = employee.inductions?.org?.completed || false;
+                
+                let statusBadge = '';
+                if (oralCompleted && orgCompleted) {
+                    statusBadge = `<span class="status-badge status-completed"><i class="fas fa-check-circle"></i> Vollständig</span>`;
+                } else if (oralCompleted || orgCompleted) {
+                    statusBadge = `<span class="status-badge status-pending"><i class="fas fa-clock"></i> Teilweise</span>`;
+                } else {
+                    statusBadge = `<span class="status-badge status-missing"><i class="fas fa-exclamation-circle"></i> Ausstehend</span>`;
+                }
                 
                 card.innerHTML = `
-                    <div class="vehicle-header">
-                        <div class="vehicle-name">${vehicle.name}</div>
-                        <div class="vehicle-id">${vehicle.serial || vehicle.id}</div>
+                    <div class="employee-header">
+                        <div class="employee-name">${employee.name}</div>
+                        <div class="employee-dn">DN ${employee.dn}</div>
                     </div>
-                    <div class="vehicle-details">
-                        <div>${vehicle.type || '-'}</div>
-                        <div>${vehicle.unit || '-'}</div>
-                        <div>Verantwortlich: ${vehicle.assignedMechanic || '-'}</div>
+                    <div class="employee-details">
+                        <div>${employee.rank || '-'}</div>
+                        <div>${employee.unit || '-'}</div>
+                        <div>Eingestellt: ${employee.hireDate ? new Date(employee.hireDate).toLocaleDateString('de-DE') : '-'}</div>
                     </div>
-                    <div class="vehicle-status ${statusClass}">
-                        <i class="fas fa-circle" style="font-size: 6px;"></i>
-                        ${statusText}
+                    <div class="induction-status">
+                        ${statusBadge}
                     </div>
                 `;
                 
@@ -2378,12 +1130,12 @@
             updateStats();
         }
 
-        function filterVehicles(searchTerm) {
-            const cards = document.querySelectorAll('.vehicle-card');
-            const emptyState = document.getElementById('emptyVehicleList');
+        function filterEmployees(searchTerm) {
+            const cards = document.querySelectorAll('.employee-card');
+            const emptyState = document.getElementById('emptyEmployeeList');
             const term = searchTerm.toLowerCase();
             
-            if (vehicles.length === 0) {
+            if (employees.length === 0) {
                 if (emptyState) {
                     emptyState.style.display = 'block';
                 }
@@ -2407,896 +1159,238 @@
             }
         }
 
-        function selectVehicle(vehicle) {
-            currentVehicle = vehicle;
+        function selectEmployee(employee) {
+            currentEmployee = employee;
             
-            // UI aktualisieren
-            document.getElementById('vehicleHeader').style.display = 'flex';
-            document.getElementById('currentVehicleName').textContent = vehicle.name;
-            document.getElementById('currentVehicleId').textContent = vehicle.serial || vehicle.id;
-            document.getElementById('currentVehicleType').textContent = vehicle.type || '-';
-            document.getElementById('currentVehicleUnit').textContent = vehicle.unit || '-';
-            document.getElementById('currentVehicleStatus').textContent = 
-                vehicle.status === 'operational' ? 'Einsatzbereit' : 
-                vehicle.status === 'maintenance' ? 'In Wartung' :
-                vehicle.status === 'critical' ? 'Kritisch' : 'Eingelagert';
+            // Update UI
+            document.getElementById('employeeHeader').style.display = 'flex';
+            document.getElementById('inductionSection').style.display = 'block';
+            document.getElementById('currentEmployeeName').textContent = employee.name;
+            document.getElementById('currentEmployeeDN').textContent = employee.dn || '-';
+            document.getElementById('currentEmployeeUnit').textContent = employee.unit || '-';
+            document.getElementById('currentEmployeeRank').textContent = employee.rank || '-';
+            document.getElementById('currentEmployeeHireDate').textContent = 
+                employee.hireDate ? new Date(employee.hireDate).toLocaleDateString('de-DE') : '-';
             
-            // Fahrzeugekarten aktualisieren
-            document.querySelectorAll('.vehicle-card').forEach(card => {
+            // Update employee cards
+            document.querySelectorAll('.employee-card').forEach(card => {
                 card.classList.remove('active');
             });
             
-            // Fahrzeugdaten laden
-            loadVehicleData();
+            // Load employee data
+            loadEmployeeData();
         }
 
-        function loadVehicleData() {
-            if (!currentVehicle) return;
+        function loadEmployeeData() {
+            if (!currentEmployee) return;
             
-            // Grunddaten laden
-            document.getElementById('vehicleName').value = currentVehicle.name || '';
-            document.getElementById('vehicleType').value = currentVehicle.type || '';
-            document.getElementById('vehicleSerial').value = currentVehicle.serial || '';
-            document.getElementById('vehicleUnit').value = currentVehicle.unit || '';
-            document.getElementById('vehicleStatus').value = currentVehicle.status || 'operational';
-            document.getElementById('lastCheck').value = currentVehicle.lastCheck || '';
-            document.getElementById('nextMaintenance').value = currentVehicle.nextMaintenance || '';
-            document.getElementById('assignedMechanic').value = currentVehicle.assignedMechanic || '';
-            
-            // Status-Badge aktualisieren
-            updateStatusBadge();
-            
-            // Technische Spezifikationen laden
-            if (currentVehicle.specs) {
-                const specs = currentVehicle.specs;
-                
-                document.getElementById('specPower').textContent = specs.power || '-';
-                document.getElementById('specSpeed').textContent = specs.speed || '-';
-                document.getElementById('specRange').textContent = specs.range || '-';
-                document.getElementById('specWeight').textContent = specs.weight || '-';
-                document.getElementById('specFuelCapacity').textContent = specs.fuelCapacity || '-';
-                document.getElementById('specCrew').textContent = specs.crew || '-';
-                document.getElementById('specArmament').textContent = specs.armament || '-';
-                document.getElementById('specArmor').textContent = specs.armor || '-';
-                
-                document.getElementById('vehicleManufacturer').value = specs.manufacturer || '';
-                document.getElementById('vehicleYear').value = specs.year || '';
-                document.getElementById('lastOverhaul').value = specs.lastOverhaul || '';
-                document.getElementById('totalMileage').value = specs.mileage || '';
-                document.getElementById('vehicleSpecial').value = specs.special || '';
+            // Load oral induction data
+            if (currentEmployee.oralData) {
+                document.getElementById('oralDate').value = currentEmployee.oralData.date || '';
+                document.getElementById('oralTimeStart').value = currentEmployee.oralData.timeStart || '';
+                document.getElementById('oralTimeEnd').value = currentEmployee.oralData.timeEnd || '';
+                document.getElementById('oralPerson').value = currentEmployee.oralData.person || '';
+                document.getElementById('oralNotes').value = currentEmployee.oralData.notes || '';
             }
             
-            // Systemstatus laden
-            if (currentVehicle.systemStatus) {
-                updateSystemStatusDisplay(currentVehicle.systemStatus);
+            // Load org induction data
+            if (currentEmployee.orgData) {
+                document.getElementById('orgDate').value = currentEmployee.orgData.date || '';
+                document.getElementById('orgTimeStart').value = currentEmployee.orgData.timeStart || '';
+                document.getElementById('orgTimeEnd').value = currentEmployee.orgData.timeEnd || '';
+                document.getElementById('orgPerson').value = currentEmployee.orgData.person || '';
+                document.getElementById('orgNotes').value = currentEmployee.orgData.notes || '';
             }
             
-            // Wartungsaufgaben laden
-            if (currentVehicle.maintenance && currentVehicle.maintenance.length > 0) {
-                loadMaintenanceTasks();
+            // Load induction status
+            if (currentEmployee.inductions) {
+                document.getElementById('oralInductionCheck').checked = currentEmployee.inductions.oral?.completed || false;
+                document.getElementById('orgInductionCheck').checked = currentEmployee.inductions.org?.completed || false;
             }
             
-            // Schadensberichte laden
-            if (currentVehicle.damageReports && currentVehicle.damageReports.length > 0) {
-                loadDamageReports();
-            }
-            
-            // Kraftstoffdaten laden
-            if (currentVehicle.fuelData) {
-                loadFuelData();
-            }
-            
-            // Servicehistorie laden
-            if (currentVehicle.history && currentVehicle.history.length > 0) {
-                loadServiceHistory();
-            }
+            // Update templates
+            updateTemplate();
         }
 
-        // ===== SYSTEMSTATUS =====
-        function initializeSystemStatus() {
-            // Standardwerte setzen
-            const defaultStatus = {
-                engine: 'ok',
-                transmission: 'ok',
-                electrical: 'ok',
-                armor: 'ok',
-                comms: 'ok',
-                weapons: 'ok'
+        // Induction Management
+        function updateInductionStatus(type, isCompleted) {
+            if (!currentEmployee) return;
+            
+            if (!currentEmployee.inductions) {
+                currentEmployee.inductions = {};
+            }
+            
+            currentEmployee.inductions[type] = {
+                completed: isCompleted,
+                date: isCompleted ? new Date().toISOString() : null
             };
             
-            if (!currentVehicle || !currentVehicle.systemStatus) {
-                updateSystemStatusDisplay(defaultStatus);
-            }
-        }
-
-        function updateSystemStatusDisplay(status) {
-            const systems = ['engine', 'transmission', 'electrical', 'armor', 'comms', 'weapons'];
+            // Update employee list
+            renderEmployeeList();
             
-            systems.forEach(system => {
-                const state = status[system] || 'ok';
-                const element = document.getElementById(`${system}Status`);
-                if (element) {
-                    element.textContent = state === 'ok' ? 'OK' : 
-                                         state === 'warning' ? 'WARNUNG' : 'KRITISCH';
-                    element.className = `system-state ${state}`;
-                }
-            });
+            // Auto save
+            autoSave();
         }
 
-        // ===== MODAL FUNKTIONEN =====
-        function openNewVehicleModal() {
-            document.getElementById('newVehicleModal').classList.add('active');
-        }
-
-        function openMaintenanceModal() {
-            if (!currentVehicle) {
-                alert('Bitte wählen Sie zuerst ein Fahrzeug aus');
-                return;
-            }
+        function updateTemplate() {
+            if (!currentEmployee) return;
             
-            document.getElementById('maintenanceModal').classList.add('active');
-        }
-
-        function openDamageReportModal() {
-            if (!currentVehicle) {
-                alert('Bitte wählen Sie zuerst ein Fahrzeug aus');
-                return;
-            }
+            // Save data first
+            saveFormData();
             
-            document.getElementById('damageModal').classList.add('active');
+            // Oral induction template
+            const oralTemplate = `
+╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+Mündliche Einweisung / ${document.getElementById('oralInductionCheck').checked ? 'bestanden' : 'ausstehend'}
+
+Name: ${currentEmployee.name || '-'}
+DN: ${currentEmployee.dn || '-'}
+Hauptunit: ${currentEmployee.unit || '-'}
+Rang: ${currentEmployee.rank || '-'}
+Datum: ${document.getElementById('oralDate').value ? new Date(document.getElementById('oralDate').value).toLocaleDateString('de-DE') : '-'}
+Uhrzeit: ${document.getElementById('oralTimeStart').value || '-'} bis ${document.getElementById('oralTimeEnd').value || '-'}
+Beteiligte: ${document.getElementById('oralPerson').value || '-'}
+Sonstiges: ${document.getElementById('oralNotes').value || '-'}
+
+/////////////////////////////////////////////////////////////////////////
+<@&1097625910242447422>
+╚══════════════════╝
+            `.trim();
+            
+            // Organizational induction template
+            const orgTemplate = `
+╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+Organisatorische Einweisung / ${document.getElementById('orgInductionCheck').checked ? 'bestanden' : 'ausstehend'}
+
+Name: ${currentEmployee.name || '-'}
+DN: ${currentEmployee.dn || '-'}
+Hauptunit: ${currentEmployee.unit || '-'}
+Rang: ${currentEmployee.rank || '-'}
+Datum: ${document.getElementById('orgDate').value ? new Date(document.getElementById('orgDate').value).toLocaleDateString('de-DE') : '-'}
+Uhrzeit: ${document.getElementById('orgTimeStart').value || '-'} - ${document.getElementById('orgTimeEnd').value || '-'}
+Beteiligte: ${document.getElementById('orgPerson').value || '-'}
+Sonstiges: ${document.getElementById('orgNotes').value || '-'}
+
+/////////////////////////////////////////////////////////////////////////
+<@&1097625910242447422>
+╚══════════════════╝
+            `.trim();
+            
+            document.getElementById('oralTemplate').textContent = oralTemplate;
+            document.getElementById('orgTemplate').textContent = orgTemplate;
         }
 
-        function openPartsModal() {
-            document.getElementById('partsModal').classList.add('active');
+        function saveFormData() {
+            if (!currentEmployee) return;
+            
+            // Save oral induction data
+            currentEmployee.oralData = {
+                date: document.getElementById('oralDate').value,
+                timeStart: document.getElementById('oralTimeStart').value,
+                timeEnd: document.getElementById('oralTimeEnd').value,
+                person: document.getElementById('oralPerson').value,
+                notes: document.getElementById('oralNotes').value
+            };
+            
+            // Save org induction data
+            currentEmployee.orgData = {
+                date: document.getElementById('orgDate').value,
+                timeStart: document.getElementById('orgTimeStart').value,
+                timeEnd: document.getElementById('orgTimeEnd').value,
+                person: document.getElementById('orgPerson').value,
+                notes: document.getElementById('orgNotes').value
+            };
+        }
+
+        // Modal Functions
+        function openNewEmployeeModal() {
+            document.getElementById('newEmployeeModal').classList.add('active');
         }
 
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
         }
 
-        async function createVehicle() {
-            const name = document.getElementById('newVehicleName').value.trim();
-            const type = document.getElementById('newVehicleType').value;
-            const serial = document.getElementById('newVehicleSerial').value.trim();
-            const unit = document.getElementById('newVehicleUnit').value.trim();
+        async function createEmployee() {
+            const name = document.getElementById('newEmployeeName').value.trim();
+            const dn = document.getElementById('newEmployeeDN').value;
+            const unit = document.getElementById('newEmployeeUnit').value;
+            const rank = document.getElementById('newEmployeeRank').value;
+            const hireDate = document.getElementById('newEmployeeHireDate').value;
             
-            if (!name || !type || !serial) {
+            if (!name || !dn || !unit || !rank) {
                 alert('Bitte füllen Sie alle erforderlichen Felder aus');
                 return;
             }
             
-            const vehicleId = `VEH-${new Date().getFullYear()}-${String(vehicles.length + 1).padStart(3, '0')}`;
-            const now = new Date().toISOString();
-            const nextWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            const employeeId = `EMP-${Date.now()}`;
             
-            const newVehicle = {
-                id: vehicleId,
+            const newEmployee = {
+                id: employeeId,
                 name: name,
-                type: type,
-                serial: serial,
+                dn: dn,
                 unit: unit,
-                status: 'operational',
-                lastCheck: formatDateTimeLocal(new Date()),
-                nextMaintenance: nextWeek,
-                assignedMechanic: currentUser.name,
-                lastUpdated: now,
-                specs: {},
-                maintenance: [],
-                damageReports: [],
-                fuelData: {
-                    level: 100,
-                    type: 'diesel',
-                    consumption: 15,
-                    price: 1.85
-                },
-                history: [],
-                systemStatus: {
-                    engine: 'ok',
-                    transmission: 'ok',
-                    electrical: 'ok',
-                    armor: 'ok',
-                    comms: 'ok',
-                    weapons: 'ok'
-                }
+                rank: rank,
+                hireDate: hireDate,
+                lastUpdated: new Date().toISOString(),
+                inductions: {},
+                oralData: {},
+                orgData: {}
             };
             
-            // In Firebase speichern
-            const success = await saveVehicleToFirebase(newVehicle);
+            // Save to Firebase
+            const success = await saveEmployeeToFirebase(newEmployee);
             
             if (success) {
-                vehicles.unshift(newVehicle);
+                employees.unshift(newEmployee);
                 
-                closeModal('newVehicleModal');
-                renderVehicleList();
-                selectVehicle(newVehicle);
+                closeModal('newEmployeeModal');
+                renderEmployeeList();
+                selectEmployee(newEmployee);
                 
-                // Formular leeren
-                document.getElementById('newVehicleName').value = '';
-                document.getElementById('newVehicleType').value = '';
-                document.getElementById('newVehicleSerial').value = '';
-                document.getElementById('newVehicleUnit').value = '';
+                // Clear form
+                document.getElementById('newEmployeeName').value = '';
+                document.getElementById('newEmployeeDN').value = '';
+                document.getElementById('newEmployeeUnit').value = '';
+                document.getElementById('newEmployeeRank').value = '';
+                document.getElementById('newEmployeeHireDate').value = '';
                 
             } else {
-                alert('Fehler beim Erstellen des Fahrzeugs. Bitte versuchen Sie es erneut.');
+                alert('Fehler beim Erstellen des Mitarbeiters. Bitte versuchen Sie es erneut.');
             }
         }
 
-        // ===== WARTUNGSAUFGABEN =====
-        function addMaintenanceTask() {
-            openMaintenanceModal();
-        }
-
-        async function saveMaintenanceTask() {
-            const type = document.getElementById('maintenanceType').value;
-            const priority = document.getElementById('maintenancePriority').value;
-            const date = document.getElementById('maintenanceDate').value;
-            const responsible = document.getElementById('maintenanceResponsible').value.trim() || currentUser.name;
-            const description = document.getElementById('maintenanceDescription').value.trim();
-            const parts = document.getElementById('maintenanceParts').value.trim();
-            const duration = parseInt(document.getElementById('maintenanceDuration').value) || 1;
-            
-            if (!type || !date) {
-                alert('Bitte füllen Sie alle erforderlichen Felder aus');
-                return;
-            }
-            
-            if (!currentVehicle) {
-                alert('Kein Fahrzeug ausgewählt');
-                closeModal('maintenanceModal');
-                return;
-            }
-            
-            const newTask = {
-                id: Date.now(),
-                type: type,
-                priority: priority,
-                date: date,
-                responsible: responsible,
-                description: description,
-                parts: parts,
-                duration: duration,
-                status: 'pending',
-                createdAt: new Date().toISOString(),
-                createdBy: currentUser.name
-            };
-            
-            if (!currentVehicle.maintenance) {
-                currentVehicle.maintenance = [];
-            }
-            
-            currentVehicle.maintenance.unshift(newTask);
-            
-            // Fahrzeugstatus auf "In Wartung" setzen, wenn nicht bereits kritisch
-            if (currentVehicle.status !== 'critical') {
-                currentVehicle.status = 'maintenance';
-                document.getElementById('vehicleStatus').value = 'maintenance';
-            }
-            
-            // Nächste Wartung aktualisieren
-            const nextDate = new Date(date);
-            nextDate.setDate(nextDate.getDate() + 30); // 30 Tage nach geplanter Wartung
-            document.getElementById('nextMaintenance').value = nextDate.toISOString().split('T')[0];
-            currentVehicle.nextMaintenance = nextDate.toISOString().split('T')[0];
-            
-            // UI aktualisieren
-            loadMaintenanceTasks();
-            updateStatusBadge();
-            
-            // Modal schließen und speichern
-            closeModal('maintenanceModal');
-            await saveVehicleData(true);
-            
-            // Felder zurücksetzen
-            document.getElementById('maintenanceType').value = '';
-            document.getElementById('maintenancePriority').value = 'medium';
-            document.getElementById('maintenanceDate').value = '';
-            document.getElementById('maintenanceResponsible').value = '';
-            document.getElementById('maintenanceDescription').value = '';
-            document.getElementById('maintenanceParts').value = '';
-            document.getElementById('maintenanceDuration').value = '';
-            
-            alert('Wartungsaufgabe wurde erstellt');
-        }
-
-        function loadMaintenanceTasks() {
-            const container = document.getElementById('maintenanceTasks');
-            
-            if (!currentVehicle.maintenance || currentVehicle.maintenance.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-wrench"></i>
-                        <p>Keine Wartungsaufgaben vorhanden</p>
-                        <p style="font-size: 12px; margin-top: 6px;">Fügen Sie eine neue Wartungsaufgabe hinzu</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = '';
-            
-            // Aufgaben nach Status sortieren: overdue -> due soon -> pending -> completed
-            const tasks = [...currentVehicle.maintenance].sort((a, b) => {
-                const statusOrder = { overdue: 0, 'due-soon': 1, pending: 2, completed: 3 };
-                return statusOrder[a.displayStatus] - statusOrder[b.displayStatus];
-            });
-            
-            tasks.forEach(task => {
-                const today = new Date();
-                const taskDate = new Date(task.date);
-                const daysDiff = Math.ceil((taskDate - today) / (1000 * 60 * 60 * 24));
-                
-                let statusClass = '';
-                let statusText = '';
-                let displayStatus = 'pending';
-                
-                if (task.status === 'completed') {
-                    statusClass = 'completed';
-                    statusText = 'Abgeschlossen';
-                    displayStatus = 'completed';
-                } else if (daysDiff < 0) {
-                    statusClass = 'overdue';
-                    statusText = 'Überfällig';
-                    displayStatus = 'overdue';
-                } else if (daysDiff <= 3) {
-                    statusClass = 'due-soon';
-                    statusText = 'Dringend';
-                    displayStatus = 'due-soon';
-                } else {
-                    statusClass = '';
-                    statusText = 'Geplant';
-                    displayStatus = 'pending';
-                }
-                
-                // Status für Sortierung speichern
-                task.displayStatus = displayStatus;
-                
-                const priorityColors = {
-                    low: 'badge-info',
-                    medium: 'badge-warning',
-                    high: 'badge-danger',
-                    critical: 'badge-danger pulse'
-                };
-                
-                const card = document.createElement('div');
-                card.className = `maintenance-card ${statusClass}`;
-                card.innerHTML = `
-                    <div class="maintenance-header">
-                        <div class="maintenance-title">${getMaintenanceTypeName(task.type)}</div>
-                        <div class="maintenance-status ${priorityColors[task.priority]}">
-                            ${statusText} • ${task.priority.toUpperCase()}
-                        </div>
-                    </div>
-                    <div class="maintenance-details">
-                        <div><strong>Geplant:</strong> ${new Date(task.date).toLocaleDateString('de-DE')}</div>
-                        <div><strong>Verantwortlich:</strong> ${task.responsible}</div>
-                        ${task.description ? `<div style="margin-top: 8px;">${task.description}</div>` : ''}
-                    </div>
-                    <div class="maintenance-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${task.status === 'completed' ? '100' : '30'}%"></div>
-                        </div>
-                        <div class="progress-label">
-                            <span>${task.duration} Stunden</span>
-                            <span>${daysDiff >= 0 ? `In ${daysDiff} Tagen` : `${Math.abs(daysDiff)} Tage überfällig`}</span>
-                        </div>
-                    </div>
-                `;
-                
-                container.appendChild(card);
-            });
-            
-            // Badge für überfällige/dringende Wartungen aktualisieren
-            updateMaintenanceBadge();
-        }
-
-        function getMaintenanceTypeName(type) {
-            const types = {
-                'oil': 'Ölwechsel',
-                'filter': 'Filterwechsel',
-                'brakes': 'Bremsenwartung',
-                'tires': 'Reifenwechsel',
-                'battery': 'Batteriewechsel',
-                'inspection': 'Inspektion',
-                'repair': 'Reparatur',
-                'overhaul': 'Generalüberholung'
-            };
-            return types[type] || type;
-        }
-
-        function updateMaintenanceBadge() {
-            if (!currentVehicle.maintenance) {
-                document.getElementById('maintenanceBadge').textContent = '0';
-                return;
-            }
-            
-            const today = new Date();
-            const criticalTasks = currentVehicle.maintenance.filter(task => {
-                if (task.status === 'completed') return false;
-                
-                const taskDate = new Date(task.date);
-                const daysDiff = Math.ceil((taskDate - today) / (1000 * 60 * 60 * 24));
-                return daysDiff <= 3;
-            });
-            
-            document.getElementById('maintenanceBadge').textContent = criticalTasks.length;
-        }
-
-        // ===== SCHADENSBERICHTE =====
-        async function saveDamageReport() {
-            const severity = document.getElementById('damageSeverity').value;
-            const system = document.getElementById('damageSystem').value;
-            const date = document.getElementById('damageDate').value;
-            const reporter = document.getElementById('damageReporter').value.trim() || currentUser.name;
-            const description = document.getElementById('damageDescription').value.trim();
-            const cause = document.getElementById('damageCause').value.trim();
-            const estimate = parseInt(document.getElementById('repairEstimate').value) || 1;
-            
-            if (!severity || !system || !description) {
-                alert('Bitte füllen Sie alle erforderlichen Felder aus');
-                return;
-            }
-            
-            if (!currentVehicle) {
-                alert('Kein Fahrzeug ausgewählt');
-                closeModal('damageModal');
-                return;
-            }
-            
-            const newReport = {
-                id: Date.now(),
-                severity: severity,
-                system: system,
-                date: date,
-                reporter: reporter,
-                description: description,
-                cause: cause,
-                estimate: estimate,
-                status: 'open',
-                createdAt: new Date().toISOString(),
-                createdBy: currentUser.name
-            };
-            
-            if (!currentVehicle.damageReports) {
-                currentVehicle.damageReports = [];
-            }
-            
-            currentVehicle.damageReports.unshift(newReport);
-            
-            // Fahrzeugstatus auf "Kritisch" setzen, wenn Schaden kritisch ist
-            if (severity === 'critical') {
-                currentVehicle.status = 'critical';
-                document.getElementById('vehicleStatus').value = 'critical';
-            } else if (currentVehicle.status === 'operational') {
-                currentVehicle.status = 'maintenance';
-                document.getElementById('vehicleStatus').value = 'maintenance';
-            }
-            
-            // Systemstatus aktualisieren
-            if (currentVehicle.systemStatus && system !== 'other') {
-                currentVehicle.systemStatus[system] = severity === 'critical' ? 'critical' : 'warning';
-            }
-            
-            // UI aktualisieren
-            loadDamageReports();
-            updateSystemStatusDisplay(currentVehicle.systemStatus);
-            updateStatusBadge();
-            
-            // Modal schließen und speichern
-            closeModal('damageModal');
-            await saveVehicleData(true);
-            
-            // Felder zurücksetzen
-            document.getElementById('damageSeverity').value = 'medium';
-            document.getElementById('damageSystem').value = '';
-            document.getElementById('damageDate').value = '';
-            document.getElementById('damageReporter').value = '';
-            document.getElementById('damageDescription').value = '';
-            document.getElementById('damageCause').value = '';
-            document.getElementById('repairEstimate').value = '';
-            
-            alert('Schadensmeldung wurde erstellt');
-        }
-
-        function loadDamageReports() {
-            const container = document.getElementById('damageReports');
-            
-            if (!currentVehicle.damageReports || currentVehicle.damageReports.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <p>Keine Schadensberichte vorhanden</p>
-                        <p style="font-size: 12px; margin-top: 6px;">Melden Sie den ersten Schaden</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = '';
-            
-            currentVehicle.damageReports.forEach(report => {
-                const severityColors = {
-                    low: 'severity-low',
-                    medium: 'severity-medium',
-                    high: 'severity-high',
-                    critical: 'severity-high pulse'
-                };
-                
-                const severityText = {
-                    low: 'GERING',
-                    medium: 'MITTEL',
-                    high: 'HOCH',
-                    critical: 'KRITISCH'
-                };
-                
-                const systemNames = {
-                    engine: 'Motor',
-                    transmission: 'Getriebe',
-                    electrical: 'Elektrik',
-                    suspension: 'Fahrwerk',
-                    brakes: 'Bremsen',
-                    armor: 'Panzerung',
-                    weapons: 'Bewaffnung',
-                    comms: 'Kommunikation',
-                    other: 'Sonstiges'
-                };
-                
-                const card = document.createElement('div');
-                card.className = 'damage-card';
-                card.innerHTML = `
-                    <div class="damage-severity ${severityColors[report.severity]}">
-                        ${severityText[report.severity]}
-                    </div>
-                    <div style="margin-bottom: 12px;">
-                        <strong>Betroffenes System:</strong> ${systemNames[report.system] || report.system}
-                    </div>
-                    <div style="margin-bottom: 12px;">
-                        <strong>Gemeldet von:</strong> ${report.reporter} am ${new Date(report.date).toLocaleDateString('de-DE')}
-                    </div>
-                    <div style="margin-bottom: 12px;">
-                        ${report.description}
-                    </div>
-                    ${report.cause ? `<div style="margin-bottom: 12px;"><strong>Ursache:</strong> ${report.cause}</div>` : ''}
-                    <div>
-                        <strong>Geschätzte Reparaturzeit:</strong> ${report.estimate} Tage
-                    </div>
-                `;
-                
-                container.appendChild(card);
-            });
-            
-            // Badge aktualisieren
-            updateDamageBadge();
-        }
-
-        function updateDamageBadge() {
-            if (!currentVehicle.damageReports) {
-                document.getElementById('damageBadge').textContent = '0';
-                return;
-            }
-            
-            const openReports = currentVehicle.damageReports.filter(report => report.status === 'open');
-            document.getElementById('damageBadge').textContent = openReports.length;
-        }
-
-        // ===== KRAFTSTOFFMANAGEMENT =====
-        function loadFuelData() {
-            if (!currentVehicle.fuelData) {
-                currentVehicle.fuelData = {
-                    level: 100,
-                    type: 'diesel',
-                    consumption: 15,
-                    price: 1.85,
-                    history: []
-                };
-            }
-            
-            const fuelData = currentVehicle.fuelData;
-            
-            document.getElementById('currentFuel').textContent = `${fuelData.level}%`;
-            document.getElementById('fuelLevel').value = fuelData.level;
-            document.getElementById('fuelLevelValue').textContent = `${fuelData.level}%`;
-            document.getElementById('fuelType').value = fuelData.type || 'diesel';
-            document.getElementById('fuelConsumption').value = fuelData.consumption || 15;
-            document.getElementById('fuelPrice').value = fuelData.price || 1.85;
-            document.getElementById('fuelNotes').value = fuelData.notes || '';
-            
-            // Statistikwerte berechnen
-            updateFuelStats();
-        }
-
-        function updateFuelValue(value) {
-            document.getElementById('fuelLevelValue').textContent = `${value}%`;
-            document.getElementById('currentFuel').textContent = `${value}%`;
-            
-            if (currentVehicle) {
-                if (!currentVehicle.fuelData) {
-                    currentVehicle.fuelData = {};
-                }
-                currentVehicle.fuelData.level = parseInt(value);
-                autoSave();
-            }
-        }
-
-        function updateFuelStats() {
-            const fuelData = currentVehicle.fuelData || {};
-            
-            // Durchschnittsverbrauch
-            document.getElementById('avgConsumption').textContent = fuelData.consumption ? `${fuelData.consumption} L` : '-';
-            
-            // Letztes Tanken (simuliert)
-            const lastRefuel = fuelData.lastRefuel ? new Date(fuelData.lastRefuel).toLocaleDateString('de-DE') : '-';
-            document.getElementById('lastRefuel').textContent = lastRefuel;
-            
-            // Kosten (simuliert)
-            if (fuelData.consumption && fuelData.price) {
-                const monthlyCost = Math.round(fuelData.consumption * 1000 / 100 * fuelData.price * 30); // Beispielrechnung
-                document.getElementById('fuelCosts').textContent = `${monthlyCost} €`;
-            } else {
-                document.getElementById('fuelCosts').textContent = '-';
-            }
-        }
-
-        function addFuelRecord() {
-            if (!currentVehicle) {
-                alert('Bitte wählen Sie zuerst ein Fahrzeug aus');
-                return;
-            }
-            
-            const level = parseInt(document.getElementById('fuelLevel').value);
-            const type = document.getElementById('fuelType').value;
-            const consumption = parseFloat(document.getElementById('fuelConsumption').value) || 15;
-            const price = parseFloat(document.getElementById('fuelPrice').value) || 1.85;
-            const notes = document.getElementById('fuelNotes').value.trim();
-            
-            if (!currentVehicle.fuelData) {
-                currentVehicle.fuelData = {};
-            }
-            
-            currentVehicle.fuelData.level = level;
-            currentVehicle.fuelData.type = type;
-            currentVehicle.fuelData.consumption = consumption;
-            currentVehicle.fuelData.price = price;
-            currentVehicle.fuelData.notes = notes;
-            currentVehicle.fuelData.lastRefuel = new Date().toISOString();
-            
-            // Tankvorgang zur Historie hinzufügen
-            if (!currentVehicle.fuelData.history) {
-                currentVehicle.fuelData.history = [];
-            }
-            
-            currentVehicle.fuelData.history.unshift({
-                date: new Date().toISOString(),
-                level: level,
-                type: type,
-                notes: notes
-            });
-            
-            // UI aktualisieren
-            updateFuelStats();
-            autoSave();
-            
-            alert('Tankvorgang wurde gespeichert');
-        }
-
-        // ===== SERVICEHISTORIE =====
-        function loadServiceHistory() {
-            const container = document.getElementById('serviceHistory');
-            
-            if (!currentVehicle.history || currentVehicle.history.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-history"></i>
-                        <p>Keine Serviceeinträge vorhanden</p>
-                        <p style="font-size: 12px; margin-top: 6px;">Fügen Sie den ersten Eintrag hinzu</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = '';
-            
-            // Nach Datum sortieren (neueste zuerst)
-            const sortedHistory = [...currentVehicle.history].sort((a, b) => 
-                new Date(b.date) - new Date(a.date)
-            );
-            
-            sortedHistory.forEach(entry => {
-                const item = document.createElement('div');
-                item.className = 'history-item';
-                item.innerHTML = `
-                    <div class="history-date">${new Date(entry.date).toLocaleDateString('de-DE')}</div>
-                    <div class="history-content">
-                        <div style="font-weight: 600; margin-bottom: 8px;">${entry.type}</div>
-                        <div>${entry.description}</div>
-                        <div style="margin-top: 8px; font-size: 12px; color: var(--gray);">
-                            Durchgeführt von: ${entry.mechanic}
-                        </div>
-                    </div>
-                `;
-                
-                container.appendChild(item);
-            });
-        }
-
-        function addHistoryEntry() {
-            if (!currentVehicle) {
-                alert('Bitte wählen Sie zuerst ein Fahrzeug aus');
-                return;
-            }
-            
-            const type = prompt('Art des Eintrags (z.B. Reparatur, Wartung, Inspektion):');
-            if (!type) return;
-            
-            const description = prompt('Beschreibung:');
-            if (!description) return;
-            
-            const mechanic = prompt('Durchgeführt von:') || currentUser.name;
-            
-            const newEntry = {
-                id: Date.now(),
-                type: type,
-                description: description,
-                mechanic: mechanic,
-                date: new Date().toISOString()
-            };
-            
-            if (!currentVehicle.history) {
-                currentVehicle.history = [];
-            }
-            
-            currentVehicle.history.unshift(newEntry);
-            
-            // UI aktualisieren
-            loadServiceHistory();
-            autoSave();
-            
-            alert('Serviceeintrag wurde hinzugefügt');
-        }
-
-        // ===== TECHNISCHE SPEZIFIKATIONEN =====
-        function editSpecs() {
-            const specs = currentVehicle.specs || {};
-            
-            // Werte in Formular laden
-            document.getElementById('editPower').value = specs.power || '';
-            document.getElementById('editSpeed').value = specs.speed || '';
-            document.getElementById('editRange').value = specs.range || '';
-            document.getElementById('editWeight').value = specs.weight || '';
-            document.getElementById('editFuelCapacity').value = specs.fuelCapacity || '';
-            document.getElementById('editCrew').value = specs.crew || '';
-            document.getElementById('editArmament').value = specs.armament || '';
-            document.getElementById('editArmor').value = specs.armor || '';
-            
-            // Formular anzeigen
-            document.getElementById('specsEditForm').style.display = 'grid';
-        }
-
-        function saveSpecs() {
-            if (!currentVehicle) return;
-            
-            if (!currentVehicle.specs) {
-                currentVehicle.specs = {};
-            }
-            
-            currentVehicle.specs = {
-                power: document.getElementById('editPower').value.trim(),
-                speed: document.getElementById('editSpeed').value.trim(),
-                range: document.getElementById('editRange').value.trim(),
-                weight: document.getElementById('editWeight').value.trim(),
-                fuelCapacity: document.getElementById('editFuelCapacity').value.trim(),
-                crew: document.getElementById('editCrew').value.trim(),
-                armament: document.getElementById('editArmament').value.trim(),
-                armor: document.getElementById('editArmor').value.trim(),
-                manufacturer: document.getElementById('vehicleManufacturer').value.trim(),
-                year: document.getElementById('vehicleYear').value.trim(),
-                lastOverhaul: document.getElementById('lastOverhaul').value,
-                mileage: document.getElementById('totalMileage').value.trim(),
-                special: document.getElementById('vehicleSpecial').value.trim()
-            };
-            
-            // UI aktualisieren
-            loadVehicleData();
-            
-            // Formular ausblenden
-            document.getElementById('specsEditForm').style.display = 'none';
-            
-            // Speichern
-            autoSave();
-            
-            alert('Technische Daten wurden gespeichert');
-        }
-
-        function cancelEditSpecs() {
-            document.getElementById('specsEditForm').style.display = 'none';
-        }
-
-        // ===== TAB VERWALTUNG =====
-        function switchTab(tabName) {
-            // Alle Tabs ausblenden
-            document.querySelectorAll('.tab-pane').forEach(tab => {
-                tab.style.display = 'none';
-            });
-            
-            // Active Klasse von allen Tabs entfernen
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Ausgewählten Tab anzeigen
-            document.getElementById(`${tabName}Tab`).style.display = 'block';
-            
-            // Active Klasse zum ausgewählten Tab hinzufügen
-            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-        }
-
-        // ===== SPEICHERN & EXPORT =====
+        // Save & Auto-save
         function autoSave() {
-            if (!currentVehicle) return;
+            if (!currentEmployee) return;
             
-            // Existierenden Timer löschen
             if (autoSaveTimer) {
                 clearTimeout(autoSaveTimer);
             }
             
-            // Neuen Timer setzen
             autoSaveTimer = setTimeout(() => {
-                saveVehicleData(true);
+                saveEmployeeData(true);
             }, 2000);
         }
 
-        async function saveVehicleData(isAutoSave = false) {
-            if (!currentVehicle) {
-                if (!isAutoSave) {
-                    alert('Bitte wählen Sie zuerst ein Fahrzeug aus');
-                }
-                return;
-            }
+        async function saveEmployeeData(isAutoSave = false) {
+            if (!currentEmployee) return;
             
-            // Grunddaten sammeln
-            currentVehicle.name = document.getElementById('vehicleName').value.trim();
-            currentVehicle.type = document.getElementById('vehicleType').value;
-            currentVehicle.serial = document.getElementById('vehicleSerial').value.trim();
-            currentVehicle.unit = document.getElementById('vehicleUnit').value.trim();
-            currentVehicle.status = document.getElementById('vehicleStatus').value;
-            currentVehicle.lastCheck = document.getElementById('lastCheck').value;
-            currentVehicle.nextMaintenance = document.getElementById('nextMaintenance').value;
-            currentVehicle.assignedMechanic = document.getElementById('assignedMechanic').value.trim() || currentUser.name;
-            currentVehicle.lastUpdated = new Date().toISOString();
+            // Save form data
+            saveFormData();
             
-            // Zusätzliche Spezifikationen
-            if (!currentVehicle.specs) currentVehicle.specs = {};
-            currentVehicle.specs.manufacturer = document.getElementById('vehicleManufacturer').value.trim();
-            currentVehicle.specs.year = document.getElementById('vehicleYear').value.trim();
-            currentVehicle.specs.lastOverhaul = document.getElementById('lastOverhaul').value;
-            currentVehicle.specs.mileage = document.getElementById('totalMileage').value.trim();
-            currentVehicle.specs.special = document.getElementById('vehicleSpecial').value.trim();
-            
-            // Kraftstoffdaten
-            if (!currentVehicle.fuelData) currentVehicle.fuelData = {};
-            currentVehicle.fuelData.type = document.getElementById('fuelType').value;
-            currentVehicle.fuelData.consumption = parseFloat(document.getElementById('fuelConsumption').value) || 15;
-            currentVehicle.fuelData.price = parseFloat(document.getElementById('fuelPrice').value) || 1.85;
-            currentVehicle.fuelData.notes = document.getElementById('fuelNotes').value.trim();
-            
-            // In Firebase speichern
-            const success = await saveVehicleToFirebase(currentVehicle);
+            // Save to Firebase
+            const success = await saveEmployeeToFirebase(currentEmployee);
             
             if (success) {
-                // UI aktualisieren
-                const saveBtn = document.querySelector('.btn-secondary');
-                const originalHTML = saveBtn.innerHTML;
-                
-                if (isAutoSave) {
-                    saveBtn.innerHTML = '<i class="fas fa-check"></i> Auto-gespeichert';
-                    saveBtn.style.background = 'var(--mech-green)';
+                if (!isAutoSave) {
+                    const saveBtn = document.querySelector('.btn-secondary');
+                    const originalHTML = saveBtn.innerHTML;
                     
-                    setTimeout(() => {
-                        saveBtn.innerHTML = originalHTML;
-                        saveBtn.style.background = '';
-                    }, 2000);
-                } else {
                     saveBtn.innerHTML = '<i class="fas fa-check"></i> Gespeichert';
-                    saveBtn.style.background = 'var(--mech-green)';
+                    saveBtn.style.background = '#10b981';
                     
                     setTimeout(() => {
                         saveBtn.innerHTML = originalHTML;
@@ -3304,289 +1398,137 @@
                     }, 3000);
                 }
                 
-                // Fahrzeugliste aktualisieren
-                renderVehicleList();
-                updateStatusBadge();
-            } else {
-                if (!isAutoSave) {
-                    alert('Fehler beim Speichern der Daten. Bitte überprüfen Sie Ihre Verbindung.');
-                }
+                renderEmployeeList();
             }
         }
 
-        function updateStatusBadge() {
-            if (!currentVehicle) return;
+        // Template Functions
+        function copyToClipboard() {
+            const oralTemplate = document.getElementById('oralTemplate').textContent;
+            const orgTemplate = document.getElementById('orgTemplate').textContent;
+            const fullTemplate = oralTemplate + '\n\n' + orgTemplate;
             
-            const status = currentVehicle.status;
-            const badge = document.getElementById('overviewStatusBadge');
-            
-            badge.textContent = status === 'operational' ? 'EINSATZBEREIT' :
-                              status === 'maintenance' ? 'IN WARTUNG' :
-                              status === 'critical' ? 'KRITISCH' : 'EINGELAGERT';
-            
-            badge.className = `badge ${status === 'operational' ? 'badge-success' :
-                                               status === 'maintenance' ? 'badge-warning' :
-                                               status === 'critical' ? 'badge-danger' : 'badge-info'}`;
+            navigator.clipboard.writeText(fullTemplate).then(() => {
+                const copyBtn = document.querySelector('.copy-btn');
+                const originalHTML = copyBtn.innerHTML;
+                
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Kopiert!';
+                copyBtn.style.background = '#10b981';
+                copyBtn.style.color = 'white';
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalHTML;
+                    copyBtn.style.background = '';
+                    copyBtn.style.color = '#3b82f6';
+                }, 2000);
+            });
         }
 
-        function markAsOperational() {
-            if (!currentVehicle) return;
-            
-            if (confirm('Sind Sie sicher, dass das Fahrzeug als einsatzbereit markiert werden soll?')) {
-                currentVehicle.status = 'operational';
-                document.getElementById('vehicleStatus').value = 'operational';
-                
-                // Alle Systeme als OK markieren
-                if (currentVehicle.systemStatus) {
-                    Object.keys(currentVehicle.systemStatus).forEach(key => {
-                        currentVehicle.systemStatus[key] = 'ok';
-                    });
-                }
-                
-                // Letzten Check aktualisieren
-                currentVehicle.lastCheck = formatDateTimeLocal(new Date());
-                document.getElementById('lastCheck').value = currentVehicle.lastCheck;
-                
-                // UI aktualisieren
-                updateStatusBadge();
-                updateSystemStatusDisplay(currentVehicle.systemStatus);
-                autoSave();
-                
-                alert('Fahrzeug wurde als einsatzbereit markiert');
-            }
-        }
-
-        function generateReport() {
-            if (!currentVehicle) {
-                alert('Bitte wählen Sie zuerst ein Fahrzeug aus');
+        function generateInductionReport() {
+            if (!currentEmployee) {
+                alert('Bitte wählen Sie zuerst einen Mitarbeiter aus');
                 return;
             }
             
-            alert('Report wird generiert...');
-            
-            // Report simulieren
-            setTimeout(() => {
-                const reportContent = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>SOC Mechanic Report - ${currentVehicle.name}</title>
-                        <style>
-                            body { font-family: Arial, sans-serif; margin: 40px; background: #0a0a0f; color: #e5e7eb; }
-                            h1 { color: #d4af37; border-bottom: 2px solid #d4af37; padding-bottom: 10px; }
-                            h2 { color: #1e40af; margin-top: 30px; }
-                            .section { margin-bottom: 30px; }
-                            .status { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
-                            .operational { background: #059669; color: white; }
-                            .maintenance { background: #ea580c; color: white; }
-                            .critical { background: #dc2626; color: white; }
-                            table { border-collapse: collapse; width: 100%; margin: 20px 0; }
-                            th, td { border: 1px solid #374151; padding: 12px; text-align: left; }
-                            th { background-color: #1f2937; }
-                            .footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #374151; }
-                        </style>
-                    </head>
-                    <body>
-                        <h1>SOC MECHANIC REPORT</h1>
-                        <p><strong>Generiert am:</strong> ${new Date().toLocaleDateString('de-DE')} von ${currentUser.name}</p>
-                        
-                        <div class="section">
-                            <h2>Fahrzeuginformationen</h2>
-                            <p><strong>Fahrzeug:</strong> ${currentVehicle.name}</p>
-                            <p><strong>Typ:</strong> ${currentVehicle.type}</p>
-                            <p><strong>Seriennummer:</strong> ${currentVehicle.serial}</p>
-                            <p><strong>Einheit:</strong> ${currentVehicle.unit}</p>
-                            <p><strong>Status:</strong> <span class="status ${currentVehicle.status}">${currentVehicle.status.toUpperCase()}</span></p>
-                            <p><strong>Letzter Check:</strong> ${currentVehicle.lastCheck ? new Date(currentVehicle.lastCheck).toLocaleDateString('de-DE') : '-'}</p>
-                        </div>
-                        
-                        <div class="section">
-                            <h2>Wartungsübersicht</h2>
-                            <p><strong>Anzahl offener Wartungen:</strong> ${currentVehicle.maintenance ? currentVehicle.maintenance.filter(m => m.status !== 'completed').length : 0}</p>
-                            <p><strong>Nächste geplante Wartung:</strong> ${currentVehicle.nextMaintenance ? new Date(currentVehicle.nextMaintenance).toLocaleDateString('de-DE') : '-'}</p>
-                        </div>
-                        
-                        <div class="section">
-                            <h2>Systemstatus</h2>
-                            <table>
-                                <tr><th>System</th><th>Status</th></tr>
-                                <tr><td>Motor</td><td>${currentVehicle.systemStatus?.engine === 'ok' ? 'OK' : currentVehicle.systemStatus?.engine === 'warning' ? 'WARNUNG' : 'KRITISCH'}</td></tr>
-                                <tr><td>Getriebe</td><td>${currentVehicle.systemStatus?.transmission === 'ok' ? 'OK' : currentVehicle.systemStatus?.transmission === 'warning' ? 'WARNUNG' : 'KRITISCH'}</td></tr>
-                                <tr><td>Elektrik</td><td>${currentVehicle.systemStatus?.electrical === 'ok' ? 'OK' : currentVehicle.systemStatus?.electrical === 'warning' ? 'WARNUNG' : 'KRITISCH'}</td></tr>
-                            </table>
-                        </div>
-                        
-                        <div class="footer">
-                            <p><strong>Unterschrift:</strong> _________________________</p>
-                            <p><strong>Datum:</strong> ${new Date().toLocaleDateString('de-DE')}</p>
-                            <p><strong>Verwendungszweck:</strong> SOC Mechanic Management System</p>
-                        </div>
-                    </body>
-                    </html>
-                `;
-                
-                const blob = new Blob([reportContent], { type: 'text/html' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `SOC_Report_${currentVehicle.name.replace(/\s+/g, '_')}_${new Date().getTime()}.html`;
-                link.click();
-                URL.revokeObjectURL(url);
-            }, 1000);
+            updateTemplate();
+            copyToClipboard();
         }
 
-        // ===== STATISTIKEN =====
+        function markBothInductionsComplete() {
+            if (!currentEmployee) {
+                alert('Bitte wählen Sie zuerst einen Mitarbeiter aus');
+                return;
+            }
+            
+            document.getElementById('oralInductionCheck').checked = true;
+            document.getElementById('orgInductionCheck').checked = true;
+            
+            updateInductionStatus('oral', true);
+            updateInductionStatus('org', true);
+            
+            // Set today's date if not set
+            const today = new Date().toISOString().split('T')[0];
+            if (!document.getElementById('oralDate').value) {
+                document.getElementById('oralDate').value = today;
+            }
+            if (!document.getElementById('orgDate').value) {
+                document.getElementById('orgDate').value = today;
+            }
+            
+            updateTemplate();
+            saveEmployeeData();
+            
+            alert('Beide Einweisungen wurden als bestanden markiert');
+        }
+
+        // Statistics
         function updateStats() {
-            const total = vehicles.length;
-            const operational = vehicles.filter(v => v.status === 'operational').length;
-            const critical = vehicles.filter(v => v.status === 'critical').length;
+            const total = employees.length;
             
-            document.getElementById('totalVehicles').textContent = total;
-            document.getElementById('operationalVehicles').textContent = operational;
-            document.getElementById('criticalMaintenance').textContent = critical;
+            let completed = 0;
+            let pending = 0;
+            
+            employees.forEach(employee => {
+                const oralCompleted = employee.inductions?.oral?.completed || false;
+                const orgCompleted = employee.inductions?.org?.completed || false;
+                
+                if (oralCompleted && orgCompleted) {
+                    completed++;
+                } else if (oralCompleted || orgCompleted) {
+                    pending++;
+                }
+            });
+            
+            document.getElementById('totalEmployees').textContent = total;
+            document.getElementById('completedInductions').textContent = completed;
+            document.getElementById('pendingInductions').textContent = pending;
         }
 
-        // ===== ERSATZTEILE =====
-        function addPartToInventory() {
-            const partNumber = document.getElementById('partNumber').value.trim();
-            const partName = document.getElementById('partName').value.trim();
-            const stock = parseInt(document.getElementById('partStock').value) || 0;
-            const minStock = parseInt(document.getElementById('partMinStock').value) || 0;
-            const description = document.getElementById('partDescription').value.trim();
-            const compatible = document.getElementById('partCompatible').value.trim();
-            
-            if (!partNumber || !partName) {
-                alert('Bitte füllen Sie alle erforderlichen Felder aus');
-                return;
-            }
-            
-            // In einer echten App würde hier das Teil zur Datenbank hinzugefügt
-            // Für dieses Beispiel geben wir nur eine Meldung aus
-            alert(`Ersatzteil "${partName}" wurde zum Inventar hinzugefügt (simuliert)`);
-            
-            closeModal('partsModal');
-            
-            // Felder zurücksetzen
-            document.getElementById('partNumber').value = '';
-            document.getElementById('partName').value = '';
-            document.getElementById('partStock').value = '';
-            document.getElementById('partMinStock').value = '';
-            document.getElementById('partDescription').value = '';
-            document.getElementById('partCompatible').value = '';
-        }
-
-        // ===== MOCK-DATEN =====
-        function loadMockVehicles() {
-            vehicles = [
+        // Mock Data for Demo
+        function loadMockEmployees() {
+            employees = [
                 {
-                    id: "VEH-2024-001",
-                    name: "Panzerwagen A-001",
-                    type: "Humvee",
-                    serial: "SOC-HUM-001",
-                    unit: "Alpha Company, 1st Platoon",
-                    status: "operational",
-                    lastCheck: formatDateTimeLocal(new Date()),
-                    nextMaintenance: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-                    assignedMechanic: "Sgt. Miller",
-                    specs: {
-                        power: "190 PS / 140 kW",
-                        speed: "110 km/h",
-                        range: "500 km",
-                        weight: "5,500 kg",
-                        fuelCapacity: "95 Liter",
-                        crew: "1 + 3",
-                        armament: "M2 .50 Cal, M240",
-                        armor: "STANAG 4569 Level 1",
-                        manufacturer: "AM General",
-                        year: "2022",
-                        mileage: "12500"
+                    id: 'emp1',
+                    name: 'Chapo Anatolian',
+                    dn: '43',
+                    unit: '<@&1269229762400878675>',
+                    rank: '<@&1097625913274933298>',
+                    hireDate: '2026-01-15',
+                    inductions: {
+                        oral: { completed: true, date: '2026-01-21' },
+                        org: { completed: false }
                     },
-                    maintenance: [
-                        {
-                            id: 1,
-                            type: "oil",
-                            priority: "medium",
-                            date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-                            responsible: "Pvt. Schmidt",
-                            description: "Routine Ölwechsel",
-                            status: "pending"
-                        }
-                    ],
-                    systemStatus: {
-                        engine: "ok",
-                        transmission: "ok",
-                        electrical: "warning",
-                        armor: "ok",
-                        comms: "ok",
-                        weapons: "ok"
-                    },
-                    fuelData: {
-                        level: 85,
-                        type: "diesel",
-                        consumption: 15.5,
-                        price: 1.85
+                    oralData: {
+                        date: '2026-01-21',
+                        timeStart: '16:40',
+                        timeEnd: '18:00',
+                        person: '<@478615566496563221>',
+                        notes: ''
                     }
                 },
                 {
-                    id: "VEH-2024-002",
-                    name: "MRAP B-007",
-                    type: "MRAP",
-                    serial: "SOC-MRP-007",
-                    unit: "Bravo Company, 2nd Platoon",
-                    status: "maintenance",
-                    lastCheck: formatDateTimeLocal(new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)),
-                    nextMaintenance: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-                    assignedMechanic: "Cpl. Rodriguez",
-                    specs: {
-                        power: "330 PS / 245 kW",
-                        speed: "105 km/h",
-                        range: "700 km",
-                        weight: "18,000 kg",
-                        fuelCapacity: "400 Liter",
-                        crew: "2 + 8",
-                        armament: "M2 .50 Cal, M240, Mk19",
-                        armor: "STANAG 4569 Level 3",
-                        manufacturer: "Navistar",
-                        year: "2021",
-                        mileage: "32000"
+                    id: 'emp2',
+                    name: 'Tony Cortez',
+                    dn: '107',
+                    unit: '<@&1187756956425920645>',
+                    rank: '<@&1097625921516748830>',
+                    hireDate: '2026-01-10',
+                    inductions: {
+                        oral: { completed: false },
+                        org: { completed: true, date: '2026-01-16' }
                     },
-                    damageReports: [
-                        {
-                            id: 1,
-                            severity: "medium",
-                            system: "suspension",
-                            date: formatDateTimeLocal(new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)),
-                            reporter: "Lt. Johnson",
-                            description: "Rechte Vorderradaufhängung beschädigt",
-                            status: "open"
-                        }
-                    ],
-                    systemStatus: {
-                        engine: "ok",
-                        transmission: "warning",
-                        electrical: "ok",
-                        armor: "ok",
-                        comms: "ok",
-                        weapons: "ok"
+                    orgData: {
+                        date: '2026-01-16',
+                        timeStart: '22:10',
+                        timeEnd: '23:05',
+                        person: 'Nico Kickl',
+                        notes: ''
                     }
                 }
             ];
             
-            renderVehicleList();
+            renderEmployeeList();
             updateStats();
-        }
-
-        // ===== HELFERFUNKTIONEN =====
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('de-DE', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
         }
     </script>
 </body>
