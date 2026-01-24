@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📋 HR Einweisungen Pro</title>
+    <title>📋 HR EINWEISUNGEN PRO</title>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -464,6 +464,36 @@
             border: 2px solid rgba(59, 130, 246, 0.3);
         }
         
+        /* Editable Fields in Header */
+        .editable-field {
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid transparent;
+        }
+        
+        .editable-field:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+        }
+        
+        .editable-field.editing {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--secondary);
+        }
+        
+        .edit-input {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: white;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 13px;
+            min-width: 100px;
+            font-family: 'Inter', sans-serif;
+        }
+        
         .action-buttons {
             display: flex;
             gap: 10px;
@@ -748,8 +778,14 @@
         /* Template Cards */
         .template-cards {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
             gap: 20px;
+        }
+        
+        @media (max-width: 1400px) {
+            .template-cards {
+                grid-template-columns: 1fr 1fr;
+            }
         }
         
         @media (max-width: 1200px) {
@@ -1177,11 +1213,15 @@
                     <div class="employee-tags">
                         <div class="employee-tag">
                             <i class="fas fa-hashtag"></i>
-                            <span class="tag-value" id="currentEmployeeDN">DN-</span>
+                            <span class="tag-value">
+                                <span class="editable-field" id="currentEmployeeDN" onclick="startEditingDN()">DN-</span>
+                            </span>
                         </div>
                         <div class="employee-tag">
                             <i class="fas fa-building"></i>
-                            <span class="tag-value" id="currentEmployeeUnit">Unit</span>
+                            <span class="tag-value">
+                                <span class="editable-field" id="currentEmployeeUnit" onclick="startEditingUnit()">Unit</span>
+                            </span>
                         </div>
                         <div class="employee-tag">
                             <i class="fas fa-user-tie"></i>
@@ -1378,6 +1418,9 @@
                             <button class="btn btn-secondary" onclick="copyOrgTemplate()">
                                 <i class="fas fa-copy"></i> Organisatorisch
                             </button>
+                            <button class="btn btn-secondary" onclick="copyNewSettingTemplate()">
+                                <i class="fas fa-copy"></i> Neue Einstellung
+                            </button>
                         </div>
                     </div>
                     
@@ -1436,6 +1479,34 @@ Sonstiges: -
 
 /////////////////////////////////////////////////////////////////////////
 <@&1097625910242447422>
+╚══════════════════╝
+                            </div>
+                        </div>
+                        
+                        <!-- New Setting Template Card -->
+                        <div class="template-card" id="newSettingTemplateCard">
+                            <div class="template-card-header">
+                                <div class="template-card-title">
+                                    <i class="fas fa-user-cog"></i>
+                                    Neue Einstellung
+                                </div>
+                                <div class="template-badge" id="newSettingTemplateBadge">BEREIT</div>
+                            </div>
+                            <div class="template-content" id="newSettingTemplateContent">
+╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+NEUE EINSTELLUNG
+
+Name: 
+DN: 
+Hauptunit: 
+Rang: 
+Datum: 
+Uhrzeit: 
+Sonstiges: 
+
+/////////////////////////////////////////////////////////////////////////
+@USA┃Human Resources
 ╚══════════════════╝
                             </div>
                         </div>
@@ -1570,6 +1641,8 @@ Sonstiges: -
         let employees = [];
         let autoSaveTimer = null;
         let bothInductionsCompleted = false;
+        let editingDN = false;
+        let editingUnit = false;
 
         // Initialize App
         document.addEventListener('DOMContentLoaded', function() {
@@ -1592,6 +1665,9 @@ Sonstiges: -
             
             // Load employees from Firebase
             loadEmployees();
+            
+            // Update new setting template
+            updateNewSettingTemplate();
         }
 
         function setupEventListeners() {
@@ -1605,6 +1681,7 @@ Sonstiges: -
                 if (currentEmployee) {
                     autoSave();
                     updateTemplates();
+                    updateNewSettingTemplate();
                 }
             }, 1000));
             
@@ -1788,6 +1865,160 @@ Sonstiges: -
             loadEmployeeData();
         }
 
+        // Editable DN Field
+        function startEditingDN() {
+            if (editingDN || !currentEmployee) return;
+            
+            editingDN = true;
+            const dnElement = document.getElementById('currentEmployeeDN');
+            const currentDN = currentEmployee.dn || '';
+            
+            // Replace text with input field
+            dnElement.innerHTML = `<input type="text" class="edit-input" id="editDNInput" value="${currentDN}" style="width: 80px;">`;
+            dnElement.classList.add('editing');
+            
+            // Focus the input
+            const input = document.getElementById('editDNInput');
+            input.focus();
+            input.select();
+            
+            // Handle input events
+            input.addEventListener('blur', finishEditingDN);
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    finishEditingDN();
+                } else if (e.key === 'Escape') {
+                    cancelEditingDN();
+                }
+            });
+        }
+
+        function finishEditingDN() {
+            if (!editingDN || !currentEmployee) return;
+            
+            const input = document.getElementById('editDNInput');
+            const newDN = input.value.trim();
+            
+            if (newDN && newDN !== currentEmployee.dn) {
+                // Update employee
+                currentEmployee.dn = newDN;
+                
+                // Update UI
+                document.getElementById('currentEmployeeDN').textContent = `DN ${newDN}`;
+                document.getElementById('currentEmployeeDN').classList.remove('editing');
+                
+                // Auto-save
+                autoSave();
+                
+                // Update employee list
+                renderEmployeeList();
+                
+                // Update templates
+                updateTemplates();
+                updateNewSettingTemplate();
+                
+                showNotification('DN aktualisiert', 'success');
+            } else {
+                // Cancel if no change
+                cancelEditingDN();
+            }
+            
+            editingDN = false;
+        }
+
+        function cancelEditingDN() {
+            if (!editingDN || !currentEmployee) return;
+            
+            document.getElementById('currentEmployeeDN').textContent = `DN ${currentEmployee.dn || ''}`;
+            document.getElementById('currentEmployeeDN').classList.remove('editing');
+            editingDN = false;
+        }
+
+        // Editable Unit Field
+        function startEditingUnit() {
+            if (editingUnit || !currentEmployee) return;
+            
+            editingUnit = true;
+            const unitElement = document.getElementById('currentEmployeeUnit');
+            const currentUnit = currentEmployee.unit || '';
+            
+            // Create select dropdown
+            const selectHtml = `
+                <select class="edit-input" id="editUnitInput" style="width: 150px;">
+                    <option value="">Keine Unit</option>
+                    <option value="Air Force" ${currentUnit === 'Air Force' ? 'selected' : ''}>Air Force</option>
+                    <option value="S.O.C" ${currentUnit === 'S.O.C' ? 'selected' : ''}>S.O.C</option>
+                    <option value="Infantry" ${currentUnit === 'Infantry' ? 'selected' : ''}>Infantry</option>
+                    <option value="Military Police" ${currentUnit === 'Military Police' ? 'selected' : ''}>Military Police</option>
+                    <option value="Navy Marine" ${currentUnit === 'Navy Marine' ? 'selected' : ''}>Navy Marine</option>
+                    <option value="Navy SEALs" ${currentUnit === 'Navy SEALs' ? 'selected' : ''}>Navy SEALs</option>
+                </select>
+            `;
+            
+            unitElement.innerHTML = selectHtml;
+            unitElement.classList.add('editing');
+            
+            // Focus the select
+            const select = document.getElementById('editUnitInput');
+            select.focus();
+            
+            // Handle events
+            select.addEventListener('change', finishEditingUnit);
+            select.addEventListener('blur', finishEditingUnit);
+            select.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    finishEditingUnit();
+                } else if (e.key === 'Escape') {
+                    cancelEditingUnit();
+                }
+            });
+        }
+
+        function finishEditingUnit() {
+            if (!editingUnit || !currentEmployee) return;
+            
+            const select = document.getElementById('editUnitInput');
+            const newUnit = select.value;
+            
+            if (newUnit !== currentEmployee.unit) {
+                // Update employee
+                currentEmployee.unit = newUnit;
+                
+                // Update UI
+                document.getElementById('currentEmployeeUnit').textContent = newUnit || 'Keine Unit';
+                document.getElementById('currentEmployeeUnit').classList.remove('editing');
+                
+                // Update dropdowns in forms
+                document.getElementById('unitSelect').value = newUnit;
+                document.getElementById('unitSelect2').value = newUnit;
+                
+                // Auto-save
+                autoSave();
+                
+                // Update employee list
+                renderEmployeeList();
+                
+                // Update templates
+                updateTemplates();
+                updateNewSettingTemplate();
+                
+                showNotification('Unit aktualisiert', 'success');
+            } else {
+                // Cancel if no change
+                cancelEditingUnit();
+            }
+            
+            editingUnit = false;
+        }
+
+        function cancelEditingUnit() {
+            if (!editingUnit || !currentEmployee) return;
+            
+            document.getElementById('currentEmployeeUnit').textContent = currentEmployee.unit || 'Keine Unit';
+            document.getElementById('currentEmployeeUnit').classList.remove('editing');
+            editingUnit = false;
+        }
+
         function loadEmployeeData() {
             if (!currentEmployee) return;
             
@@ -1828,6 +2059,7 @@ Sonstiges: -
             
             // Update templates
             updateTemplates();
+            updateNewSettingTemplate();
         }
 
         function updateInductionUI(type, completed) {
@@ -1863,6 +2095,7 @@ Sonstiges: -
             
             updateInductionUI(type, completed);
             updateTemplates();
+            updateNewSettingTemplate();
             autoSave();
             
             // Check if both inductions are now completed
@@ -1933,6 +2166,13 @@ Sonstiges: -
             document.getElementById('orgTemplateCard').classList.toggle('completed', orgCompleted);
         }
 
+        function updateNewSettingTemplate() {
+            if (!currentEmployee) return;
+            
+            const template = generateNewSettingTemplate();
+            document.getElementById('newSettingTemplateContent').textContent = template;
+        }
+
         function generateTemplate(type) {
             const isOral = type === 'oral';
             const completed = isOral ? 
@@ -1984,6 +2224,61 @@ Sonstiges: ${notes}
 
 /////////////////////////////////////////////////////////////////////////
 <@&1097625910242447422>
+╚══════════════════╝`;
+        }
+
+        function generateNewSettingTemplate() {
+            if (!currentEmployee) return `╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+NEUE EINSTELLUNG
+
+Name: 
+DN: 
+Hauptunit: 
+Rang: 
+Datum: 
+Uhrzeit: 
+Sonstiges: 
+
+/////////////////////////////////////////////////////////////////////////
+@USA┃Human Resources
+╚══════════════════╝`;
+            
+            const name = currentEmployee.name || '';
+            const dn = currentEmployee.dn || '';
+            const unit = currentEmployee.unit || '';
+            const rank = currentEmployee.rank || '';
+            
+            // Get current date and time
+            const today = new Date();
+            const date = today.toLocaleDateString('de-DE');
+            const time = today.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+            
+            // Get notes from oral induction if available
+            const notes = currentEmployee.oralData?.notes || currentEmployee.orgData?.notes || '';
+            
+            // Get Discord IDs for unit and rank
+            const unitDiscordId = unitDiscordIds[unit] || '';
+            const rankDiscordId = rankDiscordIds[rank] || '';
+            
+            // Format unit and rank with Discord mentions if available
+            const unitDisplay = unitDiscordId ? `<@&${unitDiscordId}>` : unit;
+            const rankDisplay = rankDiscordId ? `<@&${rankDiscordId}>` : rank;
+            
+            return `╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+NEUE EINSTELLUNG
+
+Name: ${name}
+DN: ${dn}
+Hauptunit: ${unitDisplay}
+Rang: ${rankDisplay}
+Datum: ${date}
+Uhrzeit: ${time}
+Sonstiges: ${notes}
+
+/////////////////////////////////////////////////////////////////////////
+@USA┃Human Resources
 ╚══════════════════╝`;
         }
 
@@ -2049,6 +2344,17 @@ Sonstiges: ${notes}
             
             if (success) {
                 showNotification('Organisatorische Einweisung kopiert', 'success');
+            } else {
+                showNotification('Fehler beim Kopieren', 'error');
+            }
+        }
+
+        async function copyNewSettingTemplate() {
+            const template = document.getElementById('newSettingTemplateContent').textContent;
+            const success = await copyToClipboard(template);
+            
+            if (success) {
+                showNotification('Neue Einstellung kopiert', 'success');
             } else {
                 showNotification('Fehler beim Kopieren', 'error');
             }
