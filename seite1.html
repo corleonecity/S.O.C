@@ -384,7 +384,7 @@
         /* Quick Actions */
         .quick-actions {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 12px;
             margin-top: 20px;
         }
@@ -409,17 +409,6 @@
             background: rgba(59, 130, 246, 0.2);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(59, 130, 246, 0.2);
-        }
-        
-        .quick-action-btn.success {
-            background: rgba(16, 185, 129, 0.1);
-            border-color: rgba(16, 185, 129, 0.2);
-            color: var(--secondary);
-        }
-        
-        .quick-action-btn.success:hover {
-            background: rgba(16, 185, 129, 0.2);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.2);
         }
         
         /* Main Content */
@@ -1200,10 +1189,6 @@
                     <i class="fas fa-user-plus"></i>
                     Neuer Mitarbeiter
                 </button>
-                <button class="quick-action-btn success" onclick="generateAllTemplates()">
-                    <i class="fas fa-copy"></i>
-                    Alle Vorlagen
-                </button>
             </div>
         </aside>
         
@@ -1225,10 +1210,6 @@
                         <div class="employee-tag">
                             <i class="fas fa-user-tie"></i>
                             <span class="tag-value" id="currentEmployeeRank">Rang</span>
-                        </div>
-                        <div class="employee-tag">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span class="tag-value" id="currentEmployeeHireDate">Datum</span>
                         </div>
                     </div>
                 </div>
@@ -1446,49 +1427,23 @@ Sonstiges: -
             
             <div class="form-grid">
                 <div class="form-group">
-                    <label class="form-label">Vollständiger Name</label>
+                    <label class="form-label">Vollständiger Name *</label>
                     <input type="text" class="form-input" id="newEmployeeName" placeholder="z.B. Chapo Anatolian">
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Discord Nummer (DN)</label>
+                    <label class="form-label">Discord Nummer (DN) *</label>
                     <input type="number" class="form-input" id="newEmployeeDN" placeholder="z.B. 43" min="1" max="9999">
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Hauptunit (Discord Role)</label>
-                    <select class="form-select" id="newEmployeeUnit">
-                        <option value="">Unit auswählen</option>
-                        <option value="<@&1269229762400878675>">👥 Unit 1</option>
-                        <option value="<@&1187756956425920645>">👥 Unit 2</option>
-                        <option value="<@&1097625921516748830>">👥 Unit 3</option>
-                        <option value="<@&1097625910242447422>">📋 HR-Team</option>
-                    </select>
+                    <label class="form-label">Hauptunit</label>
+                    <input type="text" class="form-input" id="newEmployeeUnit" placeholder="z.B. Unit 1">
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Rang (Discord Role)</label>
-                    <select class="form-select" id="newEmployeeRank">
-                        <option value="">Rang auswählen</option>
-                        <option value="<@&1097625913274933298>">⭐ Rang 1</option>
-                        <option value="<@&1097625921516748830>">⭐⭐ Rang 2</option>
-                        <option value="<@&1097625910242447422>">⭐⭐⭐ Rang 3</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Einstellungsdatum</label>
-                    <input type="date" class="form-input" id="newEmployeeHireDate">
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Initialer Status</label>
-                    <select class="form-select" id="newEmployeeStatus">
-                        <option value="pending">Beide Einweisungen ausstehend</option>
-                        <option value="oral">Nur mündliche Einweisung</option>
-                        <option value="org">Nur organisatorische Einweisung</option>
-                        <option value="both">Beide Einweisungen bestanden</option>
-                    </select>
+                    <label class="form-label">Rang</label>
+                    <input type="text" class="form-input" id="newEmployeeRank" placeholder="z.B. Rang 1">
                 </div>
             </div>
             
@@ -1498,34 +1453,6 @@ Sonstiges: -
                 </button>
                 <button class="btn btn-primary" onclick="createNewEmployee()">
                     <i class="fas fa-plus"></i> Mitarbeiter erstellen
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- All Templates Modal -->
-    <div class="modal-overlay" id="allTemplatesModal" onclick="if(event.target===this)closeModal('allTemplatesModal')">
-        <div class="modal" style="max-width: 800px;">
-            <div class="modal-header">
-                <div class="modal-title">
-                    <i class="fas fa-copy"></i>
-                    Alle Discord Vorlagen
-                </div>
-                <button class="modal-close" onclick="closeModal('allTemplatesModal')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div id="allTemplatesContent" style="max-height: 500px; overflow-y: auto; margin-bottom: 24px;">
-                <!-- Templates will be loaded here -->
-            </div>
-            
-            <div style="display: flex; justify-content: flex-end; gap: 16px;">
-                <button class="btn btn-secondary" onclick="closeModal('allTemplatesModal')">
-                    Schließen
-                </button>
-                <button class="btn btn-primary" onclick="copyAllTemplates()">
-                    <i class="fas fa-copy"></i> Alle kopieren
                 </button>
             </div>
         </div>
@@ -1564,7 +1491,6 @@ Sonstiges: -
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('oralDate').value = today;
             document.getElementById('orgDate').value = today;
-            document.getElementById('newEmployeeHireDate').value = today;
             
             // Set default times
             document.getElementById('oralTimeStart').value = '16:40';
@@ -1651,7 +1577,6 @@ Sonstiges: -
                     dn: employee.dn,
                     unit: employee.unit,
                     rank: employee.rank,
-                    hireDate: employee.hireDate,
                     lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
                     inductions: employee.inductions || {},
                     oralData: employee.oralData || {},
@@ -1709,8 +1634,6 @@ Sonstiges: -
                 const oralCompleted = employee.inductions?.oral?.completed || false;
                 const orgCompleted = employee.inductions?.org?.completed || false;
                 
-                const hireDate = employee.hireDate ? new Date(employee.hireDate).toLocaleDateString('de-DE') : 'Nicht gesetzt';
-                
                 card.innerHTML = `
                     <div class="employee-header">
                         <div class="employee-name">${employee.name}</div>
@@ -1719,7 +1642,6 @@ Sonstiges: -
                     <div class="employee-meta">
                         <div>${employee.rank || 'Kein Rang'}</div>
                         <div>${employee.unit || 'Keine Unit'}</div>
-                        <div><i class="fas fa-calendar-alt"></i> ${hireDate}</div>
                     </div>
                     <div class="induction-badges">
                         <div class="induction-badge badge-oral ${oralCompleted ? 'completed' : 'pending'}">
@@ -1766,10 +1688,8 @@ Sonstiges: -
             // Update header
             document.getElementById('currentEmployeeName').textContent = employee.name;
             document.getElementById('currentEmployeeDN').textContent = `DN ${employee.dn}`;
-            document.getElementById('currentEmployeeUnit').textContent = employee.unit ? employee.unit.replace(/[<>@&]/g, '') : 'Keine Unit';
-            document.getElementById('currentEmployeeRank').textContent = employee.rank ? employee.rank.replace(/[<>@&]/g, '') : 'Kein Rang';
-            document.getElementById('currentEmployeeHireDate').textContent = 
-                employee.hireDate ? new Date(employee.hireDate).toLocaleDateString('de-DE') : 'Nicht gesetzt';
+            document.getElementById('currentEmployeeUnit').textContent = employee.unit || 'Keine Unit';
+            document.getElementById('currentEmployeeRank').textContent = employee.rank || 'Kein Rang';
             
             // Update cards
             document.querySelectorAll('.employee-card').forEach(card => {
@@ -2031,84 +1951,6 @@ Sonstiges: ${notes}
             }
         }
 
-        function generateAllTemplates() {
-            if (employees.length === 0) {
-                showNotification('Keine Mitarbeiter vorhanden', 'warning');
-                return;
-            }
-            
-            let allTemplates = '';
-            
-            employees.forEach(employee => {
-                const oralCompleted = employee.inductions?.oral?.completed || false;
-                const orgCompleted = employee.inductions?.org?.completed || false;
-                
-                if (oralCompleted || orgCompleted) {
-                    allTemplates += `=== ${employee.name} (DN ${employee.dn}) ===\n\n`;
-                    
-                    if (oralCompleted && employee.oralData) {
-                        allTemplates += generateTemplateForEmployee(employee, 'oral') + '\n\n';
-                    }
-                    
-                    if (orgCompleted && employee.orgData) {
-                        allTemplates += generateTemplateForEmployee(employee, 'org') + '\n\n';
-                    }
-                    
-                    allTemplates += '\n';
-                }
-            });
-            
-            document.getElementById('allTemplatesContent').textContent = allTemplates || 'Keine abgeschlossenen Einweisungen vorhanden.';
-            openModal('allTemplatesModal');
-        }
-
-        function generateTemplateForEmployee(employee, type) {
-            const isOral = type === 'oral';
-            const data = isOral ? employee.oralData : employee.orgData;
-            
-            if (!data) return '';
-            
-            const name = employee.name || '-';
-            const dn = employee.dn || '-';
-            const unit = employee.unit || '-';
-            const rank = employee.rank || '-';
-            const date = data.date ? new Date(data.date).toLocaleDateString('de-DE') : '-';
-            const timeStart = data.timeStart || '-';
-            const timeEnd = data.timeEnd || '-';
-            const person = data.person || '-';
-            const notes = data.notes || '-';
-            
-            const timeSeparator = isOral ? 'bis' : '-';
-            
-            return `╔══════════════════╗
-/////////////////////////////////////////////////////////////////////////
-${isOral ? 'Mündliche' : 'Organisatorische'} Einweisung / bestanden
-
-Name: ${name}
-DN: ${dn}
-Hauptunit: ${unit}
-Rang: ${rank}
-Datum: ${date}
-Uhrzeit: ${timeStart} ${timeSeparator} ${timeEnd}
-Beteiligte: ${person}
-Sonstiges: ${notes}
-
-/////////////////////////////////////////////////////////////////////////
-<@&1097625910242447422>
-╚══════════════════╝`;
-        }
-
-        async function copyAllTemplates() {
-            const text = document.getElementById('allTemplatesContent').textContent;
-            const success = await copyToClipboard(text);
-            
-            if (success) {
-                showNotification('Alle Vorlagen kopiert', 'success');
-            } else {
-                showNotification('Fehler beim Kopieren', 'error');
-            }
-        }
-
         // Modal Functions
         function openModal(modalId) {
             document.getElementById(modalId).classList.add('active');
@@ -2119,20 +1961,17 @@ Sonstiges: ${notes}
         }
 
         function openNewEmployeeModal() {
-            document.getElementById('newEmployeeHireDate').value = new Date().toISOString().split('T')[0];
             openModal('newEmployeeModal');
         }
 
         async function createNewEmployee() {
             const name = document.getElementById('newEmployeeName').value.trim();
             const dn = document.getElementById('newEmployeeDN').value;
-            const unit = document.getElementById('newEmployeeUnit').value;
-            const rank = document.getElementById('newEmployeeRank').value;
-            const hireDate = document.getElementById('newEmployeeHireDate').value;
-            const status = document.getElementById('newEmployeeStatus').value;
+            const unit = document.getElementById('newEmployeeUnit').value.trim();
+            const rank = document.getElementById('newEmployeeRank').value.trim();
             
-            if (!name || !dn || !unit || !rank) {
-                showNotification('Bitte füllen Sie alle Pflichtfelder aus', 'warning');
+            if (!name || !dn) {
+                showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
                 return;
             }
             
@@ -2142,29 +1981,13 @@ Sonstiges: ${notes}
                 id: employeeId,
                 name: name,
                 dn: dn,
-                unit: unit,
-                rank: rank,
-                hireDate: hireDate,
+                unit: unit || '',
+                rank: rank || '',
                 lastUpdated: new Date().toISOString(),
                 inductions: {},
                 oralData: {},
                 orgData: {}
             };
-            
-            // Set initial induction status
-            if (status === 'oral' || status === 'both') {
-                newEmployee.inductions.oral = {
-                    completed: true,
-                    date: new Date().toISOString()
-                };
-            }
-            
-            if (status === 'org' || status === 'both') {
-                newEmployee.inductions.org = {
-                    completed: true,
-                    date: new Date().toISOString()
-                };
-            }
             
             // Save to Firebase
             const success = await saveEmployeeToFirebase(newEmployee);
@@ -2182,7 +2005,6 @@ Sonstiges: ${notes}
                 document.getElementById('newEmployeeDN').value = '';
                 document.getElementById('newEmployeeUnit').value = '';
                 document.getElementById('newEmployeeRank').value = '';
-                document.getElementById('newEmployeeStatus').value = 'pending';
                 
                 showNotification(`Mitarbeiter "${name}" erstellt`, 'success');
             }
@@ -2421,9 +2243,8 @@ Sonstiges: ${notes}
                     id: 'emp1',
                     name: 'Chapo Anatolian',
                     dn: '43',
-                    unit: '<@&1269229762400878675>',
-                    rank: '<@&1097625913274933298>',
-                    hireDate: '2026-01-15',
+                    unit: 'Unit 1',
+                    rank: 'Rang 1',
                     inductions: {
                         oral: { completed: true, date: '2026-01-21' },
                         org: { completed: false }
@@ -2432,7 +2253,7 @@ Sonstiges: ${notes}
                         date: '2026-01-21',
                         timeStart: '16:40',
                         timeEnd: '18:00',
-                        person: '<@478615566496563221>',
+                        person: 'HR Team',
                         notes: ''
                     },
                     orgData: {}
@@ -2441,9 +2262,8 @@ Sonstiges: ${notes}
                     id: 'emp2',
                     name: 'Tony Cortez',
                     dn: '107',
-                    unit: '<@&1187756956425920645>',
-                    rank: '<@&1097625921516748830>',
-                    hireDate: '2026-01-10',
+                    unit: 'Unit 2',
+                    rank: 'Rang 2',
                     inductions: {
                         oral: { completed: false },
                         org: { completed: true, date: '2026-01-16' }
@@ -2461,9 +2281,8 @@ Sonstiges: ${notes}
                     id: 'emp3',
                     name: 'Max Mustermann',
                     dn: '89',
-                    unit: '<@&1097625910242447422>',
-                    rank: '<@&1097625921516748830>',
-                    hireDate: '2026-01-20',
+                    unit: 'HR-Team',
+                    rank: 'Rang 3',
                     inductions: {
                         oral: { completed: true, date: '2026-01-25' },
                         org: { completed: true, date: '2026-01-25' }
