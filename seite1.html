@@ -677,7 +677,7 @@
             letter-spacing: 0.3px;
         }
         
-        /* GEÄNDERT: Form-Inputs mit dunklem Design */
+        /* Form-Inputs mit dunklem Design */
         .form-input, .form-select, .form-textarea {
             padding: 12px 14px;
             background: rgba(255, 255, 255, 0.07);
@@ -689,7 +689,7 @@
             transition: var(--transition);
         }
         
-        /* GEÄNDERT: Select-Elemente mit dunklem Design */
+        /* Select-Elemente mit dunklem Design */
         .form-select {
             color: white !important;
             background-color: rgba(255, 255, 255, 0.07) !important;
@@ -1206,12 +1206,6 @@
                     <button class="btn btn-secondary" onclick="openEditEmployeeModal()">
                         <i class="fas fa-edit"></i> Bearbeiten
                     </button>
-                    <button class="btn btn-danger" onclick="deleteCurrentEmployee()">
-                        <i class="fas fa-trash"></i> Löschen
-                    </button>
-                    <button class="btn btn-primary" onclick="saveEmployeeData()">
-                        <i class="fas fa-save"></i> Speichern
-                    </button>
                 </div>
             </div>
             
@@ -1604,13 +1598,18 @@ Sonstiges: -
                 </div>
             </div>
             
-            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
-                <button class="btn btn-secondary" onclick="closeModal('editEmployeeModal')">
-                    Abbrechen
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 24px;">
+                <button class="btn btn-danger" onclick="deleteCurrentEmployee()" style="margin-right: auto;">
+                    <i class="fas fa-trash"></i> Löschen
                 </button>
-                <button class="btn btn-primary" onclick="saveEditedEmployee()">
-                    <i class="fas fa-save"></i> Änderungen speichern
-                </button>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-secondary" onclick="closeModal('editEmployeeModal')">
+                        Abbrechen
+                    </button>
+                    <button class="btn btn-primary" onclick="saveEditedEmployee()">
+                        <i class="fas fa-save"></i> Änderungen speichern
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -1666,6 +1665,7 @@ Sonstiges: -
         let currentEmployee = null;
         let employees = [];
         let autoSaveTimer = null;
+        let autoSaveInterval = null;
         let bothInductionsCompleted = false;
 
         // Initialize App
@@ -1689,6 +1689,9 @@ Sonstiges: -
             
             // Load employees from Firebase
             loadEmployees();
+            
+            // Start auto-save interval (every 1 second)
+            startAutoSaveInterval();
         }
 
         function setupEventListeners() {
@@ -1700,7 +1703,6 @@ Sonstiges: -
             // Auto-save on input
             document.addEventListener('input', debounce(function(e) {
                 if (currentEmployee) {
-                    autoSave();
                     updateTemplates();
                 }
             }, 1000));
@@ -1732,6 +1734,32 @@ Sonstiges: -
                 clearTimeout(timeout);
                 timeout = setTimeout(later, wait);
             };
+        }
+
+        // Auto-Save Funktionen
+        function startAutoSaveInterval() {
+            // Alle 1 Sekunde automatisch speichern
+            autoSaveInterval = setInterval(function() {
+                if (currentEmployee) {
+                    autoSave();
+                }
+            }, 1000); // 1000ms = 1 Sekunde
+        }
+
+        function stopAutoSaveInterval() {
+            if (autoSaveInterval) {
+                clearInterval(autoSaveInterval);
+            }
+        }
+
+        function autoSave() {
+            if (!currentEmployee) return;
+            
+            // Save form data
+            saveFormData();
+            
+            // Save to Firebase
+            saveEmployeeData(true);
         }
 
         // Firebase Functions
@@ -1774,7 +1802,6 @@ Sonstiges: -
                 return true;
             } catch (error) {
                 console.error('Fehler beim Speichern:', error);
-                showNotification('Fehler beim Speichern', 'error');
                 return false;
             }
         }
@@ -2018,6 +2045,9 @@ Sonstiges: -
             if (success) {
                 employees = employees.filter(emp => emp.id !== currentEmployee.id);
                 
+                // Modal schließen
+                closeModal('editEmployeeModal');
+                
                 // Zurücksetzen der Ansicht
                 currentEmployee = null;
                 document.getElementById('employeeHeader').style.display = 'none';
@@ -2046,7 +2076,6 @@ Sonstiges: -
             
             updateInductionUI(type, completed);
             updateTemplates();
-            autoSave();
             
             // Check if both inductions are now completed
             checkBothInductionsCompleted();
@@ -2297,18 +2326,6 @@ Sonstiges: ${notes}
         }
 
         // Save Functions
-        function autoSave() {
-            if (!currentEmployee) return;
-            
-            if (autoSaveTimer) {
-                clearTimeout(autoSaveTimer);
-            }
-            
-            autoSaveTimer = setTimeout(() => {
-                saveEmployeeData(true);
-            }, 2000);
-        }
-
         async function saveEmployeeData(isAutoSave = false) {
             if (!currentEmployee) {
                 return;
