@@ -196,6 +196,7 @@
             display: flex;
             gap: 8px;
             margin-top: 10px;
+            flex-wrap: wrap;
         }
         
         .filter-btn {
@@ -262,9 +263,36 @@
             border-radius: 20px;
         }
         
+        .sidebar-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .sort-button {
+            padding: 10px 16px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid rgba(59, 130, 246, 0.2);
+            border-radius: var(--radius-md);
+            color: var(--primary-light);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .sort-button:hover {
+            background: rgba(59, 130, 246, 0.2);
+            transform: translateY(-1px);
+        }
+        
         .search-container {
             position: relative;
-            margin-bottom: 20px;
             flex-shrink: 0;
         }
         
@@ -1240,6 +1268,23 @@
             font-size: 12px;
             color: var(--gray);
         }
+        
+        /* Time Input fix */
+        .time-input-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .time-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+        
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            opacity: 0.6;
+        }
     </style>
 </head>
 <body>
@@ -1298,9 +1343,16 @@
                 <div class="employee-count" id="employeeCount">0</div>
             </div>
             
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" id="searchEmployees" placeholder="Nach Namen oder DN suchen...">
+            <div class="sidebar-controls">
+                <button class="sort-button" onclick="toggleSort()">
+                    <i class="fas fa-sort-alpha-down"></i>
+                    Nach Name sortieren
+                </button>
+                
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" id="searchEmployees" placeholder="Nach Namen oder DN suchen...">
+                </div>
             </div>
             
             <div class="employee-list-container">
@@ -1557,16 +1609,17 @@
                             <div class="template-content" id="oralTemplateContent">
 ╔══════════════════╗
 /////////////////////////////////////////////////////////////////////////
-Mündliche Einweisung / bestanden
+Mündliche Einweisung / ausstehend
 
-Name: -
-DN: -
-Hauptunit: -
-Rang: -
-Datum: -
-Uhrzeit: - bis -
-Beteiligte: -
-Sonstiges: -
+Prüfer :
+Name: 
+DN: 
+Hauptunit: 
+Rang: 
+Datum: 
+Uhrzeit: 
+Beteiligte: 
+Sonstiges: 
 
 /////////////////////////////////////////////////////////////////////////
 <@&1097625910242447422>
@@ -1586,16 +1639,16 @@ Sonstiges: -
                             <div class="template-content" id="orgTemplateContent">
 ╔══════════════════╗
 /////////////////////////////////////////////////////////////////////////
-Organisatorische Einweisung / bestanden
+Organisatorische Einweisung / ausstehend
 
-Name: -
-DN: -
-Hauptunit: -
-Rang: -
-Datum: -
-Uhrzeit: - bis -
-Beteiligte: -
-Sonstiges: -
+Name: 
+DN: 
+Hauptunit: 
+Rang: 
+Datum: 
+Uhrzeit: 
+Beteiligte: 
+Sonstiges: 
 
 /////////////////////////////////////////////////////////////////////////
 <@&1097625910242447422>
@@ -1864,6 +1917,7 @@ Sonstiges: -
         let employees = [];
         let bothInductionsCompleted = false;
         let currentFilter = 'all';
+        let sortAscending = true;
 
         // Initialize App
         document.addEventListener('DOMContentLoaded', function() {
@@ -1971,7 +2025,7 @@ Sonstiges: -
                     orgData: employee.orgData || {}
                 };
                 
-                await db.collection('hrEmployees').doc(employee.id).set(dataToSave, { merge: true });
+                await db.collection('hrEmployees').doc(employeeId).set(dataToSave, { merge: true });
                 return true;
             } catch (error) {
                 console.error('Fehler beim Speichern:', error);
@@ -1996,17 +2050,16 @@ Sonstiges: -
             const container = document.getElementById('employeeList');
             const countElement = document.getElementById('employeeCount');
             
-            let filteredEmployees = employees;
+            let filteredEmployees = getFilteredEmployees();
             
-            if (currentFilter === 'oral') {
-                filteredEmployees = employees.filter(emp => 
-                    !emp.inductions?.oral?.completed && emp.inductions?.oral?.completed !== undefined
-                );
-            } else if (currentFilter === 'org') {
-                filteredEmployees = employees.filter(emp => 
-                    !emp.inductions?.org?.completed && emp.inductions?.org?.completed !== undefined
-                );
-            }
+            // Sortieren nach Name
+            filteredEmployees.sort((a, b) => {
+                const nameA = a.name.toUpperCase();
+                const nameB = b.name.toUpperCase();
+                return sortAscending ? 
+                    (nameA < nameB ? -1 : nameA > nameB ? 1 : 0) :
+                    (nameA > nameB ? -1 : nameA < nameB ? 1 : 0);
+            });
             
             if (filteredEmployees.length === 0) {
                 container.innerHTML = `
@@ -2015,7 +2068,7 @@ Sonstiges: -
                             <i class="fas fa-user-plus"></i>
                         </div>
                         <div class="empty-title">Keine Mitarbeiter</div>
-                        <div class="empty-description">Fügen Sie Ihren ersten Mitarbeiter hinzu</div>
+                        <div class="empty-description">${getEmptyStateDescription()}</div>
                     </div>
                 `;
                 countElement.textContent = '0';
@@ -2062,6 +2115,34 @@ Sonstiges: -
             });
         }
 
+        function getFilteredEmployees() {
+            if (currentFilter === 'oral') {
+                // Nur Mitarbeiter mit ausstehender mündlicher Einweisung
+                return employees.filter(emp => 
+                    !emp.inductions?.oral?.completed
+                );
+            } else if (currentFilter === 'org') {
+                // Nur Mitarbeiter mit ausstehender organisatorischer Einweisung
+                return employees.filter(emp => 
+                    !emp.inductions?.org?.completed
+                );
+            } else {
+                // Alle Mitarbeiter
+                return employees;
+            }
+        }
+
+        function getEmptyStateDescription() {
+            switch(currentFilter) {
+                case 'oral':
+                    return 'Keine Mitarbeiter mit ausstehender mündlicher Einweisung';
+                case 'org':
+                    return 'Keine Mitarbeiter mit ausstehender organisatorischer Einweisung';
+                default:
+                    return 'Fügen Sie Ihren ersten Mitarbeiter hinzu';
+            }
+        }
+
         function filterEmployees(searchTerm) {
             const cards = document.querySelectorAll('.employee-card');
             const term = searchTerm.toLowerCase().trim();
@@ -2095,6 +2176,19 @@ Sonstiges: -
                 document.querySelectorAll('.filter-btn')[1].classList.add('active');
             } else if (type === 'org') {
                 document.querySelectorAll('.filter-btn')[2].classList.add('active');
+            }
+            
+            renderEmployeeList();
+        }
+
+        function toggleSort() {
+            sortAscending = !sortAscending;
+            
+            const sortButton = document.querySelector('.sort-button');
+            if (sortAscending) {
+                sortButton.innerHTML = '<i class="fas fa-sort-alpha-down"></i> Nach Name sortieren (A-Z)';
+            } else {
+                sortButton.innerHTML = '<i class="fas fa-sort-alpha-up"></i> Nach Name sortieren (Z-A)';
             }
             
             renderEmployeeList();
@@ -2460,23 +2554,23 @@ Sonstiges: -
             
             const data = isOral ? currentEmployee.oralData : currentEmployee.orgData;
             
-            const name = currentEmployee.name || '-';
-            const dn = currentEmployee.dn || '-';
+            const name = currentEmployee.name || '';
+            const dn = currentEmployee.dn || '';
             
             // Get unit and rank from the specific form or fallback to employee data
             const unit = isOral ? 
-                (document.getElementById('unitSelect').value || currentEmployee.unit || '-') :
-                (document.getElementById('unitSelect2').value || currentEmployee.unit || '-');
+                (document.getElementById('unitSelect').value || currentEmployee.unit || '') :
+                (document.getElementById('unitSelect2').value || currentEmployee.unit || '');
             
             const rank = isOral ? 
-                (document.getElementById('rankSelect').value || currentEmployee.rank || '-') :
-                (document.getElementById('rankSelect2').value || currentEmployee.rank || '-');
+                (document.getElementById('rankSelect').value || currentEmployee.rank || '') :
+                (document.getElementById('rankSelect2').value || currentEmployee.rank || '');
             
-            const date = data?.date ? new Date(data.date).toLocaleDateString('de-DE') : '-';
-            const timeStart = data?.timeStart || '-';
-            const timeEnd = data?.timeEnd || '-';
-            const person = data?.person || '-';
-            const notes = data?.notes || '-';
+            const date = data?.date ? new Date(data.date).toLocaleDateString('de-DE') : '';
+            const timeStart = data?.timeStart || '';
+            const timeEnd = data?.timeEnd || '';
+            const person = data?.person || '';
+            const notes = data?.notes || '';
             
             const timeSeparator = isOral ? 'bis' : '-';
             
@@ -2494,12 +2588,13 @@ Sonstiges: -
 /////////////////////////////////////////////////////////////////////////
 Mündliche Einweisung / ${completed ? 'bestanden' : 'ausstehend'}
 
+Prüfer : ${person}
 Name: ${name}
 DN: ${dn}
 Hauptunit: ${unitDisplay}
 Rang: ${rankDisplay}
 Datum: ${date}
-Uhrzeit: ${timeStart} bis ${timeEnd}
+Uhrzeit: ${timeStart} ${timeSeparator} ${timeEnd}
 Beteiligte: ${person}
 Sonstiges: ${notes}
 
@@ -2956,6 +3051,27 @@ Sonstiges: ${notes}
                         notes: 'Dokumente vollständig',
                         unit: 'Military Police',
                         rank: 'Lieutenant'
+                    }
+                },
+                {
+                    id: 'emp4',
+                    name: 'Anna Schmidt',
+                    dn: '25',
+                    unit: 'Infantry',
+                    rank: 'Corporal',
+                    inductions: {
+                        oral: { completed: false },
+                        org: { completed: true, date: '2026-01-18' }
+                    },
+                    oralData: {},
+                    orgData: {
+                        date: '2026-01-18',
+                        timeStart: '10:00',
+                        timeEnd: '11:30',
+                        person: 'HR Team',
+                        notes: 'Dokumente in Ordnung',
+                        unit: 'Infantry',
+                        rank: 'Corporal'
                     }
                 }
             ];
