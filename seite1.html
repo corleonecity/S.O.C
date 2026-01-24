@@ -1136,10 +1136,6 @@
                         <div class="stat-label">Mitarbeiter</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value" id="completedInductions">0</div>
-                        <div class="stat-label">Vollständig</div>
-                    </div>
-                    <div class="stat-card">
                         <div class="stat-value" id="pendingInductions">0</div>
                         <div class="stat-label">Ausstehend</div>
                     </div>
@@ -2348,26 +2344,23 @@ Sonstiges: ${notes}
             }
         }
 
-        // Statistics
+        // Statistics - NUR "Mitarbeiter" und "Ausstehend"
         function updateStats() {
             const total = employees.length;
             
-            let completed = 0;
             let pending = 0;
             
             employees.forEach(employee => {
                 const oralCompleted = employee.inductions?.oral?.completed || false;
                 const orgCompleted = employee.inductions?.org?.completed || false;
                 
-                if (oralCompleted && orgCompleted) {
-                    completed++;
-                } else if (!oralCompleted && !orgCompleted) {
+                // Zähle nur die Mitarbeiter, bei denen BEIDE Einweisungen ausstehend sind
+                if (!oralCompleted && !orgCompleted) {
                     pending++;
                 }
             });
             
             document.getElementById('totalEmployees').textContent = total;
-            document.getElementById('completedInductions').textContent = completed;
             document.getElementById('pendingInductions').textContent = pending;
         }
 
