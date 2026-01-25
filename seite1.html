@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📋 HR EINWEISUNGEN PRO</title>
+    <title>📋 Human Resources</title>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -16,6 +16,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     
     <style>
+        /* CSS bleibt gleich wie zuvor */
         :root {
             --primary: #3b82f6;
             --primary-dark: #1e40af;
@@ -23,6 +24,7 @@
             --secondary: #10b981;
             --secondary-dark: #059669;
             --danger: #ef4444;
+            --danger-dark: #7f1d1d;
             --warning: #f59e0b;
             --dark: #0f172a;
             --dark-card: #1e293b;
@@ -464,36 +466,6 @@
             border: 2px solid rgba(59, 130, 246, 0.3);
         }
         
-        /* Editable Fields in Header */
-        .editable-field {
-            cursor: pointer;
-            transition: all 0.2s;
-            padding: 2px 6px;
-            border-radius: 4px;
-            border: 1px solid transparent;
-        }
-        
-        .editable-field:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--primary);
-        }
-        
-        .editable-field.editing {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: var(--secondary);
-        }
-        
-        .edit-input {
-            background: transparent;
-            border: 1px solid var(--primary);
-            color: white;
-            padding: 2px 4px;
-            border-radius: 4px;
-            font-size: 13px;
-            min-width: 100px;
-            font-family: 'Inter', sans-serif;
-        }
-        
         .action-buttons {
             display: flex;
             gap: 10px;
@@ -544,6 +516,16 @@
         .btn-secondary:hover {
             background: rgba(255, 255, 255, 0.15);
             transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, var(--danger-dark) 100%);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
         }
         
         /* Induction Content */
@@ -696,6 +678,7 @@
             letter-spacing: 0.3px;
         }
         
+        /* Form-Inputs mit dunklem Design */
         .form-input, .form-select, .form-textarea {
             padding: 12px 14px;
             background: rgba(255, 255, 255, 0.07);
@@ -707,15 +690,15 @@
             transition: var(--transition);
         }
         
-        /* Spezifische Styles für Select-Elemente mit schwarzer Schrift */
+        /* Select-Elemente mit dunklem Design */
         .form-select {
-            color: #000000 !important;
-            background-color: #ffffff !important;
+            color: white !important;
+            background-color: rgba(255, 255, 255, 0.07) !important;
         }
         
         .form-select option {
-            color: #000000 !important;
-            background-color: #ffffff !important;
+            color: white !important;
+            background-color: var(--dark-card) !important;
         }
         
         .form-input:focus, .form-select:focus, .form-textarea:focus {
@@ -778,14 +761,8 @@
         /* Template Cards */
         .template-cards {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 20px;
-        }
-        
-        @media (max-width: 1400px) {
-            .template-cards {
-                grid-template-columns: 1fr 1fr;
-            }
         }
         
         @media (max-width: 1200px) {
@@ -1026,6 +1003,7 @@
             
             .action-buttons {
                 justify-content: space-between;
+                flex-wrap: wrap;
             }
             
             .induction-content {
@@ -1149,18 +1127,14 @@
                         <i class="fas fa-user-check"></i>
                     </div>
                     <div class="brand-text">
-                        <h1>HR EINWEISUNGEN PRO</h1>
-                        <div class="subtitle">Mündliche & Organisatorische Einweisungen • Discord Integration</div>
+                        <h1>Human Resources</h1>
+                        <div class="subtitle">Mündliche & Organisatorische Einweisungen • HR</div>
                     </div>
                 </div>
                 <div class="header-stats">
                     <div class="stat-card">
                         <div class="stat-value" id="totalEmployees">0</div>
                         <div class="stat-label">Mitarbeiter</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="completedInductions">0</div>
-                        <div class="stat-label">Vollständig</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-value" id="pendingInductions">0</div>
@@ -1213,21 +1187,22 @@
                     <div class="employee-tags">
                         <div class="employee-tag">
                             <i class="fas fa-hashtag"></i>
-                            <span class="tag-value">
-                                <span class="editable-field" id="currentEmployeeDN" onclick="startEditingDN()">DN-</span>
-                            </span>
+                            <span class="tag-value" id="currentEmployeeDN">DN-</span>
                         </div>
                         <div class="employee-tag">
                             <i class="fas fa-building"></i>
-                            <span class="tag-value">
-                                <span class="editable-field" id="currentEmployeeUnit" onclick="startEditingUnit()">Unit</span>
-                            </span>
+                            <span class="tag-value" id="currentEmployeeUnit">Unit</span>
                         </div>
                         <div class="employee-tag">
                             <i class="fas fa-user-tie"></i>
                             <span class="tag-value" id="currentEmployeeRank">Rang</span>
                         </div>
                     </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="openEditEmployeeModal()">
+                        <i class="fas fa-edit"></i> Bearbeiten
+                    </button>
                 </div>
             </div>
             
@@ -1258,26 +1233,26 @@
                         <div class="form-grid">
                             <div class="form-group">
                                 <label class="form-label">Datum</label>
-                                <input type="date" class="form-input" id="oralDate" onchange="updateTemplates()">
+                                <input type="date" class="form-input" id="oralDate">
                             </div>
                             
                             <div class="form-group">
                                 <label class="form-label">Uhrzeit</label>
                                 <div class="time-container">
-                                    <input type="time" class="form-input" id="oralTimeStart" onchange="updateTemplates()">
+                                    <input type="time" class="form-input" id="oralTimeStart">
                                     <div class="time-separator">bis</div>
-                                    <input type="time" class="form-input" id="oralTimeEnd" onchange="updateTemplates()">
+                                    <input type="time" class="form-input" id="oralTimeEnd">
                                 </div>
                             </div>
                             
                             <div class="form-group">
                                 <label class="form-label">Beteiligte Person</label>
-                                <input type="text" class="form-input" id="oralPerson" placeholder="Name der einweisenden Person" onchange="updateTemplates()">
+                                <input type="text" class="form-input" id="oralPerson" placeholder="Name der einweisenden Person">
                             </div>
                             
                             <div class="form-group">
                                 <label class="form-label">Unit</label>
-                                <select class="form-select" id="unitSelect" onchange="updateTemplates()">
+                                <select class="form-select" id="unitSelect">
                                     <option value="">Unit auswählen</option>
                                     <option value="Air Force">Air Force</option>
                                     <option value="S.O.C">S.O.C</option>
@@ -1290,7 +1265,7 @@
                             
                             <div class="form-group">
                                 <label class="form-label">Rang</label>
-                                <select class="form-select" id="rankSelect" onchange="updateTemplates()">
+                                <select class="form-select" id="rankSelect">
                                     <option value="">Rang auswählen</option>
                                     <option value="Private">Private</option>
                                     <option value="Private First Class">Private First Class</option>
@@ -1315,7 +1290,7 @@
                         
                         <div class="form-group">
                             <label class="form-label">Sonstige Bemerkungen</label>
-                            <textarea class="form-textarea" id="oralNotes" placeholder="Weitere Informationen..." onchange="updateTemplates()"></textarea>
+                            <textarea class="form-textarea" id="oralNotes" placeholder="Weitere Informationen..."></textarea>
                         </div>
                     </div>
                     
@@ -1342,26 +1317,26 @@
                         <div class="form-grid">
                             <div class="form-group">
                                 <label class="form-label">Datum</label>
-                                <input type="date" class="form-input" id="orgDate" onchange="updateTemplates()">
+                                <input type="date" class="form-input" id="orgDate">
                             </div>
                             
                             <div class="form-group">
                                 <label class="form-label">Uhrzeit</label>
                                 <div class="time-container">
-                                    <input type="time" class="form-input" id="orgTimeStart" onchange="updateTemplates()">
+                                    <input type="time" class="form-input" id="orgTimeStart">
                                     <div class="time-separator">-</div>
-                                    <input type="time" class="form-input" id="orgTimeEnd" onchange="updateTemplates()">
+                                    <input type="time" class="form-input" id="orgTimeEnd">
                                 </div>
                             </div>
                             
                             <div class="form-group">
                                 <label class="form-label">Beteiligte Person</label>
-                                <input type="text" class="form-input" id="orgPerson" placeholder="Name der einweisenden Person" onchange="updateTemplates()">
+                                <input type="text" class="form-input" id="orgPerson" placeholder="Name der einweisenden Person">
                             </div>
                             
                             <div class="form-group">
                                 <label class="form-label">Unit</label>
-                                <select class="form-select" id="unitSelect2" onchange="updateTemplates()">
+                                <select class="form-select" id="unitSelect2">
                                     <option value="">Unit auswählen</option>
                                     <option value="Air Force">Air Force</option>
                                     <option value="S.O.C">S.O.C</option>
@@ -1374,7 +1349,7 @@
                             
                             <div class="form-group">
                                 <label class="form-label">Rang</label>
-                                <select class="form-select" id="rankSelect2" onchange="updateTemplates()">
+                                <select class="form-select" id="rankSelect2">
                                     <option value="">Rang auswählen</option>
                                     <option value="Private">Private</option>
                                     <option value="Private First Class">Private First Class</option>
@@ -1399,7 +1374,7 @@
                         
                         <div class="form-group">
                             <label class="form-label">Sonstige Bemerkungen</label>
-                            <textarea class="form-textarea" id="orgNotes" placeholder="Weitere Informationen..." onchange="updateTemplates()"></textarea>
+                            <textarea class="form-textarea" id="orgNotes" placeholder="Weitere Informationen..."></textarea>
                         </div>
                     </div>
                 </div>
@@ -1417,9 +1392,6 @@
                             </button>
                             <button class="btn btn-secondary" onclick="copyOrgTemplate()">
                                 <i class="fas fa-copy"></i> Organisatorisch
-                            </button>
-                            <button class="btn btn-secondary" onclick="copyNewSettingTemplate()">
-                                <i class="fas fa-copy"></i> Neue Einstellung
                             </button>
                         </div>
                     </div>
@@ -1482,34 +1454,6 @@ Sonstiges: -
 ╚══════════════════╝
                             </div>
                         </div>
-                        
-                        <!-- New Setting Template Card -->
-                        <div class="template-card" id="newSettingTemplateCard">
-                            <div class="template-card-header">
-                                <div class="template-card-title">
-                                    <i class="fas fa-user-cog"></i>
-                                    Neue Einstellung
-                                </div>
-                                <div class="template-badge" id="newSettingTemplateBadge">BEREIT</div>
-                            </div>
-                            <div class="template-content" id="newSettingTemplateContent">
-╔══════════════════╗
-/////////////////////////////////////////////////////////////////////////
-NEUE EINSTELLUNG
-
-Name: 
-DN: 
-Hauptunit: 
-Rang: 
-Datum: 
-Uhrzeit: 
-Sonstiges: 
-
-/////////////////////////////////////////////////////////////////////////
-@USA┃Human Resources
-╚══════════════════╝
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -1532,7 +1476,7 @@ Sonstiges:
             <div class="form-grid">
                 <div class="form-group">
                     <label class="form-label">Vollständiger Name *</label>
-                    <input type="text" class="form-input" id="newEmployeeName" placeholder="z.B. Chapo Anatolian">
+                    <input type="text" class="form-input" id="newEmployeeName" placeholder="z.B. Max Fiart">
                 </div>
                 
                 <div class="form-group">
@@ -1589,6 +1533,84 @@ Sonstiges:
         </div>
     </div>
     
+    <!-- Edit Employee Modal -->
+    <div class="modal-overlay" id="editEmployeeModal" onclick="if(event.target===this)closeModal('editEmployeeModal')">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-edit"></i>
+                    Mitarbeiter bearbeiten
+                </div>
+                <button class="modal-close" onclick="closeModal('editEmployeeModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Vollständiger Name *</label>
+                    <input type="text" class="form-input" id="editEmployeeName" placeholder="z.B. Max Fiart">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Discord Nummer (DN) *</label>
+                    <input type="number" class="form-input" id="editEmployeeDN" placeholder="z.B. 43" min="1" max="9999">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Unit</label>
+                    <select class="form-select" id="editEmployeeUnit">
+                        <option value="">Unit auswählen</option>
+                        <option value="Air Force">Air Force</option>
+                        <option value="S.O.C">S.O.C</option>
+                        <option value="Infantry">Infantry</option>
+                        <option value="Military Police">Military Police</option>
+                        <option value="Navy Marine">Navy Marine</option>
+                        <option value="Navy SEALs">Navy SEALs</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Rang</label>
+                    <select class="form-select" id="editEmployeeRank">
+                        <option value="">Rang auswählen</option>
+                        <option value="Private">Private</option>
+                        <option value="Private First Class">Private First Class</option>
+                        <option value="Specialist">Specialist</option>
+                        <option value="Corporal">Corporal</option>
+                        <option value="Sergeant">Sergeant</option>
+                        <option value="Staff Sergeant">Staff Sergeant</option>
+                        <option value="Sergeant First Class">Sergeant First Class</option>
+                        <option value="Master Sergeant">Master Sergeant</option>
+                        <option value="Sergeant Major">Sergeant Major</option>
+                        <option value="Lieutenant">Lieutenant</option>
+                        <option value="Captain">Captain</option>
+                        <option value="Major">Major</option>
+                        <option value="Colonel">Colonel</option>
+                        <option value="Major General">Major General</option>
+                        <option value="Lieutenant General">Lieutenant General</option>
+                        <option value="Vice General of Army">Vice General of Army</option>
+                        <option value="General of Army">General of Army</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 24px;">
+                <button class="btn btn-danger" onclick="deleteCurrentEmployee()" style="margin-right: auto;">
+                    <i class="fas fa-trash"></i> Löschen
+                </button>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-secondary" onclick="closeModal('editEmployeeModal')">
+                        Abbrechen
+                    </button>
+                    <button class="btn btn-primary" onclick="saveEditedEmployee()">
+                        <i class="fas fa-save"></i> Änderungen speichern
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script>
         // Firebase Configuration
         const firebaseConfig = {
@@ -1640,9 +1662,8 @@ Sonstiges:
         let currentEmployee = null;
         let employees = [];
         let autoSaveTimer = null;
+        let autoSaveInterval = null;
         let bothInductionsCompleted = false;
-        let editingDN = false;
-        let editingUnit = false;
 
         // Initialize App
         document.addEventListener('DOMContentLoaded', function() {
@@ -1666,8 +1687,11 @@ Sonstiges:
             // Load employees from Firebase
             loadEmployees();
             
-            // Update new setting template
-            updateNewSettingTemplate();
+            // Start auto-save interval (every 1 second)
+            startAutoSaveInterval();
+            
+            // Form Change Listener hinzufügen
+            setupFormChangeListeners();
         }
 
         function setupEventListeners() {
@@ -1675,15 +1699,6 @@ Sonstiges:
             document.getElementById('searchEmployees').addEventListener('input', function(e) {
                 filterEmployees(e.target.value);
             });
-            
-            // Auto-save on input
-            document.addEventListener('input', debounce(function(e) {
-                if (currentEmployee) {
-                    autoSave();
-                    updateTemplates();
-                    updateNewSettingTemplate();
-                }
-            }, 1000));
             
             // Keyboard shortcuts
             document.addEventListener('keydown', function(e) {
@@ -1695,19 +1710,66 @@ Sonstiges:
                     e.preventDefault();
                     document.getElementById('searchEmployees').focus();
                 }
+                if (e.ctrlKey && e.key === 'e' && currentEmployee) {
+                    e.preventDefault();
+                    openEditEmployeeModal();
+                }
             });
         }
 
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
+        // Form Change Listeners
+        function setupFormChangeListeners() {
+            // Alle Input-Felder überwachen
+            const formInputs = document.querySelectorAll('.form-input, .form-select, .form-textarea, .toggle-switch input');
+            formInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    if (currentEmployee) {
+                        // Sofort Formulardaten speichern
+                        saveFormData();
+                        updateTemplates();
+                    }
+                });
+                
+                input.addEventListener('change', function() {
+                    if (currentEmployee) {
+                        // Sofort Formulardaten speichern
+                        saveFormData();
+                        updateTemplates();
+                    }
+                });
+            });
+            
+            // Spezielle Behandlung für Toggle-Switches
+            const toggleSwitches = document.querySelectorAll('.toggle-switch input');
+            toggleSwitches.forEach(toggle => {
+                toggle.addEventListener('change', function() {
+                    if (currentEmployee) {
+                        // Sofort speichern
+                        saveFormData();
+                        const type = this.id.includes('oral') ? 'oral' : 'org';
+                        toggleInduction(type, this.checked);
+                    }
+                });
+            });
+        }
+
+        // Auto-Save Funktionen
+        function startAutoSaveInterval() {
+            // Alle 1 Sekunde automatisch speichern
+            autoSaveInterval = setInterval(function() {
+                if (currentEmployee) {
+                    // Formulardaten speichern
+                    saveFormData();
+                    // In Firebase speichern
+                    saveEmployeeData(true);
+                }
+            }, 1000); // 1000ms = 1 Sekunde
+        }
+
+        function stopAutoSaveInterval() {
+            if (autoSaveInterval) {
+                clearInterval(autoSaveInterval);
+            }
         }
 
         // Firebase Functions
@@ -1750,7 +1812,6 @@ Sonstiges:
                 return true;
             } catch (error) {
                 console.error('Fehler beim Speichern:', error);
-                showNotification('Fehler beim Speichern', 'error');
                 return false;
             }
         }
@@ -1851,10 +1912,7 @@ Sonstiges:
             document.getElementById('inductionContent').style.display = 'block';
             
             // Update header
-            document.getElementById('currentEmployeeName').textContent = employee.name;
-            document.getElementById('currentEmployeeDN').textContent = `DN ${employee.dn}`;
-            document.getElementById('currentEmployeeUnit').textContent = employee.unit || 'Keine Unit';
-            document.getElementById('currentEmployeeRank').textContent = employee.rank || 'Kein Rang';
+            updateEmployeeHeader();
             
             // Update cards
             document.querySelectorAll('.employee-card').forEach(card => {
@@ -1863,160 +1921,6 @@ Sonstiges:
             
             // Load data
             loadEmployeeData();
-        }
-
-        // Editable DN Field
-        function startEditingDN() {
-            if (editingDN || !currentEmployee) return;
-            
-            editingDN = true;
-            const dnElement = document.getElementById('currentEmployeeDN');
-            const currentDN = currentEmployee.dn || '';
-            
-            // Replace text with input field
-            dnElement.innerHTML = `<input type="text" class="edit-input" id="editDNInput" value="${currentDN}" style="width: 80px;">`;
-            dnElement.classList.add('editing');
-            
-            // Focus the input
-            const input = document.getElementById('editDNInput');
-            input.focus();
-            input.select();
-            
-            // Handle input events
-            input.addEventListener('blur', finishEditingDN);
-            input.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    finishEditingDN();
-                } else if (e.key === 'Escape') {
-                    cancelEditingDN();
-                }
-            });
-        }
-
-        function finishEditingDN() {
-            if (!editingDN || !currentEmployee) return;
-            
-            const input = document.getElementById('editDNInput');
-            const newDN = input.value.trim();
-            
-            if (newDN && newDN !== currentEmployee.dn) {
-                // Update employee
-                currentEmployee.dn = newDN;
-                
-                // Update UI
-                document.getElementById('currentEmployeeDN').textContent = `DN ${newDN}`;
-                document.getElementById('currentEmployeeDN').classList.remove('editing');
-                
-                // Auto-save
-                autoSave();
-                
-                // Update employee list
-                renderEmployeeList();
-                
-                // Update templates
-                updateTemplates();
-                updateNewSettingTemplate();
-                
-                showNotification('DN aktualisiert', 'success');
-            } else {
-                // Cancel if no change
-                cancelEditingDN();
-            }
-            
-            editingDN = false;
-        }
-
-        function cancelEditingDN() {
-            if (!editingDN || !currentEmployee) return;
-            
-            document.getElementById('currentEmployeeDN').textContent = `DN ${currentEmployee.dn || ''}`;
-            document.getElementById('currentEmployeeDN').classList.remove('editing');
-            editingDN = false;
-        }
-
-        // Editable Unit Field
-        function startEditingUnit() {
-            if (editingUnit || !currentEmployee) return;
-            
-            editingUnit = true;
-            const unitElement = document.getElementById('currentEmployeeUnit');
-            const currentUnit = currentEmployee.unit || '';
-            
-            // Create select dropdown
-            const selectHtml = `
-                <select class="edit-input" id="editUnitInput" style="width: 150px;">
-                    <option value="">Keine Unit</option>
-                    <option value="Air Force" ${currentUnit === 'Air Force' ? 'selected' : ''}>Air Force</option>
-                    <option value="S.O.C" ${currentUnit === 'S.O.C' ? 'selected' : ''}>S.O.C</option>
-                    <option value="Infantry" ${currentUnit === 'Infantry' ? 'selected' : ''}>Infantry</option>
-                    <option value="Military Police" ${currentUnit === 'Military Police' ? 'selected' : ''}>Military Police</option>
-                    <option value="Navy Marine" ${currentUnit === 'Navy Marine' ? 'selected' : ''}>Navy Marine</option>
-                    <option value="Navy SEALs" ${currentUnit === 'Navy SEALs' ? 'selected' : ''}>Navy SEALs</option>
-                </select>
-            `;
-            
-            unitElement.innerHTML = selectHtml;
-            unitElement.classList.add('editing');
-            
-            // Focus the select
-            const select = document.getElementById('editUnitInput');
-            select.focus();
-            
-            // Handle events
-            select.addEventListener('change', finishEditingUnit);
-            select.addEventListener('blur', finishEditingUnit);
-            select.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    finishEditingUnit();
-                } else if (e.key === 'Escape') {
-                    cancelEditingUnit();
-                }
-            });
-        }
-
-        function finishEditingUnit() {
-            if (!editingUnit || !currentEmployee) return;
-            
-            const select = document.getElementById('editUnitInput');
-            const newUnit = select.value;
-            
-            if (newUnit !== currentEmployee.unit) {
-                // Update employee
-                currentEmployee.unit = newUnit;
-                
-                // Update UI
-                document.getElementById('currentEmployeeUnit').textContent = newUnit || 'Keine Unit';
-                document.getElementById('currentEmployeeUnit').classList.remove('editing');
-                
-                // Update dropdowns in forms
-                document.getElementById('unitSelect').value = newUnit;
-                document.getElementById('unitSelect2').value = newUnit;
-                
-                // Auto-save
-                autoSave();
-                
-                // Update employee list
-                renderEmployeeList();
-                
-                // Update templates
-                updateTemplates();
-                updateNewSettingTemplate();
-                
-                showNotification('Unit aktualisiert', 'success');
-            } else {
-                // Cancel if no change
-                cancelEditingUnit();
-            }
-            
-            editingUnit = false;
-        }
-
-        function cancelEditingUnit() {
-            if (!editingUnit || !currentEmployee) return;
-            
-            document.getElementById('currentEmployeeUnit').textContent = currentEmployee.unit || 'Keine Unit';
-            document.getElementById('currentEmployeeUnit').classList.remove('editing');
-            editingUnit = false;
         }
 
         function loadEmployeeData() {
@@ -2059,7 +1963,15 @@ Sonstiges:
             
             // Update templates
             updateTemplates();
-            updateNewSettingTemplate();
+        }
+
+        function updateEmployeeHeader() {
+            if (!currentEmployee) return;
+            
+            document.getElementById('currentEmployeeName').textContent = currentEmployee.name;
+            document.getElementById('currentEmployeeDN').textContent = `DN ${currentEmployee.dn}`;
+            document.getElementById('currentEmployeeUnit').textContent = currentEmployee.unit || 'Keine Unit';
+            document.getElementById('currentEmployeeRank').textContent = currentEmployee.rank || 'Kein Rang';
         }
 
         function updateInductionUI(type, completed) {
@@ -2079,6 +1991,128 @@ Sonstiges:
             }
         }
 
+        // Save Form Data
+        function saveFormData() {
+            if (!currentEmployee) return;
+            
+            try {
+                // Save oral data with unit and rank from dropdowns
+                currentEmployee.oralData = {
+                    date: document.getElementById('oralDate').value,
+                    timeStart: document.getElementById('oralTimeStart').value,
+                    timeEnd: document.getElementById('oralTimeEnd').value,
+                    person: document.getElementById('oralPerson').value,
+                    notes: document.getElementById('oralNotes').value,
+                    unit: document.getElementById('unitSelect').value,
+                    rank: document.getElementById('rankSelect').value
+                };
+                
+                // Save organizational data with unit and rank from dropdowns
+                currentEmployee.orgData = {
+                    date: document.getElementById('orgDate').value,
+                    timeStart: document.getElementById('orgTimeStart').value,
+                    timeEnd: document.getElementById('orgTimeEnd').value,
+                    person: document.getElementById('orgPerson').value,
+                    notes: document.getElementById('orgNotes').value,
+                    unit: document.getElementById('unitSelect2').value,
+                    rank: document.getElementById('rankSelect2').value
+                };
+                
+                // Update employee's main unit and rank if not set
+                if (!currentEmployee.unit && document.getElementById('unitSelect').value) {
+                    currentEmployee.unit = document.getElementById('unitSelect').value;
+                }
+                if (!currentEmployee.rank && document.getElementById('rankSelect').value) {
+                    currentEmployee.rank = document.getElementById('rankSelect').value;
+                }
+                
+                // Timestamp aktualisieren
+                currentEmployee.lastUpdated = new Date().toISOString();
+                
+            } catch (error) {
+                console.error('Fehler beim Speichern der Formulardaten:', error);
+            }
+        }
+
+        // Employee Edit Functions
+        function openEditEmployeeModal() {
+            if (!currentEmployee) {
+                showNotification('Bitte wählen Sie zuerst einen Mitarbeiter aus', 'warning');
+                return;
+            }
+            
+            // Formular mit aktuellen Daten füllen
+            document.getElementById('editEmployeeName').value = currentEmployee.name;
+            document.getElementById('editEmployeeDN').value = currentEmployee.dn;
+            document.getElementById('editEmployeeUnit').value = currentEmployee.unit || '';
+            document.getElementById('editEmployeeRank').value = currentEmployee.rank || '';
+            
+            openModal('editEmployeeModal');
+        }
+
+        async function saveEditedEmployee() {
+            if (!currentEmployee) return;
+            
+            const name = document.getElementById('editEmployeeName').value.trim();
+            const dn = document.getElementById('editEmployeeDN').value;
+            
+            if (!name || !dn) {
+                showNotification('Name und DN sind Pflichtfelder', 'warning');
+                return;
+            }
+            
+            // Daten aktualisieren
+            currentEmployee.name = name;
+            currentEmployee.dn = dn;
+            currentEmployee.unit = document.getElementById('editEmployeeUnit').value || '';
+            currentEmployee.rank = document.getElementById('editEmployeeRank').value || '';
+            
+            // In Firebase speichern
+            const success = await saveEmployeeToFirebase(currentEmployee);
+            
+            if (success) {
+                closeModal('editEmployeeModal');
+                
+                // UI aktualisieren
+                updateEmployeeHeader();
+                renderEmployeeList();
+                updateTemplates();
+                
+                showNotification('Mitarbeiterdaten erfolgreich aktualisiert', 'success');
+            }
+        }
+
+        // Employee Delete Functions
+        async function deleteCurrentEmployee() {
+            if (!currentEmployee) {
+                showNotification('Bitte wählen Sie zuerst einen Mitarbeiter aus', 'warning');
+                return;
+            }
+            
+            if (!confirm(`Mitarbeiter "${currentEmployee.name}" (DN ${currentEmployee.dn}) wirklich löschen?\n\nDiese Aktion kann nicht rückgängig gemacht werden!`)) {
+                return;
+            }
+            
+            const success = await deleteEmployeeFromFirebase(currentEmployee.id);
+            
+            if (success) {
+                employees = employees.filter(emp => emp.id !== currentEmployee.id);
+                
+                // Modal schließen
+                closeModal('editEmployeeModal');
+                
+                // Zurücksetzen der Ansicht
+                currentEmployee = null;
+                document.getElementById('employeeHeader').style.display = 'none';
+                document.getElementById('inductionContent').style.display = 'none';
+                
+                // UI aktualisieren
+                renderEmployeeList();
+                updateStats();
+                showNotification('Mitarbeiter erfolgreich gelöscht', 'success');
+            }
+        }
+
         // Induction Management
         function toggleInduction(type, completed) {
             if (!currentEmployee) return;
@@ -2095,8 +2129,9 @@ Sonstiges:
             
             updateInductionUI(type, completed);
             updateTemplates();
-            updateNewSettingTemplate();
-            autoSave();
+            
+            // Sofort in Firebase speichern
+            saveEmployeeData(true);
             
             // Check if both inductions are now completed
             checkBothInductionsCompleted();
@@ -2166,13 +2201,6 @@ Sonstiges:
             document.getElementById('orgTemplateCard').classList.toggle('completed', orgCompleted);
         }
 
-        function updateNewSettingTemplate() {
-            if (!currentEmployee) return;
-            
-            const template = generateNewSettingTemplate();
-            document.getElementById('newSettingTemplateContent').textContent = template;
-        }
-
         function generateTemplate(type) {
             const isOral = type === 'oral';
             const completed = isOral ? 
@@ -2227,253 +2255,50 @@ Sonstiges: ${notes}
 ╚══════════════════╝`;
         }
 
-        function generateNewSettingTemplate() {
-            if (!currentEmployee) return `╔══════════════════╗
-/////////////////////////////////////////////////////////////////////////
-NEUE EINSTELLUNG
-
-Name: 
-DN: 
-Hauptunit: 
-Rang: 
-Datum: 
-Uhrzeit: 
-Sonstiges: 
-
-/////////////////////////////////////////////////////////////////////////
-@USA┃Human Resources
-╚══════════════════╝`;
-            
-            const name = currentEmployee.name || '';
-            const dn = currentEmployee.dn || '';
-            const unit = currentEmployee.unit || '';
-            const rank = currentEmployee.rank || '';
-            
-            // Get current date and time
-            const today = new Date();
-            const date = today.toLocaleDateString('de-DE');
-            const time = today.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-            
-            // Get notes from oral induction if available
-            const notes = currentEmployee.oralData?.notes || currentEmployee.orgData?.notes || '';
-            
-            // Get Discord IDs for unit and rank
-            const unitDiscordId = unitDiscordIds[unit] || '';
-            const rankDiscordId = rankDiscordIds[rank] || '';
-            
-            // Format unit and rank with Discord mentions if available
-            const unitDisplay = unitDiscordId ? `<@&${unitDiscordId}>` : unit;
-            const rankDisplay = rankDiscordId ? `<@&${rankDiscordId}>` : rank;
-            
-            return `╔══════════════════╗
-/////////////////////////////////////////////////////////////////////////
-NEUE EINSTELLUNG
-
-Name: ${name}
-DN: ${dn}
-Hauptunit: ${unitDisplay}
-Rang: ${rankDisplay}
-Datum: ${date}
-Uhrzeit: ${time}
-Sonstiges: ${notes}
-
-/////////////////////////////////////////////////////////////////////////
-@USA┃Human Resources
-╚══════════════════╝`;
-        }
-
-        function saveFormData() {
-            if (!currentEmployee) return;
-            
-            // Save oral data with unit and rank from dropdowns
-            currentEmployee.oralData = {
-                date: document.getElementById('oralDate').value,
-                timeStart: document.getElementById('oralTimeStart').value,
-                timeEnd: document.getElementById('oralTimeEnd').value,
-                person: document.getElementById('oralPerson').value,
-                notes: document.getElementById('oralNotes').value,
-                unit: document.getElementById('unitSelect').value,
-                rank: document.getElementById('rankSelect').value
-            };
-            
-            // Save organizational data with unit and rank from dropdowns
-            currentEmployee.orgData = {
-                date: document.getElementById('orgDate').value,
-                timeStart: document.getElementById('orgTimeStart').value,
-                timeEnd: document.getElementById('orgTimeEnd').value,
-                person: document.getElementById('orgPerson').value,
-                notes: document.getElementById('orgNotes').value,
-                unit: document.getElementById('unitSelect2').value,
-                rank: document.getElementById('rankSelect2').value
-            };
-            
-            // Update employee's main unit and rank if not set
-            if (!currentEmployee.unit && document.getElementById('unitSelect').value) {
-                currentEmployee.unit = document.getElementById('unitSelect').value;
-            }
-            if (!currentEmployee.rank && document.getElementById('rankSelect').value) {
-                currentEmployee.rank = document.getElementById('rankSelect').value;
-            }
-        }
-
-        // Copy Functions
-        async function copyToClipboard(text) {
-            try {
-                await navigator.clipboard.writeText(text);
-                return true;
-            } catch (err) {
-                console.error('Fehler beim Kopieren:', err);
-                return false;
-            }
-        }
-
-        async function copyOralTemplate() {
-            const template = document.getElementById('oralTemplateContent').textContent;
-            const success = await copyToClipboard(template);
-            
-            if (success) {
-                showNotification('Mündliche Einweisung kopiert', 'success');
-            } else {
-                showNotification('Fehler beim Kopieren', 'error');
-            }
-        }
-
-        async function copyOrgTemplate() {
-            const template = document.getElementById('orgTemplateContent').textContent;
-            const success = await copyToClipboard(template);
-            
-            if (success) {
-                showNotification('Organisatorische Einweisung kopiert', 'success');
-            } else {
-                showNotification('Fehler beim Kopieren', 'error');
-            }
-        }
-
-        async function copyNewSettingTemplate() {
-            const template = document.getElementById('newSettingTemplateContent').textContent;
-            const success = await copyToClipboard(template);
-            
-            if (success) {
-                showNotification('Neue Einstellung kopiert', 'success');
-            } else {
-                showNotification('Fehler beim Kopieren', 'error');
-            }
-        }
-
-        // Modal Functions
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
-
-        function openNewEmployeeModal() {
-            openModal('newEmployeeModal');
-        }
-
-        async function createNewEmployee() {
-            const name = document.getElementById('newEmployeeName').value.trim();
-            const dn = document.getElementById('newEmployeeDN').value;
-            const unit = document.getElementById('newEmployeeUnit').value;
-            const rank = document.getElementById('newEmployeeRank').value;
-            
-            if (!name || !dn) {
-                showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
-                return;
-            }
-            
-            const employeeId = `EMP-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-            
-            const newEmployee = {
-                id: employeeId,
-                name: name,
-                dn: dn,
-                unit: unit || '',
-                rank: rank || '',
-                lastUpdated: new Date().toISOString(),
-                inductions: {},
-                oralData: {},
-                orgData: {}
-            };
-            
-            // Save to Firebase
-            const success = await saveEmployeeToFirebase(newEmployee);
-            
-            if (success) {
-                employees.unshift(newEmployee);
-                
-                closeModal('newEmployeeModal');
-                renderEmployeeList();
-                selectEmployee(newEmployee);
-                updateStats();
-                
-                // Clear form
-                document.getElementById('newEmployeeName').value = '';
-                document.getElementById('newEmployeeDN').value = '';
-                document.getElementById('newEmployeeUnit').value = '';
-                document.getElementById('newEmployeeRank').value = '';
-                
-                showNotification(`Mitarbeiter "${name}" erstellt`, 'success');
-            }
-        }
-
         // Save Functions
-        function autoSave() {
-            if (!currentEmployee) return;
-            
-            if (autoSaveTimer) {
-                clearTimeout(autoSaveTimer);
-            }
-            
-            autoSaveTimer = setTimeout(() => {
-                saveEmployeeData(true);
-            }, 2000);
-        }
-
         async function saveEmployeeData(isAutoSave = false) {
             if (!currentEmployee) {
                 return;
             }
             
-            // Save form data
-            saveFormData();
-            
-            // Save to Firebase
-            const success = await saveEmployeeToFirebase(currentEmployee);
-            
-            if (success) {
-                if (!isAutoSave) {
-                    showNotification('Änderungen gespeichert', 'success');
-                }
+            try {
+                // Save to Firebase
+                const success = await saveEmployeeToFirebase(currentEmployee);
                 
-                // Update employee list
-                renderEmployeeList();
-                updateStats();
+                if (success) {
+                    if (!isAutoSave) {
+                        showNotification('Änderungen gespeichert', 'success');
+                    }
+                    
+                    // Update employee list
+                    renderEmployeeList();
+                    updateStats();
+                }
+            } catch (error) {
+                console.error('Fehler beim Speichern:', error);
+                if (!isAutoSave) {
+                    showNotification('Fehler beim Speichern', 'error');
+                }
             }
         }
 
-        // Statistics
+        // Statistics - NUR "Mitarbeiter" und "Ausstehend"
         function updateStats() {
             const total = employees.length;
             
-            let completed = 0;
             let pending = 0;
             
             employees.forEach(employee => {
                 const oralCompleted = employee.inductions?.oral?.completed || false;
                 const orgCompleted = employee.inductions?.org?.completed || false;
                 
-                if (oralCompleted && orgCompleted) {
-                    completed++;
-                } else if (!oralCompleted && !orgCompleted) {
+                // Zähle nur die Mitarbeiter, bei denen BEIDE Einweisungen ausstehend sind
+                if (!oralCompleted && !orgCompleted) {
                     pending++;
                 }
             });
             
             document.getElementById('totalEmployees').textContent = total;
-            document.getElementById('completedInductions').textContent = completed;
             document.getElementById('pendingInductions').textContent = pending;
         }
 
@@ -2508,6 +2333,9 @@ Sonstiges: ${notes}
                     <div style="font-size: 11px; color: var(--gray);">DN ${employee.dn}</div>
                 </div>
                 <div style="padding: 8px 0;">
+                    <button onclick="selectEmployee(employees.find(e => e.id === '${employee.id}')); openEditEmployeeModal(); document.getElementById('contextMenu')?.remove();" style="width: 100%; text-align: left; padding: 10px 14px; background: none; border: none; color: var(--primary-light); font-weight: 600; cursor: pointer; transition: all 0.2s; border-radius: 6px; display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                        <i class="fas fa-edit"></i> Bearbeiten
+                    </button>
                     <button onclick="deleteEmployee('${employee.id}')" style="width: 100%; text-align: left; padding: 10px 14px; background: none; border: none; color: var(--danger); font-weight: 600; cursor: pointer; transition: all 0.2s; border-radius: 6px; display: flex; align-items: center; gap: 8px; font-size: 13px;">
                         <i class="fas fa-trash"></i> Löschen
                     </button>
@@ -2601,6 +2429,98 @@ Sonstiges: ${notes}
             URL.revokeObjectURL(url);
             
             showNotification('Mitarbeiter exportiert', 'success');
+        }
+
+        // Copy Functions
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (err) {
+                console.error('Fehler beim Kopieren:', err);
+                return false;
+            }
+        }
+
+        async function copyOralTemplate() {
+            const template = document.getElementById('oralTemplateContent').textContent;
+            const success = await copyToClipboard(template);
+            
+            if (success) {
+                showNotification('Mündliche Einweisung kopiert', 'success');
+            } else {
+                showNotification('Fehler beim Kopieren', 'error');
+            }
+        }
+
+        async function copyOrgTemplate() {
+            const template = document.getElementById('orgTemplateContent').textContent;
+            const success = await copyToClipboard(template);
+            
+            if (success) {
+                showNotification('Organisatorische Einweisung kopiert', 'success');
+            } else {
+                showNotification('Fehler beim Kopieren', 'error');
+            }
+        }
+
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function openNewEmployeeModal() {
+            openModal('newEmployeeModal');
+        }
+
+        async function createNewEmployee() {
+            const name = document.getElementById('newEmployeeName').value.trim();
+            const dn = document.getElementById('newEmployeeDN').value;
+            const unit = document.getElementById('newEmployeeUnit').value;
+            const rank = document.getElementById('newEmployeeRank').value;
+            
+            if (!name || !dn) {
+                showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
+                return;
+            }
+            
+            const employeeId = `EMP-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+            
+            const newEmployee = {
+                id: employeeId,
+                name: name,
+                dn: dn,
+                unit: unit || '',
+                rank: rank || '',
+                lastUpdated: new Date().toISOString(),
+                inductions: {},
+                oralData: {},
+                orgData: {}
+            };
+            
+            // Save to Firebase
+            const success = await saveEmployeeToFirebase(newEmployee);
+            
+            if (success) {
+                employees.unshift(newEmployee);
+                
+                closeModal('newEmployeeModal');
+                renderEmployeeList();
+                selectEmployee(newEmployee);
+                updateStats();
+                
+                // Clear form
+                document.getElementById('newEmployeeName').value = '';
+                document.getElementById('newEmployeeDN').value = '';
+                document.getElementById('newEmployeeUnit').value = '';
+                document.getElementById('newEmployeeRank').value = '';
+                
+                showNotification(`Mitarbeiter "${name}" erstellt`, 'success');
+            }
         }
 
         // UI Helpers
