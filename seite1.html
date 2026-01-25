@@ -362,22 +362,22 @@
             box-shadow: 0 0 10px rgba(79, 70, 229, 0.5);
         }
         
-       /* Employee Cards - Optimiert für bessere Sichtbarkeit */
+/* Employee Cards - finale saubere Version */
 .employee-card {
     background: linear-gradient(135deg, rgba(79, 70, 229, 0.12) 0%, rgba(31, 41, 55, 0.3) 100%);
     border-radius: var(--radius-md);
     padding: 16px;
+    padding-bottom: 52px;       /* Platz für Badges unten */
     border: 1px solid transparent;
     cursor: pointer;
     transition: var(--transition);
     position: relative;
 
-    overflow: visible;          /* WICHTIG: nicht mehr abschneiden */
-    min-height: 140px;          /* etwas höher */
+    overflow: hidden;          /* wieder abschneiden OK */
+    min-height: 130px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;/* nicht mehr nach unten drücken */
-    gap: 10px;                  /* sauberer Abstand */
+    justify-content: flex-start;
 }
 
         
