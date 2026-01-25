@@ -240,39 +240,6 @@
             margin-bottom: 20px;
         }
         
-        .sort-buttons {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .sort-button {
-            padding: 8px 12px;
-            background: rgba(59, 130, 246, 0.1);
-            border: 2px solid rgba(59, 130, 246, 0.2);
-            border-radius: var(--radius-md);
-            color: var(--primary-light);
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            flex: 1;
-        }
-        
-        .sort-button:hover {
-            background: rgba(59, 130, 246, 0.2);
-            transform: translateY(-1px);
-        }
-        
-        .sort-button.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        
         .search-container {
             position: relative;
             flex-shrink: 0;
@@ -1444,21 +1411,6 @@
                     </button>
                 </div>
                 
-                <div class="sort-buttons">
-                    <button class="sort-button active" onclick="changeSortType('name')">
-                        <i class="fas fa-sort-alpha-down"></i>
-                        Name
-                    </button>
-                    <button class="sort-button" onclick="changeSortType('oral')">
-                        <i class="fas fa-comments"></i>
-                        Mündlich
-                    </button>
-                    <button class="sort-button" onclick="changeSortType('org')">
-                        <i class="fas fa-clipboard-list"></i>
-                        Organisch
-                    </button>
-                </div>
-                
                 <div class="search-container">
                     <i class="fas fa-search search-icon"></i>
                     <input type="text" class="search-input" id="searchEmployees" placeholder="Nach Namen oder DN suchen...">
@@ -2176,24 +2128,11 @@ Sonstiges:
             
             let filteredEmployees = getFilteredEmployees();
             
-            // Sortieren nach ausgewähltem Kriterium
+            // Sortieren nach Name (alphabetisch)
             filteredEmployees.sort((a, b) => {
-                if (currentSortType === 'name') {
-                    const nameA = a.name.toUpperCase();
-                    const nameB = b.name.toUpperCase();
-                    return sortAscending ? 
-                        (nameA < nameB ? -1 : nameA > nameB ? 1 : 0) :
-                        (nameA > nameB ? -1 : nameA < nameB ? 1 : 0);
-                } else if (currentSortType === 'oral') {
-                    const oralA = a.inductions?.oral?.completed ? 1 : 0;
-                    const oralB = b.inductions?.oral?.completed ? 1 : 0;
-                    return sortAscending ? oralA - oralB : oralB - oralA;
-                } else if (currentSortType === 'org') {
-                    const orgA = a.inductions?.org?.completed ? 1 : 0;
-                    const orgB = b.inductions?.org?.completed ? 1 : 0;
-                    return sortAscending ? orgA - orgB : orgB - orgA;
-                }
-                return 0;
+                const nameA = a.name.toUpperCase();
+                const nameB = b.name.toUpperCase();
+                return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
             });
             
             if (filteredEmployees.length === 0) {
@@ -2248,25 +2187,6 @@ Sonstiges:
                 
                 container.appendChild(card);
             });
-        }
-
-        function changeSortType(type) {
-            currentSortType = type;
-            
-            // Update sort buttons
-            document.querySelectorAll('.sort-button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            if (type === 'name') {
-                document.querySelectorAll('.sort-button')[0].classList.add('active');
-            } else if (type === 'oral') {
-                document.querySelectorAll('.sort-button')[1].classList.add('active');
-            } else if (type === 'org') {
-                document.querySelectorAll('.sort-button')[2].classList.add('active');
-            }
-            
-            renderEmployeeList();
         }
 
         function getFilteredEmployees() {
