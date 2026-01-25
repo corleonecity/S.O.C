@@ -16,397 +16,636 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
   <style>
-    :root {
-      --primary: #4f46e5;
-      --primary-dark: #4338ca;
-      --primary-light: #818cf8;
-      --secondary: #10b981;
-      --secondary-dark: #059669;
-      --danger: #ef4444;
-      --danger-dark: #dc2626;
-      --warning: #f59e0b;
-      --warning-dark: #d97706;
-      --dark: #111827;
-      --dark-card: #1f2937;
-      --light: #f9fafb;
-      --gray: #6b7280;
-      --gray-light: #d1d5db;
-      --border: rgba(255, 255, 255, 0.12);
+    :root{
+      --primary:#4f46e5; --primary-dark:#4338ca; --primary-light:#818cf8;
+      --secondary:#10b981; --secondary-dark:#059669;
+      --danger:#ef4444; --danger-dark:#dc2626;
+      --warning:#f59e0b; --warning-dark:#d97706;
+      --dark:#111827; --dark-card:#1f2937;
+      --light:#f9fafb; --gray:#6b7280; --gray-light:#d1d5db;
+      --border:rgba(255,255,255,.12);
 
-      --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
-      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --shadow-lg:0 10px 25px -5px rgba(0,0,0,.2);
+      --shadow-md:0 4px 12px rgba(0,0,0,.08);
+      --shadow-sm:0 1px 3px rgba(0,0,0,.1);
 
-      --radius-lg: 12px;
-      --radius-md: 8px;
-      --radius-sm: 6px;
-
-      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      --radius-lg:12px; --radius-md:8px; --radius-sm:6px;
+      --transition:all .2s cubic-bezier(.4,0,.2,1);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    *{margin:0;padding:0;box-sizing:border-box}
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #0f172a;
-      color: var(--light);
-      min-height: 100vh;
-      overflow-x: hidden;
-      font-size: 14px;
-      line-height: 1.4;
+    body{
+      font-family:'Inter',sans-serif;
+      background:#0f172a;
+      color:var(--light);
+      min-height:100vh;
+      overflow-x:hidden;
+      font-size:14px;
+      line-height:1.4;
     }
 
-    .bg-effects {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: -1;
-      overflow: hidden;
+    .bg-effects{
+      position:fixed; inset:0;
+      z-index:-1; overflow:hidden;
     }
-
-    .bg-gradient {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+    .bg-gradient{
+      position:absolute; inset:0;
       background:
-        radial-gradient(circle at 15% 70%, rgba(79, 70, 229, 0.1) 0%, transparent 40%),
-        radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.08) 0%, transparent 40%);
+        radial-gradient(circle at 15% 70%, rgba(79,70,229,.10) 0%, transparent 40%),
+        radial-gradient(circle at 85% 30%, rgba(16,185,129,.08) 0%, transparent 40%);
     }
 
-    .app-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 16px;
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 16px;
-      min-height: 100vh;
+    .app-container{
+      max-width:1200px;
+      margin:0 auto;
+      padding:16px;
+      display:grid;
+      grid-template-columns:280px 1fr;
+      gap:16px;
+      min-height:100vh;
     }
 
     /* Header */
-    .app-header {
-      grid-column: 1 / -1;
-      background: rgba(31, 41, 55, 0.8);
-      backdrop-filter: blur(12px);
-      border-radius: var(--radius-lg);
-      padding: 16px 20px;
-      margin-bottom: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: var(--shadow-md);
+    .app-header{
+      grid-column:1 / -1;
+      background:rgba(31,41,55,.8);
+      backdrop-filter:blur(12px);
+      border-radius:var(--radius-lg);
+      padding:16px 20px;
+      margin-bottom:16px;
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:var(--shadow-md);
     }
-
-    .header-content { display: flex; justify-content: space-between; align-items: center; }
-
-    .brand { display: flex; align-items: center; gap: 12px; }
-
-    .logo {
-      width: 40px;
-      height: 40px;
-      background: var(--primary);
-      border-radius: var(--radius-md);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      color: white;
-      transition: var(--transition);
+    .header-content{display:flex;justify-content:space-between;align-items:center}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:40px;height:40px;
+      background:var(--primary);
+      border-radius:var(--radius-md);
+      display:flex;align-items:center;justify-content:center;
+      font-size:18px;color:#fff;
+      transition:var(--transition);
     }
-
-    .logo:hover { transform: scale(1.05); background: var(--primary-dark); }
-
-    .brand-text h1 { font-size: 18px; font-weight: 700; color: white; margin-bottom: 2px; }
-
-    .brand-text .subtitle { font-size: 11px; color: var(--gray); font-weight: 500; }
-
-    .header-stats { display: flex; gap: 12px; }
-
-    .stat-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 14px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: var(--radius-md);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      min-width: 90px;
-      transition: var(--transition);
+    .logo:hover{transform:scale(1.05);background:var(--primary-dark)}
+    .brand-text h1{font-size:18px;font-weight:800;color:#fff;margin-bottom:2px}
+    .brand-text .subtitle{font-size:11px;color:var(--gray);font-weight:600}
+    .header-stats{display:flex;gap:12px}
+    .stat-card{
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:10px 14px;
+      background:rgba(255,255,255,.05);
+      border-radius:var(--radius-md);
+      border:1px solid rgba(255,255,255,.08);
+      min-width:90px;
+      transition:var(--transition);
     }
-
-    .stat-card:hover { transform: translateY(-1px); background: rgba(255, 255, 255, 0.08); }
-
-    .stat-value { font-size: 20px; font-weight: 700; color: white; margin-bottom: 2px; }
-
-    .stat-label {
-      font-size: 10px;
-      color: var(--gray);
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-      font-weight: 600;
-    }
+    .stat-card:hover{transform:translateY(-1px);background:rgba(255,255,255,.08)}
+    .stat-value{font-size:20px;font-weight:800;color:#fff;margin-bottom:2px}
+    .stat-label{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;font-weight:700}
 
     /* Sidebar */
-    .sidebar {
-      background: rgba(31, 41, 55, 0.8);
-      backdrop-filter: blur(12px);
-      border-radius: var(--radius-lg);
-      padding: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      height: calc(100vh - 120px);
-      position: sticky;
-      top: 20px;
-      display: flex;
-      flex-direction: column;
+    .sidebar{
+      background:rgba(31,41,55,.8);
+      backdrop-filter:blur(12px);
+      border-radius:var(--radius-lg);
+      padding:16px;
+      border:1px solid rgba(255,255,255,.08);
+      height:calc(100vh - 120px);
+      position:sticky;
+      top:20px;
+      display:flex;
+      flex-direction:column;
+    }
+    .sidebar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+    .sidebar-title{
+      font-size:14px;font-weight:800;color:var(--gray-light);
+      display:flex;align-items:center;gap:8px;
+      text-transform:uppercase;letter-spacing:.4px;
+    }
+    .employee-count{
+      background:var(--primary);
+      color:#fff;
+      font-size:11px;font-weight:800;
+      padding:4px 10px;
+      border-radius:20px;
+    }
+    .sidebar-filter-buttons{display:flex;gap:6px;margin-bottom:16px}
+    .sidebar-filter-btn{
+      padding:8px 10px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:var(--radius-sm);
+      color:var(--gray-light);
+      font-size:11px;font-weight:700;
+      cursor:pointer;
+      transition:var(--transition);
+      flex:1;
+      text-align:center;
+    }
+    .sidebar-filter-btn:hover{background:rgba(255,255,255,.08)}
+    .sidebar-filter-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+    .sidebar-controls{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+    .search-container{position:relative}
+    .search-input{
+      width:100%;
+      padding:10px 12px 10px 36px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:var(--radius-md);
+      color:#fff;
+      font-size:13px;
+      transition:var(--transition);
+    }
+    .search-input::placeholder{color:rgba(255,255,255,.5)}
+    .search-input:focus{
+      outline:none;
+      border-color:var(--primary);
+      background:rgba(255,255,255,.08);
+      box-shadow:0 0 0 2px rgba(79,70,229,.10);
+    }
+    .search-icon{
+      position:absolute;left:12px;top:50%;
+      transform:translateY(-50%);
+      color:var(--gray);font-size:13px;
     }
 
-    .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .employee-list-container{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      margin-bottom:16px;
+      min-height:0;
+    }
+    .employee-list{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      overflow-y:auto;
+      padding-right:4px;
+      flex:1;
+      min-height:0;
+    }
+    .employee-list::-webkit-scrollbar{width:6px}
+    .employee-list::-webkit-scrollbar-track{background:rgba(255,255,255,.05);border-radius:3px}
+    .employee-list::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px}
 
-    .sidebar-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--gray-light);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
+    /* Employee Cards (kompakter + Badges höher) */
+    .employee-card{
+      background:rgba(255,255,255,.03);
+      border-radius:var(--radius-md);
+      padding:14px;
+      border:1px solid rgba(255,255,255,.08);
+      cursor:pointer;
+      transition:var(--transition);
+      position:relative;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+
+      min-height:110px;
+      justify-content:flex-start; /* keine künstliche Lücke */
+    }
+    .employee-card:hover{
+      background:rgba(255,255,255,.05);
+      border-color:rgba(79,70,229,.30);
+      transform:translateY(-1px);
+      box-shadow:var(--shadow-sm);
+    }
+    .employee-card.active{
+      background:rgba(79,70,229,.10);
+      border-color:var(--primary);
+      box-shadow:0 0 0 1px var(--primary);
+    }
+    .employee-card::before{
+      content:'';
+      position:absolute;left:0;top:0;bottom:0;
+      width:2px;background:var(--primary);
+      opacity:0;transition:var(--transition);
+    }
+    .employee-card.active::before{opacity:1}
+
+    .employee-top-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px}
+    .employee-name{font-weight:800;font-size:15px;color:#fff;line-height:1.3;word-break:break-word}
+    .employee-dn{
+      font-family:'Inter',monospace;
+      font-size:11px;font-weight:800;
+      color:var(--primary-light);
+      background:rgba(79,70,229,.10);
+      padding:2px 7px;
+      border-radius:999px;
+      border:1px solid rgba(79,70,229,.20);
+      white-space:nowrap;
+      flex-shrink:0;
+      margin-left:8px;
+    }
+    .employee-meta{
+      font-size:11px;color:var(--gray);
+      line-height:1.3;
+      margin-bottom:4px;
+      display:flex;align-items:center;gap:4px;
+    }
+    .employee-meta i{font-size:10px;opacity:.6}
+
+    .induction-badges{
+      display:flex;gap:6px;flex-wrap:wrap;
+      margin-top:0;
+      padding-top:2px;
+    }
+    .induction-badge{
+      font-size:10px;
+      padding:3px 8px;
+      border-radius:12px;
+      font-weight:700;
+      display:flex;align-items:center;gap:4px;
+      white-space:nowrap;
+      transition:var(--transition);
+      border:1px solid transparent;
+    }
+    .induction-badge:hover{transform:translateY(-1px)}
+    .badge-oral.pending{background:rgba(239,68,68,.10);color:#fca5a5;border-color:rgba(239,68,68,.20)}
+    .badge-oral.completed{background:rgba(16,185,129,.10);color:#86efac;border-color:rgba(16,185,129,.20)}
+    .badge-org.pending{background:rgba(245,158,11,.10);color:#fcd34d;border-color:rgba(245,158,11,.20)}
+    .badge-org.completed{background:rgba(16,185,129,.10);color:#86efac;border-color:rgba(16,185,129,.20)}
+
+    .quick-actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:auto}
+    .quick-action-btn{
+      padding:10px;
+      background:rgba(79,70,229,.08);
+      border:1px solid rgba(79,70,229,.15);
+      border-radius:var(--radius-md);
+      color:var(--primary-light);
+      font-size:12px;font-weight:800;
+      cursor:pointer;
+      transition:var(--transition);
+      display:flex;align-items:center;justify-content:center;gap:6px;
+    }
+    .quick-action-btn:hover{
+      background:rgba(79,70,229,.12);
+      border-color:var(--primary);
+      transform:translateY(-1px);
+      color:#fff;
     }
 
-    .employee-count {
-      background: var(--primary);
-      color: white;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 20px;
+    /* Main Content */
+    .main-content{
+      background:rgba(31,41,55,.8);
+      backdrop-filter:blur(12px);
+      border-radius:var(--radius-lg);
+      border:1px solid rgba(255,255,255,.08);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      min-height:420px;
+    }
+    .content-header{
+      padding:16px 20px;
+      background:rgba(79,70,229,.05);
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:none;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+    }
+    .employee-info h2{font-size:18px;font-weight:900;color:#fff;margin-bottom:8px}
+    .employee-tags{display:flex;gap:12px;flex-wrap:wrap}
+    .employee-tag{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gray);font-weight:700}
+    .tag-value{
+      color:#fff;
+      font-weight:800;
+      background:rgba(79,70,229,.10);
+      padding:3px 8px;
+      border-radius:4px;
+      border:1px solid rgba(79,70,229,.20);
+      font-size:11px;
+    }
+    .action-buttons{display:flex;gap:8px;flex-wrap:wrap}
+
+    .btn{
+      padding:8px 12px;
+      border:none;
+      border-radius:var(--radius-md);
+      font-weight:800;
+      cursor:pointer;
+      transition:var(--transition);
+      display:inline-flex;align-items:center;justify-content:center;gap:6px;
+      font-size:12px;
+      user-select:none;
+    }
+    .btn-primary{background:var(--primary);color:#fff}
+    .btn-primary:hover{background:var(--primary-dark);transform:translateY(-1px)}
+    .btn-success{background:var(--secondary);color:#fff}
+    .btn-success:hover{background:var(--secondary-dark);transform:translateY(-1px)}
+    .btn-secondary{
+      background:rgba(255,255,255,.08);
+      color:#fff;
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .btn-secondary:hover{background:rgba(255,255,255,.12);transform:translateY(-1px)}
+    .btn-danger{background:var(--danger);color:#fff}
+    .btn-danger:hover{background:var(--danger-dark);transform:translateY(-1px)}
+
+    .induction-content{
+      padding:20px;
+      flex:1;
+      overflow-y:auto;
+      display:none;
     }
 
-    .sidebar-filter-buttons { display: flex; gap: 6px; margin-bottom: 16px; }
+    .induction-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+      margin-bottom:20px;
+    }
+    .induction-card{
+      background:rgba(255,255,255,.03);
+      border-radius:var(--radius-md);
+      padding:16px;
+      border:1px solid rgba(255,255,255,.08);
+      transition:var(--transition);
+      position:relative;
+    }
+    .induction-card.completed{
+      border-color:var(--secondary);
+      background:rgba(16,185,129,.05);
+    }
+    .induction-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px}
+    .induction-title{
+      font-size:14px;font-weight:900;color:#fff;
+      display:flex;align-items:center;gap:8px;
+    }
+    .induction-icon{
+      width:32px;height:32px;
+      background:var(--primary);
+      border-radius:var(--radius-md);
+      display:flex;align-items:center;justify-content:center;
+      font-size:14px;color:#fff;
+    }
+    .induction-card.completed .induction-icon{background:var(--secondary)}
+    .induction-status{
+      font-size:11px;font-weight:900;
+      padding:4px 8px;border-radius:12px;
+      background:rgba(255,255,255,.08);
+      color:var(--gray);
+      white-space:nowrap;
+    }
+    .induction-card.completed .induction-status{background:rgba(16,185,129,.15);color:var(--secondary)}
 
-    .sidebar-filter-btn {
-      padding: 8px 10px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--radius-sm);
-      color: var(--gray-light);
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      flex: 1;
-      text-align: center;
+    .oral-form-grid, .org-form-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-bottom:4px;
+    }
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-label{
+      font-weight:900;color:var(--gray-light);
+      font-size:11px;text-transform:uppercase;letter-spacing:.4px;
+    }
+    .form-input,.form-select,.form-textarea{
+      padding:8px 10px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:var(--radius-sm);
+      color:#fff;
+      font-size:13px;
+      transition:var(--transition);
+      width:100%;
+    }
+    .form-input::placeholder,.form-textarea::placeholder{color:rgba(255,255,255,.4)}
+    .form-select{
+      color:#fff !important;
+      background-color:rgba(255,255,255,.05) !important;
+      appearance:none;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;
+      background-position:right 10px center;
+      padding-right:30px;
+    }
+    .form-input:focus,.form-select:focus,.form-textarea:focus{
+      outline:none;
+      border-color:var(--primary);
+      background:rgba(255,255,255,.08);
+      box-shadow:0 0 0 2px rgba(79,70,229,.10);
+    }
+    .form-textarea{
+      resize:vertical;
+      min-height:60px;
+      font-family:'Inter',sans-serif;
+      line-height:1.4;
     }
 
-    .sidebar-filter-btn:hover { background: rgba(255, 255, 255, 0.08); }
-
-    .sidebar-filter-btn.active {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
+    .time-container{
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      gap:8px;
+      align-items:center;
     }
+    .time-separator{color:var(--gray);font-weight:700;text-align:center;font-size:12px;padding:0 4px}
+    input[type="time"]{font-size:13px;padding:7px 8px}
 
-    .sidebar-controls { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
-
-    .search-container { position: relative; }
-
-    .search-input {
-      width: 100%;
-      padding: 10px 12px 10px 36px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--radius-md);
-      color: white;
-      font-size: 13px;
-      font-weight: 400;
-      transition: var(--transition);
+    /* Toggle */
+    .toggle-switch{position:relative;display:inline-block;width:44px;height:24px}
+    .toggle-switch input{opacity:0;width:0;height:0}
+    .toggle-slider{
+      position:absolute;cursor:pointer;inset:0;
+      background-color:rgba(255,255,255,.10);
+      transition:var(--transition);
+      border-radius:34px;
     }
-
-    .search-input::placeholder { color: rgba(255, 255, 255, 0.5); }
-
-    .search-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      background: rgba(255, 255, 255, 0.08);
-      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+    .toggle-slider:before{
+      position:absolute;content:"";
+      height:16px;width:16px;left:4px;bottom:4px;
+      background-color:#fff;
+      transition:var(--transition);
+      border-radius:50%;
     }
+    input:checked + .toggle-slider{background-color:var(--secondary)}
+    input:checked + .toggle-slider:before{transform:translateX(20px)}
 
-    .search-icon {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--gray);
-      font-size: 13px;
+    /* Templates */
+    .templates-section{
+      background:rgba(255,255,255,.03);
+      border-radius:var(--radius-md);
+      padding:16px;
+      border:1px solid rgba(255,255,255,.08);
     }
-
-    .employee-list-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 16px;
-      min-height: 0;
+    .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px;flex-wrap:wrap}
+    .section-title{
+      font-size:14px;font-weight:900;color:#fff;
+      display:flex;align-items:center;gap:8px;
     }
-
-    .employee-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px; /* etwas Luft, aber nicht zu groß */
-      overflow-y: auto;
-      padding-right: 4px;
-      flex: 1;
-      min-height: 0;
+    .template-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .template-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .template-card{
+      background:rgba(0,0,0,.20);
+      border-radius:var(--radius-md);
+      padding:16px;
+      border:1px solid rgba(255,255,255,.08);
     }
-
-    .employee-list::-webkit-scrollbar { width: 6px; }
-    .employee-list::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 3px; }
-    .employee-list::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
-
-    /* Employee Cards */
-    .employee-card {
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: var(--radius-md);
-      padding: 14px;            /* kleiner als vorher */
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      cursor: pointer;
-      transition: var(--transition);
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-
-      min-height: 110px;        /* kleiner als vorher (150px) */
-      justify-content: flex-start; /* KEIN space-between, sonst wieder Lücke */
+    .template-card.completed{border-color:var(--secondary)}
+    .template-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px}
+    .template-card-title{
+      font-size:13px;font-weight:900;color:#fff;
+      display:flex;align-items:center;gap:6px;
     }
-
-    .employee-card:hover {
-      background: rgba(255, 255, 255, 0.05);
-      border-color: rgba(79, 70, 229, 0.3);
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-sm);
+    .template-badge{
+      font-size:10px;font-weight:900;
+      padding:3px 8px;border-radius:12px;
+      background:rgba(79,70,229,.10);
+      color:var(--primary-light);
+      white-space:nowrap;
     }
-
-    .employee-card.active {
-      background: rgba(79, 70, 229, 0.1);
-      border-color: var(--primary);
-      box-shadow: 0 0 0 1px var(--primary);
+    .template-content{
+      font-family:Consolas,Monaco,monospace;
+      background:rgba(0,0,0,.30);
+      padding:12px;
+      border-radius:var(--radius-sm);
+      border-left:2px solid var(--primary);
+      overflow-x:auto;
+      white-space:pre-wrap;
+      word-wrap:break-word;
+      font-size:11px;
+      line-height:1.4;
+      color:var(--gray-light);
+      max-height:180px;
+      overflow-y:auto;
     }
+    .template-card.completed .template-content{border-left-color:var(--secondary)}
 
-    .employee-card::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 2px;
-      background: var(--primary);
-      opacity: 0;
-      transition: var(--transition);
+    /* Modals */
+    .modal-overlay{
+      display:none;
+      position:fixed;inset:0;
+      background:rgba(0,0,0,.80);
+      backdrop-filter:blur(4px);
+      z-index:1000;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+      animation:fadeIn .2s ease;
     }
-
-    .employee-card.active::before { opacity: 1; }
-
-    .employee-top-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 2px;
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .modal-overlay.active{display:flex}
+    .modal{
+      background:rgba(31,41,55,.95);
+      border-radius:var(--radius-lg);
+      padding:20px;
+      width:100%;
+      max-width:500px;
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:var(--shadow-lg);
+      animation:slideUp .2s ease;
     }
-
-    .employee-name {
-      font-weight: 700;
-      font-size: 15px;
-      color: white;
-      line-height: 1.3;
-      word-break: break-word;
+    @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:10px}
+    .modal-title{
+      font-size:16px;font-weight:900;color:#fff;
+      display:flex;align-items:center;gap:8px;
     }
-
-    .employee-dn {
-      font-family: 'Inter', monospace;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--primary-light);
-      background: rgba(79, 70, 229, 0.1);
-      padding: 2px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(79, 70, 229, 0.2);
-      white-space: nowrap;
-      flex-shrink: 0;
-      margin-left: 8px;
+    .modal-close{
+      background:none;border:none;color:var(--gray);
+      font-size:18px;cursor:pointer;
+      transition:var(--transition);
+      width:28px;height:28px;
+      display:flex;align-items:center;justify-content:center;
+      border-radius:50%;
     }
+    .modal-close:hover{color:#fff;background:rgba(255,255,255,.10)}
 
-    .employee-meta {
-      font-size: 11px;
-      color: var(--gray);
-      line-height: 1.3;
-      margin-bottom: 4px;  /* weniger Abstand nach unten */
-      display: flex;
-      align-items: center;
-      gap: 4px;
+    .copy-settings-modal{max-width:400px}
+    .copy-options{display:flex;flex-direction:column;gap:8px;margin:16px 0}
+    .copy-option{
+      display:flex;align-items:center;gap:10px;
+      padding:10px;
+      background:rgba(255,255,255,.05);
+      border-radius:var(--radius-sm);
+      border:1px solid rgba(255,255,255,.10);
+      cursor:pointer;
+      transition:var(--transition);
     }
-
-    .employee-meta i { font-size: 10px; opacity: 0.6; }
-
-    /* Badges: höher, keine künstliche Lücke */
-    .induction-badges {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-top: 0;      /* WICHTIG: statt auto */
-      padding-top: 2px;   /* kleiner Abstand */
+    .copy-option:hover{background:rgba(255,255,255,.08)}
+    .copy-option input[type="radio"]{display:none}
+    .copy-option .radio-custom{
+      width:14px;height:14px;border:2px solid var(--primary);
+      border-radius:50%;position:relative;flex-shrink:0;
     }
-
-    .induction-badge {
-      font-size: 10px;
-      padding: 3px 8px;
-      border-radius: 12px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      letter-spacing: 0.1px;
-      white-space: nowrap;
-      transition: var(--transition);
-      border: 1px solid transparent;
+    .copy-option input[type="radio"]:checked + .radio-custom::after{
+      content:'';position:absolute;top:2px;left:2px;
+      width:6px;height:6px;background:var(--primary);border-radius:50%;
     }
+    .copy-option-text{flex:1}
+    .copy-option-title{font-weight:900;color:#fff;font-size:13px;margin-bottom:2px}
+    .copy-option-description{font-size:11px;color:var(--gray)}
 
-    .induction-badge:hover { transform: translateY(-1px); }
+    /* Empty / Loading */
+    .empty-state{text-align:center;padding:40px 20px;color:var(--gray);width:100%}
+    .empty-icon{font-size:36px;margin-bottom:12px;opacity:.3}
+    .empty-title{font-size:14px;font-weight:900;margin-bottom:6px;color:var(--gray-light)}
+    .empty-description{font-size:12px;color:var(--gray);max-width:250px;margin:0 auto 12px}
 
-    .badge-oral.pending { background: rgba(239, 68, 68, 0.1); color: #fca5a5; border-color: rgba(239, 68, 68, 0.2); }
-    .badge-oral.completed { background: rgba(16, 185, 129, 0.1); color: #86efac; border-color: rgba(16, 185, 129, 0.2); }
-
-    .badge-org.pending { background: rgba(245, 158, 11, 0.1); color: #fcd34d; border-color: rgba(245, 158, 11, 0.2); }
-    .badge-org.completed { background: rgba(16, 185, 129, 0.1); color: #86efac; border-color: rgba(16, 185, 129, 0.2); }
-
-    .quick-actions {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 8px;
-      margin-top: auto;
+    .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;width:100%}
+    .loading-spinner{
+      width:32px;height:32px;
+      border:2px solid rgba(255,255,255,.10);
+      border-top-color:var(--primary);
+      border-radius:50%;
+      animation:spin 1s linear infinite;
+      margin-bottom:12px;
     }
+    @keyframes spin{to{transform:rotate(360deg)}}
 
-    .quick-action-btn {
-      padding: 10px;
-      background: rgba(79, 70, 229, 0.08);
-      border: 1px solid rgba(79, 70, 229, 0.15);
-      border-radius: var(--radius-md);
-      color: var(--primary-light);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
+    /* Notification */
+    .notification{
+      position:fixed;
+      bottom:16px;right:16px;
+      background:var(--secondary);
+      color:#fff;
+      padding:10px 14px;
+      border-radius:var(--radius-md);
+      box-shadow:var(--shadow-md);
+      display:flex;align-items:center;gap:8px;
+      z-index:1001;
+      transform:translateY(100px);
+      opacity:0;
+      transition:transform .2s ease, opacity .2s ease;
+      min-width:200px;
     }
+    .notification.show{transform:translateY(0);opacity:1}
+    .notification-icon{font-size:14px}
+    .notification-message{font-weight:900;font-size:13px}
 
-    .quick-action-btn:hover {
-      background: rgba(79, 70, 229, 0.12);
-      border-color: var(--primary);
-      transform: translateY(-1px);
-      color: white;
+    /* Responsive */
+    @media (max-width:1200px){
+      .app-container{grid-template-columns:1fr;padding:16px;gap:16px}
+      .sidebar{position:static;max-height:500px;height:auto}
+      .induction-grid,.template-cards{grid-template-columns:1fr}
     }
-
-    /* Ab hier läuft dein Original weiter (Main Content usw.) */
+    @media (max-width:768px){
+      .app-header{padding:14px 16px}
+      .header-content{flex-direction:column;gap:12px;align-items:stretch}
+      .header-stats{justify-content:center}
+      .brand{gap:10px}
+      .logo{width:36px;height:36px;font-size:16px}
+      .brand-text h1{font-size:16px}
+      .brand-text .subtitle{font-size:10px}
+      .content-header{flex-direction:column;align-items:stretch;padding:14px}
+      .employee-tags{flex-direction:column;gap:6px}
+      .induction-content{padding:16px}
+      .oral-form-grid,.org-form-grid{grid-template-columns:1fr}
+    }
+    @media (max-width:480px){
+      .app-container{padding:12px}
+      .app-header{padding:12px}
+      .stat-card{padding:8px 10px;min-width:70px}
+      .stat-value{font-size:18px}
+      .sidebar{padding:14px}
+      .modal{padding:16px;margin:12px}
+      .notification{left:12px;right:12px;bottom:12px;min-width:auto}
+    }
   </style>
 </head>
 
@@ -428,9 +667,7 @@
     <header class="app-header">
       <div class="header-content">
         <div class="brand">
-          <div class="logo">
-            <i class="fas fa-user-check"></i>
-          </div>
+          <div class="logo"><i class="fas fa-user-check"></i></div>
           <div class="brand-text">
             <h1>Human Resources</h1>
             <div class="subtitle">Mündliche & Organisatorische Einweisungen • HR</div>
@@ -448,10 +685,7 @@
     <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-header">
-        <h3 class="sidebar-title">
-          <i class="fas fa-users"></i>
-          Mitarbeiter
-        </h3>
+        <h3 class="sidebar-title"><i class="fas fa-users"></i> Mitarbeiter</h3>
         <div class="employee-count" id="employeeCount">0</div>
       </div>
 
@@ -480,46 +714,32 @@
 
       <div class="quick-actions">
         <button class="quick-action-btn" onclick="openNewEmployeeModal()">
-          <i class="fas fa-user-plus"></i>
-          Neuer Mitarbeiter
+          <i class="fas fa-user-plus"></i> Neuer Mitarbeiter
         </button>
       </div>
     </aside>
 
     <!-- Main Content -->
     <main class="main-content">
-      <!-- (Teil 2 startet hier weiter mit deinem kompletten Main Content + Modals + Script) -->
-        <!-- Employee Header -->
+      <!-- Employee Header -->
       <div class="content-header" id="employeeHeader">
         <div class="employee-info">
           <h2 id="currentEmployeeName">Wählen Sie einen Mitarbeiter</h2>
           <div class="employee-tags">
-            <div class="employee-tag">
-              <i class="fas fa-hashtag"></i>
-              <span class="tag-value" id="currentEmployeeDN">DN-</span>
-            </div>
-            <div class="employee-tag">
-              <i class="fas fa-building"></i>
-              <span class="tag-value" id="currentEmployeeUnit">Unit</span>
-            </div>
-            <div class="employee-tag">
-              <i class="fas fa-user-tie"></i>
-              <span class="tag-value" id="currentEmployeeRank">Rang</span>
-            </div>
+            <div class="employee-tag"><i class="fas fa-hashtag"></i> <span class="tag-value" id="currentEmployeeDN">DN-</span></div>
+            <div class="employee-tag"><i class="fas fa-building"></i> <span class="tag-value" id="currentEmployeeUnit">Unit</span></div>
+            <div class="employee-tag"><i class="fas fa-user-tie"></i> <span class="tag-value" id="currentEmployeeRank">Rang</span></div>
           </div>
         </div>
         <div class="action-buttons">
-          <button class="btn btn-secondary" onclick="openEditEmployeeModal()">
-            <i class="fas fa-edit"></i> Bearbeiten
-          </button>
+          <button class="btn btn-secondary" onclick="openEditEmployeeModal()"><i class="fas fa-edit"></i> Bearbeiten</button>
         </div>
       </div>
 
       <!-- Induction Content -->
       <div class="induction-content" id="inductionContent">
-        <!-- Induction Grid -->
         <div class="induction-grid">
-          <!-- Oral Induction Card -->
+          <!-- Oral -->
           <div class="induction-card" id="oralInductionCard">
             <div class="induction-card-header">
               <div class="induction-title">
@@ -530,7 +750,7 @@
             </div>
 
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-              <label style="font-weight:600;color:var(--gray);font-size:12px;">Bestanden:</label>
+              <label style="font-weight:800;color:var(--gray);font-size:12px;">Bestanden:</label>
               <label class="toggle-switch">
                 <input type="checkbox" id="oralInductionToggle" onchange="toggleInduction('oral', this.checked)">
                 <span class="toggle-slider"></span>
@@ -606,7 +826,7 @@
             </div>
           </div>
 
-          <!-- Organizational Induction Card -->
+          <!-- Org -->
           <div class="induction-card" id="orgInductionCard">
             <div class="induction-card-header">
               <div class="induction-title">
@@ -617,7 +837,7 @@
             </div>
 
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-              <label style="font-weight:600;color:var(--gray);font-size:12px;">Bestanden:</label>
+              <label style="font-weight:800;color:var(--gray);font-size:12px;">Bestanden:</label>
               <label class="toggle-switch">
                 <input type="checkbox" id="orgInductionToggle" onchange="toggleInduction('org', this.checked)">
                 <span class="toggle-slider"></span>
@@ -694,79 +914,32 @@
           </div>
         </div>
 
-        <!-- Templates Section -->
+        <!-- Templates -->
         <div class="templates-section">
           <div class="section-header">
-            <div class="section-title">
-              <i class="fas fa-file-code"></i>
-              Discord Vorlagen
-            </div>
+            <div class="section-title"><i class="fas fa-file-code"></i> Discord Vorlagen</div>
             <div class="template-actions">
-              <button class="btn btn-secondary" onclick="openCopySettingsModal()">
-                <i class="fas fa-copy"></i> Beide kopieren
-              </button>
-              <button class="btn btn-secondary" onclick="copyOralTemplate()">
-                <i class="fas fa-comments"></i> Mündlich
-              </button>
-              <button class="btn btn-secondary" onclick="copyOrgTemplate()">
-                <i class="fas fa-clipboard-list"></i> Organisatorisch
-              </button>
+              <button class="btn btn-secondary" onclick="openCopySettingsModal()"><i class="fas fa-copy"></i> Beide kopieren</button>
+              <button class="btn btn-secondary" onclick="copyOralTemplate()"><i class="fas fa-comments"></i> Mündlich</button>
+              <button class="btn btn-secondary" onclick="copyOrgTemplate()"><i class="fas fa-clipboard-list"></i> Organisatorisch</button>
             </div>
           </div>
 
           <div class="template-cards">
             <div class="template-card" id="oralTemplateCard">
               <div class="template-card-header">
-                <div class="template-card-title">
-                  <i class="fas fa-comments"></i>
-                  Mündliche Einweisung
-                </div>
+                <div class="template-card-title"><i class="fas fa-comments"></i> Mündliche Einweisung</div>
                 <div class="template-badge" id="oralTemplateBadge">AUSSTEHEND</div>
               </div>
-              <div class="template-content" id="oralTemplateContent">╔══════════════════╗
-/////////////////////////////////////////////////////////////////////////
-Mündliche Einweisung / ausstehend
-
-Prüfer :
-Name: 
-DN: 
-Hauptunit: 
-Rang: 
-Datum: 
-Uhrzeit: 
-Beteiligte: 
-Sonstiges: 
-
-/////////////////////////////////////////////////////////////////////////
-<@&1097625910242447422>
-╚══════════════════╝</div>
+              <div class="template-content" id="oralTemplateContent"></div>
             </div>
 
             <div class="template-card" id="orgTemplateCard">
               <div class="template-card-header">
-                <div class="template-card-title">
-                  <i class="fas fa-clipboard-list"></i>
-                  Organisatorische Einweisung
-                </div>
+                <div class="template-card-title"><i class="fas fa-clipboard-list"></i> Organisatorische Einweisung</div>
                 <div class="template-badge" id="orgTemplateBadge">AUSSTEHEND</div>
               </div>
-              <div class="template-content" id="orgTemplateContent">╔══════════════════╗
-/////////////////////////////////////////////////////////////////////////
-Organisatorische Einweisung / ausstehend
-
-Prüfer :
-Name: 
-DN: 
-Hauptunit: 
-Rang: 
-Datum: 
-Uhrzeit: 
-Beteiligte: 
-Sonstiges: 
-
-/////////////////////////////////////////////////////////////////////////
-<@&1097625910242447422>
-╚══════════════════╝</div>
+              <div class="template-content" id="orgTemplateContent"></div>
             </div>
           </div>
         </div>
@@ -778,13 +951,8 @@ Sonstiges:
   <div class="modal-overlay" id="newEmployeeModal" onclick="if(event.target===this)closeModal('newEmployeeModal')">
     <div class="modal">
       <div class="modal-header">
-        <div class="modal-title">
-          <i class="fas fa-user-plus"></i>
-          Neuen Mitarbeiter hinzufügen
-        </div>
-        <button class="modal-close" onclick="closeModal('newEmployeeModal')">
-          <i class="fas fa-times"></i>
-        </button>
+        <div class="modal-title"><i class="fas fa-user-plus"></i> Neuen Mitarbeiter hinzufügen</div>
+        <button class="modal-close" onclick="closeModal('newEmployeeModal')"><i class="fas fa-times"></i></button>
       </div>
 
       <div class="form-grid-new" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
@@ -792,12 +960,10 @@ Sonstiges:
           <label class="form-label">Vollständiger Name *</label>
           <input type="text" class="form-input" id="newEmployeeName" placeholder="z.B. Max Fiart">
         </div>
-
         <div class="form-group">
           <label class="form-label">Dienstnummer (DN) *</label>
           <input type="number" class="form-input" id="newEmployeeDN" placeholder="z.B. 43" min="1" max="9999">
         </div>
-
         <div class="form-group">
           <label class="form-label">Unit</label>
           <select class="form-select" id="newEmployeeUnit">
@@ -810,7 +976,6 @@ Sonstiges:
             <option value="Navy SEALs">Navy SEALs</option>
           </select>
         </div>
-
         <div class="form-group">
           <label class="form-label">Rang</label>
           <select class="form-select" id="newEmployeeRank">
@@ -838,9 +1003,7 @@ Sonstiges:
 
       <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;">
         <button class="btn btn-secondary" onclick="closeModal('newEmployeeModal')">Abbrechen</button>
-        <button class="btn btn-primary" onclick="createNewEmployee()">
-          <i class="fas fa-plus"></i> Erstellen
-        </button>
+        <button class="btn btn-primary" onclick="createNewEmployee()"><i class="fas fa-plus"></i> Erstellen</button>
       </div>
     </div>
   </div>
@@ -849,13 +1012,8 @@ Sonstiges:
   <div class="modal-overlay" id="editEmployeeModal" onclick="if(event.target===this)closeModal('editEmployeeModal')">
     <div class="modal">
       <div class="modal-header">
-        <div class="modal-title">
-          <i class="fas fa-edit"></i>
-          Mitarbeiter bearbeiten
-        </div>
-        <button class="modal-close" onclick="closeModal('editEmployeeModal')">
-          <i class="fas fa-times"></i>
-        </button>
+        <div class="modal-title"><i class="fas fa-edit"></i> Mitarbeiter bearbeiten</div>
+        <button class="modal-close" onclick="closeModal('editEmployeeModal')"><i class="fas fa-times"></i></button>
       </div>
 
       <div class="form-grid-new" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
@@ -863,12 +1021,10 @@ Sonstiges:
           <label class="form-label">Vollständiger Name *</label>
           <input type="text" class="form-input" id="editEmployeeName" placeholder="z.B. Max Fiart">
         </div>
-
         <div class="form-group">
           <label class="form-label">Dienstnummer (DN) *</label>
           <input type="number" class="form-input" id="editEmployeeDN" placeholder="z.B. 43" min="1" max="9999">
         </div>
-
         <div class="form-group">
           <label class="form-label">Unit</label>
           <select class="form-select" id="editEmployeeUnit">
@@ -881,7 +1037,6 @@ Sonstiges:
             <option value="Navy SEALs">Navy SEALs</option>
           </select>
         </div>
-
         <div class="form-group">
           <label class="form-label">Rang</label>
           <select class="form-select" id="editEmployeeRank">
@@ -908,15 +1063,10 @@ Sonstiges:
       </div>
 
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:16px;">
-        <button class="btn btn-danger" onclick="deleteCurrentEmployee()" style="margin-right:auto;">
-          <i class="fas fa-trash"></i> Löschen
-        </button>
-
+        <button class="btn btn-danger" onclick="deleteCurrentEmployee()" style="margin-right:auto;"><i class="fas fa-trash"></i> Löschen</button>
         <div style="display:flex;gap:8px;">
           <button class="btn btn-secondary" onclick="closeModal('editEmployeeModal')">Abbrechen</button>
-          <button class="btn btn-primary" onclick="saveEditedEmployee()">
-            <i class="fas fa-save"></i> Änderungen speichern
-          </button>
+          <button class="btn btn-primary" onclick="saveEditedEmployee()"><i class="fas fa-save"></i> Änderungen speichern</button>
         </div>
       </div>
     </div>
@@ -926,13 +1076,8 @@ Sonstiges:
   <div class="modal-overlay" id="copySettingsModal" onclick="if(event.target===this)closeModal('copySettingsModal')">
     <div class="modal copy-settings-modal">
       <div class="modal-header">
-        <div class="modal-title">
-          <i class="fas fa-copy"></i>
-          Beide Vorlagen kopieren
-        </div>
-        <button class="modal-close" onclick="closeModal('copySettingsModal')">
-          <i class="fas fa-times"></i>
-        </button>
+        <div class="modal-title"><i class="fas fa-copy"></i> Beide Vorlagen kopieren</div>
+        <button class="modal-close" onclick="closeModal('copySettingsModal')"><i class="fas fa-times"></i></button>
       </div>
 
       <div class="copy-options">
@@ -966,14 +1111,12 @@ Sonstiges:
 
       <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;">
         <button class="btn btn-secondary" onclick="closeModal('copySettingsModal')">Abbrechen</button>
-        <button class="btn btn-primary" onclick="copyBothTemplates()">
-          <i class="fas fa-copy"></i> Kopieren
-        </button>
+        <button class="btn btn-primary" onclick="copyBothTemplates()"><i class="fas fa-copy"></i> Kopieren</button>
       </div>
     </div>
   </div>
 
-  <script>
+    <script>
     // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBTnsLNw68UuOd5Xa2ymMffWk4SYGDQjso",
@@ -999,6 +1142,8 @@ Sonstiges:
     };
 
     // Discord IDs for Ranks
+    // Hinweis: Bei dir waren einige Werte offensichtlich kaputt (z.B. extrem lange Zahl / Platzhalter-Text).
+    // Wenn eine ID nicht sicher ist, lassen wir sie leer -> dann wird der Rang normal als Text ausgegeben.
     const rankDiscordIds = {
       "Private": "1097625924104626198",
       "Private First Class": "1098190829295771739",
@@ -1008,14 +1153,14 @@ Sonstiges:
       "Staff Sergeant": "1097625912163451112",
       "Sergeant First Class": "1348414845862674524",
       "Master Sergeant": "1348414845862674524",
-      "Sergeant Major": "11097625902344573008",
+      "Sergeant Major": "",               // <- war bei dir offensichtlich falsch
       "Lieutenant": "1097625900125782278",
       "Captain": "1097625898880077955",
       "Major": "1097625896560640024",
       "Colonel": "1097625895541428275",
       "Major General": "1097625893880479777",
-      "Lieutenant General": "Lieutenant General",
-      "Vice General of Army": "Vice General of Army",
+      "Lieutenant General": "",           // <- war bei dir Platzhalter-Text
+      "Vice General of Army": "",          // <- war bei dir Platzhalter-Text
       "General of Army": "1097625891632316436"
     };
 
@@ -1044,6 +1189,8 @@ Sonstiges:
 
       loadEmployees();
       setupFormChangeListeners();
+      // Templates initial befüllen
+      seedTemplateBoxes();
     }
 
     function setupEventListeners() {
@@ -1057,7 +1204,6 @@ Sonstiges:
         if (e.ctrlKey && e.key === 'e' && currentEmployee) { e.preventDefault(); openEditEmployeeModal(); }
       });
 
-      setupFormChangeListeners();
       window.addEventListener('resize', adjustSidebarHeight);
     }
 
@@ -1102,8 +1248,8 @@ Sonstiges:
         renderEmployeeList();
         updateStats();
         hideLoading();
-        setTimeout(updateInductionDisplay, 100);
 
+        setTimeout(updateInductionDisplay, 100);
       } catch (error) {
         console.error('Fehler beim Laden der Mitarbeiter:', error);
         showNotification('Fehler beim Laden der Daten', 'error');
@@ -1184,12 +1330,12 @@ Sonstiges:
 
         card.innerHTML = `
           <div class="employee-top-row">
-            <div class="employee-name">${employee.name || ''}</div>
-            <div class="employee-dn">DN ${employee.dn || ''}</div>
+            <div class="employee-name">${escapeHtml(employee.name || '')}</div>
+            <div class="employee-dn">DN ${escapeHtml(employee.dn || '')}</div>
           </div>
           <div class="employee-meta">
-            <i class="fas fa-user-tie"></i> ${employee.rank || 'Kein Rang'} •
-            <i class="fas fa-building"></i> ${employee.unit || 'Keine Unit'}
+            <i class="fas fa-user-tie"></i> ${escapeHtml(employee.rank || 'Kein Rang')} •
+            <i class="fas fa-building"></i> ${escapeHtml(employee.unit || 'Keine Unit')}
           </div>
           <div class="induction-badges">
             <div class="induction-badge badge-oral ${oralCompleted ? 'completed' : 'pending'}">
@@ -1213,9 +1359,9 @@ Sonstiges:
 
     function getFilteredEmployees() {
       if (currentFilter === 'oral') {
-        return employees.filter(emp => !emp.inductions?.oral?.completed);
+        return employees.filter(emp => !(emp.inductions?.oral?.completed));
       } else if (currentFilter === 'org') {
-        return employees.filter(emp => !emp.inductions?.org?.completed);
+        return employees.filter(emp => !(emp.inductions?.org?.completed));
       }
       return employees;
     }
@@ -1228,7 +1374,7 @@ Sonstiges:
 
     function filterEmployees(searchTerm) {
       const cards = document.querySelectorAll('.employee-card');
-      const term = searchTerm.toLowerCase().trim();
+      const term = (searchTerm || '').toLowerCase().trim();
 
       if (!term) {
         cards.forEach(card => card.style.display = 'flex');
@@ -1271,7 +1417,7 @@ Sonstiges:
       const orgData = currentEmployee.orgData || {};
 
       document.getElementById('oralExaminer').value = oralData.examiner || '';
-      document.getElementById('oralDate').value = oralData.date || '';
+      document.getElementById('oralDate').value = oralData.date || (new Date().toISOString().split('T')[0]);
       document.getElementById('oralTimeStart').value = oralData.timeStart || '16:40';
       document.getElementById('oralTimeEnd').value = oralData.timeEnd || '18:00';
       document.getElementById('oralPerson').value = oralData.person || '';
@@ -1280,7 +1426,7 @@ Sonstiges:
       document.getElementById('rankSelect').value = oralData.rank || currentEmployee.rank || '';
 
       document.getElementById('orgExaminer').value = orgData.examiner || '';
-      document.getElementById('orgDate').value = orgData.date || '';
+      document.getElementById('orgDate').value = orgData.date || (new Date().toISOString().split('T')[0]);
       document.getElementById('orgTimeStart').value = orgData.timeStart || '22:10';
       document.getElementById('orgTimeEnd').value = orgData.timeEnd || '23:05';
       document.getElementById('orgPerson').value = orgData.person || '';
@@ -1360,15 +1506,12 @@ Sonstiges:
         rank: document.getElementById('rankSelect2').value
       };
 
+      // Sync main employee unit/rank with selects (optional)
       const unitSelectValue = document.getElementById('unitSelect').value;
       const rankSelectValue = document.getElementById('rankSelect').value;
 
-      if (unitSelectValue && (!currentEmployee.unit || currentEmployee.unit !== unitSelectValue)) {
-        currentEmployee.unit = unitSelectValue;
-      }
-      if (rankSelectValue && (!currentEmployee.rank || currentEmployee.rank !== rankSelectValue)) {
-        currentEmployee.rank = rankSelectValue;
-      }
+      if (unitSelectValue) currentEmployee.unit = unitSelectValue;
+      if (rankSelectValue) currentEmployee.rank = rankSelectValue;
 
       currentEmployee.lastUpdated = new Date().toISOString();
     }
@@ -1404,7 +1547,6 @@ Sonstiges:
       currentEmployee.rank = document.getElementById('editEmployeeRank').value || '';
 
       const success = await saveEmployeeToFirebase(currentEmployee);
-
       if (success) {
         closeModal('editEmployeeModal');
         updateEmployeeHeader();
@@ -1425,10 +1567,8 @@ Sonstiges:
       }
 
       const success = await deleteEmployeeFromFirebase(currentEmployee.id);
-
       if (success) {
-        const employeeIndex = employees.findIndex(emp => emp.id === currentEmployee.id);
-        if (employeeIndex !== -1) employees.splice(employeeIndex, 1);
+        employees = employees.filter(emp => emp.id !== currentEmployee.id);
 
         closeModal('editEmployeeModal');
 
@@ -1499,35 +1639,36 @@ Sonstiges:
       const copyOption = getCopyOptionFromStorage();
 
       if (copyOption === 'both') {
-        setTimeout(() => {
+        setTimeout(async () => {
           const oralTemplate = generateTemplate('oral');
           const orgTemplate = generateTemplate('org');
           const combined = oralTemplate + '\n\n' + orgTemplate;
 
-          copyToClipboard(combined).then(success => {
-            if (success) showNotification('Beide Einweisungen automatisch kopiert!', 'success');
-          });
+          const success = await copyToClipboard(combined);
+          if (success) showNotification('Beide Einweisungen automatisch kopiert!', 'success');
         }, 500);
+
       } else if (copyOption === 'separate') {
-        setTimeout(() => {
+        setTimeout(async () => {
           const oralTemplate = generateTemplate('oral');
-          copyToClipboard(oralTemplate).then(success => {
-            if (success) {
-              showNotification('Mündliche Einweisung kopiert', 'success');
-              setTimeout(() => {
-                const orgTemplate = generateTemplate('org');
-                copyToClipboard(orgTemplate).then(success2 => {
-                  if (success2) showNotification('Organisatorische Einweisung kopiert', 'success');
-                });
-              }, 1000);
-            }
-          });
+          const success1 = await copyToClipboard(oralTemplate);
+          if (success1) {
+            showNotification('Mündliche Einweisung kopiert', 'success');
+            setTimeout(async () => {
+              const orgTemplate = generateTemplate('org');
+              const success2 = await copyToClipboard(orgTemplate);
+              if (success2) showNotification('Organisatorische Einweisung kopiert', 'success');
+            }, 1000);
+          }
         }, 500);
       }
     }
 
     function updateTemplates() {
-      if (!currentEmployee) return;
+      if (!currentEmployee) {
+        seedTemplateBoxes();
+        return;
+      }
 
       saveFormData();
 
@@ -1642,24 +1783,24 @@ Sonstiges: ${notes}
 
       menu.innerHTML = `
         <div style="padding: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-          <div style="font-weight: 700; color: white; margin-bottom: 2px; font-size: 13px;">${employee.name}</div>
-          <div style="font-size: 11px; color: var(--gray);">DN: ${employee.dn}</div>
+          <div style="font-weight: 900; color: white; margin-bottom: 2px; font-size: 13px;">${escapeHtml(employee.name || '')}</div>
+          <div style="font-size: 11px; color: var(--gray);">DN: ${escapeHtml(employee.dn || '')}</div>
         </div>
         <div style="padding: 4px 0;">
-          <button onclick="selectEmployee(employees.find(e => e.id === '${employee.id}')); openEditEmployeeModal(); document.getElementById('contextMenu')?.remove();"
-            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--primary-light);font-weight:600;cursor:pointer;transition:all 0.2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:2px;">
+          <button onclick="selectEmployee(employees.find(x => x.id === '${employee.id}')); openEditEmployeeModal(); document.getElementById('contextMenu')?.remove();"
+            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--primary-light);font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:2px;">
             <i class="fas fa-edit"></i> Bearbeiten
           </button>
           <button onclick="deleteEmployee('${employee.id}')"
-            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--danger);font-weight:600;cursor:pointer;transition:all 0.2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:2px;">
+            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--danger);font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:2px;">
             <i class="fas fa-trash"></i> Löschen
           </button>
           <button onclick="duplicateEmployee('${employee.id}')"
-            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--primary-light);font-weight:600;cursor:pointer;transition:all 0.2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:2px;">
+            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--primary-light);font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:2px;">
             <i class="fas fa-copy"></i> Duplizieren
           </button>
           <button onclick="exportEmployee('${employee.id}')"
-            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--secondary);font-weight:600;cursor:pointer;transition:all 0.2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;">
+            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--secondary);font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;">
             <i class="fas fa-download"></i> Exportieren
           </button>
         </div>
@@ -1697,7 +1838,6 @@ Sonstiges: ${notes}
         renderEmployeeList();
         updateStats();
         showNotification('Mitarbeiter gelöscht', 'success');
-
         document.getElementById('contextMenu')?.remove();
       }
     }
@@ -1708,7 +1848,7 @@ Sonstiges: ${notes}
 
       const newEmployee = {
         ...JSON.parse(JSON.stringify(employee)),
-        id: `EMP-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: `EMP-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
         name: `${employee.name} (Kopie)`,
         lastUpdated: new Date().toISOString()
       };
@@ -1719,7 +1859,6 @@ Sonstiges: ${notes}
         renderEmployeeList();
         updateStats();
         showNotification('Mitarbeiter dupliziert', 'success');
-
         document.getElementById('contextMenu')?.remove();
       }
     }
@@ -1734,7 +1873,7 @@ Sonstiges: ${notes}
 
       const a = document.createElement('a');
       a.href = url;
-      a.download = `mitarbeiter-${employee.name}-${employee.dn}.json`;
+      a.download = `mitarbeiter-${(employee.name || 'unbekannt')}-${(employee.dn || '')}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -1777,7 +1916,8 @@ Sonstiges: ${notes}
 
     function openCopySettingsModal() {
       const savedOption = getCopyOptionFromStorage();
-      document.querySelector(`input[name="copyOption"][value="${savedOption}"]`).checked = true;
+      const radio = document.querySelector(`input[name="copyOption"][value="${savedOption}"]`);
+      if (radio) radio.checked = true;
       openModal('copySettingsModal');
     }
 
@@ -1786,24 +1926,20 @@ Sonstiges: ${notes}
       setCopyOptionToStorage(selectedOption);
 
       if (selectedOption === 'both') {
-        const oralTemplate = generateTemplate('oral');
-        const orgTemplate = generateTemplate('org');
-        const combined = oralTemplate + '\n\n' + orgTemplate;
-
+        const combined = generateTemplate('oral') + '\n\n' + generateTemplate('org');
         const success = await copyToClipboard(combined);
         showNotification(success ? 'Beide Einweisungen kopiert!' : 'Fehler beim Kopieren', success ? 'success' : 'error');
-      } else if (selectedOption === 'separate') {
-        const oralTemplate = generateTemplate('oral');
-        const success1 = await copyToClipboard(oralTemplate);
 
+      } else if (selectedOption === 'separate') {
+        const success1 = await copyToClipboard(generateTemplate('oral'));
         if (success1) {
           showNotification('Mündliche Einweisung kopiert', 'success');
           setTimeout(async () => {
-            const orgTemplate = generateTemplate('org');
-            const success2 = await copyToClipboard(orgTemplate);
+            const success2 = await copyToClipboard(generateTemplate('org'));
             if (success2) showNotification('Organisatorische Einweisung kopiert', 'success');
           }, 1000);
         }
+
       } else {
         updateTemplates();
         showNotification('Vorlagen aktualisiert', 'success');
@@ -1835,7 +1971,7 @@ Sonstiges: ${notes}
         return;
       }
 
-      const employeeId = `EMP-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const employeeId = `EMP-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 
       const newEmployee = {
         id: employeeId,
@@ -1844,34 +1980,14 @@ Sonstiges: ${notes}
         unit: unit || '',
         rank: rank || '',
         lastUpdated: new Date().toISOString(),
-        inductions: {},
-        oralData: {
-          examiner: '',
-          date: '',
-          timeStart: '16:40',
-          timeEnd: '18:00',
-          person: '',
-          notes: '',
-          unit: unit || '',
-          rank: rank || ''
-        },
-        orgData: {
-          examiner: '',
-          date: '',
-          timeStart: '22:10',
-          timeEnd: '23:05',
-          person: '',
-          notes: '',
-          unit: unit || '',
-          rank: rank || ''
-        }
+        inductions: { oral: { completed: false }, org: { completed: false } },
+        oralData: { examiner: '', date: '', timeStart: '16:40', timeEnd: '18:00', person: '', notes: '', unit: unit || '', rank: rank || '' },
+        orgData: { examiner: '', date: '', timeStart: '22:10', timeEnd: '23:05', person: '', notes: '', unit: unit || '', rank: rank || '' }
       };
 
       const success = await saveEmployeeToFirebase(newEmployee);
-
       if (success) {
         employees.unshift(newEmployee);
-
         closeModal('newEmployeeModal');
         renderEmployeeList();
         selectEmployee(newEmployee);
@@ -1905,12 +2021,14 @@ Sonstiges: ${notes}
       content.innerHTML = `
         <div class="loading">
           <div class="loading-spinner"></div>
-          <div style="color: var(--gray); font-weight: 600; font-size: 13px;">Lade Mitarbeiter...</div>
+          <div style="color: var(--gray); font-weight: 900; font-size: 13px;">Lade Mitarbeiter...</div>
         </div>
       `;
     }
 
-    function hideLoading() { }
+    function hideLoading() {
+      // renderEmployeeList() wird nach loadEmployees() sowieso aufgerufen
+    }
 
     function loadMockEmployees() {
       employees = [{
@@ -1919,31 +2037,61 @@ Sonstiges: ${notes}
         dn: '43',
         unit: 'Air Force',
         rank: 'Captain',
-        inductions: { oral: { completed: false, date: '2026-01-21' }, org: { completed: false } },
-        oralData: {
-          examiner: 'HR Team',
-          date: '2026-01-21',
-          timeStart: '16:40',
-          timeEnd: '18:00',
-          person: 'HR Team',
-          notes: '',
-          unit: 'Air Force',
-          rank: 'Captain'
-        },
-        orgData: {
-          examiner: 'HR Team',
-          date: '2026-01-21',
-          timeStart: '22:10',
-          timeEnd: '23:05',
-          person: 'HR Team',
-          notes: '',
-          unit: 'Air Force',
-          rank: 'Captain'
-        }
+        inductions: { oral: { completed: false }, org: { completed: false } },
+        oralData: { examiner: 'HR Team', date: '2026-01-21', timeStart: '16:40', timeEnd: '18:00', person: 'HR Team', notes: '', unit: 'Air Force', rank: 'Captain' },
+        orgData: { examiner: 'HR Team', date: '2026-01-21', timeStart: '22:10', timeEnd: '23:05', person: 'HR Team', notes: '', unit: 'Air Force', rank: 'Captain' }
       }];
 
       renderEmployeeList();
       updateStats();
+      seedTemplateBoxes();
+    }
+
+    function seedTemplateBoxes() {
+      document.getElementById('oralTemplateContent').textContent = `╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+Mündliche Einweisung / ausstehend
+
+Prüfer :
+Name:
+DN:
+Hauptunit:
+Rang:
+Datum:
+Uhrzeit:
+Beteiligte:
+Sonstiges:
+
+/////////////////////////////////////////////////////////////////////////
+<@&1097625910242447422>
+╚══════════════════╝`;
+
+      document.getElementById('orgTemplateContent').textContent = `╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+Organisatorische Einweisung / ausstehend
+
+Prüfer :
+Name:
+DN:
+Hauptunit:
+Rang:
+Datum:
+Uhrzeit:
+Beteiligte:
+Sonstiges:
+
+/////////////////////////////////////////////////////////////////////////
+<@&1097625910242447422>
+╚══════════════════╝`;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
   </script>
 </body>
