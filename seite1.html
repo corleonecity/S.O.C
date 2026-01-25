@@ -45,10 +45,7 @@
       line-height:1.4;
     }
 
-    .bg-effects{
-      position:fixed; inset:0;
-      z-index:-1; overflow:hidden;
-    }
+    .bg-effects{position:fixed; inset:0; z-index:-1; overflow:hidden;}
     .bg-gradient{
       position:absolute; inset:0;
       background:
@@ -171,27 +168,16 @@
       color:var(--gray);font-size:13px;
     }
 
-    .employee-list-container{
-      flex:1;
-      display:flex;
-      flex-direction:column;
-      margin-bottom:16px;
-      min-height:0;
-    }
+    .employee-list-container{flex:1;display:flex;flex-direction:column;margin-bottom:16px;min-height:0}
     .employee-list{
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      overflow-y:auto;
-      padding-right:4px;
-      flex:1;
-      min-height:0;
+      display:flex;flex-direction:column;gap:12px;
+      overflow-y:auto;padding-right:4px;flex:1;min-height:0;
     }
     .employee-list::-webkit-scrollbar{width:6px}
     .employee-list::-webkit-scrollbar-track{background:rgba(255,255,255,.05);border-radius:3px}
     .employee-list::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px}
 
-    /* Employee Cards (kompakter + Badges höher) */
+    /* Employee Cards (kompakt + Badges höher) */
     .employee-card{
       background:rgba(255,255,255,.03);
       border-radius:var(--radius-md);
@@ -204,9 +190,8 @@
       display:flex;
       flex-direction:column;
       gap:8px;
-
       min-height:110px;
-      justify-content:flex-start; /* keine künstliche Lücke */
+      justify-content:flex-start;
     }
     .employee-card:hover{
       background:rgba(255,255,255,.05);
@@ -249,11 +234,7 @@
     }
     .employee-meta i{font-size:10px;opacity:.6}
 
-    .induction-badges{
-      display:flex;gap:6px;flex-wrap:wrap;
-      margin-top:0;
-      padding-top:2px;
-    }
+    .induction-badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:0;padding-top:2px}
     .induction-badge{
       font-size:10px;
       padding:3px 8px;
@@ -336,8 +317,6 @@
     }
     .btn-primary{background:var(--primary);color:#fff}
     .btn-primary:hover{background:var(--primary-dark);transform:translateY(-1px)}
-    .btn-success{background:var(--secondary);color:#fff}
-    .btn-success:hover{background:var(--secondary-dark);transform:translateY(-1px)}
     .btn-secondary{
       background:rgba(255,255,255,.08);
       color:#fff;
@@ -347,19 +326,9 @@
     .btn-danger{background:var(--danger);color:#fff}
     .btn-danger:hover{background:var(--danger-dark);transform:translateY(-1px)}
 
-    .induction-content{
-      padding:20px;
-      flex:1;
-      overflow-y:auto;
-      display:none;
-    }
+    .induction-content{padding:20px;flex:1;overflow-y:auto;display:none}
 
-    .induction-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:16px;
-      margin-bottom:20px;
-    }
+    .induction-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
     .induction-card{
       background:rgba(255,255,255,.03);
       border-radius:var(--radius-md);
@@ -368,18 +337,11 @@
       transition:var(--transition);
       position:relative;
     }
-    .induction-card.completed{
-      border-color:var(--secondary);
-      background:rgba(16,185,129,.05);
-    }
+    .induction-card.completed{border-color:var(--secondary);background:rgba(16,185,129,.05)}
     .induction-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px}
-    .induction-title{
-      font-size:14px;font-weight:900;color:#fff;
-      display:flex;align-items:center;gap:8px;
-    }
+    .induction-title{font-size:14px;font-weight:900;color:#fff;display:flex;align-items:center;gap:8px}
     .induction-icon{
-      width:32px;height:32px;
-      background:var(--primary);
+      width:32px;height:32px;background:var(--primary);
       border-radius:var(--radius-md);
       display:flex;align-items:center;justify-content:center;
       font-size:14px;color:#fff;
@@ -394,17 +356,9 @@
     }
     .induction-card.completed .induction-status{background:rgba(16,185,129,.15);color:var(--secondary)}
 
-    .oral-form-grid, .org-form-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-      margin-bottom:4px;
-    }
+    .oral-form-grid,.org-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px}
     .form-group{display:flex;flex-direction:column;gap:6px}
-    .form-label{
-      font-weight:900;color:var(--gray-light);
-      font-size:11px;text-transform:uppercase;letter-spacing:.4px;
-    }
+    .form-label{font-weight:900;color:var(--gray-light);font-size:11px;text-transform:uppercase;letter-spacing:.4px}
     .form-input,.form-select,.form-textarea{
       padding:8px 10px;
       background:rgba(255,255,255,.05);
@@ -426,79 +380,35 @@
       padding-right:30px;
     }
     .form-input:focus,.form-select:focus,.form-textarea:focus{
-      outline:none;
-      border-color:var(--primary);
+      outline:none;border-color:var(--primary);
       background:rgba(255,255,255,.08);
       box-shadow:0 0 0 2px rgba(79,70,229,.10);
     }
-    .form-textarea{
-      resize:vertical;
-      min-height:60px;
-      font-family:'Inter',sans-serif;
-      line-height:1.4;
-    }
+    .form-textarea{resize:vertical;min-height:60px;font-family:'Inter',sans-serif;line-height:1.4}
 
-    .time-container{
-      display:grid;
-      grid-template-columns:1fr auto 1fr;
-      gap:8px;
-      align-items:center;
-    }
+    .time-container{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
     .time-separator{color:var(--gray);font-weight:700;text-align:center;font-size:12px;padding:0 4px}
     input[type="time"]{font-size:13px;padding:7px 8px}
 
     /* Toggle */
     .toggle-switch{position:relative;display:inline-block;width:44px;height:24px}
     .toggle-switch input{opacity:0;width:0;height:0}
-    .toggle-slider{
-      position:absolute;cursor:pointer;inset:0;
-      background-color:rgba(255,255,255,.10);
-      transition:var(--transition);
-      border-radius:34px;
-    }
-    .toggle-slider:before{
-      position:absolute;content:"";
-      height:16px;width:16px;left:4px;bottom:4px;
-      background-color:#fff;
-      transition:var(--transition);
-      border-radius:50%;
-    }
+    .toggle-slider{position:absolute;cursor:pointer;inset:0;background-color:rgba(255,255,255,.10);transition:var(--transition);border-radius:34px}
+    .toggle-slider:before{position:absolute;content:"";height:16px;width:16px;left:4px;bottom:4px;background-color:#fff;transition:var(--transition);border-radius:50%}
     input:checked + .toggle-slider{background-color:var(--secondary)}
     input:checked + .toggle-slider:before{transform:translateX(20px)}
 
     /* Templates */
-    .templates-section{
-      background:rgba(255,255,255,.03);
-      border-radius:var(--radius-md);
-      padding:16px;
-      border:1px solid rgba(255,255,255,.08);
-    }
+    .templates-section{background:rgba(255,255,255,.03);border-radius:var(--radius-md);padding:16px;border:1px solid rgba(255,255,255,.08)}
     .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px;flex-wrap:wrap}
-    .section-title{
-      font-size:14px;font-weight:900;color:#fff;
-      display:flex;align-items:center;gap:8px;
-    }
+    .section-title{font-size:14px;font-weight:900;color:#fff;display:flex;align-items:center;gap:8px}
     .template-actions{display:flex;gap:8px;flex-wrap:wrap}
     .template-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    .template-card{
-      background:rgba(0,0,0,.20);
-      border-radius:var(--radius-md);
-      padding:16px;
-      border:1px solid rgba(255,255,255,.08);
-    }
+    .template-card{background:rgba(0,0,0,.20);border-radius:var(--radius-md);padding:16px;border:1px solid rgba(255,255,255,.08)}
     .template-card.completed{border-color:var(--secondary)}
     .template-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px}
-    .template-card-title{
-      font-size:13px;font-weight:900;color:#fff;
-      display:flex;align-items:center;gap:6px;
-    }
-    .template-badge{
-      font-size:10px;font-weight:900;
-      padding:3px 8px;border-radius:12px;
-      background:rgba(79,70,229,.10);
-      color:var(--primary-light);
-      white-space:nowrap;
-    }
+    .template-card-title{font-size:13px;font-weight:900;color:#fff;display:flex;align-items:center;gap:6px}
+    .template-badge{font-size:10px;font-weight:900;padding:3px 8px;border-radius:12px;background:rgba(79,70,229,.10);color:var(--primary-light);white-space:nowrap}
     .template-content{
       font-family:Consolas,Monaco,monospace;
       background:rgba(0,0,0,.30);
@@ -542,10 +452,7 @@
     }
     @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
     .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:10px}
-    .modal-title{
-      font-size:16px;font-weight:900;color:#fff;
-      display:flex;align-items:center;gap:8px;
-    }
+    .modal-title{font-size:16px;font-weight:900;color:#fff;display:flex;align-items:center;gap:8px}
     .modal-close{
       background:none;border:none;color:var(--gray);
       font-size:18px;cursor:pointer;
@@ -556,37 +463,11 @@
     }
     .modal-close:hover{color:#fff;background:rgba(255,255,255,.10)}
 
-    .copy-settings-modal{max-width:400px}
-    .copy-options{display:flex;flex-direction:column;gap:8px;margin:16px 0}
-    .copy-option{
-      display:flex;align-items:center;gap:10px;
-      padding:10px;
-      background:rgba(255,255,255,.05);
-      border-radius:var(--radius-sm);
-      border:1px solid rgba(255,255,255,.10);
-      cursor:pointer;
-      transition:var(--transition);
-    }
-    .copy-option:hover{background:rgba(255,255,255,.08)}
-    .copy-option input[type="radio"]{display:none}
-    .copy-option .radio-custom{
-      width:14px;height:14px;border:2px solid var(--primary);
-      border-radius:50%;position:relative;flex-shrink:0;
-    }
-    .copy-option input[type="radio"]:checked + .radio-custom::after{
-      content:'';position:absolute;top:2px;left:2px;
-      width:6px;height:6px;background:var(--primary);border-radius:50%;
-    }
-    .copy-option-text{flex:1}
-    .copy-option-title{font-weight:900;color:#fff;font-size:13px;margin-bottom:2px}
-    .copy-option-description{font-size:11px;color:var(--gray)}
-
     /* Empty / Loading */
     .empty-state{text-align:center;padding:40px 20px;color:var(--gray);width:100%}
     .empty-icon{font-size:36px;margin-bottom:12px;opacity:.3}
     .empty-title{font-size:14px;font-weight:900;margin-bottom:6px;color:var(--gray-light)}
     .empty-description{font-size:12px;color:var(--gray);max-width:250px;margin:0 auto 12px}
-
     .loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;width:100%}
     .loading-spinner{
       width:32px;height:32px;
@@ -600,8 +481,7 @@
 
     /* Notification */
     .notification{
-      position:fixed;
-      bottom:16px;right:16px;
+      position:fixed;bottom:16px;right:16px;
       background:var(--secondary);
       color:#fff;
       padding:10px 14px;
@@ -650,20 +530,14 @@
 </head>
 
 <body>
-  <!-- Background Effects -->
-  <div class="bg-effects">
-    <div class="bg-gradient"></div>
-  </div>
+  <div class="bg-effects"><div class="bg-gradient"></div></div>
 
-  <!-- Notification -->
   <div class="notification" id="notification">
     <i class="fas fa-check notification-icon"></i>
     <span class="notification-message" id="notificationMessage"></span>
   </div>
 
-  <!-- Main Container -->
   <div class="app-container">
-    <!-- Header -->
     <header class="app-header">
       <div class="header-content">
         <div class="brand">
@@ -682,7 +556,6 @@
       </div>
     </header>
 
-    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-header">
         <h3 class="sidebar-title"><i class="fas fa-users"></i> Mitarbeiter</h3>
@@ -719,9 +592,7 @@
       </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="main-content">
-      <!-- Employee Header -->
       <div class="content-header" id="employeeHeader">
         <div class="employee-info">
           <h2 id="currentEmployeeName">Wählen Sie einen Mitarbeiter</h2>
@@ -736,7 +607,6 @@
         </div>
       </div>
 
-      <!-- Induction Content -->
       <div class="induction-content" id="inductionContent">
         <div class="induction-grid">
           <!-- Oral -->
@@ -762,12 +632,10 @@
                 <label class="form-label">Prüfer</label>
                 <input type="text" class="form-input" id="oralExaminer" placeholder="Name des Prüfers">
               </div>
-
               <div class="form-group">
                 <label class="form-label">Datum</label>
                 <input type="date" class="form-input" id="oralDate">
               </div>
-
               <div class="form-group">
                 <label class="form-label">Uhrzeit</label>
                 <div class="time-container">
@@ -776,12 +644,10 @@
                   <input type="time" class="form-input" id="oralTimeEnd">
                 </div>
               </div>
-
               <div class="form-group">
                 <label class="form-label">Beteiligte Person</label>
                 <input type="text" class="form-input" id="oralPerson" placeholder="Name der beteiligten Person">
               </div>
-
               <div class="form-group">
                 <label class="form-label">Unit</label>
                 <select class="form-select" id="unitSelect">
@@ -794,7 +660,6 @@
                   <option value="Navy SEALs">Navy SEALs</option>
                 </select>
               </div>
-
               <div class="form-group">
                 <label class="form-label">Rang</label>
                 <select class="form-select" id="rankSelect">
@@ -818,7 +683,6 @@
                   <option value="General of Army">General of Army</option>
                 </select>
               </div>
-
               <div class="form-group">
                 <label class="form-label">Sonstige Bemerkungen</label>
                 <textarea class="form-textarea" id="oralNotes" placeholder="Weitere Informationen..."></textarea>
@@ -849,12 +713,10 @@
                 <label class="form-label">Prüfer</label>
                 <input type="text" class="form-input" id="orgExaminer" placeholder="Name des Prüfers">
               </div>
-
               <div class="form-group">
                 <label class="form-label">Datum</label>
                 <input type="date" class="form-input" id="orgDate">
               </div>
-
               <div class="form-group">
                 <label class="form-label">Uhrzeit</label>
                 <div class="time-container">
@@ -863,12 +725,10 @@
                   <input type="time" class="form-input" id="orgTimeEnd">
                 </div>
               </div>
-
               <div class="form-group">
                 <label class="form-label">Beteiligte Person</label>
                 <input type="text" class="form-input" id="orgPerson" placeholder="Name der beteiligten Person">
               </div>
-
               <div class="form-group">
                 <label class="form-label">Unit</label>
                 <select class="form-select" id="unitSelect2">
@@ -881,7 +741,6 @@
                   <option value="Navy SEALs">Navy SEALs</option>
                 </select>
               </div>
-
               <div class="form-group">
                 <label class="form-label">Rang</label>
                 <select class="form-select" id="rankSelect2">
@@ -905,7 +764,6 @@
                   <option value="General of Army">General of Army</option>
                 </select>
               </div>
-
               <div class="form-group">
                 <label class="form-label">Sonstige Bemerkungen</label>
                 <textarea class="form-textarea" id="orgNotes" placeholder="Weitere Informationen..."></textarea>
@@ -1071,51 +929,7 @@
     </div>
   </div>
 
-  <!-- Copy Settings Modal -->
-  <div class="modal-overlay" id="copySettingsModal" onclick="if(event.target===this)closeModal('copySettingsModal')">
-    <div class="modal copy-settings-modal">
-      <div class="modal-header">
-        <div class="modal-title"><i class="fas fa-copy"></i> Beide Vorlagen kopieren</div>
-        <button class="modal-close" onclick="closeModal('copySettingsModal')"><i class="fas fa-times"></i></button>
-      </div>
-
-      <div class="copy-options">
-        <label class="copy-option">
-          <input type="radio" name="copyOption" value="both" checked>
-          <div class="radio-custom"></div>
-          <div class="copy-option-text">
-            <div class="copy-option-title">Beide zusammen kopieren</div>
-            <div class="copy-option-description">Mündliche und Organisatorische Einweisungen in einem Text</div>
-          </div>
-        </label>
-
-        <label class="copy-option">
-          <input type="radio" name="copyOption" value="separate">
-          <div class="radio-custom"></div>
-          <div class="copy-option-text">
-            <div class="copy-option-title">Einzeln hintereinander kopieren</div>
-            <div class="copy-option-description">Zuerst mündliche, dann organisatorische Einweisung</div>
-          </div>
-        </label>
-
-        <label class="copy-option">
-          <input type="radio" name="copyOption" value="manual">
-          <div class="radio-custom"></div>
-          <div class="copy-option-text">
-            <div class="copy-option-title">Nur Vorlagen aktualisieren</div>
-            <div class="copy-option-description">Nur aktualisieren, nicht kopieren</div>
-          </div>
-        </label>
-      </div>
-
-      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;">
-        <button class="btn btn-secondary" onclick="closeModal('copySettingsModal')">Abbrechen</button>
-        <button class="btn btn-primary" onclick="copyBothTemplates()"><i class="fas fa-copy"></i> Kopieren</button>
-      </div>
-    </div>
-  </div>
-
-    <script>
+  <script>
     // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBTnsLNw68UuOd5Xa2ymMffWk4SYGDQjso",
@@ -1130,7 +944,6 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Discord IDs for Units
     const unitDiscordIds = {
       "Air Force": "1269229762400878675",
       "S.O.C": "1339523576159666218",
@@ -1140,9 +953,7 @@
       "Navy SEALs": "1125174901989445693"
     };
 
-    // Discord IDs for Ranks
-    // Hinweis: Bei dir waren einige Werte offensichtlich kaputt (z.B. extrem lange Zahl / Platzhalter-Text).
-    // Wenn eine ID nicht sicher ist, lassen wir sie leer -> dann wird der Rang normal als Text ausgegeben.
+    // IDs: Unsichere / kaputte Werte -> leer lassen (dann wird Text ausgegeben)
     const rankDiscordIds = {
       "Private": "1097625924104626198",
       "Private First Class": "1098190829295771739",
@@ -1152,21 +963,20 @@
       "Staff Sergeant": "1097625912163451112",
       "Sergeant First Class": "1348414845862674524",
       "Master Sergeant": "1348414845862674524",
-      "Sergeant Major": "",               // <- war bei dir offensichtlich falsch
+      "Sergeant Major": "",
       "Lieutenant": "1097625900125782278",
       "Captain": "1097625898880077955",
       "Major": "1097625896560640024",
       "Colonel": "1097625895541428275",
       "Major General": "1097625893880479777",
-      "Lieutenant General": "",           // <- war bei dir Platzhalter-Text
-      "Vice General of Army": "",          // <- war bei dir Platzhalter-Text
+      "Lieutenant General": "",
+      "Vice General of Army": "",
       "General of Army": "1097625891632316436"
     };
 
     // App State
     let currentEmployee = null;
     let employees = [];
-    let bothInductionsCompleted = false;
     let currentFilter = 'all';
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -1188,7 +998,6 @@
 
       loadEmployees();
       setupFormChangeListeners();
-      // Templates initial befüllen
       seedTemplateBoxes();
     }
 
@@ -1227,27 +1036,21 @@
       const header = document.querySelector('.app-header');
       const windowHeight = window.innerHeight;
       const headerHeight = header.offsetHeight;
-
       const availableHeight = windowHeight - headerHeight - 40;
-      const newHeight = Math.max(availableHeight, 500);
-      sidebar.style.height = `${newHeight}px`;
+      sidebar.style.height = `${Math.max(availableHeight, 500)}px`;
     }
 
-    // Firebase Functions
+    // Firebase
     async function loadEmployees() {
       try {
         showLoading();
         const snapshot = await db.collection('hrEmployees').orderBy('lastUpdated', 'desc').get();
         employees = [];
-
-        snapshot.forEach(doc => {
-          employees.push({ id: doc.id, ...doc.data() });
-        });
+        snapshot.forEach(doc => employees.push({ id: doc.id, ...doc.data() }));
 
         renderEmployeeList();
         updateStats();
         hideLoading();
-
         setTimeout(updateInductionDisplay, 100);
       } catch (error) {
         console.error('Fehler beim Laden der Mitarbeiter:', error);
@@ -1269,7 +1072,6 @@
           oralData: employee.oralData || {},
           orgData: employee.orgData || {}
         };
-
         await db.collection('hrEmployees').doc(employee.id).set(dataToSave, { merge: true });
         return true;
       } catch (error) {
@@ -1347,12 +1149,10 @@
             </div>
           </div>
         `;
-
         container.appendChild(card);
       });
     }
-
-    function getEmptyStateTitle() {
+        function getEmptyStateTitle() {
       return 'Keine Mitarbeiter';
     }
 
@@ -1442,7 +1242,6 @@
       updateInductionUI('oral', oralCompleted);
       updateInductionUI('org', orgCompleted);
 
-      checkBothInductionsCompleted();
       updateTemplates();
     }
 
@@ -1505,10 +1304,8 @@
         rank: document.getElementById('rankSelect2').value
       };
 
-      // Sync main employee unit/rank with selects (optional)
       const unitSelectValue = document.getElementById('unitSelect').value;
       const rankSelectValue = document.getElementById('rankSelect').value;
-
       if (unitSelectValue) currentEmployee.unit = unitSelectValue;
       if (rankSelectValue) currentEmployee.rank = rankSelectValue;
 
@@ -1596,71 +1393,12 @@
       updateTemplates();
 
       saveEmployeeData(true);
-      checkBothInductionsCompleted();
       renderEmployeeList();
       updateStats();
 
       const typeName = type === 'oral' ? 'Mündliche' : 'Organisatorische';
       const status = completed ? 'bestanden' : 'als ausstehend markiert';
       showNotification(`${typeName} Einweisung ${status}`, 'success');
-    }
-
-    function checkBothInductionsCompleted() {
-      if (!currentEmployee) return false;
-
-      const oralCompleted = currentEmployee.inductions?.oral?.completed || false;
-      const orgCompleted = currentEmployee.inductions?.org?.completed || false;
-
-      const nowBothCompleted = oralCompleted && orgCompleted;
-
-      if (nowBothCompleted && !bothInductionsCompleted) {
-        bothInductionsCompleted = true;
-        const copyOption = getCopyOptionFromStorage();
-        if (copyOption === 'both' || copyOption === 'separate') {
-          copyBothTemplatesAutomatically();
-        }
-      } else if (!nowBothCompleted) {
-        bothInductionsCompleted = false;
-      }
-
-      return nowBothCompleted;
-    }
-
-    function getCopyOptionFromStorage() {
-      return localStorage.getItem('copyOption') || 'both';
-    }
-
-    function setCopyOptionToStorage(option) {
-      localStorage.setItem('copyOption', option);
-    }
-
-    function copyBothTemplatesAutomatically() {
-      const copyOption = getCopyOptionFromStorage();
-
-      if (copyOption === 'both') {
-        setTimeout(async () => {
-          const oralTemplate = generateTemplate('oral');
-          const orgTemplate = generateTemplate('org');
-          const combined = oralTemplate + '\n\n' + orgTemplate;
-
-          const success = await copyToClipboard(combined);
-          if (success) showNotification('Beide Einweisungen automatisch kopiert!', 'success');
-        }, 500);
-
-      } else if (copyOption === 'separate') {
-        setTimeout(async () => {
-          const oralTemplate = generateTemplate('oral');
-          const success1 = await copyToClipboard(oralTemplate);
-          if (success1) {
-            showNotification('Mündliche Einweisung kopiert', 'success');
-            setTimeout(async () => {
-              const orgTemplate = generateTemplate('org');
-              const success2 = await copyToClipboard(orgTemplate);
-              if (success2) showNotification('Organisatorische Einweisung kopiert', 'success');
-            }, 1000);
-          }
-        }, 500);
-      }
     }
 
     function updateTemplates() {
@@ -1915,40 +1653,6 @@ Sonstiges: ${notes}
       showNotification(success ? 'Organisatorische Einweisung kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
     }
 
-    function openCopySettingsModal() {
-      const savedOption = getCopyOptionFromStorage();
-      const radio = document.querySelector(`input[name="copyOption"][value="${savedOption}"]`);
-      if (radio) radio.checked = true;
-      openModal('copySettingsModal');
-    }
-
-    async function copyBothTemplates() {
-      const selectedOption = document.querySelector('input[name="copyOption"]:checked').value;
-      setCopyOptionToStorage(selectedOption);
-
-      if (selectedOption === 'both') {
-        const combined = generateTemplate('oral') + '\n\n' + generateTemplate('org');
-        const success = await copyToClipboard(combined);
-        showNotification(success ? 'Beide Einweisungen kopiert!' : 'Fehler beim Kopieren', success ? 'success' : 'error');
-
-      } else if (selectedOption === 'separate') {
-        const success1 = await copyToClipboard(generateTemplate('oral'));
-        if (success1) {
-          showNotification('Mündliche Einweisung kopiert', 'success');
-          setTimeout(async () => {
-            const success2 = await copyToClipboard(generateTemplate('org'));
-            if (success2) showNotification('Organisatorische Einweisung kopiert', 'success');
-          }, 1000);
-        }
-
-      } else {
-        updateTemplates();
-        showNotification('Vorlagen aktualisiert', 'success');
-      }
-
-      closeModal('copySettingsModal');
-    }
-
     function openModal(modalId) {
       document.getElementById(modalId).classList.add('active');
     }
@@ -2051,7 +1755,7 @@ Sonstiges: ${notes}
     function seedTemplateBoxes() {
       document.getElementById('oralTemplateContent').textContent = `╔══════════════════╗
 /////////////////////////////////////////////////////////////////////////
-Mündliche Einweisung / ausstehend
+Mündliche Einweisung
 
 Prüfer :
 Name:
@@ -2069,7 +1773,7 @@ Sonstiges:
 
       document.getElementById('orgTemplateContent').textContent = `╔══════════════════╗
 /////////////////////////////////////////////////////////////////////////
-Organisatorische Einweisung / ausstehend
+Organisatorische Einweisung
 
 Prüfer :
 Name:
@@ -2084,6 +1788,20 @@ Sonstiges:
 /////////////////////////////////////////////////////////////////////////
 <@&1097625910242447422>
 ╚══════════════════╝`;
+    }
+
+    function showNotification(message, type = 'info') {
+      const notification = document.getElementById('notification');
+      const messageElement = document.getElementById('notificationMessage');
+      messageElement.textContent = message;
+
+      if (type === 'success') notification.style.background = 'var(--secondary)';
+      else if (type === 'error') notification.style.background = 'var(--danger)';
+      else if (type === 'warning') notification.style.background = 'var(--warning)';
+      else notification.style.background = 'var(--primary)';
+
+      notification.classList.add('show');
+      setTimeout(() => notification.classList.remove('show'), 3000);
     }
 
     function escapeHtml(str) {
