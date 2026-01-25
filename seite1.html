@@ -1320,45 +1320,35 @@
             opacity: 0.6;
         }
         
-        /* Filter Buttons in Sidebar - VERBESSERT */
+        /* Filter Buttons in Sidebar */
         .sidebar-filter-buttons {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             margin-bottom: 16px;
         }
         
         .sidebar-filter-btn {
-            padding: 8px 10px;
-            background: rgba(255, 255, 255, 0.07);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius-md);
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
             color: var(--gray-light);
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
             flex: 1;
             text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 33.333%;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         
         .sidebar-filter-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.15);
         }
         
         .sidebar-filter-btn.active {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
     </style>
 </head>
@@ -1408,7 +1398,7 @@
             </div>
             
             <div class="sidebar-controls">
-                <!-- Filter Buttons in Sidebar - VERBESSERT -->
+                <!-- Filter Buttons in Sidebar -->
                 <div class="sidebar-filter-buttons">
                     <button class="sidebar-filter-btn active" onclick="filterEmployeesByType('all')">
                         Alle
@@ -1417,7 +1407,7 @@
                         Mündlich
                     </button>
                     <button class="sidebar-filter-btn" onclick="filterEmployeesByType('org')">
-                        Org.
+                        Organisatorische
                     </button>
                 </div>
                 
@@ -1895,7 +1885,7 @@ Sonstiges:
                 </div>
             </div>
         </div>
-</div>
+    </div>
     
     <!-- Copy Settings Modal -->
     <div class="modal-overlay" id="copySettingsModal" onclick="if(event.target===this)closeModal('copySettingsModal')">
