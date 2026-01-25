@@ -762,10 +762,22 @@
       overflow-y: auto;
     }
 
+    /* WICHTIG: Scrollbar für Soldatengespräch-Liste */
+    .soldaten-liste-container {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
     .soldaten-liste {
       flex: 1;
       overflow-y: auto;
       padding-right: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
     .soldaten-liste::-webkit-scrollbar {
@@ -787,8 +799,8 @@
       border-radius: var(--radius-md);
       padding: 16px;
       border: 1px solid rgba(255,255,255,.08);
-      margin-bottom: 12px;
       transition: var(--transition);
+      flex-shrink: 0;
     }
 
     .soldaten-item:hover {
@@ -838,6 +850,22 @@
       background: rgba(0,0,0,.2);
       border-radius: var(--radius-sm);
       border-left: 2px solid var(--warning);
+      max-height: 100px;
+      overflow-y: auto;
+    }
+
+    .soldaten-item-notizen::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .soldaten-item-notizen::-webkit-scrollbar-track {
+      background: rgba(255,255,255,.03);
+      border-radius: 2px;
+    }
+
+    .soldaten-item-notizen::-webkit-scrollbar-thumb {
+      background: rgba(245,158,11,.30);
+      border-radius: 2px;
     }
 
     .soldaten-item-template {
@@ -854,6 +882,20 @@
       max-height: 150px;
       overflow-y: auto;
       margin-bottom: 12px;
+    }
+
+    .soldaten-item-template::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .soldaten-item-template::-webkit-scrollbar-track {
+      background: rgba(255,255,255,.03);
+      border-radius: 2px;
+    }
+
+    .soldaten-item-template::-webkit-scrollbar-thumb {
+      background: rgba(245,158,11,.30);
+      border-radius: 2px;
     }
 
     .soldaten-item-actions {
@@ -900,6 +942,11 @@
       text-align: center;
       padding: 40px 20px;
       color: var(--gray);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     .empty-soldaten-icon {
@@ -963,6 +1010,7 @@
     .soldaten-search-container {
       position: relative;
       margin-bottom: 20px;
+      flex-shrink: 0;
     }
 
     .soldaten-search-input {
@@ -1700,11 +1748,14 @@ Sonstiges:
             <input type="text" class="soldaten-search-input" id="soldatenSearch" placeholder="Nach Name oder DN suchen..." oninput="searchSoldaten(this.value)">
           </div>
           
-          <div class="soldaten-liste" id="soldatenListe">
-            <div class="empty-soldaten">
-              <div class="empty-soldaten-icon"><i class="fas fa-comments"></i></div>
-              <div class="empty-soldaten-title">Keine Gespräche gefunden</div>
-              <div class="empty-description">Erstellen Sie Ihr erstes Soldatengespräch</div>
+          <!-- Scrollbar-Container für die Liste -->
+          <div class="soldaten-liste-container">
+            <div class="soldaten-liste" id="soldatenListe">
+              <div class="empty-soldaten">
+                <div class="empty-soldaten-icon"><i class="fas fa-comments"></i></div>
+                <div class="empty-soldaten-title">Keine Gespräche gefunden</div>
+                <div class="empty-description">Erstellen Sie Ihr erstes Soldatengespräch</div>
+              </div>
             </div>
           </div>
         </div>
@@ -2177,7 +2228,7 @@ Grund:
             <option value="Lieutenant General">Lieutenant General</option>
             <option value="Vice General of Army">Vice General of Army</option>
             <option value="General of Army">General of Army</option>
-          </select>
+          </select;
         </div>
       </div>
 
@@ -2611,6 +2662,8 @@ Sonstiges: ${sonstiges || ''}
       });
 
       container.innerHTML = html;
+      
+      // Scrollbar funktioniert jetzt automatisch durch das CSS
     }
 
     function searchSoldaten(searchTerm) {
