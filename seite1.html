@@ -309,7 +309,7 @@
         .employee-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 14px; /* <- geändert: mehr Abstand */
             overflow-y: auto;
             padding-right: 4px;
             flex: 1;
@@ -334,7 +334,7 @@
         .employee-card {
             background: rgba(255, 255, 255, 0.03);
             border-radius: var(--radius-md);
-            padding: 12px;
+            padding: 18px;
             border: 1px solid rgba(255, 255, 255, 0.08);
             cursor: pointer;
             transition: var(--transition);
@@ -342,7 +342,10 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px; /* <- etwas mehr Luft */
+
+            min-height: 150px;              /* <- NEU: Kachel wirklich größer */
+            justify-content: space-between;  /* <- NEU: Badges nach unten */
         }
         
         .employee-card:hover {
@@ -424,7 +427,7 @@
             display: flex;
             gap: 6px;
             flex-wrap: wrap;
-            margin-top: 4px;
+            margin-top: auto; /* <- NEU: Badges immer nach unten */
         }
         
         .induction-badge {
@@ -617,7 +620,9 @@
             overflow-y: auto;
             display: none;
         }
-        
+
+        /* --- Ab hier ist dein Original weiter unverändert --- */
+
         .induction-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -768,7 +773,7 @@
             font-size: 13px;
             padding: 7px 8px;
         }
-        
+
         /* Toggle Switches */
         .toggle-switch {
             position: relative;
@@ -822,14 +827,14 @@
             padding: 16px;
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        
+
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
         }
-        
+
         .section-title {
             font-size: 14px;
             font-weight: 700;
@@ -838,36 +843,36 @@
             align-items: center;
             gap: 8px;
         }
-        
+
         .template-actions {
             display: flex;
             gap: 8px;
         }
-        
+
         .template-cards {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
         }
-        
+
         .template-card {
             background: rgba(0, 0, 0, 0.2);
             border-radius: var(--radius-md);
             padding: 16px;
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        
+
         .template-card.completed {
             border-color: var(--secondary);
         }
-        
+
         .template-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
         }
-        
+
         .template-card-title {
             font-size: 13px;
             font-weight: 700;
@@ -876,7 +881,7 @@
             align-items: center;
             gap: 6px;
         }
-        
+
         .template-badge {
             font-size: 10px;
             font-weight: 700;
@@ -885,7 +890,7 @@
             background: rgba(79, 70, 229, 0.1);
             color: var(--primary-light);
         }
-        
+
         .template-content {
             font-family: 'Consolas', 'Monaco', monospace;
             background: rgba(0, 0, 0, 0.3);
@@ -901,11 +906,11 @@
             max-height: 180px;
             overflow-y: auto;
         }
-        
+
         .template-card.completed .template-content {
             border-left-color: var(--secondary);
         }
-        
+
         /* Modals */
         .modal-overlay {
             display: none;
@@ -922,16 +927,16 @@
             padding: 16px;
             animation: fadeIn 0.2s ease;
         }
-        
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-        
+
         .modal-overlay.active {
             display: flex;
         }
-        
+
         .modal {
             background: rgba(31, 41, 55, 0.95);
             border-radius: var(--radius-lg);
@@ -942,7 +947,7 @@
             box-shadow: var(--shadow-lg);
             animation: slideUp 0.2s ease;
         }
-        
+
         @keyframes slideUp {
             from {
                 opacity: 0;
@@ -953,14 +958,14 @@
                 transform: translateY(0);
             }
         }
-        
+
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
-        
+
         .modal-title {
             font-size: 16px;
             font-weight: 700;
@@ -969,7 +974,7 @@
             align-items: center;
             gap: 8px;
         }
-        
+
         .modal-close {
             background: none;
             border: none;
@@ -984,39 +989,39 @@
             justify-content: center;
             border-radius: 50%;
         }
-        
+
         .modal-close:hover {
             color: white;
             background: rgba(255, 255, 255, 0.1);
         }
-        
+
         .empty-state {
             text-align: center;
             padding: 40px 20px;
             color: var(--gray);
             width: 100%;
         }
-        
+
         .empty-icon {
             font-size: 36px;
             margin-bottom: 12px;
             opacity: 0.3;
         }
-        
+
         .empty-title {
             font-size: 14px;
             font-weight: 700;
             margin-bottom: 6px;
             color: var(--gray-light);
         }
-        
+
         .empty-description {
             font-size: 12px;
             color: var(--gray);
             max-width: 250px;
             margin: 0 auto 12px;
         }
-        
+
         .loading {
             display: flex;
             flex-direction: column;
@@ -1025,7 +1030,7 @@
             padding: 40px;
             width: 100%;
         }
-        
+
         .loading-spinner {
             width: 32px;
             height: 32px;
@@ -1035,11 +1040,11 @@
             animation: spin 1s linear infinite;
             margin-bottom: 12px;
         }
-        
+
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        
+
         .notification {
             position: fixed;
             bottom: 16px;
@@ -1058,32 +1063,32 @@
             transition: transform 0.2s ease, opacity 0.2s ease;
             min-width: 200px;
         }
-        
+
         .notification.show {
             transform: translateY(0);
             opacity: 1;
         }
-        
+
         .notification-icon {
             font-size: 14px;
         }
-        
+
         .notification-message {
             font-weight: 600;
             font-size: 13px;
         }
-        
+
         .copy-settings-modal {
             max-width: 400px;
         }
-        
+
         .copy-options {
             display: flex;
             flex-direction: column;
             gap: 8px;
             margin: 16px 0;
         }
-        
+
         .copy-option {
             display: flex;
             align-items: center;
@@ -1095,15 +1100,15 @@
             cursor: pointer;
             transition: var(--transition);
         }
-        
+
         .copy-option:hover {
             background: rgba(255, 255, 255, 0.08);
         }
-        
+
         .copy-option input[type="radio"] {
             display: none;
         }
-        
+
         .copy-option .radio-custom {
             width: 14px;
             height: 14px;
@@ -1112,7 +1117,7 @@
             position: relative;
             flex-shrink: 0;
         }
-        
+
         .copy-option input[type="radio"]:checked + .radio-custom::after {
             content: '';
             position: absolute;
@@ -1123,23 +1128,23 @@
             background: var(--primary);
             border-radius: 50%;
         }
-        
+
         .copy-option-text {
             flex: 1;
         }
-        
+
         .copy-option-title {
             font-weight: 600;
             color: white;
             font-size: 13px;
             margin-bottom: 2px;
         }
-        
+
         .copy-option-description {
             font-size: 11px;
             color: var(--gray);
         }
-        
+
         /* Responsive */
         @media (max-width: 1200px) {
             .app-container {
@@ -1642,8 +1647,8 @@ Sonstiges:
             </div>
         </main>
     </div>
-    
-    <!-- New Employee Modal -->
+
+        <!-- New Employee Modal -->
     <div class="modal-overlay" id="newEmployeeModal" onclick="if(event.target===this)closeModal('newEmployeeModal')">
         <div class="modal">
             <div class="modal-header">
@@ -1655,18 +1660,18 @@ Sonstiges:
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <div class="form-grid-new" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
                 <div class="form-group">
                     <label class="form-label">Vollständiger Name *</label>
                     <input type="text" class="form-input" id="newEmployeeName" placeholder="z.B. Max Fiart">
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">Dienstnummer (DN) *</label>
                     <input type="number" class="form-input" id="newEmployeeDN" placeholder="z.B. 43" min="1" max="9999">
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">Unit</label>
                     <select class="form-select" id="newEmployeeUnit">
@@ -1679,7 +1684,7 @@ Sonstiges:
                         <option value="Navy SEALs">Navy SEALs</option>
                     </select>
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">Rang</label>
                     <select class="form-select" id="newEmployeeRank">
@@ -1704,18 +1709,16 @@ Sonstiges:
                     </select>
                 </div>
             </div>
-            
+
             <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px;">
-                <button class="btn btn-secondary" onclick="closeModal('newEmployeeModal')">
-                    Abbrechen
-                </button>
+                <button class="btn btn-secondary" onclick="closeModal('newEmployeeModal')">Abbrechen</button>
                 <button class="btn btn-primary" onclick="createNewEmployee()">
                     <i class="fas fa-plus"></i> Erstellen
                 </button>
             </div>
         </div>
     </div>
-    
+
     <!-- Edit Employee Modal -->
     <div class="modal-overlay" id="editEmployeeModal" onclick="if(event.target===this)closeModal('editEmployeeModal')">
         <div class="modal">
@@ -1728,18 +1731,18 @@ Sonstiges:
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <div class="form-grid-new" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
                 <div class="form-group">
                     <label class="form-label">Vollständiger Name *</label>
                     <input type="text" class="form-input" id="editEmployeeName" placeholder="z.B. Max Fiart">
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">Dienstnummer (DN) *</label>
                     <input type="number" class="form-input" id="editEmployeeDN" placeholder="z.B. 43" min="1" max="9999">
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">Unit</label>
                     <select class="form-select" id="editEmployeeUnit">
@@ -1752,7 +1755,7 @@ Sonstiges:
                         <option value="Navy SEALs">Navy SEALs</option>
                     </select>
                 </div>
-                
+
                 <div class="form-group">
                     <label class="form-label">Rang</label>
                     <select class="form-select" id="editEmployeeRank">
@@ -1777,15 +1780,13 @@ Sonstiges:
                     </select>
                 </div>
             </div>
-            
+
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 16px;">
                 <button class="btn btn-danger" onclick="deleteCurrentEmployee()" style="margin-right: auto;">
                     <i class="fas fa-trash"></i> Löschen
                 </button>
                 <div style="display: flex; gap: 8px;">
-                    <button class="btn btn-secondary" onclick="closeModal('editEmployeeModal')">
-                        Abbrechen
-                    </button>
+                    <button class="btn btn-secondary" onclick="closeModal('editEmployeeModal')">Abbrechen</button>
                     <button class="btn btn-primary" onclick="saveEditedEmployee()">
                         <i class="fas fa-save"></i> Änderungen speichern
                     </button>
@@ -1793,7 +1794,7 @@ Sonstiges:
             </div>
         </div>
     </div>
-    
+
     <!-- Copy Settings Modal -->
     <div class="modal-overlay" id="copySettingsModal" onclick="if(event.target===this)closeModal('copySettingsModal')">
         <div class="modal copy-settings-modal">
@@ -1806,7 +1807,7 @@ Sonstiges:
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
+
             <div class="copy-options">
                 <label class="copy-option">
                     <input type="radio" name="copyOption" value="both" checked>
@@ -1816,7 +1817,7 @@ Sonstiges:
                         <div class="copy-option-description">Mündliche und Organisatorische Einweisungen in einem Text</div>
                     </div>
                 </label>
-                
+
                 <label class="copy-option">
                     <input type="radio" name="copyOption" value="separate">
                     <div class="radio-custom"></div>
@@ -1825,7 +1826,7 @@ Sonstiges:
                         <div class="copy-option-description">Zuerst mündliche, dann organisatorische Einweisung</div>
                     </div>
                 </label>
-                
+
                 <label class="copy-option">
                     <input type="radio" name="copyOption" value="manual">
                     <div class="radio-custom"></div>
@@ -1835,11 +1836,9 @@ Sonstiges:
                     </div>
                 </label>
             </div>
-            
+
             <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px;">
-                <button class="btn btn-secondary" onclick="closeModal('copySettingsModal')">
-                    Abbrechen
-                </button>
+                <button class="btn btn-secondary" onclick="closeModal('copySettingsModal')">Abbrechen</button>
                 <button class="btn btn-primary" onclick="copyBothTemplates()">
                     <i class="fas fa-copy"></i> Kopieren
                 </button>
@@ -1914,12 +1913,12 @@ Sonstiges:
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('oralDate').value = today;
             document.getElementById('orgDate').value = today;
-            
+
             document.getElementById('oralTimeStart').value = '16:40';
             document.getElementById('oralTimeEnd').value = '18:00';
             document.getElementById('orgTimeStart').value = '22:10';
             document.getElementById('orgTimeEnd').value = '23:05';
-            
+
             loadEmployees();
             setupFormChangeListeners();
         }
@@ -1928,7 +1927,7 @@ Sonstiges:
             document.getElementById('searchEmployees').addEventListener('input', function(e) {
                 filterEmployees(e.target.value);
             });
-            
+
             document.addEventListener('keydown', function(e) {
                 if (e.ctrlKey && e.key === 'n') {
                     e.preventDefault();
@@ -1943,7 +1942,7 @@ Sonstiges:
                     openEditEmployeeModal();
                 }
             });
-            
+
             setupFormChangeListeners();
             window.addEventListener('resize', adjustSidebarHeight);
         }
@@ -1969,7 +1968,7 @@ Sonstiges:
             const header = document.querySelector('.app-header');
             const windowHeight = window.innerHeight;
             const headerHeight = header.offsetHeight;
-            
+
             const availableHeight = windowHeight - headerHeight - 40;
             const newHeight = Math.max(availableHeight, 500);
             sidebar.style.height = `${newHeight}px`;
@@ -1981,20 +1980,20 @@ Sonstiges:
                 showLoading();
                 const snapshot = await db.collection('hrEmployees').orderBy('lastUpdated', 'desc').get();
                 employees = [];
-                
+
                 snapshot.forEach(doc => {
                     employees.push({
                         id: doc.id,
                         ...doc.data()
                     });
                 });
-                
+
                 renderEmployeeList();
                 updateStats();
                 hideLoading();
-                
+
                 setTimeout(updateInductionDisplay, 100);
-                
+
             } catch (error) {
                 console.error('Fehler beim Laden der Mitarbeiter:', error);
                 showNotification('Fehler beim Laden der Daten', 'error');
@@ -2015,7 +2014,7 @@ Sonstiges:
                     oralData: employee.oralData || {},
                     orgData: employee.orgData || {}
                 };
-                
+
                 await db.collection('hrEmployees').doc(employee.id).set(dataToSave, { merge: true });
                 return true;
             } catch (error) {
@@ -2040,15 +2039,15 @@ Sonstiges:
         function renderEmployeeList() {
             const container = document.getElementById('employeeList');
             const countElement = document.getElementById('employeeCount');
-            
+
             let filteredEmployees = getFilteredEmployees();
-            
+
             filteredEmployees.sort((a, b) => {
                 const nameA = (a.name || '').toUpperCase();
                 const nameB = (b.name || '').toUpperCase();
                 return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
             });
-            
+
             if (filteredEmployees.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
@@ -2062,10 +2061,10 @@ Sonstiges:
                 countElement.textContent = '0';
                 return;
             }
-            
+
             container.innerHTML = '';
             countElement.textContent = filteredEmployees.length;
-            
+
             filteredEmployees.forEach(employee => {
                 const card = document.createElement('div');
                 card.className = `employee-card ${currentEmployee?.id === employee.id ? 'active' : ''}`;
@@ -2074,11 +2073,10 @@ Sonstiges:
                     e.preventDefault();
                     showEmployeeContextMenu(e, employee);
                 };
-                
+
                 const oralCompleted = employee.inductions?.oral?.completed || false;
                 const orgCompleted = employee.inductions?.org?.completed || false;
-                
-                // OPTIMIERTES LAYOUT gemäß Anforderungen
+
                 card.innerHTML = `
                     <div class="employee-top-row">
                         <div class="employee-name">${employee.name}</div>
@@ -2099,7 +2097,7 @@ Sonstiges:
                         </div>
                     </div>
                 `;
-                
+
                 container.appendChild(card);
             });
         }
@@ -2139,12 +2137,12 @@ Sonstiges:
         function filterEmployees(searchTerm) {
             const cards = document.querySelectorAll('.employee-card');
             const term = searchTerm.toLowerCase().trim();
-            
+
             if (!term) {
                 cards.forEach(card => card.style.display = 'flex');
                 return;
             }
-            
+
             cards.forEach(card => {
                 const text = card.textContent.toLowerCase();
                 card.style.display = text.includes(term) ? 'flex' : 'none';
@@ -2153,11 +2151,11 @@ Sonstiges:
 
         function filterEmployeesByType(type) {
             currentFilter = type;
-            
+
             document.querySelectorAll('.sidebar-filter-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            
+
             if (type === 'all') {
                 document.querySelectorAll('.sidebar-filter-btn')[0].classList.add('active');
             } else if (type === 'oral') {
@@ -2165,16 +2163,16 @@ Sonstiges:
             } else if (type === 'org') {
                 document.querySelectorAll('.sidebar-filter-btn')[2].classList.add('active');
             }
-            
+
             renderEmployeeList();
         }
 
         function selectEmployee(employee) {
             currentEmployee = employee;
-            
+
             document.getElementById('employeeHeader').style.display = 'flex';
             document.getElementById('inductionContent').style.display = 'block';
-            
+
             updateEmployeeHeader();
             loadEmployeeData();
             updateInductionDisplay();
@@ -2183,10 +2181,10 @@ Sonstiges:
 
         function loadEmployeeData() {
             if (!currentEmployee) return;
-            
+
             const oralData = currentEmployee.oralData || {};
             const orgData = currentEmployee.orgData || {};
-            
+
             document.getElementById('oralExaminer').value = oralData.examiner || '';
             document.getElementById('oralDate').value = oralData.date || '';
             document.getElementById('oralTimeStart').value = oralData.timeStart || '16:40';
@@ -2195,7 +2193,7 @@ Sonstiges:
             document.getElementById('oralNotes').value = oralData.notes || '';
             document.getElementById('unitSelect').value = oralData.unit || currentEmployee.unit || '';
             document.getElementById('rankSelect').value = oralData.rank || currentEmployee.rank || '';
-            
+
             document.getElementById('orgExaminer').value = orgData.examiner || '';
             document.getElementById('orgDate').value = orgData.date || '';
             document.getElementById('orgTimeStart').value = orgData.timeStart || '22:10';
@@ -2204,35 +2202,35 @@ Sonstiges:
             document.getElementById('orgNotes').value = orgData.notes || '';
             document.getElementById('unitSelect2').value = orgData.unit || currentEmployee.unit || '';
             document.getElementById('rankSelect2').value = orgData.rank || currentEmployee.rank || '';
-            
+
             const oralCompleted = currentEmployee.inductions?.oral?.completed || false;
             const orgCompleted = currentEmployee.inductions?.org?.completed || false;
-            
+
             document.getElementById('oralInductionToggle').checked = oralCompleted;
             document.getElementById('orgInductionToggle').checked = orgCompleted;
-            
+
             updateInductionUI('oral', oralCompleted);
             updateInductionUI('org', orgCompleted);
-            
+
             checkBothInductionsCompleted();
             updateTemplates();
         }
 
         function updateInductionDisplay() {
             if (!currentEmployee) return;
-            
+
             const oralCompleted = currentEmployee.inductions?.oral?.completed || false;
             const orgCompleted = currentEmployee.inductions?.org?.completed || false;
-            
+
             updateInductionUI('oral', oralCompleted);
             updateInductionUI('org', orgCompleted);
-            
+
             renderEmployeeList();
         }
 
         function updateEmployeeHeader() {
             if (!currentEmployee) return;
-            
+
             document.getElementById('currentEmployeeName').textContent = currentEmployee.name;
             document.getElementById('currentEmployeeDN').textContent = currentEmployee.dn;
             document.getElementById('currentEmployeeUnit').textContent = currentEmployee.unit || 'Keine Unit';
@@ -2242,7 +2240,7 @@ Sonstiges:
         function updateInductionUI(type, completed) {
             const card = document.getElementById(`${type}InductionCard`);
             const status = document.getElementById(`${type}InductionStatus`);
-            
+
             if (completed) {
                 card.classList.add('completed');
                 status.textContent = 'BESTANDEN';
@@ -2254,7 +2252,7 @@ Sonstiges:
 
         function saveFormData() {
             if (!currentEmployee) return;
-            
+
             try {
                 currentEmployee.oralData = {
                     examiner: document.getElementById('oralExaminer').value,
@@ -2266,7 +2264,7 @@ Sonstiges:
                     unit: document.getElementById('unitSelect').value,
                     rank: document.getElementById('rankSelect').value
                 };
-                
+
                 currentEmployee.orgData = {
                     examiner: document.getElementById('orgExaminer').value,
                     date: document.getElementById('orgDate').value,
@@ -2277,20 +2275,20 @@ Sonstiges:
                     unit: document.getElementById('unitSelect2').value,
                     rank: document.getElementById('rankSelect2').value
                 };
-                
+
                 const unitSelectValue = document.getElementById('unitSelect').value;
                 const rankSelectValue = document.getElementById('rankSelect').value;
-                
+
                 if (unitSelectValue && (!currentEmployee.unit || currentEmployee.unit !== unitSelectValue)) {
                     currentEmployee.unit = unitSelectValue;
                 }
-                
+
                 if (rankSelectValue && (!currentEmployee.rank || currentEmployee.rank !== rankSelectValue)) {
                     currentEmployee.rank = rankSelectValue;
                 }
-                
+
                 currentEmployee.lastUpdated = new Date().toISOString();
-                
+
             } catch (error) {
                 console.error('Fehler beim Speichern der Formulardaten:', error);
             }
@@ -2301,33 +2299,33 @@ Sonstiges:
                 showNotification('Bitte wählen Sie zuerst einen Mitarbeiter aus', 'warning');
                 return;
             }
-            
+
             document.getElementById('editEmployeeName').value = currentEmployee.name;
             document.getElementById('editEmployeeDN').value = currentEmployee.dn;
             document.getElementById('editEmployeeUnit').value = currentEmployee.unit || '';
             document.getElementById('editEmployeeRank').value = currentEmployee.rank || '';
-            
+
             openModal('editEmployeeModal');
         }
 
         async function saveEditedEmployee() {
             if (!currentEmployee) return;
-            
+
             const name = document.getElementById('editEmployeeName').value.trim();
             const dn = document.getElementById('editEmployeeDN').value;
-            
+
             if (!name || !dn) {
                 showNotification('Name und Dienstnummer sind Pflichtfelder', 'warning');
                 return;
             }
-            
+
             currentEmployee.name = name;
             currentEmployee.dn = dn;
             currentEmployee.unit = document.getElementById('editEmployeeUnit').value || '';
             currentEmployee.rank = document.getElementById('editEmployeeRank').value || '';
-            
+
             const success = await saveEmployeeToFirebase(currentEmployee);
-            
+
             if (success) {
                 closeModal('editEmployeeModal');
                 updateEmployeeHeader();
@@ -2342,25 +2340,25 @@ Sonstiges:
                 showNotification('Bitte wählen Sie zuerst einen Mitarbeiter aus', 'warning');
                 return;
             }
-            
+
             if (!confirm(`Mitarbeiter "${currentEmployee.name}" (DN ${currentEmployee.dn}) wirklich löschen?\n\nDiese Aktion kann nicht rückgängig gemacht werden!`)) {
                 return;
             }
-            
+
             const success = await deleteEmployeeFromFirebase(currentEmployee.id);
-            
+
             if (success) {
                 const employeeIndex = employees.findIndex(emp => emp.id === currentEmployee.id);
                 if (employeeIndex !== -1) {
                     employees.splice(employeeIndex, 1);
                 }
-                
+
                 closeModal('editEmployeeModal');
-                
+
                 currentEmployee = null;
                 document.getElementById('employeeHeader').style.display = 'none';
                 document.getElementById('inductionContent').style.display = 'none';
-                
+
                 renderEmployeeList();
                 updateStats();
                 showNotification('Mitarbeiter erfolgreich gelöscht', 'success');
@@ -2369,25 +2367,25 @@ Sonstiges:
 
         function toggleInduction(type, completed) {
             if (!currentEmployee) return;
-            
+
             if (!currentEmployee.inductions) {
                 currentEmployee.inductions = {};
             }
-            
+
             currentEmployee.inductions[type] = {
                 completed: completed,
                 date: completed ? new Date().toISOString() : null,
                 updatedBy: 'System'
             };
-            
+
             updateInductionUI(type, completed);
             updateTemplates();
-            
+
             saveEmployeeData(true);
             checkBothInductionsCompleted();
             renderEmployeeList();
             updateStats();
-            
+
             const typeName = type === 'oral' ? 'Mündliche' : 'Organisatorische';
             const status = completed ? 'bestanden' : 'als ausstehend markiert';
             showNotification(`${typeName} Einweisung ${status}`, 'success');
@@ -2395,12 +2393,12 @@ Sonstiges:
 
         function checkBothInductionsCompleted() {
             if (!currentEmployee) return false;
-            
+
             const oralCompleted = currentEmployee.inductions?.oral?.completed || false;
             const orgCompleted = currentEmployee.inductions?.org?.completed || false;
-            
+
             const nowBothCompleted = oralCompleted && orgCompleted;
-            
+
             if (nowBothCompleted && !bothInductionsCompleted) {
                 bothInductionsCompleted = true;
                 const copyOption = getCopyOptionFromStorage();
@@ -2410,7 +2408,7 @@ Sonstiges:
             } else if (!nowBothCompleted) {
                 bothInductionsCompleted = false;
             }
-            
+
             return nowBothCompleted;
         }
 
@@ -2424,13 +2422,13 @@ Sonstiges:
 
         function copyBothTemplatesAutomatically() {
             const copyOption = getCopyOptionFromStorage();
-            
+
             if (copyOption === 'both') {
                 setTimeout(() => {
                     const oralTemplate = generateTemplate('oral');
                     const orgTemplate = generateTemplate('org');
                     const combined = oralTemplate + '\n\n' + orgTemplate;
-                    
+
                     copyToClipboard(combined).then(success => {
                         if (success) showNotification('Beide Einweisungen automatisch kopiert!', 'success');
                     });
@@ -2441,7 +2439,7 @@ Sonstiges:
                     copyToClipboard(oralTemplate).then(success => {
                         if (success) {
                             showNotification('Mündliche Einweisung kopiert', 'success');
-                            
+
                             setTimeout(() => {
                                 const orgTemplate = generateTemplate('org');
                                 copyToClipboard(orgTemplate).then(success2 => {
@@ -2456,59 +2454,59 @@ Sonstiges:
 
         function updateTemplates() {
             if (!currentEmployee) return;
-            
+
             saveFormData();
-            
+
             const oralTemplate = generateTemplate('oral');
             document.getElementById('oralTemplateContent').textContent = oralTemplate;
-            
+
             const orgTemplate = generateTemplate('org');
             document.getElementById('orgTemplateContent').textContent = orgTemplate;
-            
+
             const oralCompleted = currentEmployee.inductions?.oral?.completed || false;
             const orgCompleted = currentEmployee.inductions?.org?.completed || false;
-            
+
             document.getElementById('oralTemplateBadge').textContent = oralCompleted ? 'BESTANDEN' : 'AUSSTEHEND';
             document.getElementById('orgTemplateBadge').textContent = orgCompleted ? 'BESTANDEN' : 'AUSSTEHEND';
-            
+
             document.getElementById('oralTemplateCard').classList.toggle('completed', oralCompleted);
             document.getElementById('orgTemplateCard').classList.toggle('completed', orgCompleted);
         }
 
         function generateTemplate(type) {
             const isOral = type === 'oral';
-            const completed = isOral ? 
-                (currentEmployee.inductions?.oral?.completed || false) : 
+            const completed = isOral ?
+                (currentEmployee.inductions?.oral?.completed || false) :
                 (currentEmployee.inductions?.org?.completed || false);
-            
+
             const data = isOral ? currentEmployee.oralData : currentEmployee.orgData;
-            
+
             const name = currentEmployee.name || '';
             const dn = currentEmployee.dn || '';
-            
-            const unit = isOral ? 
+
+            const unit = isOral ?
                 (document.getElementById('unitSelect').value || currentEmployee.unit || '') :
                 (document.getElementById('unitSelect2').value || currentEmployee.unit || '');
-            
-            const rank = isOral ? 
+
+            const rank = isOral ?
                 (document.getElementById('rankSelect').value || currentEmployee.rank || '') :
                 (document.getElementById('rankSelect2').value || currentEmployee.rank || '');
-            
+
             const date = data?.date ? new Date(data.date).toLocaleDateString('de-DE') : '';
             const timeStart = data?.timeStart || '';
             const timeEnd = data?.timeEnd || '';
             const person = data?.person || '';
             const notes = data?.notes || '';
             const examiner = data?.examiner || '';
-            
+
             const timeSeparator = isOral ? 'bis' : '-';
-            
+
             const unitDiscordId = unitDiscordIds[unit] || '';
             const rankDiscordId = rankDiscordIds[rank] || '';
-            
+
             const unitDisplay = unitDiscordId ? `<@&${unitDiscordId}>` : unit;
             const rankDisplay = rankDiscordId ? `<@&${rankDiscordId}>` : rank;
-            
+
             return `╔══════════════════╗
 /////////////////////////////////////////////////////////////////////////
 ${isOral ? 'Mündliche' : 'Organisatorische'} Einweisung / ${completed ? 'bestanden' : 'ausstehend'}
@@ -2530,10 +2528,10 @@ Sonstiges: ${notes}
 
         async function saveEmployeeData(isAutoSave = false) {
             if (!currentEmployee) return;
-            
+
             try {
                 const success = await saveEmployeeToFirebase(currentEmployee);
-                
+
                 if (success) {
                     if (!isAutoSave) showNotification('Änderungen gespeichert', 'success');
                     renderEmployeeList();
@@ -2552,10 +2550,10 @@ Sonstiges: ${notes}
 
         function showEmployeeContextMenu(e, employee) {
             e.preventDefault();
-            
+
             const existingMenu = document.getElementById('contextMenu');
             if (existingMenu) existingMenu.remove();
-            
+
             const menu = document.createElement('div');
             menu.id = 'contextMenu';
             menu.style.cssText = `
@@ -2569,7 +2567,7 @@ Sonstiges: ${notes}
                 min-width: 160px;
                 box-shadow: var(--shadow-md);
             `;
-            
+
             menu.innerHTML = `
                 <div style="padding: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
                     <div style="font-weight: 700; color: white; margin-bottom: 2px; font-size: 13px;">${employee.name}</div>
@@ -2590,12 +2588,12 @@ Sonstiges: ${notes}
                     </button>
                 </div>
             `;
-            
+
             menu.style.left = `${Math.min(e.pageX, window.innerWidth - 180)}px`;
             menu.style.top = `${Math.min(e.pageY, window.innerHeight - 240)}px`;
-            
+
             document.body.appendChild(menu);
-            
+
             setTimeout(() => {
                 const closeMenu = (event) => {
                     if (!menu.contains(event.target)) {
@@ -2609,22 +2607,22 @@ Sonstiges: ${notes}
 
         async function deleteEmployee(employeeId) {
             if (!confirm('Mitarbeiter wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) return;
-            
+
             const success = await deleteEmployeeFromFirebase(employeeId);
-            
+
             if (success) {
                 employees = employees.filter(emp => emp.id !== employeeId);
-                
+
                 if (currentEmployee?.id === employeeId) {
                     currentEmployee = null;
                     document.getElementById('employeeHeader').style.display = 'none';
                     document.getElementById('inductionContent').style.display = 'none';
                 }
-                
+
                 renderEmployeeList();
                 updateStats();
                 showNotification('Mitarbeiter gelöscht', 'success');
-                
+
                 const contextMenu = document.getElementById('contextMenu');
                 if (contextMenu) contextMenu.remove();
             }
@@ -2633,22 +2631,22 @@ Sonstiges: ${notes}
         async function duplicateEmployee(employeeId) {
             const employee = employees.find(emp => emp.id === employeeId);
             if (!employee) return;
-            
+
             const newEmployee = {
                 ...JSON.parse(JSON.stringify(employee)),
                 id: `EMP-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
                 name: `${employee.name} (Kopie)`,
                 lastUpdated: new Date().toISOString()
             };
-            
+
             const success = await saveEmployeeToFirebase(newEmployee);
-            
+
             if (success) {
                 employees.unshift(newEmployee);
                 renderEmployeeList();
                 updateStats();
                 showNotification('Mitarbeiter dupliziert', 'success');
-                
+
                 const contextMenu = document.getElementById('contextMenu');
                 if (contextMenu) contextMenu.remove();
             }
@@ -2657,11 +2655,11 @@ Sonstiges: ${notes}
         function exportEmployee(employeeId) {
             const employee = employees.find(emp => emp.id === employeeId);
             if (!employee) return;
-            
+
             const data = JSON.stringify(employee, null, 2);
             const blob = new Blob([data], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
-            
+
             const a = document.createElement('a');
             a.href = url;
             a.download = `mitarbeiter-${employee.name}-${employee.dn}.json`;
@@ -2669,9 +2667,9 @@ Sonstiges: ${notes}
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
-            
+
             showNotification('Mitarbeiter exportiert', 'success');
-            
+
             const contextMenu = document.getElementById('contextMenu');
             if (contextMenu) contextMenu.remove();
         }
@@ -2718,18 +2716,18 @@ Sonstiges: ${notes}
         async function copyBothTemplates() {
             const selectedOption = document.querySelector('input[name="copyOption"]:checked').value;
             setCopyOptionToStorage(selectedOption);
-            
+
             if (selectedOption === 'both') {
                 const oralTemplate = generateTemplate('oral');
                 const orgTemplate = generateTemplate('org');
                 const combined = oralTemplate + '\n\n' + orgTemplate;
-                
+
                 const success = await copyToClipboard(combined);
                 showNotification(success ? 'Beide Einweisungen kopiert!' : 'Fehler beim Kopieren', success ? 'success' : 'error');
             } else if (selectedOption === 'separate') {
                 const oralTemplate = generateTemplate('oral');
                 const success1 = await copyToClipboard(oralTemplate);
-                
+
                 if (success1) {
                     showNotification('Mündliche Einweisung kopiert', 'success');
                     setTimeout(async () => {
@@ -2742,7 +2740,7 @@ Sonstiges: ${notes}
                 updateTemplates();
                 showNotification('Vorlagen aktualisiert', 'success');
             }
-            
+
             closeModal('copySettingsModal');
         }
 
@@ -2763,14 +2761,14 @@ Sonstiges: ${notes}
             const dn = document.getElementById('newEmployeeDN').value;
             const unit = document.getElementById('newEmployeeUnit').value;
             const rank = document.getElementById('newEmployeeRank').value;
-            
+
             if (!name || !dn) {
                 showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
                 return;
             }
-            
+
             const employeeId = `EMP-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-            
+
             const newEmployee = {
                 id: employeeId,
                 name: name,
@@ -2800,22 +2798,22 @@ Sonstiges: ${notes}
                     rank: rank || ''
                 }
             };
-            
+
             const success = await saveEmployeeToFirebase(newEmployee);
-            
+
             if (success) {
                 employees.unshift(newEmployee);
-                
+
                 closeModal('newEmployeeModal');
                 renderEmployeeList();
                 selectEmployee(newEmployee);
                 updateStats();
-                
+
                 document.getElementById('newEmployeeName').value = '';
                 document.getElementById('newEmployeeDN').value = '';
                 document.getElementById('newEmployeeUnit').value = '';
                 document.getElementById('newEmployeeRank').value = '';
-                
+
                 showNotification(`Mitarbeiter "${name}" erstellt`, 'success');
             }
         }
@@ -2823,9 +2821,10 @@ Sonstiges: ${notes}
         function showNotification(message, type = 'info') {
             const notification = document.getElementById('notification');
             const messageElement = document.getElementById('notificationMessage');
-            
+
             messageElement.textContent = message;
-            
+
+            // Einfacher Farbwechsel ohne CSS-Variables anzufassen
             if (type === 'success') {
                 notification.style.background = 'var(--secondary)';
             } else if (type === 'error') {
@@ -2835,7 +2834,7 @@ Sonstiges: ${notes}
             } else {
                 notification.style.background = 'var(--primary)';
             }
-            
+
             notification.classList.add('show');
             setTimeout(() => notification.classList.remove('show'), 3000);
         }
@@ -2886,7 +2885,7 @@ Sonstiges: ${notes}
                     }
                 }
             ];
-            
+
             renderEmployeeList();
             updateStats();
         }
