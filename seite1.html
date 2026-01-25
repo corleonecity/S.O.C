@@ -521,8 +521,8 @@
     }
     .template-card.completed .template-content{border-left-color:var(--secondary)}
 
-    /* Beobachtungs Popup */
-    .beobachtung-modal{
+    /* Beobachtungs Akten Modal */
+    .beobachtung-akten-modal{
       display:none;
       position:fixed;
       inset:0;
@@ -534,29 +534,33 @@
       padding:20px;
       animation:fadeIn .2s ease;
     }
-    .beobachtung-modal.active{display:flex}
+    .beobachtung-akten-modal.active{display:flex}
     
-    .beobachtung-content{
+    .beobachtung-akten-content{
       background:rgba(31,41,55,.95);
       border-radius:var(--radius-lg);
       padding:24px;
       width:100%;
-      max-width:600px;
+      max-width:800px;
+      max-height:90vh;
       border:1px solid rgba(255,255,255,.15);
       box-shadow:var(--shadow-lg);
       animation:slideUp .2s ease;
+      display:flex;
+      flex-direction:column;
     }
     
-    .beobachtung-header{
+    .beobachtung-akten-header{
       display:flex;
       justify-content:space-between;
       align-items:center;
       margin-bottom:24px;
       padding-bottom:16px;
       border-bottom:1px solid rgba(255,255,255,.1);
+      flex-shrink:0;
     }
     
-    .beobachtung-title{
+    .beobachtung-akten-title{
       font-size:18px;
       font-weight:900;
       color:#fff;
@@ -565,12 +569,12 @@
       gap:10px;
     }
     
-    .beobachtung-title i{
+    .beobachtung-akten-title i{
       color:var(--primary-light);
       font-size:20px;
     }
     
-    .beobachtung-close{
+    .beobachtung-akten-close{
       background:none;
       border:none;
       color:var(--gray);
@@ -585,15 +589,63 @@
       border-radius:50%;
     }
     
-    .beobachtung-close:hover{
+    .beobachtung-akten-close:hover{
       color:#fff;
       background:rgba(255,255,255,.1);
+    }
+    
+    .beobachtung-akten-body{
+      flex:1;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+    }
+    
+    .beobachtung-tabs{
+      display:flex;
+      gap:2px;
+      margin-bottom:16px;
+      border-bottom:1px solid rgba(255,255,255,.1);
+      flex-shrink:0;
+    }
+    
+    .beobachtung-tab{
+      padding:12px 20px;
+      background:none;
+      border:none;
+      color:var(--gray);
+      font-weight:900;
+      cursor:pointer;
+      transition:var(--transition);
+      font-size:13px;
+      position:relative;
+    }
+    
+    .beobachtung-tab:hover{
+      color:var(--primary-light);
+    }
+    
+    .beobachtung-tab.active{
+      color:var(--primary);
+    }
+    
+    .beobachtung-tab.active::after{
+      content:'';
+      position:absolute;
+      bottom:-1px;
+      left:0;
+      right:0;
+      height:2px;
+      background:var(--primary);
     }
     
     .beobachtung-form{
       display:flex;
       flex-direction:column;
       gap:20px;
+      padding-bottom:20px;
+      border-bottom:1px solid rgba(255,255,255,.1);
+      margin-bottom:20px;
     }
     
     .beobachtung-form-group{
@@ -667,6 +719,159 @@
       overflow-y:auto;
     }
     
+    .beobachtung-akten-liste{
+      flex:1;
+      overflow-y:auto;
+      padding-right:4px;
+    }
+    
+    .beobachtung-akten-liste::-webkit-scrollbar{
+      width:6px;
+    }
+    
+    .beobachtung-akten-liste::-webkit-scrollbar-track{
+      background:rgba(255,255,255,.05);
+      border-radius:3px;
+    }
+    
+    .beobachtung-akten-liste::-webkit-scrollbar-thumb{
+      background:var(--primary);
+      border-radius:3px;
+    }
+    
+    .beobachtung-akte-item{
+      background:rgba(255,255,255,.03);
+      border-radius:var(--radius-md);
+      padding:16px;
+      border:1px solid rgba(255,255,255,.08);
+      margin-bottom:12px;
+      transition:var(--transition);
+    }
+    
+    .beobachtung-akte-item:hover{
+      background:rgba(255,255,255,.05);
+      border-color:var(--primary-light);
+    }
+    
+    .beobachtung-akte-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      margin-bottom:12px;
+    }
+    
+    .beobachtung-akte-name{
+      font-weight:900;
+      color:#fff;
+      font-size:15px;
+    }
+    
+    .beobachtung-akte-dn{
+      font-family:'Inter',monospace;
+      background:rgba(79,70,229,.10);
+      color:var(--primary-light);
+      padding:4px 10px;
+      border-radius:12px;
+      font-size:11px;
+      font-weight:900;
+      border:1px solid rgba(79,70,229,.20);
+    }
+    
+    .beobachtung-akte-date{
+      color:var(--gray);
+      font-size:11px;
+      margin-bottom:8px;
+      display:flex;
+      align-items:center;
+      gap:4px;
+    }
+    
+    .beobachtung-akte-grund{
+      color:var(--gray-light);
+      font-size:13px;
+      line-height:1.5;
+      margin-bottom:12px;
+      padding:12px;
+      background:rgba(0,0,0,.2);
+      border-radius:var(--radius-sm);
+      border-left:2px solid var(--primary);
+    }
+    
+    .beobachtung-akte-template{
+      font-family:'Consolas','Monaco',monospace;
+      white-space:pre-wrap;
+      word-wrap:break-word;
+      font-size:11px;
+      line-height:1.4;
+      color:var(--gray-light);
+      background:rgba(0,0,0,.3);
+      padding:12px;
+      border-radius:var(--radius-sm);
+      border:1px solid rgba(255,255,255,.08);
+      max-height:150px;
+      overflow-y:auto;
+      margin-bottom:12px;
+    }
+    
+    .beobachtung-akte-actions{
+      display:flex;
+      gap:8px;
+      justify-content:flex-end;
+    }
+    
+    .beobachtung-akte-btn{
+      padding:6px 12px;
+      border:none;
+      border-radius:var(--radius-sm);
+      font-weight:900;
+      cursor:pointer;
+      transition:var(--transition);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      font-size:11px;
+    }
+    
+    .beobachtung-akte-btn-copy{
+      background:rgba(79,70,229,.15);
+      color:var(--primary-light);
+      border:1px solid rgba(79,70,229,.25);
+    }
+    
+    .beobachtung-akte-btn-copy:hover{
+      background:rgba(79,70,229,.25);
+    }
+    
+    .beobachtung-akte-btn-delete{
+      background:rgba(239,68,68,.15);
+      color:#fca5a5;
+      border:1px solid rgba(239,68,68,.25);
+    }
+    
+    .beobachtung-akte-btn-delete:hover{
+      background:rgba(239,68,68,.25);
+    }
+    
+    .empty-beobachtungen{
+      text-align:center;
+      padding:40px 20px;
+      color:var(--gray);
+    }
+    
+    .empty-beobachtungen-icon{
+      font-size:36px;
+      margin-bottom:12px;
+      opacity:.3;
+    }
+    
+    .empty-beobachtungen-title{
+      font-size:14px;
+      font-weight:900;
+      margin-bottom:6px;
+      color:var(--gray-light);
+    }
+    
     .beobachtung-actions{
       display:flex;
       justify-content:space-between;
@@ -675,6 +880,7 @@
       margin-top:10px;
       padding-top:20px;
       border-top:1px solid rgba(255,255,255,.1);
+      flex-shrink:0;
     }
     
     .beobachtung-btn{
@@ -833,10 +1039,12 @@
       .employee-tags{flex-direction:column;gap:6px}
       .induction-content{padding:16px}
       .oral-form-grid,.org-form-grid{grid-template-columns:1fr}
-      .beobachtung-modal{padding:12px}
-      .beobachtung-content{padding:20px}
+      .beobachtung-akten-modal{padding:12px}
+      .beobachtung-akten-content{padding:20px}
       .beobachtung-actions{flex-direction:column;align-items:stretch}
       .beobachtung-floating-btn{bottom:16px;right:16px}
+      .beobachtung-tabs{flex-direction:column}
+      .beobachtung-tab{text-align:left;padding:10px 16px}
     }
     @media (max-width:480px){
       .app-container{padding:12px}
@@ -846,7 +1054,8 @@
       .sidebar{padding:14px}
       .modal{padding:16px;margin:12px}
       .notification{left:12px;right:12px;bottom:12px;min-width:auto}
-      .beobachtung-content{padding:16px}
+      .beobachtung-akten-content{padding:16px}
+      .beobachtung-akte-actions{flex-direction:column}
     }
   </style>
 </head>
@@ -855,43 +1064,52 @@
   <div class="bg-effects"><div class="bg-gradient"></div></div>
 
   <!-- Floating Button für Beobachtung -->
-  <button class="beobachtung-floating-btn" onclick="openBeobachtungModal()">
+  <button class="beobachtung-floating-btn" onclick="openBeobachtungAktenModal()">
     <i class="fas fa-eye"></i>
   </button>
 
-  <!-- Beobachtungs Modal -->
-  <div class="beobachtung-modal" id="beobachtungModal" onclick="if(event.target===this)closeBeobachtungModal()">
-    <div class="beobachtung-content">
-      <div class="beobachtung-header">
-        <div class="beobachtung-title">
-          <i class="fas fa-eye"></i> Beobachtung erstellen
+  <!-- Beobachtungs Akten Modal -->
+  <div class="beobachtung-akten-modal" id="beobachtungAktenModal" onclick="if(event.target===this)closeBeobachtungAktenModal()">
+    <div class="beobachtung-akten-content">
+      <div class="beobachtung-akten-header">
+        <div class="beobachtung-akten-title">
+          <i class="fas fa-folder-open"></i> Beobachtungs-Akten
         </div>
-        <button class="beobachtung-close" onclick="closeBeobachtungModal()">
+        <button class="beobachtung-akten-close" onclick="closeBeobachtungAktenModal()">
           <i class="fas fa-times"></i>
         </button>
       </div>
       
-      <div class="beobachtung-form">
-        <div class="beobachtung-form-group">
-          <label class="beobachtung-label">Name</label>
-          <input type="text" class="beobachtung-input" id="beobachtungName" placeholder="Name des Mitarbeiters">
+      <div class="beobachtung-akten-body">
+        <div class="beobachtung-tabs">
+          <button class="beobachtung-tab active" onclick="switchBeobachtungTab('new')">Neue Beobachtung</button>
+          <button class="beobachtung-tab" onclick="switchBeobachtungTab('list')">Alle Beobachtungen</button>
+          <button class="beobachtung-tab" onclick="switchBeobachtungTab('person')">Nach Personen</button>
         </div>
         
-        <div class="beobachtung-form-group">
-          <label class="beobachtung-label">Dienstnummer (DN)</label>
-          <input type="number" class="beobachtung-input" id="beobachtungDN" placeholder="z.B. 43">
-        </div>
-        
-        <div class="beobachtung-form-group">
-          <label class="beobachtung-label">Grund der Beobachtung</label>
-          <textarea class="beobachtung-input beobachtung-textarea" id="beobachtungGrund" placeholder="Beschreiben Sie den Grund der Beobachtung..."></textarea>
-        </div>
-        
-        <div class="beobachtung-preview">
-          <div class="beobachtung-preview-title">
-            <i class="fas fa-file-alt"></i> Vorschau
-          </div>
-          <div class="beobachtung-preview-content" id="beobachtungPreview">
+        <!-- Neue Beobachtung Tab -->
+        <div class="beobachtung-tab-content" id="beobachtungNewTab">
+          <div class="beobachtung-form">
+            <div class="beobachtung-form-group">
+              <label class="beobachtung-label">Name</label>
+              <input type="text" class="beobachtung-input" id="beobachtungName" placeholder="Name des Mitarbeiters">
+            </div>
+            
+            <div class="beobachtung-form-group">
+              <label class="beobachtung-label">Dienstnummer (DN)</label>
+              <input type="number" class="beobachtung-input" id="beobachtungDN" placeholder="z.B. 43">
+            </div>
+            
+            <div class="beobachtung-form-group">
+              <label class="beobachtung-label">Grund der Beobachtung</label>
+              <textarea class="beobachtung-input beobachtung-textarea" id="beobachtungGrund" placeholder="Beschreiben Sie den Grund der Beobachtung..."></textarea>
+            </div>
+            
+            <div class="beobachtung-preview">
+              <div class="beobachtung-preview-title">
+                <i class="fas fa-file-alt"></i> Vorschau
+              </div>
+              <div class="beobachtung-preview-content" id="beobachtungPreview">
 ╔══════════════════╗
 /////////////////////////////////////////////////////////////////////////
 Beobachtung
@@ -901,17 +1119,41 @@ Grund:
 /////////////////////////////////////////////////////////////////////////
 <@&1097625910242447422>
 ╚══════════════════╝
+              </div>
+            </div>
+          </div>
+          
+          <div class="beobachtung-actions">
+            <button class="beobachtung-btn beobachtung-btn-copy" onclick="copyBeobachtungTemplate()">
+              <i class="fas fa-copy"></i> In Zwischenablage kopieren
+            </button>
+            <button class="beobachtung-btn beobachtung-btn-save" onclick="saveBeobachtung()">
+              <i class="fas fa-save"></i> Beobachtung speichern
+            </button>
           </div>
         </div>
-      </div>
-      
-      <div class="beobachtung-actions">
-        <button class="beobachtung-btn beobachtung-btn-copy" onclick="copyBeobachtungTemplate()">
-          <i class="fas fa-copy"></i> In Zwischenablage kopieren
-        </button>
-        <button class="beobachtung-btn beobachtung-btn-save" onclick="saveBeobachtung()">
-          <i class="fas fa-save"></i> Speichern
-        </button>
+        
+        <!-- Alle Beobachtungen Tab -->
+        <div class="beobachtung-tab-content" id="beobachtungListTab" style="display:none;">
+          <div class="beobachtung-akten-liste" id="beobachtungListe">
+            <div class="empty-beobachtungen">
+              <div class="empty-beobachtungen-icon"><i class="fas fa-folder-open"></i></div>
+              <div class="empty-beobachtungen-title">Keine Beobachtungen</div>
+              <div class="empty-description">Erstellen Sie Ihre erste Beobachtung</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Nach Personen Tab -->
+        <div class="beobachtung-tab-content" id="beobachtungPersonTab" style="display:none;">
+          <div class="beobachtung-akten-liste" id="beobachtungPersonListe">
+            <div class="empty-beobachtungen">
+              <div class="empty-beobachtungen-icon"><i class="fas fa-users"></i></div>
+              <div class="empty-beobachtungen-title">Keine Personen mit Beobachtungen</div>
+              <div class="empty-description">Erstellen Sie Beobachtungen für Mitarbeiter</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -935,6 +1177,10 @@ Grund:
           <div class="stat-card">
             <div class="stat-value" id="totalEmployees">0</div>
             <div class="stat-label">Mitarbeiter</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="totalBeobachtungen">0</div>
+            <div class="stat-label">Beobachtungen</div>
           </div>
         </div>
       </div>
@@ -988,6 +1234,7 @@ Grund:
         </div>
         <div class="action-buttons">
           <button class="btn btn-secondary" onclick="openEditEmployeeModal()"><i class="fas fa-edit"></i> Bearbeiten</button>
+          <button class="btn btn-secondary" onclick="openBeobachtungAktenModalForCurrentEmployee()"><i class="fas fa-eye"></i> Beobachtungen</button>
         </div>
       </div>
 
@@ -1362,6 +1609,7 @@ Grund:
     let bothInductionsCompleted = false;
     let currentFilter = 'all';
     let beobachtungen = [];
+    let currentBeobachtungTab = 'new';
 
     document.addEventListener('DOMContentLoaded', function () {
       initializeApp();
@@ -1396,7 +1644,7 @@ Grund:
         if (e.ctrlKey && e.key === 'n') { e.preventDefault(); openNewEmployeeModal(); }
         if (e.ctrlKey && e.key === 'f') { e.preventDefault(); document.getElementById('searchEmployees').focus(); }
         if (e.ctrlKey && e.key === 'e' && currentEmployee) { e.preventDefault(); openEditEmployeeModal(); }
-        if (e.ctrlKey && e.key === 'b') { e.preventDefault(); openBeobachtungModal(); }
+        if (e.ctrlKey && e.key === 'b') { e.preventDefault(); openBeobachtungAktenModal(); }
       });
 
       window.addEventListener('resize', adjustSidebarHeight);
@@ -1437,17 +1685,48 @@ Grund:
     }
 
     // Beobachtung Functions
-    function openBeobachtungModal() {
-      if (currentEmployee) {
-        document.getElementById('beobachtungName').value = currentEmployee.name || '';
-        document.getElementById('beobachtungDN').value = currentEmployee.dn || '';
-      }
+    function openBeobachtungAktenModal() {
+      openModal('beobachtungAktenModal');
       updateBeobachtungPreview();
-      openModal('beobachtungModal');
+    }
+    
+    function openBeobachtungAktenModalForCurrentEmployee() {
+      if (!currentEmployee) {
+        showNotification('Bitte wählen Sie zuerst einen Mitarbeiter aus', 'warning');
+        return;
+      }
+      
+      openBeobachtungAktenModal();
+      document.getElementById('beobachtungName').value = currentEmployee.name || '';
+      document.getElementById('beobachtungDN').value = currentEmployee.dn || '';
+      updateBeobachtungPreview();
     }
 
-    function closeBeobachtungModal() {
-      closeModal('beobachtungModal');
+    function closeBeobachtungAktenModal() {
+      closeModal('beobachtungAktenModal');
+    }
+
+    function switchBeobachtungTab(tabName) {
+      currentBeobachtungTab = tabName;
+      
+      // Update tab buttons
+      document.querySelectorAll('.beobachtung-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.beobachtung-tab')[tabName === 'new' ? 0 : tabName === 'list' ? 1 : 2].classList.add('active');
+      
+      // Update tab content
+      document.querySelectorAll('.beobachtung-tab-content').forEach(content => {
+        content.style.display = 'none';
+      });
+      document.getElementById(`beobachtung${tabName.charAt(0).toUpperCase() + tabName.slice(1)}Tab`).style.display = 'block';
+      
+      // Load data for the tab
+      if (tabName === 'list') {
+        renderBeobachtungListe();
+      } else if (tabName === 'person') {
+        renderBeobachtungPersonListe();
+      }
     }
 
     function updateBeobachtungPreview() {
@@ -1484,12 +1763,18 @@ Grund: ${grund || ''}
         return;
       }
 
+      if (!grund) {
+        showNotification('Bitte geben Sie einen Grund für die Beobachtung an', 'warning');
+        return;
+      }
+
       const beobachtung = {
         id: `BEO-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
         name,
         dn,
         grund,
         date: new Date().toISOString(),
+        dateFormatted: new Date().toLocaleDateString('de-DE'),
         template: document.getElementById('beobachtungPreview').textContent
       };
 
@@ -1497,7 +1782,6 @@ Grund: ${grund || ''}
         await db.collection('hrBeobachtungen').doc(beobachtung.id).set(beobachtung);
         beobachtungen.unshift(beobachtung);
         
-        closeBeobachtungModal();
         showNotification('Beobachtung gespeichert', 'success');
         
         // Felder leeren
@@ -1505,6 +1789,14 @@ Grund: ${grund || ''}
         document.getElementById('beobachtungDN').value = '';
         document.getElementById('beobachtungGrund').value = '';
         updateBeobachtungPreview();
+        
+        // Update stats and lists
+        updateStats();
+        renderBeobachtungListe();
+        renderBeobachtungPersonListe();
+        
+        // Switch to list tab to show the new entry
+        switchBeobachtungTab('list');
       } catch (error) {
         console.error('Fehler beim Speichern der Beobachtung:', error);
         showNotification('Fehler beim Speichern: ' + error.message, 'error');
@@ -1513,14 +1805,226 @@ Grund: ${grund || ''}
 
     async function loadBeobachtungen() {
       try {
-        const snapshot = await db.collection('hrBeobachtungen').orderBy('date', 'desc').limit(50).get();
+        const snapshot = await db.collection('hrBeobachtungen').orderBy('date', 'desc').limit(100).get();
         beobachtungen = [];
         snapshot.forEach(doc => {
-          beobachtungen.push({ id: doc.id, ...doc.data() });
+          const data = doc.data();
+          beobachtungen.push({ 
+            id: doc.id, 
+            ...data,
+            dateFormatted: data.dateFormatted || new Date(data.date).toLocaleDateString('de-DE')
+          });
         });
+        updateStats();
+        renderBeobachtungListe();
+        renderBeobachtungPersonListe();
       } catch (error) {
         console.error('Fehler beim Laden der Beobachtungen:', error);
       }
+    }
+
+    function renderBeobachtungListe() {
+      const container = document.getElementById('beobachtungListe');
+      
+      if (beobachtungen.length === 0) {
+        container.innerHTML = `
+          <div class="empty-beobachtungen">
+            <div class="empty-beobachtungen-icon"><i class="fas fa-folder-open"></i></div>
+            <div class="empty-beobachtungen-title">Keine Beobachtungen</div>
+            <div class="empty-description">Erstellen Sie Ihre erste Beobachtung</div>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      beobachtungen.forEach(beobachtung => {
+        html += `
+          <div class="beobachtung-akte-item">
+            <div class="beobachtung-akte-header">
+              <div class="beobachtung-akte-name">${escapeHtml(beobachtung.name)}</div>
+              <div class="beobachtung-akte-dn">DN ${escapeHtml(beobachtung.dn)}</div>
+            </div>
+            <div class="beobachtung-akte-date">
+              <i class="fas fa-calendar"></i> ${beobachtung.dateFormatted}
+            </div>
+            <div class="beobachtung-akte-grund">
+              ${escapeHtml(beobachtung.grund)}
+            </div>
+            <div class="beobachtung-akte-template">
+              ${escapeHtml(beobachtung.template)}
+            </div>
+            <div class="beobachtung-akte-actions">
+              <button class="beobachtung-akte-btn beobachtung-akte-btn-copy" onclick="copyBeobachtungAkte('${beobachtung.id}')">
+                <i class="fas fa-copy"></i> Kopieren
+              </button>
+              <button class="beobachtung-akte-btn beobachtung-akte-btn-delete" onclick="deleteBeobachtung('${beobachtung.id}')">
+                <i class="fas fa-trash"></i> Löschen
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function renderBeobachtungPersonListe() {
+      const container = document.getElementById('beobachtungPersonListe');
+      
+      // Group by person
+      const personMap = {};
+      beobachtungen.forEach(beobachtung => {
+        const key = `${beobachtung.name}|${beobachtung.dn}`;
+        if (!personMap[key]) {
+          personMap[key] = {
+            name: beobachtung.name,
+            dn: beobachtung.dn,
+            beobachtungen: []
+          };
+        }
+        personMap[key].beobachtungen.push(beobachtung);
+      });
+
+      const persons = Object.values(personMap);
+      
+      if (persons.length === 0) {
+        container.innerHTML = `
+          <div class="empty-beobachtungen">
+            <div class="empty-beobachtungen-icon"><i class="fas fa-users"></i></div>
+            <div class="empty-beobachtungen-title">Keine Personen mit Beobachtungen</div>
+            <div class="empty-description">Erstellen Sie Beobachtungen für Mitarbeiter</div>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      persons.forEach(person => {
+        html += `
+          <div class="beobachtung-akte-item">
+            <div class="beobachtung-akte-header">
+              <div class="beobachtung-akte-name">${escapeHtml(person.name)}</div>
+              <div class="beobachtung-akte-dn">DN ${escapeHtml(person.dn)}</div>
+            </div>
+            <div class="beobachtung-akte-date">
+              <i class="fas fa-list"></i> ${person.beobachtungen.length} Beobachtung${person.beobachtungen.length !== 1 ? 'en' : ''}
+            </div>
+        `;
+
+        // Show latest 2 beobachtungen for this person
+        person.beobachtungen.slice(0, 2).forEach(beobachtung => {
+          html += `
+            <div class="beobachtung-akte-grund" style="margin-bottom: 8px; padding: 8px; background: rgba(0,0,0,.15);">
+              <div style="font-size: 11px; color: var(--gray); margin-bottom: 4px;">
+                <i class="fas fa-calendar"></i> ${beobachtung.dateFormatted}
+              </div>
+              ${escapeHtml(beobachtung.grund.length > 100 ? beobachtung.grund.substring(0, 100) + '...' : beobachtung.grund)}
+            </div>
+          `;
+        });
+
+        if (person.beobachtungen.length > 2) {
+          html += `
+            <div class="beobachtung-akte-grund" style="text-align: center; color: var(--primary-light); font-style: italic;">
+              + ${person.beobachtungen.length - 2} weitere Beobachtungen
+            </div>
+          `;
+        }
+
+        html += `
+            <div class="beobachtung-akte-actions">
+              <button class="beobachtung-akte-btn beobachtung-akte-btn-copy" onclick="showAllBeobachtungenForPerson('${escapeHtml(person.name)}', '${escapeHtml(person.dn)}')">
+                <i class="fas fa-eye"></i> Alle anzeigen
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    async function copyBeobachtungAkte(beobachtungId) {
+      const beobachtung = beobachtungen.find(b => b.id === beobachtungId);
+      if (!beobachtung) return;
+
+      const success = await copyToClipboard(beobachtung.template);
+      showNotification(success ? 'Beobachtung kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
+    }
+
+    async function deleteBeobachtung(beobachtungId) {
+      if (!confirm('Beobachtung wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) return;
+
+      try {
+        await db.collection('hrBeobachtungen').doc(beobachtungId).delete();
+        beobachtungen = beobachtungen.filter(b => b.id !== beobachtungId);
+        
+        updateStats();
+        renderBeobachtungListe();
+        renderBeobachtungPersonListe();
+        showNotification('Beobachtung gelöscht', 'success');
+      } catch (error) {
+        console.error('Fehler beim Löschen der Beobachtung:', error);
+        showNotification('Fehler beim Löschen: ' + error.message, 'error');
+      }
+    }
+
+    function showAllBeobachtungenForPerson(name, dn) {
+      // Filter beobachtungen for this person
+      const personBeobachtungen = beobachtungen.filter(b => b.name === name && b.dn == dn);
+      
+      let html = '';
+      personBeobachtungen.forEach(beobachtung => {
+        html += `
+          <div class="beobachtung-akte-item">
+            <div class="beobachtung-akte-header">
+              <div class="beobachtung-akte-name">${escapeHtml(beobachtung.name)}</div>
+              <div class="beobachtung-akte-dn">DN ${escapeHtml(beobachtung.dn)}</div>
+            </div>
+            <div class="beobachtung-akte-date">
+              <i class="fas fa-calendar"></i> ${beobachtung.dateFormatted}
+            </div>
+            <div class="beobachtung-akte-grund">
+              ${escapeHtml(beobachtung.grund)}
+            </div>
+            <div class="beobachtung-akte-template">
+              ${escapeHtml(beobachtung.template)}
+            </div>
+            <div class="beobachtung-akte-actions">
+              <button class="beobachtung-akte-btn beobachtung-akte-btn-copy" onclick="copyBeobachtungAkte('${beobachtung.id}')">
+                <i class="fas fa-copy"></i> Kopieren
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      // Show in a modal
+      const modalHtml = `
+        <div class="beobachtung-akten-modal active" onclick="if(event.target===this)closeModal('personBeobachtungenModal')">
+          <div class="beobachtung-akten-content">
+            <div class="beobachtung-akten-header">
+              <div class="beobachtung-akten-title">
+                <i class="fas fa-user"></i> Beobachtungen für ${escapeHtml(name)} (DN ${escapeHtml(dn)})
+              </div>
+              <button class="beobachtung-akten-close" onclick="closeModal('personBeobachtungenModal')">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="beobachtung-akten-body">
+              <div class="beobachtung-akten-liste">
+                ${html || '<div class="empty-beobachtungen"><div class="empty-beobachtungen-icon"><i class="fas fa-folder-open"></i></div><div class="empty-beobachtungen-title">Keine Beobachtungen</div></div>'}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      const modalContainer = document.createElement('div');
+      modalContainer.id = 'personBeobachtungenModal';
+      modalContainer.innerHTML = modalHtml;
+      document.body.appendChild(modalContainer);
     }
 
     // Firebase Functions
@@ -2007,6 +2511,7 @@ Sonstiges: ${notes}
 
     function updateStats() {
       document.getElementById('totalEmployees').textContent = employees.length;
+      document.getElementById('totalBeobachtungen').textContent = beobachtungen.length;
     }
 
     function showEmployeeContextMenu(e, employee) {
@@ -2038,6 +2543,10 @@ Sonstiges: ${notes}
           <button onclick="selectEmployee(employees.find(x => x.id === '${employee.id}')); openEditEmployeeModal(); document.getElementById('contextMenu')?.remove();"
             style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--primary-light);font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:2px;">
             <i class="fas fa-edit"></i> Bearbeiten
+          </button>
+          <button onclick="selectEmployee(employees.find(x => x.id === '${employee.id}')); openBeobachtungAktenModalForCurrentEmployee(); document.getElementById('contextMenu')?.remove();"
+            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--secondary);font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:2px;">
+            <i class="fas fa-eye"></i> Beobachtungen
           </button>
           <button onclick="deleteEmployee('${employee.id}')"
             style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--danger);font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:2px;">
@@ -2167,7 +2676,13 @@ Sonstiges: ${notes}
     }
 
     function closeModal(modalId) {
-      document.getElementById(modalId).classList.remove('active');
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('active');
+        if (modalId === 'personBeobachtungenModal') {
+          setTimeout(() => modal.remove(), 300);
+        }
+      }
     }
 
     function openNewEmployeeModal() {
