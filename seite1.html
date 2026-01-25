@@ -979,7 +979,7 @@
             border-left-color: var(--secondary);
         }
 
-                /* Modals - Normalgröße */
+        /* Modals - Normalgröße */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -1942,8 +1942,83 @@ Sonstiges:
             </div>
         </div>
     </div>
+    
+    <!-- Log Modal -->
+    <div class="modal-overlay" id="logModal" onclick="if(event.target===this)closeModal('logModal')">
+        <div class="modal" style="max-width: 800px; max-height: 80vh;">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-clipboard-list"></i>
+                    System Logs
+                </div>
+                <button class="modal-close" onclick="closeModal('logModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <div class="stat-card" style="min-width: 120px;">
+                    <div class="stat-value" id="logTotal">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+                <div class="stat-card" style="min-width: 120px; background: rgba(59, 130, 246, 0.12);">
+                    <div class="stat-value" id="logInfo">0</div>
+                    <div class="stat-label">Info</div>
+                </div>
+                <div class="stat-card" style="min-width: 120px; background: rgba(16, 185, 129, 0.12);">
+                    <div class="stat-value" id="logSuccess">0</div>
+                    <div class="stat-label">Erfolg</div>
+                </div>
+                <div class="stat-card" style="min-width: 120px; background: rgba(245, 158, 11, 0.12);">
+                    <div class="stat-value" id="logWarning">0</div>
+                    <div class="stat-label">Warnungen</div>
+                </div>
+                <div class="stat-card" style="min-width: 120px; background: rgba(239, 68, 68, 0.12);">
+                    <div class="stat-value" id="logError">0</div>
+                    <div class="stat-label">Fehler</div>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-secondary" onclick="refreshLogs()" style="font-size: 12px;">
+                        <i class="fas fa-sync-alt"></i> Aktualisieren
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportLogs()" style="font-size: 12px;">
+                        <i class="fas fa-download"></i> Exportieren
+                    </button>
+                </div>
+                <select class="form-select" id="logFilter" style="width: 150px; font-size: 12px;" onchange="filterLogs()">
+                    <option value="all">Alle anzeigen</option>
+                    <option value="info">Nur Info</option>
+                    <option value="success">Nur Erfolg</option>
+                    <option value="warning">Nur Warnungen</option>
+                    <option value="error">Nur Fehler</option>
+                    <option value="action">Nur Aktionen</option>
+                </select>
+            </div>
+            
+            <div id="logsContainer" style="height: 400px; overflow-y: auto; background: rgba(0, 0, 0, 0.2); border-radius: 8px; padding: 16px;">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <div style="color: var(--gray); font-weight: 700; font-size: 14px;">Lade Logs...</div>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                <div style="font-size: 12px; color: var(--gray);">
+                    Letzte Aktualisierung: <span id="lastUpdateTime">--</span>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-secondary" onclick="closeModal('logModal')" style="font-size: 12px;">
+                        Schließen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <script>
+    <script>
         // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBTnsLNw68UuOd5Xa2ymMffWk4SYGDQjso",
@@ -1990,6 +2065,142 @@ Sonstiges:
             "General of Army": "1097625891632316436"
         };
 
+        // Logging-System
+        class Logger {
+            constructor() {
+                this.logs = [];
+                this.maxLogs = 1000;
+                this.logLevels = {
+                    INFO: 'info',
+                    WARNING: 'warning',
+                    ERROR: 'error',
+                    SUCCESS: 'success',
+                    ACTION: 'action'
+                };
+            }
+
+            async log(level, action, details = {}, employee = null) {
+                const timestamp = new Date().toISOString();
+                const logEntry = {
+                    id: `log-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                    timestamp,
+                    level,
+                    action,
+                    details,
+                    employee: employee ? {
+                        id: employee.id,
+                        name: employee.name,
+                        dn: employee.dn
+                    } : null,
+                    userAgent: navigator.userAgent
+                };
+
+                this.logs.unshift(logEntry);
+
+                if (this.logs.length > this.maxLogs) {
+                    this.logs = this.logs.slice(0, this.maxLogs);
+                }
+
+                await this.saveLogToFirebase(logEntry);
+                this.consoleLog(logEntry);
+
+                return logEntry;
+            }
+
+            async saveLogToFirebase(logEntry) {
+                try {
+                    await db.collection('hrLogs').doc(logEntry.id).set(logEntry);
+                    return true;
+                } catch (error) {
+                    console.error('Fehler beim Speichern des Logs:', error);
+                    return false;
+                }
+            }
+
+            consoleLog(logEntry) {
+                const colors = {
+                    info: 'color: blue',
+                    warning: 'color: orange',
+                    error: 'color: red',
+                    success: 'color: green',
+                    action: 'color: purple'
+                };
+
+                console.log(
+                    `%c[${logEntry.timestamp}] %c${logEntry.level.toUpperCase()}%c: ${logEntry.action}`,
+                    'color: gray',
+                    colors[logEntry.level] || 'color: black',
+                    'color: black'
+                );
+
+                if (Object.keys(logEntry.details).length > 0) {
+                    console.log('Details:', logEntry.details);
+                }
+            }
+
+            async getRecentLogs(limit = 50) {
+                try {
+                    const snapshot = await db.collection('hrLogs')
+                        .orderBy('timestamp', 'desc')
+                        .limit(limit)
+                        .get();
+                    
+                    return snapshot.docs.map(doc => doc.data());
+                } catch (error) {
+                    console.error('Fehler beim Laden der Logs:', error);
+                    return [];
+                }
+            }
+
+            async clearOldLogs(days = 30) {
+                try {
+                    const cutoffDate = new Date();
+                    cutoffDate.setDate(cutoffDate.getDate() - days);
+                    
+                    const snapshot = await db.collection('hrLogs')
+                        .where('timestamp', '<', cutoffDate.toISOString())
+                        .get();
+                    
+                    const batch = db.batch();
+                    snapshot.docs.forEach(doc => {
+                        batch.delete(doc.ref);
+                    });
+                    
+                    await batch.commit();
+                    return true;
+                } catch (error) {
+                    console.error('Fehler beim Löschen alter Logs:', error);
+                    return false;
+                }
+            }
+
+            getLogStats() {
+                const stats = {
+                    total: this.logs.length,
+                    byLevel: {},
+                    byAction: {},
+                    recent24h: 0
+                };
+
+                const now = new Date();
+                const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+                this.logs.forEach(log => {
+                    stats.byLevel[log.level] = (stats.byLevel[log.level] || 0) + 1;
+                    stats.byAction[log.action] = (stats.byAction[log.action] || 0) + 1;
+                    
+                    if (new Date(log.timestamp) > yesterday) {
+                        stats.recent24h++;
+                    }
+                });
+
+                return stats;
+            }
+        }
+
+        // Globaler Logger
+        const logger = new Logger();
+
         // App State
         let currentEmployee = null;
         let employees = [];
@@ -2004,6 +2215,10 @@ Sonstiges:
             setupEventListeners();
             updateStats();
             adjustSidebarHeight();
+            
+            // Füge Log-Button zum Header hinzu
+            addLogButtonToHeader();
+            addLogButtonToSidebar();
         });
 
         function initializeApp() {
@@ -2018,6 +2233,37 @@ Sonstiges:
             
             loadEmployees();
             setupFormChangeListeners();
+            
+            // Logge App-Start
+            logger.log(logger.logLevels.INFO, 'HR Einweisungsmanagement gestartet', {
+                version: '1.0.0',
+                timestamp: new Date().toISOString()
+            });
+        }
+
+        function addLogButtonToHeader() {
+            const headerStats = document.querySelector('.header-stats');
+            const logStatCard = document.createElement('div');
+            logStatCard.className = 'stat-card';
+            logStatCard.style.cursor = 'pointer';
+            logStatCard.onclick = openLogModal;
+            logStatCard.innerHTML = `
+                <div class="stat-value" id="recentLogs">0</div>
+                <div class="stat-label">Heutige Logs</div>
+            `;
+            headerStats.appendChild(logStatCard);
+        }
+
+        function addLogButtonToSidebar() {
+            const quickActions = document.querySelector('.quick-actions');
+            const logActionBtn = document.createElement('button');
+            logActionBtn.className = 'quick-action-btn';
+            logActionBtn.innerHTML = `
+                <i class="fas fa-clipboard-list"></i>
+                System Logs
+            `;
+            logActionBtn.onclick = openLogModal;
+            quickActions.appendChild(logActionBtn);
         }
 
         function setupEventListeners() {
@@ -2037,6 +2283,10 @@ Sonstiges:
                 if (e.ctrlKey && e.key === 'e' && currentEmployee) {
                     e.preventDefault();
                     openEditEmployeeModal();
+                }
+                if (e.ctrlKey && e.key === 'l') {
+                    e.preventDefault();
+                    openLogModal();
                 }
             });
             
@@ -2075,6 +2325,9 @@ Sonstiges:
         async function loadEmployees() {
             try {
                 showLoading();
+                
+                logger.log(logger.logLevels.INFO, 'Lade Mitarbeiterliste', { source: 'firebase' });
+                
                 const snapshot = await db.collection('hrEmployees').orderBy('lastUpdated', 'desc').get();
                 employees = [];
                 
@@ -2089,11 +2342,22 @@ Sonstiges:
                 updateStats();
                 hideLoading();
                 
+                logger.log(logger.logLevels.SUCCESS, 'Mitarbeiterliste geladen', { 
+                    count: employees.length,
+                    source: 'firebase'
+                });
+                
                 setTimeout(updateInductionDisplay, 100);
                 
             } catch (error) {
                 console.error('Fehler beim Laden der Mitarbeiter:', error);
                 showNotification('Fehler beim Laden der Daten', 'error');
+                
+                logger.log(logger.logLevels.ERROR, 'Fehler beim Laden der Mitarbeiter', {
+                    error: error.message,
+                    stack: error.stack
+                });
+                
                 loadMockEmployees();
                 hideLoading();
             }
@@ -2113,10 +2377,25 @@ Sonstiges:
                 };
                 
                 await db.collection('hrEmployees').doc(employee.id).set(dataToSave, { merge: true });
+                
+                logger.log(logger.logLevels.ACTION, 'Mitarbeiter gespeichert', {
+                    employeeId: employee.id,
+                    name: employee.name,
+                    dn: employee.dn,
+                    changes: Object.keys(dataToSave)
+                }, employee);
+                
                 return true;
             } catch (error) {
                 console.error('Fehler beim Speichern:', error);
                 showNotification('Fehler beim Speichern: ' + error.message, 'error');
+                
+                logger.log(logger.logLevels.ERROR, 'Fehler beim Speichern des Mitarbeiters', {
+                    employeeId: employee.id,
+                    error: error.message,
+                    stack: error.stack
+                }, employee);
+                
                 return false;
             }
         }
@@ -2124,10 +2403,25 @@ Sonstiges:
         async function deleteEmployeeFromFirebase(employeeId) {
             try {
                 await db.collection('hrEmployees').doc(employeeId).delete();
+                
+                const employee = employees.find(emp => emp.id === employeeId);
+                logger.log(logger.logLevels.ACTION, 'Mitarbeiter gelöscht', {
+                    employeeId: employeeId,
+                    name: employee?.name,
+                    dn: employee?.dn
+                }, employee);
+                
                 return true;
             } catch (error) {
                 console.error('Fehler beim Löschen:', error);
                 showNotification('Fehler beim Löschen: ' + error.message, 'error');
+                
+                logger.log(logger.logLevels.ERROR, 'Fehler beim Löschen des Mitarbeiters', {
+                    employeeId: employeeId,
+                    error: error.message,
+                    stack: error.stack
+                });
+                
                 return false;
             }
         }
@@ -2262,6 +2556,10 @@ Sonstiges:
             }
             
             renderEmployeeList();
+            
+            logger.log(logger.logLevels.INFO, 'Mitarbeiterliste gefiltert', {
+                filter: type
+            });
         }
 
         function selectEmployee(employee) {
@@ -2274,8 +2572,13 @@ Sonstiges:
             loadEmployeeData();
             updateInductionDisplay();
 
-            /* FIX: aktiven Mitarbeiter sofort sichtbar markieren */
             renderEmployeeList();
+            
+            logger.log(logger.logLevels.INFO, 'Mitarbeiter ausgewählt', {
+                employeeId: employee.id,
+                name: employee.name,
+                dn: employee.dn
+            }, employee);
         }
 
         function loadEmployeeData() {
@@ -2422,6 +2725,8 @@ Sonstiges:
                 return;
             }
             
+            const oldEmployee = { ...currentEmployee };
+            
             currentEmployee.name = name;
             currentEmployee.dn = dn;
             currentEmployee.unit = document.getElementById('editEmployeeUnit').value || '';
@@ -2435,6 +2740,18 @@ Sonstiges:
                 renderEmployeeList();
                 updateTemplates();
                 showNotification('Mitarbeiterdaten erfolgreich aktualisiert', 'success');
+                
+                // Logge Änderungen
+                const changes = {};
+                if (oldEmployee.name !== currentEmployee.name) changes.name = { old: oldEmployee.name, new: currentEmployee.name };
+                if (oldEmployee.dn !== currentEmployee.dn) changes.dn = { old: oldEmployee.dn, new: currentEmployee.dn };
+                if (oldEmployee.unit !== currentEmployee.unit) changes.unit = { old: oldEmployee.unit, new: currentEmployee.unit };
+                if (oldEmployee.rank !== currentEmployee.rank) changes.rank = { old: oldEmployee.rank, new: currentEmployee.rank };
+                
+                logger.log(logger.logLevels.ACTION, 'Mitarbeiterdaten bearbeitet', {
+                    changes: changes,
+                    employeeId: currentEmployee.id
+                }, currentEmployee);
             }
         }
 
@@ -2475,6 +2792,8 @@ Sonstiges:
                 currentEmployee.inductions = {};
             }
             
+            const oldStatus = currentEmployee.inductions[type]?.completed || false;
+            
             currentEmployee.inductions[type] = {
                 completed: completed,
                 date: completed ? new Date().toISOString() : null,
@@ -2492,6 +2811,14 @@ Sonstiges:
             const typeName = type === 'oral' ? 'Mündliche' : 'Organisatorische';
             const status = completed ? 'bestanden' : 'als ausstehend markiert';
             showNotification(`${typeName} Einweisung ${status}`, 'success');
+            
+            logger.log(logger.logLevels.ACTION, 'Einweisungsstatus geändert', {
+                type: type,
+                oldStatus: oldStatus,
+                newStatus: completed,
+                employeeId: currentEmployee.id,
+                employeeName: currentEmployee.name
+            }, currentEmployee);
         }
 
         function checkBothInductionsCompleted() {
@@ -2533,7 +2860,13 @@ Sonstiges:
                     const combined = oralTemplate + '\n\n' + orgTemplate;
                     
                     copyToClipboard(combined).then(success => {
-                        if (success) showNotification('Beide Einweisungen automatisch kopiert!', 'success');
+                        if (success) {
+                            showNotification('Beide Einweisungen automatisch kopiert!', 'success');
+                            logger.log(logger.logLevels.ACTION, 'Beide Einweisungen automatisch kopiert', {
+                                employeeId: currentEmployee?.id,
+                                option: 'both'
+                            }, currentEmployee);
+                        }
                     });
                 }, 500);
             } else if (copyOption === 'separate') {
@@ -2542,11 +2875,21 @@ Sonstiges:
                     copyToClipboard(oralTemplate).then(success => {
                         if (success) {
                             showNotification('Mündliche Einweisung kopiert', 'success');
+                            logger.log(logger.logLevels.ACTION, 'Mündliche Einweisung automatisch kopiert', {
+                                employeeId: currentEmployee?.id,
+                                option: 'separate'
+                            }, currentEmployee);
                             
                             setTimeout(() => {
                                 const orgTemplate = generateTemplate('org');
                                 copyToClipboard(orgTemplate).then(success2 => {
-                                    if (success2) showNotification('Organisatorische Einweisung kopiert', 'success');
+                                    if (success2) {
+                                        showNotification('Organisatorische Einweisung kopiert', 'success');
+                                        logger.log(logger.logLevels.ACTION, 'Organisatorische Einweisung automatisch kopiert', {
+                                            employeeId: currentEmployee?.id,
+                                            option: 'separate'
+                                        }, currentEmployee);
+                                    }
                                 });
                             }, 1000);
                         }
@@ -2649,6 +2992,10 @@ Sonstiges: ${notes}
         function updateStats() {
             const total = employees.length;
             document.getElementById('totalEmployees').textContent = total;
+            
+            // Update log stats
+            const logStats = logger.getLogStats();
+            document.getElementById('recentLogs').textContent = logStats.recent24h;
         }
 
         function showEmployeeContextMenu(e, employee) {
@@ -2750,6 +3097,11 @@ Sonstiges: ${notes}
                 updateStats();
                 showNotification('Mitarbeiter dupliziert', 'success');
                 
+                logger.log(logger.logLevels.ACTION, 'Mitarbeiter dupliziert', {
+                    originalId: employeeId,
+                    newId: newEmployee.id
+                }, newEmployee);
+                
                 const contextMenu = document.getElementById('contextMenu');
                 if (contextMenu) contextMenu.remove();
             }
@@ -2772,6 +3124,10 @@ Sonstiges: ${notes}
             URL.revokeObjectURL(url);
             
             showNotification('Mitarbeiter exportiert', 'success');
+            
+            logger.log(logger.logLevels.ACTION, 'Mitarbeiter exportiert', {
+                employeeId: employeeId
+            }, employee);
             
             const contextMenu = document.getElementById('contextMenu');
             if (contextMenu) contextMenu.remove();
@@ -2801,13 +3157,39 @@ Sonstiges: ${notes}
         async function copyOralTemplate() {
             const template = document.getElementById('oralTemplateContent').textContent;
             const success = await copyToClipboard(template);
-            showNotification(success ? 'Mündliche Einweisung kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
+            
+            if (success) {
+                showNotification('Mündliche Einweisung kopiert', 'success');
+                logger.log(logger.logLevels.ACTION, 'Mündliche Einweisung kopiert', {
+                    employeeId: currentEmployee?.id,
+                    employeeName: currentEmployee?.name,
+                    length: template.length
+                }, currentEmployee);
+            } else {
+                showNotification('Fehler beim Kopieren', 'error');
+                logger.log(logger.logLevels.ERROR, 'Fehler beim Kopieren der mündlichen Einweisung', {
+                    employeeId: currentEmployee?.id
+                }, currentEmployee);
+            }
         }
 
         async function copyOrgTemplate() {
             const template = document.getElementById('orgTemplateContent').textContent;
             const success = await copyToClipboard(template);
-            showNotification(success ? 'Organisatorische Einweisung kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
+            
+            if (success) {
+                showNotification('Organisatorische Einweisung kopiert', 'success');
+                logger.log(logger.logLevels.ACTION, 'Organisatorische Einweisung kopiert', {
+                    employeeId: currentEmployee?.id,
+                    employeeName: currentEmployee?.name,
+                    length: template.length
+                }, currentEmployee);
+            } else {
+                showNotification('Fehler beim Kopieren', 'error');
+                logger.log(logger.logLevels.ERROR, 'Fehler beim Kopieren der organisatorischen Einweisung', {
+                    employeeId: currentEmployee?.id
+                }, currentEmployee);
+            }
         }
 
         function openCopySettingsModal() {
@@ -2826,22 +3208,51 @@ Sonstiges: ${notes}
                 const combined = oralTemplate + '\n\n' + orgTemplate;
                 
                 const success = await copyToClipboard(combined);
-                showNotification(success ? 'Beide Einweisungen kopiert!' : 'Fehler beim Kopieren', success ? 'success' : 'error');
+                
+                if (success) {
+                    showNotification('Beide Einweisungen kopiert!', 'success');
+                    logger.log(logger.logLevels.ACTION, 'Beide Einweisungen kopiert', {
+                        employeeId: currentEmployee?.id,
+                        employeeName: currentEmployee?.name,
+                        option: 'both',
+                        length: combined.length
+                    }, currentEmployee);
+                } else {
+                    showNotification('Fehler beim Kopieren', 'error');
+                    logger.log(logger.logLevels.ERROR, 'Fehler beim Kopieren beider Einweisungen', {
+                        employeeId: currentEmployee?.id,
+                        option: 'both'
+                    }, currentEmployee);
+                }
             } else if (selectedOption === 'separate') {
                 const oralTemplate = generateTemplate('oral');
                 const success1 = await copyToClipboard(oralTemplate);
                 
                 if (success1) {
                     showNotification('Mündliche Einweisung kopiert', 'success');
+                    logger.log(logger.logLevels.ACTION, 'Mündliche Einweisung kopiert (separate)', {
+                        employeeId: currentEmployee?.id,
+                        employeeName: currentEmployee?.name
+                    }, currentEmployee);
+                    
                     setTimeout(async () => {
                         const orgTemplate = generateTemplate('org');
                         const success2 = await copyToClipboard(orgTemplate);
-                        if (success2) showNotification('Organisatorische Einweisung kopiert', 'success');
+                        if (success2) {
+                            showNotification('Organisatorische Einweisung kopiert', 'success');
+                            logger.log(logger.logLevels.ACTION, 'Organisatorische Einweisung kopiert (separate)', {
+                                employeeId: currentEmployee?.id,
+                                employeeName: currentEmployee?.name
+                            }, currentEmployee);
+                        }
                     }, 1000);
                 }
             } else if (selectedOption === 'manual') {
                 updateTemplates();
                 showNotification('Vorlagen aktualisiert', 'success');
+                logger.log(logger.logLevels.INFO, 'Vorlagen aktualisiert (manuell)', {
+                    employeeId: currentEmployee?.id
+                }, currentEmployee);
             }
             
             closeModal('copySettingsModal');
@@ -2867,6 +3278,14 @@ Sonstiges: ${notes}
             
             if (!name || !dn) {
                 showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
+                
+                logger.log(logger.logLevels.WARNING, 'Versuch einen unvollständigen Mitarbeiter zu erstellen', {
+                    name: name,
+                    dn: dn,
+                    unit: unit,
+                    rank: rank
+                });
+                
                 return;
             }
             
@@ -2918,6 +3337,14 @@ Sonstiges: ${notes}
                 document.getElementById('newEmployeeRank').value = '';
                 
                 showNotification(`Mitarbeiter "${name}" erstellt`, 'success');
+                
+                logger.log(logger.logLevels.SUCCESS, 'Neuer Mitarbeiter erstellt', {
+                    employeeId: employeeId,
+                    name: name,
+                    dn: dn,
+                    unit: unit,
+                    rank: rank
+                }, newEmployee);
             }
         }
 
@@ -2939,6 +3366,13 @@ Sonstiges: ${notes}
             
             notification.classList.add('show');
             setTimeout(() => notification.classList.remove('show'), 3000);
+            
+            // Log notifications of type error and warning
+            if (type === 'error') {
+                logger.log(logger.logLevels.ERROR, 'System Benachrichtigung: ' + message);
+            } else if (type === 'warning') {
+                logger.log(logger.logLevels.WARNING, 'System Benachrichtigung: ' + message);
+            }
         }
 
         function showLoading() {
@@ -2991,6 +3425,155 @@ Sonstiges: ${notes}
             renderEmployeeList();
             updateStats();
         }
+
+        // Log-Modal Funktionen
+        function openLogModal() {
+            openModal('logModal');
+            loadAndDisplayLogs();
+        }
+
+        async function loadAndDisplayLogs() {
+            const container = document.getElementById('logsContainer');
+            container.innerHTML = '<div class="loading"><div class="loading-spinner"></div><div style="color: var(--gray); font-weight: 700; font-size: 14px;">Lade Logs...</div></div>';
+            
+            try {
+                const logs = await logger.getRecentLogs(100);
+                displayLogs(logs);
+                updateLogStats();
+                document.getElementById('lastUpdateTime').textContent = new Date().toLocaleTimeString();
+            } catch (error) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="fas fa-exclamation-triangle"></i></div><div class="empty-title">Fehler beim Laden der Logs</div><div class="empty-description">' + error.message + '</div></div>';
+            }
+        }
+
+        function displayLogs(logs) {
+            const container = document.getElementById('logsContainer');
+            const filter = document.getElementById('logFilter').value;
+            
+            let filteredLogs = logs;
+            if (filter !== 'all') {
+                filteredLogs = logs.filter(log => log.level === filter);
+            }
+            
+            if (filteredLogs.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon"><i class="fas fa-clipboard"></i></div><div class="empty-title">Keine Logs gefunden</div><div class="empty-description">Es wurden keine Logs für den ausgewählten Filter gefunden</div></div>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            filteredLogs.forEach(log => {
+                const logElement = document.createElement('div');
+                logElement.className = 'log-entry';
+                logElement.style.cssText = `
+                    padding: 12px;
+                    margin-bottom: 8px;
+                    background: rgba(255, 255, 255, 0.05);
+                    border-radius: 8px;
+                    border-left: 4px solid ${getLogLevelColor(log.level)};
+                    font-size: 12px;
+                    transition: all 0.2s;
+                `;
+                
+                logElement.onmouseenter = () => {
+                    logElement.style.background = 'rgba(255, 255, 255, 0.08)';
+                };
+                logElement.onmouseleave = () => {
+                    logElement.style.background = 'rgba(255, 255, 255, 0.05)';
+                };
+                
+                const time = new Date(log.timestamp).toLocaleString();
+                const employeeInfo = log.employee ? ` (${log.employee.name} - DN ${log.employee.dn})` : '';
+                
+                logElement.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <div style="font-weight: 700; color: ${getLogLevelColor(log.level)}; text-transform: uppercase; font-size: 11px;">
+                            ${log.level}
+                        </div>
+                        <div style="color: var(--gray); font-size: 11px;">
+                            ${time}
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 6px; color: white; font-weight: 600;">
+                        ${log.action}${employeeInfo}
+                    </div>
+                    ${Object.keys(log.details).length > 0 ? `
+                        <div style="font-size: 11px; color: var(--gray-light);">
+                            ${Object.entries(log.details).map(([key, value]) => 
+                                `<div><strong>${key}:</strong> ${value}</div>`
+                            ).join('')}
+                        </div>
+                    ` : ''}
+                `;
+                
+                container.appendChild(logElement);
+            });
+        }
+
+        function getLogLevelColor(level) {
+            const colors = {
+                info: '#3b82f6',
+                success: '#10b981',
+                warning: '#f59e0b',
+                error: '#ef4444',
+                action: '#8b5cf6'
+            };
+            return colors[level] || '#9ca3af';
+        }
+
+        function updateLogStats() {
+            const stats = logger.getLogStats();
+            
+            document.getElementById('logTotal').textContent = stats.total;
+            document.getElementById('logInfo').textContent = stats.byLevel.info || 0;
+            document.getElementById('logSuccess').textContent = stats.byLevel.success || 0;
+            document.getElementById('logWarning').textContent = stats.byLevel.warning || 0;
+            document.getElementById('logError').textContent = stats.byLevel.error || 0;
+            document.getElementById('recentLogs').textContent = stats.recent24h;
+        }
+
+        function refreshLogs() {
+            loadAndDisplayLogs();
+            showNotification('Logs aktualisiert', 'success');
+            logger.log(logger.logLevels.INFO, 'Logs aktualisiert', { source: 'user' });
+        }
+
+        function filterLogs() {
+            const logs = logger.logs;
+            displayLogs(logs);
+        }
+
+        async function exportLogs() {
+            try {
+                const logs = await logger.getRecentLogs(500);
+                const dataStr = JSON.stringify(logs, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                const timestamp = new Date().toISOString().split('T')[0];
+                a.href = url;
+                a.download = `hr-logs-${timestamp}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showNotification('Logs erfolgreich exportiert', 'success');
+                logger.log(logger.logLevels.ACTION, 'Logs exportiert', { count: logs.length });
+            } catch (error) {
+                showNotification('Fehler beim Exportieren der Logs', 'error');
+                logger.log(logger.logLevels.ERROR, 'Fehler beim Exportieren der Logs', { error: error.message });
+            }
+        }
+
+        // Automatische Bereinigung alter Logs alle 7 Tage
+        setInterval(() => {
+            logger.clearOldLogs(7);
+        }, 7 * 24 * 60 * 60 * 1000);
+
+        // Aktualisiere Log-Stats jede Minute
+        setInterval(updateLogStats, 60000);
     </script>
 </body>
 </html>
