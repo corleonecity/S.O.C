@@ -919,7 +919,6 @@
           <div class="section-header">
             <div class="section-title"><i class="fas fa-file-code"></i> Discord Vorlagen</div>
             <div class="template-actions">
-              <button class="btn btn-secondary" onclick="openCopySettingsModal()"><i class="fas fa-copy"></i> Beide kopieren</button>
               <button class="btn btn-secondary" onclick="copyOralTemplate()"><i class="fas fa-comments"></i> Mündlich</button>
               <button class="btn btn-secondary" onclick="copyOrgTemplate()"><i class="fas fa-clipboard-list"></i> Organisatorisch</button>
             </div>
@@ -1724,7 +1723,9 @@
 
       return `╔══════════════════╗
 /////////////////////////////////////////////////////////////////////////
-${isOral ? 'Mündliche' : 'Organisatorische'} Einweisung / ${completed ? 'bestanden' : 'ausstehend'}
+${isOral ? 'Mündliche Einweisung' : 'Organisatorische Einweisung'}
+Status: ${completed ? 'BESTANDEN' : 'AUSSTEHEND'}
+
 
 Prüfer : ${examiner}
 Name: ${name}
