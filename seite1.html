@@ -203,7 +203,7 @@
             font-weight: 700;
         }
         
-        /* Sidebar - Optimiert für viele Mitarbeiter */
+        /* Sidebar - Normalgröße */
         .sidebar {
             background: rgba(31, 41, 55, 0.92);
             backdrop-filter: blur(20px);
@@ -211,12 +211,15 @@
             padding: 20px;
             border: 1px solid var(--border);
             box-shadow: var(--shadow-md);
-            height: calc(100vh - 120px); /* Feste Höhe berechnet */
+            height: fit-content;
             position: sticky;
             top: 20px;
             display: flex;
             flex-direction: column;
-            min-height: 650px; /* Mindesthöhe */
+        }
+        
+        .sidebar.compact-mode {
+            padding: 16px;
         }
         
         .sidebar-header {
@@ -224,6 +227,10 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+        }
+        
+        .sidebar.compact-mode .sidebar-header {
+            margin-bottom: 16px;
         }
         
         .sidebar-title {
@@ -247,10 +254,19 @@
             box-shadow: 0 3px 10px rgba(79, 70, 229, 0.25);
         }
         
+        .sidebar.compact-mode .employee-count {
+            font-size: 11px;
+            padding: 4px 10px;
+        }
+        
         .sidebar-filter-buttons {
             display: flex;
             gap: 8px;
             margin-bottom: 20px;
+        }
+        
+        .sidebar.compact-mode .sidebar-filter-buttons {
+            margin-bottom: 16px;
         }
         
         .sidebar-filter-btn {
@@ -266,6 +282,11 @@
             flex: 1;
             text-align: center;
             letter-spacing: 0.2px;
+        }
+        
+        .sidebar.compact-mode .sidebar-filter-btn {
+            padding: 7px 10px;
+            font-size: 11px;
         }
         
         .sidebar-filter-btn:hover {
@@ -286,6 +307,11 @@
             margin-bottom: 20px;
         }
         
+        .sidebar.compact-mode .sidebar-controls {
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
         .search-container {
             position: relative;
         }
@@ -300,6 +326,11 @@
             font-size: 14px;
             font-weight: 500;
             transition: var(--transition);
+        }
+        
+        .sidebar.compact-mode .search-input {
+            padding: 10px 14px 10px 40px;
+            font-size: 13px;
         }
         
         .search-input::placeholder {
@@ -322,60 +353,66 @@
             font-size: 14px;
         }
         
+        .sidebar.compact-mode .search-icon {
+            left: 14px;
+            font-size: 13px;
+        }
+        
         .employee-list-container {
             flex: 1;
             display: flex;
             flex-direction: column;
             margin-bottom: 16px;
-            min-height: 300px; /* Mindesthöhe sicherstellen */
-            max-height: calc(100vh - 350px); /* Maximale Höhe basierend auf Viewport */
+            min-height: 200px;
         }
         
         .employee-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
             overflow-y: auto;
-            padding-right: 8px;
+            padding-right: 6px;
             flex: 1;
-            max-height: none; /* Entferne die feste Max-Height */
-            min-height: 200px; /* Mindesthöhe */
+            max-height: 600px;
         }
         
         .employee-list::-webkit-scrollbar {
-            width: 10px; /* Dickere Scrollbar */
+            width: 6px;
         }
         
         .employee-list::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 4px;
         }
         
         .employee-list::-webkit-scrollbar-thumb {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            border-radius: 6px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
         }
         
         .employee-list::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
-            box-shadow: 0 0 10px rgba(79, 70, 229, 0.5);
         }
         
-        /* Employee Cards - Optimiert für bessere Sichtbarkeit */
+        /* Employee Cards - Optimiert für viele Einträge */
         .employee-card {
             background: linear-gradient(135deg, rgba(79, 70, 229, 0.12) 0%, rgba(31, 41, 55, 0.3) 100%);
             border-radius: var(--radius-md);
-            padding: 16px;
+            padding: 12px 14px;
             border: 1px solid transparent;
             cursor: pointer;
             transition: var(--transition);
             position: relative;
             overflow: hidden;
-            min-height: 120px; /* Höher für bessere Sichtbarkeit */
+            min-height: auto;
+            height: auto;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+        }
+        
+        .sidebar.compact-mode .employee-card {
+            padding: 10px 12px;
+            min-height: auto;
         }
         
         .employee-card:hover {
@@ -411,88 +448,130 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .sidebar.compact-mode .employee-header {
+            margin-bottom: 6px;
         }
         
         .employee-name {
             font-weight: 700;
-            font-size: 15px;
+            font-size: 14px;
             color: white;
-            line-height: 1.3;
+            line-height: 1.2;
+            max-width: 70%;
+            word-break: break-word;
+        }
+        
+        .sidebar.compact-mode .employee-name {
+            font-size: 13px;
+            max-width: 65%;
         }
         
         .employee-dn {
             font-family: 'Courier New', monospace;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             color: var(--primary-light);
             background: rgba(79, 70, 229, 0.15);
-            padding: 4px 10px;
-            border-radius: 10px;
+            padding: 3px 8px;
+            border-radius: 8px;
             border: 1px solid rgba(79, 70, 229, 0.25);
             white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .sidebar.compact-mode .employee-dn {
+            font-size: 10px;
+            padding: 2px 6px;
         }
         
         .employee-meta {
             display: flex;
             flex-direction: column;
-            gap: 4px;
-            font-size: 12px;
+            gap: 2px;
+            font-size: 11px;
             color: var(--gray-light);
-            margin-bottom: 12px;
-            line-height: 1.3;
-            min-height: 40px; /* Platz für Rang/Unit sicherstellen */
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+        
+        .sidebar.compact-mode .employee-meta {
+            font-size: 10px;
+            margin-bottom: 6px;
         }
         
         .induction-badges {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             flex-wrap: wrap;
-            margin-top: auto; /* Badges nach unten schieben */
-            padding-top: 8px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: auto;
+        }
+        
+        .induction-badges.horizontal-scroll {
+            display: flex;
+            overflow-x: auto;
+            flex-wrap: nowrap;
+            padding-bottom: 4px;
+        }
+        
+        .induction-badges.horizontal-scroll::-webkit-scrollbar {
+            height: 3px;
+        }
+        
+        .induction-badges.horizontal-scroll::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 2px;
+        }
+        
+        .induction-badges.horizontal-scroll::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 2px;
         }
         
         .induction-badge {
-            font-size: 11px;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-weight: 800; /* Dickere Schrift für bessere Sichtbarkeit */
+            font-size: 10px;
+            padding: 3px 6px;
+            border-radius: 10px;
+            font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 5px;
-            letter-spacing: 0.2px;
+            gap: 3px;
+            letter-spacing: 0.1px;
             white-space: nowrap;
             transition: var(--transition);
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); /* Textschatten für Kontrast */
+            flex-shrink: 0;
         }
         
-        .induction-badge:hover {
-            transform: translateY(-1px);
+        .sidebar.compact-mode .induction-badge {
+            font-size: 9px;
+            padding: 2px 5px;
         }
         
         .badge-oral.pending { 
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(239, 68, 68, 0.35) 100%); 
-            color: #fecaca; 
-            border: 1px solid rgba(239, 68, 68, 0.4); 
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.25) 100%); 
+            color: #fca5a5; 
+            border: 1px solid rgba(239, 68, 68, 0.3); 
         }
         
         .badge-oral.completed { 
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.35) 100%); 
-            color: #a7f3d0; 
-            border: 1px solid rgba(16, 185, 129, 0.4);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.25) 100%); 
+            color: #86efac; 
+            border: 1px solid rgba(16, 185, 129, 0.3); 
         }
         
         .badge-org.pending { 
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(245, 158, 11, 0.35) 100%); 
-            color: #fde68a; 
-            border: 1px solid rgba(245, 158, 11, 0.4);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.25) 100%); 
+            color: #fca5a5; 
+            border: 1px solid rgba(239, 68, 68, 0.3); 
         }
         
         .badge-org.completed { 
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.35) 100%); 
-            color: #a7f3d0; 
-            border: 1px solid rgba(16, 185, 129, 0.4);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.25) 100%); 
+            color: #86efac; 
+            border: 1px solid rgba(16, 185, 129, 0.3); 
         }
         
         .quick-actions {
@@ -500,6 +579,10 @@
             grid-template-columns: 1fr;
             gap: 10px;
             margin-top: auto;
+        }
+        
+        .sidebar.compact-mode .quick-actions {
+            gap: 8px;
         }
         
         .quick-action-btn {
@@ -517,6 +600,11 @@
             justify-content: center;
             gap: 8px;
             letter-spacing: 0.2px;
+        }
+        
+        .sidebar.compact-mode .quick-action-btn {
+            padding: 10px;
+            font-size: 12px;
         }
         
         .quick-action-btn:hover {
@@ -1199,7 +1287,6 @@
             .sidebar {
                 position: static;
                 max-height: 600px;
-                height: auto;
             }
             
             .induction-grid,
@@ -1304,34 +1391,6 @@
                 right: 12px;
                 bottom: 12px;
                 min-width: auto;
-            }
-        }
-        
-        /* Optimierungen für kleine Bildschirme */
-        @media (max-height: 900px) {
-            .sidebar {
-                height: calc(100vh - 100px);
-                min-height: 500px;
-            }
-            
-            .employee-list-container {
-                max-height: calc(100vh - 300px);
-            }
-        }
-        
-        @media (max-height: 700px) {
-            .sidebar {
-                height: calc(100vh - 80px);
-                min-height: 400px;
-            }
-            
-            .employee-list-container {
-                max-height: calc(100vh - 250px);
-            }
-            
-            .employee-card {
-                min-height: 100px;
-                padding: 12px;
             }
         }
     </style>
@@ -1984,9 +2043,6 @@ Sonstiges:
             initializeApp();
             setupEventListeners();
             updateStats();
-            
-            // Sidebar-Höhe dynamisch anpassen
-            adjustSidebarHeight();
         });
 
         function initializeApp() {
@@ -2032,9 +2088,6 @@ Sonstiges:
             
             // Listen for form changes
             setupFormChangeListeners();
-            
-            // Window resize listener für dynamische Höhe
-            window.addEventListener('resize', adjustSidebarHeight);
         }
 
         // Form Change Listeners
@@ -2051,27 +2104,6 @@ Sonstiges:
                 saveFormData();
                 updateTemplates();
                 saveEmployeeData(true);
-            }
-        }
-
-        // Sidebar Höhe dynamisch anpassen
-        function adjustSidebarHeight() {
-            const sidebar = document.querySelector('.sidebar');
-            const header = document.querySelector('.app-header');
-            const windowHeight = window.innerHeight;
-            const headerHeight = header.offsetHeight;
-            
-            // Berechne verfügbare Höhe
-            const availableHeight = windowHeight - headerHeight - 40; // 40px für Padding/Margins
-            
-            // Setze dynamische Höhe (mindestens 500px)
-            const newHeight = Math.max(availableHeight, 500);
-            sidebar.style.height = `${newHeight}px`;
-            
-            // Passe die Liste an
-            const listContainer = document.querySelector('.employee-list-container');
-            if (listContainer) {
-                listContainer.style.maxHeight = `${newHeight - 200}px`;
             }
         }
 
@@ -2092,6 +2124,9 @@ Sonstiges:
                 renderEmployeeList();
                 updateStats();
                 hideLoading();
+                
+                // Layout nach Anzahl der Mitarbeiter anpassen
+                checkAndAdjustLayout();
                 
                 setTimeout(updateInductionDisplay, 100);
                 
@@ -2202,6 +2237,9 @@ Sonstiges:
                 
                 container.appendChild(card);
             });
+            
+            // Bei vielen Badges horizontales Scrollen aktivieren
+            adjustBadgesLayout();
         }
 
         function getEmptyStateTitle() {
@@ -2276,6 +2314,9 @@ Sonstiges:
             }
             
             renderEmployeeList();
+            
+            // Layout erneut prüfen
+            checkAndAdjustLayout();
         }
 
         function selectEmployee(employee) {
@@ -3028,6 +3069,50 @@ Sonstiges: ${notes}
                 
                 showNotification(`Mitarbeiter "${name}" erstellt`, 'success');
             }
+        }
+
+        // Layout Adjustment Functions
+        function checkAndAdjustLayout() {
+            const employeeCount = employees.length;
+            const sidebar = document.querySelector('.sidebar');
+            const employeeList = document.querySelector('.employee-list');
+            
+            if (employeeCount > 15) {
+                // Bei mehr als 15 Mitarbeitern Kompakt-Modus aktivieren
+                sidebar.classList.add('compact-mode');
+                
+                // Scrollbar immer anzeigen bei vielen Einträgen
+                employeeList.style.overflowY = 'scroll';
+                
+                // Notification anzeigen
+                if (employeeCount > 20) {
+                    console.log(`Hinweis: ${employeeCount} Mitarbeiter geladen. Kompakt-Modus aktiviert.`);
+                }
+            } else {
+                sidebar.classList.remove('compact-mode');
+                employeeList.style.overflowY = 'auto';
+            }
+        }
+
+        function adjustBadgesLayout() {
+            const employeeCards = document.querySelectorAll('.employee-card');
+            
+            employeeCards.forEach(card => {
+                const badgesContainer = card.querySelector('.induction-badges');
+                if (badgesContainer) {
+                    const badges = badgesContainer.querySelectorAll('.induction-badge');
+                    const totalBadgesWidth = Array.from(badges).reduce((total, badge) => {
+                        return total + badge.offsetWidth;
+                    }, 0);
+                    
+                    // Wenn Badges zu breit sind, horizontales Scrollen aktivieren
+                    if (totalBadgesWidth > card.offsetWidth - 40) {
+                        badgesContainer.classList.add('horizontal-scroll');
+                    } else {
+                        badgesContainer.classList.remove('horizontal-scroll');
+                    }
+                }
+            });
         }
 
         // UI Helpers
