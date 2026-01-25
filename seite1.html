@@ -93,18 +93,19 @@
             min-height: 100vh;
         }
         
-        /* Header - Normalgröße */
+        /* VERGRÖSSERTER HEADER */
         .app-header {
             grid-column: 1 / -1;
             background: linear-gradient(135deg, rgba(79, 70, 229, 0.85) 0%, rgba(67, 56, 202, 0.9) 100%);
             backdrop-filter: blur(20px);
             border-radius: var(--radius-xl);
-            padding: 20px 24px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border);
+            padding: 28px 32px; /* Vergrößertes Padding (vorher: 20px 24px) */
+            margin-bottom: 25px; /* Etwas mehr Abstand nach unten */
+            border: 2px solid rgba(255, 255, 255, 0.15); /* Dickerer Rand */
             box-shadow: var(--shadow-lg);
             position: relative;
             overflow: hidden;
+            min-height: 120px; /* Mindesthöhe hinzufügen */
         }
         
         .app-header::before {
@@ -113,7 +114,7 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
+            height: 5px; /* Dickere obere Linie (vorher: 3px) */
             background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 50%, var(--primary-light) 100%);
         }
         
@@ -126,46 +127,46 @@
         .brand {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 20px; /* Größerer Abstand (vorher: 16px) */
         }
         
         .logo {
-            width: 52px;
-            height: 52px;
+            width: 70px; /* Größeres Logo (vorher: 52px) */
+            height: 70px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 28px; /* Größeres Icon (vorher: 22px) */
             color: white;
-            box-shadow: 0 6px 18px rgba(79, 70, 229, 0.4);
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.5); /* Stärkerer Schatten */
             transition: var(--transition);
         }
         
         .logo:hover {
             transform: rotate(10deg) scale(1.05);
-            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.5);
+            box-shadow: 0 12px 32px rgba(79, 70, 229, 0.6);
         }
         
         .brand-text h1 {
-            font-size: 20px;
-            font-weight: 800;
+            font-size: 26px; /* Größerer Titel (vorher: 20px) */
+            font-weight: 900; /* Dickere Schrift */
             color: white;
-            margin-bottom: 4px;
-            letter-spacing: -0.3px;
+            margin-bottom: 6px;
+            letter-spacing: -0.4px;
         }
         
         .brand-text .subtitle {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.85);
-            font-weight: 500;
-            letter-spacing: 0.2px;
+            font-size: 15px; /* Größerer Untertitel (vorher: 12px) */
+            color: rgba(255, 255, 255, 0.9); /* Weniger transparent */
+            font-weight: 600;
+            letter-spacing: 0.3px;
         }
         
         .header-stats {
             display: flex;
-            gap: 16px;
+            gap: 20px; /* Größerer Abstand (vorher: 16px) */
         }
         
         .stat-card {
@@ -173,34 +174,34 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.12);
+            padding: 18px 24px; /* Größeres Padding (vorher: 12px 16px) */
+            background: rgba(255, 255, 255, 0.15); /* Etwas sichtbarer */
             border-radius: var(--radius-lg);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            min-width: 100px;
+            border: 1px solid rgba(255, 255, 255, 0.25); /* Hellerer Rand */
+            min-width: 130px; /* Breitere Karten (vorher: 100px) */
             backdrop-filter: blur(12px);
             transition: var(--transition);
         }
         
         .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.35);
         }
         
         .stat-value {
-            font-size: 24px;
-            font-weight: 800;
+            font-size: 32px; /* Größere Zahl (vorher: 24px) */
+            font-weight: 900; /* Dickere Schrift */
             color: white;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
         }
         
         .stat-label {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.9);
+            font-size: 13px; /* Etwas größere Beschriftung (vorher: 11px) */
+            color: rgba(255, 255, 255, 0.95);
             text-transform: uppercase;
-            letter-spacing: 0.4px;
-            font-weight: 700;
+            letter-spacing: 0.6px;
+            font-weight: 800; /* Dickere Schrift */
         }
         
         /* Sidebar - Normalgröße */
@@ -1195,12 +1196,12 @@
         
         @media (max-width: 768px) {
             .app-header {
-                padding: 16px;
+                padding: 20px;
             }
             
             .header-content {
                 flex-direction: column;
-                gap: 16px;
+                gap: 20px;
                 align-items: stretch;
             }
             
@@ -1210,21 +1211,30 @@
             
             .brand {
                 flex-direction: row;
-                gap: 12px;
+                gap: 15px;
             }
             
             .logo {
-                width: 44px;
-                height: 44px;
-                font-size: 18px;
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
             }
             
             .brand-text h1 {
-                font-size: 18px;
+                font-size: 22px;
             }
             
             .brand-text .subtitle {
-                font-size: 11px;
+                font-size: 13px;
+            }
+            
+            .stat-card {
+                padding: 15px 20px;
+                min-width: 110px;
+            }
+            
+            .stat-value {
+                font-size: 28px;
             }
             
             .content-header {
@@ -1263,16 +1273,35 @@
             }
             
             .app-header {
-                padding: 14px;
+                padding: 18px;
+                min-height: 100px;
+            }
+            
+            .logo {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .brand-text h1 {
+                font-size: 20px;
+            }
+            
+            .brand-text .subtitle {
+                font-size: 12px;
             }
             
             .stat-card {
-                padding: 10px 12px;
-                min-width: 80px;
+                padding: 12px 16px;
+                min-width: 90px;
             }
             
             .stat-value {
-                font-size: 20px;
+                font-size: 24px;
+            }
+            
+            .stat-label {
+                font-size: 11px;
             }
             
             .sidebar {
