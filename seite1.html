@@ -643,6 +643,7 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      min-height: 0;
     }
 
     .soldaten-tabs {
@@ -774,24 +775,29 @@
     .soldaten-liste {
       flex: 1;
       overflow-y: auto;
-      padding-right: 4px;
+      padding-right: 8px;
       display: flex;
       flex-direction: column;
       gap: 12px;
+      min-height: 0;
     }
 
     .soldaten-liste::-webkit-scrollbar {
-      width: 6px;
+      width: 8px;
     }
 
     .soldaten-liste::-webkit-scrollbar-track {
       background: rgba(255,255,255,.05);
-      border-radius: 3px;
+      border-radius: 4px;
     }
 
     .soldaten-liste::-webkit-scrollbar-thumb {
       background: var(--warning);
-      border-radius: 3px;
+      border-radius: 4px;
+    }
+
+    .soldaten-liste::-webkit-scrollbar-thumb:hover {
+      background: var(--warning-dark);
     }
 
     .soldaten-item {
@@ -1122,6 +1128,7 @@
       overflow:hidden;
       display:flex;
       flex-direction:column;
+      min-height:0;
     }
     
     .beobachtung-tabs{
@@ -1244,21 +1251,22 @@
     .beobachtung-akten-liste{
       flex:1;
       overflow-y:auto;
-      padding-right:4px;
+      padding-right:8px;
+      min-height:0;
     }
     
     .beobachtung-akten-liste::-webkit-scrollbar{
-      width:6px;
+      width:8px;
     }
     
     .beobachtung-akten-liste::-webkit-scrollbar-track{
       background:rgba(255,255,255,.05);
-      border-radius:3px;
+      border-radius:4px;
     }
     
     .beobachtung-akten-liste::-webkit-scrollbar-thumb{
       background:var(--primary);
-      border-radius:3px;
+      border-radius:4px;
     }
     
     .beobachtung-akte-item{
@@ -1637,7 +1645,7 @@
         </div>
         
         <!-- Neues Gespräch Tab -->
-        <div class="soldaten-tab-content" id="soldatenNewTab">
+        <div class="soldaten-tab-content" id="soldatenNewTab" style="display: flex; flex-direction: column;">
           <div class="soldaten-form-grid">
             <div class="soldaten-form-group">
               <label class="soldaten-label">Name *</label>
@@ -1742,7 +1750,7 @@ Sonstiges:
         </div>
         
         <!-- Gesprächsliste Tab -->
-        <div class="soldaten-tab-content" id="soldatenListTab" style="display:none;">
+        <div class="soldaten-tab-content" id="soldatenListTab" style="display: none; flex-direction: column;">
           <div class="soldaten-search-container">
             <i class="fas fa-search soldaten-search-icon"></i>
             <input type="text" class="soldaten-search-input" id="soldatenSearch" placeholder="Nach Name oder DN suchen..." oninput="searchSoldaten(this.value)">
@@ -1783,7 +1791,7 @@ Sonstiges:
         </div>
         
         <!-- Neue Akte erstellen Tab -->
-        <div class="beobachtung-tab-content" id="beobachtungNewTab">
+        <div class="beobachtung-tab-content" id="beobachtungNewTab" style="display: flex; flex-direction: column;">
           <div class="akte-form-grid">
             <div class="akte-form-group">
               <label class="akte-label">Name *</label>
@@ -1841,7 +1849,7 @@ Sonstiges:
         </div>
         
         <!-- Akten durchsuchen Tab -->
-        <div class="beobachtung-tab-content" id="beobachtungListTab" style="display:none;">
+        <div class="beobachtung-tab-content" id="beobachtungListTab" style="display: none; flex-direction: column;">
           <div class="akten-search-container">
             <i class="fas fa-search akten-search-icon"></i>
             <input type="text" class="akten-search-input" id="aktenSearch" placeholder="Nach Name oder DN suchen..." oninput="searchAkten(this.value)">
@@ -1857,7 +1865,7 @@ Sonstiges:
         </div>
         
         <!-- Beobachtung hinzufügen Tab -->
-        <div class="beobachtung-tab-content" id="beobachtungBeobachtungTab" style="display:none;">
+        <div class="beobachtung-tab-content" id="beobachtungBeobachtungTab" style="display: none; flex-direction: column;">
           <div class="akte-form-grid">
             <div class="akte-form-group">
               <label class="akte-label">Name *</label>
@@ -2475,7 +2483,7 @@ Grund:
       if (tabName === 'new') tabId = 'soldatenNewTab';
       else tabId = 'soldatenListTab';
       
-      document.getElementById(tabId).style.display = 'block';
+      document.getElementById(tabId).style.display = 'flex';
       
       // Load data for the tab
       if (tabName === 'list') {
@@ -2721,7 +2729,7 @@ Sonstiges: ${sonstiges || ''}
       else if (tabName === 'list') tabId = 'beobachtungListTab';
       else tabId = 'beobachtungBeobachtungTab';
       
-      document.getElementById(tabId).style.display = 'block';
+      document.getElementById(tabId).style.display = 'flex';
       
       // Load data for the tab
       if (tabName === 'list') {
