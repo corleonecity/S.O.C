@@ -568,8 +568,6 @@
     .floating-button.ankundigung:hover{background:linear-gradient(135deg, #7c3aed, #6d28d9)}
     .floating-button.soldaten{background:linear-gradient(135deg, #10b981, #059669)}
     .floating-button.soldaten:hover{background:linear-gradient(135deg, #059669, #047857)}
-    .floating-button.beobachtung{background:linear-gradient(135deg, #f59e0b, #d97706)}
-    .floating-button.beobachtung:hover{background:linear-gradient(135deg, #d97706, #b45309)}
 
     /* Modal Styling */
     .ankundigung-modal,
@@ -947,6 +945,89 @@
       color:#fff;
     }
 
+    /* Soldatengespräch Styling */
+    .soldaten-tabs{
+      display:flex;
+      gap:8px;
+      margin-bottom:24px;
+      flex-wrap:wrap;
+    }
+    .soldaten-tab{
+      padding:10px 16px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:var(--radius-md);
+      color:var(--gray);
+      font-size:13px;
+      font-weight:800;
+      cursor:pointer;
+      transition:var(--transition);
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .soldaten-tab.active{
+      background:var(--secondary);
+      color:#fff;
+      border-color:var(--secondary);
+    }
+
+    .soldaten-form-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+      margin-bottom:24px;
+    }
+
+    /* Soldatengespräch in Liste */
+    .soldaten-gespräch{
+      background:rgba(255,255,255,.03);
+      border-radius:var(--radius-md);
+      padding:16px;
+      border:1px solid rgba(255,255,255,.08);
+      margin-bottom:16px;
+    }
+    .soldaten-gespräch-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:12px;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .soldaten-gespräch-title{
+      font-size:14px;
+      font-weight:900;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex:1;
+    }
+    .soldaten-gespräch-info{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+      font-size:11px;
+      color:var(--gray);
+    }
+    .soldaten-gespräch-template{
+      font-family:Consolas,Monaco,monospace;
+      background:rgba(0,0,0,.30);
+      padding:12px;
+      border-radius:var(--radius-sm);
+      white-space:pre-wrap;
+      word-wrap:break-word;
+      font-size:11px;
+      line-height:1.4;
+      color:var(--gray-light);
+      margin-bottom:12px;
+      border-left:2px solid var(--secondary);
+      overflow-y:auto;
+      max-height:250px;
+    }
+
     /* Beobachtungs-Akten Styling */
     .beobachtung-tabs{
       display:flex;
@@ -1015,79 +1096,6 @@
       font-size:11px;
       color:var(--gray);
       margin-top:8px;
-    }
-
-    /* Soldatengespräch Styling */
-    .soldaten-tabs{
-      display:flex;
-      gap:8px;
-      margin-bottom:24px;
-      flex-wrap:wrap;
-    }
-    .soldaten-tab{
-      padding:10px 16px;
-      background:rgba(255,255,255,.05);
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:var(--radius-md);
-      color:var(--gray);
-      font-size:13px;
-      font-weight:800;
-      cursor:pointer;
-      transition:var(--transition);
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-    .soldaten-tab.active{
-      background:var(--secondary);
-      color:#fff;
-      border-color:var(--secondary);
-    }
-
-    .soldaten-form-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:16px;
-      margin-bottom:24px;
-    }
-
-    .soldaten-gespräch{
-      background:rgba(255,255,255,.03);
-      border-radius:var(--radius-md);
-      padding:16px;
-      border:1px solid rgba(255,255,255,.08);
-      margin-bottom:16px;
-    }
-    .soldaten-gespräch-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      margin-bottom:12px;
-      gap:12px;
-    }
-    .soldaten-gespräch-title{
-      font-size:14px;
-      font-weight:900;
-      color:#fff;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      flex:1;
-    }
-    .soldaten-gespräch-template{
-      font-family:Consolas,Monaco,monospace;
-      background:rgba(0,0,0,.30);
-      padding:12px;
-      border-radius:var(--radius-sm);
-      white-space:pre-wrap;
-      word-wrap:break-word;
-      font-size:11px;
-      line-height:1.4;
-      color:var(--gray-light);
-      margin-bottom:12px;
-      border-left:2px solid var(--secondary);
-      max-height:200px;
-      overflow-y:auto;
     }
 
     /* Notification */
@@ -1177,9 +1185,6 @@
     </button>
     <button class="floating-button soldaten" onclick="openSoldatenModal()" title="Soldatengespräche">
       <i class="fas fa-comments"></i>
-    </button>
-    <button class="floating-button beobachtung" onclick="openBeobachtungAktenModal()" title="Beobachtungs-Akten">
-      <i class="fas fa-folder-open"></i>
     </button>
   </div>
 
@@ -1414,13 +1419,40 @@ Bemerkungen:
             </div>
             
             <div class="ankundigung-form-group">
-              <label class="ankundigung-label">Unit</label>
-              <input type="text" class="ankundigung-input" id="soldatenUnit" placeholder="Unit des Soldaten">
+              <label class="ankundigung-label">Unit *</label>
+              <select class="ankundigung-input" id="soldatenUnit">
+                <option value="">Unit auswählen</option>
+                <option value="Air Force">Air Force</option>
+                <option value="S.O.C">S.O.C</option>
+                <option value="Infantry">Infantry</option>
+                <option value="Military Police">Military Police</option>
+                <option value="Navy Marine">Navy Marine</option>
+                <option value="Navy SEALs">Navy SEALs</option>
+              </select>
             </div>
             
             <div class="ankundigung-form-group">
-              <label class="ankundigung-label">Rang</label>
-              <input type="text" class="ankundigung-input" id="soldatenRank" placeholder="Rang des Soldaten">
+              <label class="ankundigung-label">Rang *</label>
+              <select class="ankundigung-input" id="soldatenRank">
+                <option value="">Rang auswählen</option>
+                <option value="Private">Private</option>
+                <option value="Private First Class">Private First Class</option>
+                <option value="Specialist">Specialist</option>
+                <option value="Corporal">Corporal</option>
+                <option value="Sergeant">Sergeant</option>
+                <option value="Staff Sergeant">Staff Sergeant</option>
+                <option value="Sergeant First Class">Sergeant First Class</option>
+                <option value="Master Sergeant">Master Sergeant</option>
+                <option value="Sergeant Major">Sergeant Major</option>
+                <option value="Lieutenant">Lieutenant</option>
+                <option value="Captain">Captain</option>
+                <option value="Major">Major</option>
+                <option value="Colonel">Colonel</option>
+                <option value="Major General">Major General</option>
+                <option value="Lieutenant General">Lieutenant General</option>
+                <option value="Vice General of Army">Vice General of Army</option>
+                <option value="General of Army">General of Army</option>
+              </select>
             </div>
             
             <div class="ankundigung-form-group">
@@ -1437,6 +1469,11 @@ Bemerkungen:
               <label class="ankundigung-label">Notizen</label>
               <textarea class="ankundigung-input ankundigung-textarea" id="soldatenNotizen" placeholder="Notizen zum Gespräch..."></textarea>
             </div>
+            
+            <div class="ankundigung-form-group" style="grid-column: span 2;">
+              <label class="ankundigung-label">Sonstiges</label>
+              <textarea class="ankundigung-input ankundigung-textarea" id="soldatenSonstiges" placeholder="Sonstige Bemerkungen..."></textarea>
+            </div>
           </div>
           
           <div class="ankundigung-preview">
@@ -1444,16 +1481,22 @@ Bemerkungen:
               <i class="fas fa-file-alt"></i> Discord Vorlage
             </div>
             <div class="ankundigung-preview-content" id="soldatenPreview">
-💬 **Soldatengespräch**
+╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+Soldatengespräch
 
 Name: 
 DN: 
-Unit: 
+Hauptunit: 
 Rang: 
 Datum: 
 Uhrzeit: 
-Notizen:
+Notizen: 
+Sonstiges: 
 
+/////////////////////////////////////////////////////////////////////////
+<@&1097625910242447422>
+╚══════════════════╝
             </div>
           </div>
           
@@ -1488,125 +1531,6 @@ Notizen:
     </div>
   </div>
 
-  <!-- Beobachtungs-Akten Modal -->
-  <div class="beobachtung-modal" id="beobachtungModal">
-    <div class="beobachtung-content" onclick="event.stopPropagation()">
-      <div class="beobachtung-header">
-        <div class="beobachtung-title">
-          <i class="fas fa-folder-open"></i> Beobachtungs-Akten
-        </div>
-        <button class="beobachtung-close" onclick="closeModal('beobachtungModal')">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      
-      <div class="beobachtung-body">
-        <div class="beobachtung-tabs">
-          <button class="beobachtung-tab active" onclick="switchBeobachtungTab('new')">
-            <i class="fas fa-plus"></i> Neue Akte
-          </button>
-          <button class="beobachtung-tab" onclick="switchBeobachtungTab('list')">
-            <i class="fas fa-list"></i> Aktenübersicht
-          </button>
-        </div>
-        
-        <!-- Neue Akte Tab -->
-        <div class="ankundigung-tab-content" id="beobachtungNewTab">
-          <div class="ankundigung-form-grid">
-            <div class="ankundigung-form-group">
-              <label class="ankundigung-label">Name *</label>
-              <input type="text" class="ankundigung-input" id="akteName" placeholder="Name der Person">
-            </div>
-            
-            <div class="ankundigung-form-group">
-              <label class="ankundigung-label">Dienstnummer *</label>
-              <input type="text" class="ankundigung-input" id="akteDN" placeholder="DN der Person">
-            </div>
-            
-            <div class="ankundigung-form-group" style="grid-column: span 2;">
-              <label class="ankundigung-label">Akteninhalt *</label>
-              <textarea class="ankundigung-input ankundigung-textarea" id="akteInhalt" placeholder="Akteninhalt..."></textarea>
-            </div>
-          </div>
-          
-          <div class="ankundigung-actions">
-            <button class="ankundigung-btn ankundigung-btn-save" onclick="createAkte()">
-              <i class="fas fa-save"></i> Akte erstellen
-            </button>
-          </div>
-        </div>
-        
-        <!-- Aktenübersicht Tab -->
-        <div class="ankundigung-tab-content" id="beobachtungListTab" style="display:none;">
-          <div class="ankundigung-search-container">
-            <i class="fas fa-search ankundigung-search-icon"></i>
-            <input type="text" class="ankundigung-search-input" id="beobachtungSearch" placeholder="Nach Namen oder DN suchen..." oninput="searchAkten(this.value)">
-          </div>
-          
-          <div class="ankundigung-liste-container">
-            <div class="ankundigung-liste" id="akteListe">
-              <div class="empty-ankundigung">
-                <div class="empty-ankundigung-icon"><i class="fas fa-folder-open"></i></div>
-                <div class="empty-ankundigung-title">Keine Akten gefunden</div>
-                <div class="empty-description">Erstellen Sie Ihre erste Akte</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Akten Detail Modal -->
-  <div class="beobachtung-modal" id="akteDetailModal">
-    <div class="beobachtung-content" style="max-width: 700px;" onclick="event.stopPropagation()">
-      <div class="beobachtung-header">
-        <div class="beobachtung-title">
-          <i class="fas fa-file-alt"></i> <span id="akteDetailTitle">Akte Details</span>
-        </div>
-        <button class="beobachtung-close" onclick="closeModal('akteDetailModal')">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      
-      <div class="beobachtung-body">
-        <div class="ankundigung-form-grid">
-          <div class="ankundigung-form-group">
-            <label class="ankundigung-label">Name</label>
-            <input type="text" class="ankundigung-input" id="detailName" readonly>
-          </div>
-          
-          <div class="ankundigung-form-group">
-            <label class="ankundigung-label">Dienstnummer</label>
-            <input type="text" class="ankundigung-input" id="detailDN" readonly>
-          </div>
-          
-          <div class="ankundigung-form-group" style="grid-column: span 2;">
-            <label class="ankundigung-label">Neue Beobachtung hinzufügen</label>
-            <textarea class="ankundigung-input ankundigung-textarea" id="neueBeobachtung" placeholder="Neue Beobachtung eintragen..."></textarea>
-          </div>
-        </div>
-        
-        <div class="ankundigung-preview">
-          <div class="ankundigung-preview-title">
-            <i class="fas fa-history"></i> Aktenverlauf
-          </div>
-          <div class="ankundigung-preview-content" id="akteVerlauf">
-          </div>
-        </div>
-        
-        <div class="ankundigung-actions">
-          <button class="ankundigung-btn ankundigung-btn-copy" onclick="copyAkteContent()">
-            <i class="fas fa-copy"></i> Akte kopieren
-          </button>
-          <button class="ankundigung-btn ankundigung-btn-save" onclick="addBeobachtung()">
-            <i class="fas fa-plus"></i> Beobachtung hinzufügen
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="app-container">
     <header class="app-header">
       <div class="header-content">
@@ -1623,8 +1547,8 @@ Notizen:
             <div class="stat-label">Mitarbeiter</div>
           </div>
           <div class="stat-card">
-            <div class="stat-value" id="totalAkten">0</div>
-            <div class="stat-label">Beobachtung</div>
+            <div class="stat-value" id="totalSoldaten">0</div>
+            <div class="stat-label">Soldatengespräche</div>
           </div>
         </div>
       </div>
@@ -2069,20 +1993,16 @@ Notizen:
     let employees = [];
     let bothInductionsCompleted = false;
     let currentFilter = 'all';
-    let akten = [];
     let soldatenGespräche = [];
     let ankundigungen = [];
-    let currentBeobachtungTab = 'new';
     let currentSoldatenTab = 'new';
     let currentAnkundigungTab = 'new';
-    let currentAkte = null;
 
     document.addEventListener('DOMContentLoaded', function () {
       initializeApp();
       setupEventListeners();
       updateStats();
       adjustSidebarHeight();
-      loadAkten();
       loadSoldatenGespräche();
       loadAnkundigungen();
     });
@@ -2110,7 +2030,6 @@ Notizen:
       loadEmployees();
       setupFormChangeListeners();
       seedTemplateBoxes();
-      setupBeobachtungEventListeners();
       setupSoldatenEventListeners();
       setupAnkundigungEventListeners();
     }
@@ -2124,7 +2043,6 @@ Notizen:
         if (e.ctrlKey && e.key === 'n') { e.preventDefault(); openNewEmployeeModal(); }
         if (e.ctrlKey && e.key === 'f') { e.preventDefault(); document.getElementById('searchEmployees').focus(); }
         if (e.ctrlKey && e.key === 'e' && currentEmployee) { e.preventDefault(); openEditEmployeeModal(); }
-        if (e.ctrlKey && e.key === 'b') { e.preventDefault(); openBeobachtungAktenModal(); }
         if (e.ctrlKey && e.key === 's') { e.preventDefault(); openSoldatenModal(); }
         if (e.ctrlKey && e.key === 'a') { e.preventDefault(); openAnkundigungModal(); }
       });
@@ -2140,15 +2058,8 @@ Notizen:
       });
     }
 
-    function setupBeobachtungEventListeners() {
-      const beobachtungInputs = document.querySelectorAll('#akteName, #akteDN, #akteInhalt');
-      beobachtungInputs.forEach(input => {
-        input.addEventListener('input', updateBeobachtungPreview);
-      });
-    }
-
     function setupSoldatenEventListeners() {
-      const soldatenInputs = document.querySelectorAll('#soldatenName, #soldatenDN, #soldatenUnit, #soldatenRank, #soldatenDate, #soldatenTime, #soldatenNotizen');
+      const soldatenInputs = document.querySelectorAll('#soldatenName, #soldatenDN, #soldatenUnit, #soldatenRank, #soldatenDate, #soldatenTime, #soldatenNotizen, #soldatenSonstiges');
       soldatenInputs.forEach(input => {
         input.addEventListener('input', updateSoldatenPreview);
       });
@@ -2619,18 +2530,32 @@ Bemerkungen: ${bemerkungen || ''}`;
       const date = document.getElementById('soldatenDate').value;
       const time = document.getElementById('soldatenTime').value;
       const notizen = document.getElementById('soldatenNotizen').value;
+      const sonstiges = document.getElementById('soldatenSonstiges').value;
 
       const formattedDate = date ? new Date(date).toLocaleDateString('de-DE') : '';
       
-      const template = `💬 **Soldatengespräch**
+      const unitDiscordId = unitDiscordIds[unit] || '';
+      const rankDiscordId = rankDiscordIds[rank] || '';
+      
+      const unitDisplay = unitDiscordId ? `<@&${unitDiscordId}>` : unit;
+      const rankDisplay = rankDiscordId ? `<@&${rankDiscordId}>` : rank;
+
+      const template = `╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+Soldatengespräch
 
 Name: ${name || ''}
 DN: ${dn || ''}
-Unit: ${unit || ''}
-Rang: ${rank || ''}
+Hauptunit: ${unitDisplay}
+Rang: ${rankDisplay}
 Datum: ${formattedDate}
 Uhrzeit: ${time || ''}
-Notizen: ${notizen || ''}`;
+Notizen: ${notizen || ''}
+Sonstiges: ${sonstiges || ''}
+
+/////////////////////////////////////////////////////////////////////////
+<@&1097625910242447422>
+╚══════════════════╝`;
 
       document.getElementById('soldatenPreview').textContent = template;
     }
@@ -2644,28 +2569,53 @@ Notizen: ${notizen || ''}`;
     async function saveSoldatenGespräch() {
       const name = document.getElementById('soldatenName').value.trim();
       const dn = document.getElementById('soldatenDN').value.trim();
+      const unit = document.getElementById('soldatenUnit').value;
+      const rank = document.getElementById('soldatenRank').value;
       const date = document.getElementById('soldatenDate').value;
       const time = document.getElementById('soldatenTime').value;
       const notizen = document.getElementById('soldatenNotizen').value.trim();
+      const sonstiges = document.getElementById('soldatenSonstiges').value.trim();
 
-      if (!name || !dn || !date || !time) {
+      if (!name || !dn || !unit || !rank || !date || !time) {
         showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
         return;
       }
+
+      const unitDiscordId = unitDiscordIds[unit] || '';
+      const rankDiscordId = rankDiscordIds[rank] || '';
+      
+      const unitDisplay = unitDiscordId ? `<@&${unitDiscordId}>` : unit;
+      const rankDisplay = rankDiscordId ? `<@&${rankDiscordId}>` : rank;
 
       const gespräch = {
         id: `SOL-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
         name,
         dn,
-        unit: document.getElementById('soldatenUnit').value.trim() || '',
-        rank: document.getElementById('soldatenRank').value.trim() || '',
+        unit,
+        rank,
         date,
         time,
         notizen: notizen || '',
+        sonstiges: sonstiges || '',
         created: new Date().toISOString(),
         createdFormatted: new Date().toLocaleDateString('de-DE'),
         dateFormatted: new Date(date).toLocaleDateString('de-DE'),
-        template: document.getElementById('soldatenPreview').textContent
+        template: `╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+Soldatengespräch
+
+Name: ${name}
+DN: ${dn}
+Hauptunit: ${unitDisplay}
+Rang: ${rankDisplay}
+Datum: ${new Date(date).toLocaleDateString('de-DE')}
+Uhrzeit: ${time}
+Notizen: ${notizen}
+Sonstiges: ${sonstiges}
+
+/////////////////////////////////////////////////////////////////////////
+<@&1097625910242447422>
+╚══════════════════╝`
       };
 
       try {
@@ -2682,6 +2632,7 @@ Notizen: ${notizen || ''}`;
         document.getElementById('soldatenDate').value = new Date().toISOString().split('T')[0];
         document.getElementById('soldatenTime').value = '';
         document.getElementById('soldatenNotizen').value = '';
+        document.getElementById('soldatenSonstiges').value = '';
         
         updateSoldatenPreview();
         renderSoldatenListe();
@@ -2707,6 +2658,7 @@ Notizen: ${notizen || ''}`;
             dateFormatted: data.dateFormatted || (data.date ? new Date(data.date).toLocaleDateString('de-DE') : '')
           });
         });
+        updateStats();
       } catch (error) {
         console.error('Fehler beim Laden der Soldatengespräche:', error);
       }
@@ -2721,7 +2673,8 @@ Notizen: ${notizen || ''}`;
         filteredGespräche = soldatenGespräche.filter(item => 
           (item.name && item.name.toLowerCase().includes(searchTerm)) ||
           (item.dn && item.dn.toLowerCase().includes(searchTerm)) ||
-          (item.notizen && item.notizen.toLowerCase().includes(searchTerm))
+          (item.notizen && item.notizen.toLowerCase().includes(searchTerm)) ||
+          (item.sonstiges && item.sonstiges.toLowerCase().includes(searchTerm))
         );
       }
       
@@ -2742,11 +2695,17 @@ Notizen: ${notizen || ''}`;
           <div class="soldaten-gespräch">
             <div class="soldaten-gespräch-header">
               <div class="soldaten-gespräch-title">
-                <i class="fas fa-user"></i> ${escapeHtml(item.name || 'Unbekannt')} (DN: ${escapeHtml(item.dn || '')})
+                <i class="fas fa-user"></i> ${escapeHtml(item.name || 'Unbekannt')}
               </div>
               <div class="ankundigung-item-type">
                 ${item.dateFormatted || item.createdFormatted}
               </div>
+            </div>
+            <div class="soldaten-gespräch-info">
+              <div><i class="fas fa-hashtag"></i> DN: ${escapeHtml(item.dn || '')}</div>
+              <div><i class="fas fa-building"></i> ${escapeHtml(item.unit || '')}</div>
+              <div><i class="fas fa-user-tie"></i> ${escapeHtml(item.rank || '')}</div>
+              <div><i class="fas fa-clock"></i> ${escapeHtml(item.time || '')}</div>
             </div>
             <div class="soldaten-gespräch-template">
               ${escapeHtml(item.template || 'Keine Vorlage verfügbar')}
@@ -2786,246 +2745,12 @@ Notizen: ${notizen || ''}`;
         soldatenGespräche = soldatenGespräche.filter(i => i.id !== itemId);
         
         renderSoldatenListe();
+        updateStats();
         showNotification('Gespräch gelöscht', 'success');
       } catch (error) {
         console.error('Fehler beim Löschen des Gesprächs:', error);
         showNotification('Fehler beim Löschen: ' + error.message, 'error');
       }
-    }
-
-    // Beobachtungs-Akten Functions
-    function openBeobachtungAktenModal() {
-      openModal('beobachtungModal');
-    }
-
-    function switchBeobachtungTab(tabName) {
-      currentBeobachtungTab = tabName;
-      
-      document.querySelectorAll('.beobachtung-tab').forEach(tab => {
-        tab.classList.remove('active');
-      });
-      
-      if (tabName === 'new') {
-        document.querySelectorAll('.beobachtung-tab')[0].classList.add('active');
-        document.getElementById('beobachtungNewTab').style.display = 'block';
-        document.getElementById('beobachtungListTab').style.display = 'none';
-      } else {
-        document.querySelectorAll('.beobachtung-tab')[1].classList.add('active');
-        document.getElementById('beobachtungNewTab').style.display = 'none';
-        document.getElementById('beobachtungListTab').style.display = 'block';
-        renderAktenListe();
-      }
-    }
-
-    async function createAkte() {
-      const name = document.getElementById('akteName').value.trim();
-      const dn = document.getElementById('akteDN').value.trim();
-      const inhalt = document.getElementById('akteInhalt').value.trim();
-
-      if (!name || !dn || !inhalt) {
-        showNotification('Bitte füllen Sie alle Pflichtfelder aus', 'warning');
-        return;
-      }
-
-      const akte = {
-        id: `AKT-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-        name,
-        dn,
-        beobachtungen: [{
-          content: inhalt,
-          date: new Date().toISOString(),
-          dateFormatted: new Date().toLocaleDateString('de-DE') + ' ' + new Date().toLocaleTimeString('de-DE'),
-          createdBy: 'System'
-        }],
-        created: new Date().toISOString(),
-        createdFormatted: new Date().toLocaleDateString('de-DE'),
-        lastUpdated: new Date().toISOString()
-      };
-
-      try {
-        await db.collection('hrBeobachtungsAkten').doc(akte.id).set(akte);
-        akten.unshift(akte);
-        
-        showNotification('Akte erfolgreich erstellt', 'success');
-        
-        // Felder leeren
-        document.getElementById('akteName').value = '';
-        document.getElementById('akteDN').value = '';
-        document.getElementById('akteInhalt').value = '';
-        
-        // Switch to list tab
-        switchBeobachtungTab('list');
-      } catch (error) {
-        console.error('Fehler beim Erstellen der Akte:', error);
-        showNotification('Fehler beim Erstellen: ' + error.message, 'error');
-      }
-    }
-
-    async function loadAkten() {
-      try {
-        const snapshot = await db.collection('hrBeobachtungsAkten').orderBy('lastUpdated', 'desc').limit(100).get();
-        akten = [];
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          akten.push({ 
-            id: doc.id, 
-            ...data,
-            createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE')
-          });
-        });
-        updateStats();
-      } catch (error) {
-        console.error('Fehler beim Laden der Akten:', error);
-      }
-    }
-
-    function renderAktenListe() {
-      const container = document.getElementById('akteListe');
-      const searchTerm = document.getElementById('beobachtungSearch')?.value.toLowerCase() || '';
-      
-      let filteredAkten = akten;
-      if (searchTerm) {
-        filteredAkten = akten.filter(item => 
-          (item.name && item.name.toLowerCase().includes(searchTerm)) ||
-          (item.dn && item.dn.toLowerCase().includes(searchTerm))
-        );
-      }
-      
-      if (filteredAkten.length === 0) {
-        container.innerHTML = `
-          <div class="empty-ankundigung">
-            <div class="empty-ankundigung-icon"><i class="fas fa-folder-open"></i></div>
-            <div class="empty-ankundigung-title">${searchTerm ? 'Keine passenden Akten gefunden' : 'Keine Akten gefunden'}</div>
-            <div class="empty-description">${searchTerm ? 'Versuchen Sie einen anderen Suchbegriff' : 'Erstellen Sie Ihre erste Akte'}</div>
-          </div>
-        `;
-        return;
-      }
-
-      let html = '';
-      filteredAkten.forEach(item => {
-        const latestBeobachtung = item.beobachtungen && item.beobachtungen.length > 0 
-          ? item.beobachtungen[item.beobachtungen.length - 1].content 
-          : 'Keine Beobachtungen';
-        
-        html += `
-          <div class="beobachtung-akte">
-            <div class="beobachtung-akte-header">
-              <div class="beobachtung-akte-title">
-                <i class="fas fa-user"></i> ${escapeHtml(item.name || 'Unbekannt')} (DN: ${escapeHtml(item.dn || '')})
-              </div>
-              <div class="beobachtung-akte-actions">
-                <button class="ankundigung-item-btn ankundigung-item-btn-copy" onclick="openAkteDetail('${item.id}')">
-                  <i class="fas fa-eye"></i> Öffnen
-                </button>
-              </div>
-            </div>
-            <div class="beobachtung-akte-content">
-              ${escapeHtml(latestBeobachtung.length > 150 ? latestBeobachtung.substring(0, 150) + '...' : latestBeobachtung)}
-            </div>
-            <div class="beobachtung-akte-info">
-              <div><i class="fas fa-calendar"></i> Erstellt: ${item.createdFormatted}</div>
-              <div><i class="fas fa-list-ol"></i> Beobachtungen: ${item.beobachtungen ? item.beobachtungen.length : 0}</div>
-            </div>
-          </div>
-        `;
-      });
-
-      container.innerHTML = html;
-    }
-
-    function searchAkten(searchTerm) {
-      renderAktenListe();
-    }
-
-    async function openAkteDetail(akteId) {
-      currentAkte = akten.find(a => a.id === akteId);
-      if (!currentAkte) return;
-
-      closeModal('beobachtungModal');
-      
-      document.getElementById('detailName').value = currentAkte.name || '';
-      document.getElementById('detailDN').value = currentAkte.dn || '';
-      document.getElementById('akteDetailTitle').textContent = `Akte: ${currentAkte.name} (DN: ${currentAkte.dn})`;
-      
-      updateAkteVerlauf();
-      openModal('akteDetailModal');
-    }
-
-    function updateAkteVerlauf() {
-      if (!currentAkte || !currentAkte.beobachtungen) return;
-      
-      const container = document.getElementById('akteVerlauf');
-      let html = '';
-      
-      currentAkte.beobachtungen.forEach((beobachtung, index) => {
-        html += `[${beobachtung.dateFormatted || 'Unbekannt'}]\n${beobachtung.content}\n\n`;
-      });
-      
-      container.textContent = html || 'Keine Beobachtungen vorhanden.';
-    }
-
-    async function addBeobachtung() {
-      if (!currentAkte) return;
-      
-      const neueBeobachtung = document.getElementById('neueBeobachtung').value.trim();
-      if (!neueBeobachtung) {
-        showNotification('Bitte geben Sie eine Beobachtung ein', 'warning');
-        return;
-      }
-
-      if (!currentAkte.beobachtungen) {
-        currentAkte.beobachtungen = [];
-      }
-
-      const beobachtung = {
-        content: neueBeobachtung,
-        date: new Date().toISOString(),
-        dateFormatted: new Date().toLocaleDateString('de-DE') + ' ' + new Date().toLocaleTimeString('de-DE'),
-        createdBy: 'System'
-      };
-
-      currentAkte.beobachtungen.push(beobachtung);
-      currentAkte.lastUpdated = new Date().toISOString();
-
-      try {
-        await db.collection('hrBeobachtungsAkten').doc(currentAkte.id).set(currentAkte, { merge: true });
-        
-        document.getElementById('neueBeobachtung').value = '';
-        updateAkteVerlauf();
-        showNotification('Beobachtung hinzugefügt', 'success');
-        
-        // Update the main list
-        const index = akten.findIndex(a => a.id === currentAkte.id);
-        if (index !== -1) {
-          akten[index] = currentAkte;
-        }
-      } catch (error) {
-        console.error('Fehler beim Hinzufügen der Beobachtung:', error);
-        showNotification('Fehler beim Hinzufügen: ' + error.message, 'error');
-      }
-    }
-
-    async function copyAkteContent() {
-      if (!currentAkte) return;
-      
-      let content = `📁 **Beobachtungsakte**\n\n`;
-      content += `Name: ${currentAkte.name || ''}\n`;
-      content += `DN: ${currentAkte.dn || ''}\n`;
-      content += `Erstellt: ${currentAkte.createdFormatted || ''}\n\n`;
-      content += `=== Beobachtungen ===\n\n`;
-      
-      if (currentAkte.beobachtungen && currentAkte.beobachtungen.length > 0) {
-        currentAkte.beobachtungen.forEach(beobachtung => {
-          content += `[${beobachtung.dateFormatted || 'Unbekannt'}]\n`;
-          content += `${beobachtung.content}\n\n`;
-        });
-      } else {
-        content += 'Keine Beobachtungen vorhanden.\n';
-      }
-      
-      const success = await copyToClipboard(content);
-      showNotification(success ? 'Akteninhalt kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
     }
 
     // Modal Functions
@@ -3520,7 +3245,7 @@ Sonstiges: ${notes}
 
     function updateStats() {
       document.getElementById('totalEmployees').textContent = employees.length;
-      document.getElementById('totalAkten').textContent = akten.length;
+      document.getElementById('totalSoldaten').textContent = soldatenGespräche.length;
     }
 
     function showEmployeeContextMenu(e, employee) {
