@@ -592,6 +592,7 @@
       animation: slideUp .2s ease;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
 
     .soldaten-header {
@@ -737,6 +738,7 @@
       border-left: 3px solid var(--warning);
       margin-top: 10px;
       margin-bottom: 20px;
+      flex-shrink: 0;
     }
 
     .soldaten-preview-title {
@@ -749,6 +751,7 @@
       gap: 6px;
     }
 
+    /* WICHTIG: Scrollbar für die Vorschau im "Neues Gespräch" Tab */
     .soldaten-preview-content {
       font-family: 'Consolas', 'Monaco', monospace;
       white-space: pre-wrap;
@@ -761,6 +764,30 @@
       border-radius: var(--radius-sm);
       max-height: 200px;
       overflow-y: auto;
+      min-height: 100px;
+    }
+
+    .soldaten-preview-content::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .soldaten-preview-content::-webkit-scrollbar-track {
+      background: rgba(255,255,255,.05);
+      border-radius: 3px;
+    }
+
+    .soldaten-preview-content::-webkit-scrollbar-thumb {
+      background: var(--warning);
+      border-radius: 3px;
+    }
+
+    /* Container für den "Neues Gespräch" Tab-Inhalt */
+    .soldaten-tab-content {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
 
     /* WICHTIG: Scrollbar für Soldatengespräch-Liste */
@@ -1077,6 +1104,7 @@
       animation:slideUp .2s ease;
       display:flex;
       flex-direction:column;
+      overflow:hidden;
     }
     
     .beobachtung-akten-header{
@@ -1222,6 +1250,7 @@
       border-left:3px solid var(--primary);
       margin-top:10px;
       margin-bottom:20px;
+      flex-shrink:0;
     }
     
     .beobachtung-preview-title{
@@ -1246,6 +1275,21 @@
       border-radius:var(--radius-sm);
       max-height:200px;
       overflow-y:auto;
+      min-height:100px;
+    }
+    
+    .beobachtung-preview-content::-webkit-scrollbar{
+      width:6px;
+    }
+    
+    .beobachtung-preview-content::-webkit-scrollbar-track{
+      background:rgba(255,255,255,.05);
+      border-radius:3px;
+    }
+    
+    .beobachtung-preview-content::-webkit-scrollbar-thumb{
+      background:var(--primary);
+      border-radius:3px;
     }
     
     .beobachtung-akten-liste{
@@ -1645,7 +1689,7 @@
         </div>
         
         <!-- Neues Gespräch Tab -->
-        <div class="soldaten-tab-content" id="soldatenNewTab" style="display: flex; flex-direction: column;">
+        <div class="soldaten-tab-content" id="soldatenNewTab">
           <div class="soldaten-form-grid">
             <div class="soldaten-form-group">
               <label class="soldaten-label">Name *</label>
@@ -1750,7 +1794,7 @@ Sonstiges:
         </div>
         
         <!-- Gesprächsliste Tab -->
-        <div class="soldaten-tab-content" id="soldatenListTab" style="display: none; flex-direction: column;">
+        <div class="soldaten-tab-content" id="soldatenListTab" style="display:none;">
           <div class="soldaten-search-container">
             <i class="fas fa-search soldaten-search-icon"></i>
             <input type="text" class="soldaten-search-input" id="soldatenSearch" placeholder="Nach Name oder DN suchen..." oninput="searchSoldaten(this.value)">
@@ -1791,7 +1835,7 @@ Sonstiges:
         </div>
         
         <!-- Neue Akte erstellen Tab -->
-        <div class="beobachtung-tab-content" id="beobachtungNewTab" style="display: flex; flex-direction: column;">
+        <div class="beobachtung-tab-content" id="beobachtungNewTab">
           <div class="akte-form-grid">
             <div class="akte-form-group">
               <label class="akte-label">Name *</label>
@@ -1849,7 +1893,7 @@ Sonstiges:
         </div>
         
         <!-- Akten durchsuchen Tab -->
-        <div class="beobachtung-tab-content" id="beobachtungListTab" style="display: none; flex-direction: column;">
+        <div class="beobachtung-tab-content" id="beobachtungListTab" style="display:none;">
           <div class="akten-search-container">
             <i class="fas fa-search akten-search-icon"></i>
             <input type="text" class="akten-search-input" id="aktenSearch" placeholder="Nach Name oder DN suchen..." oninput="searchAkten(this.value)">
@@ -1865,7 +1909,7 @@ Sonstiges:
         </div>
         
         <!-- Beobachtung hinzufügen Tab -->
-        <div class="beobachtung-tab-content" id="beobachtungBeobachtungTab" style="display: none; flex-direction: column;">
+        <div class="beobachtung-tab-content" id="beobachtungBeobachtungTab" style="display:none;">
           <div class="akte-form-grid">
             <div class="akte-form-group">
               <label class="akte-label">Name *</label>
@@ -2297,7 +2341,7 @@ Grund:
             <option value="Lieutenant General">Lieutenant General</option>
             <option value="Vice General of Army">Vice General of Army</option>
             <option value="General of Army">General of Army</option>
-          </select>
+          </select;
         </div>
       </div>
 
@@ -2483,7 +2527,7 @@ Grund:
       if (tabName === 'new') tabId = 'soldatenNewTab';
       else tabId = 'soldatenListTab';
       
-      document.getElementById(tabId).style.display = 'flex';
+      document.getElementById(tabId).style.display = 'block';
       
       // Load data for the tab
       if (tabName === 'list') {
@@ -2670,8 +2714,6 @@ Sonstiges: ${sonstiges || ''}
       });
 
       container.innerHTML = html;
-      
-      // Scrollbar funktioniert jetzt automatisch durch das CSS
     }
 
     function searchSoldaten(searchTerm) {
@@ -2729,7 +2771,7 @@ Sonstiges: ${sonstiges || ''}
       else if (tabName === 'list') tabId = 'beobachtungListTab';
       else tabId = 'beobachtungBeobachtungTab';
       
-      document.getElementById(tabId).style.display = 'flex';
+      document.getElementById(tabId).style.display = 'block';
       
       // Load data for the tab
       if (tabName === 'list') {
