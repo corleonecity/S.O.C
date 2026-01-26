@@ -464,63 +464,6 @@
     input:checked + .toggle-slider{background-color:var(--secondary)}
     input:checked + .toggle-slider:before{transform:translateX(20px)}
 
-    /* Templates */
-    .templates-section{
-      background:rgba(255,255,255,.03);
-      border-radius:var(--radius-md);
-      padding:16px;
-      border:1px solid rgba(255,255,255,.08);
-    }
-    .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px;flex-wrap:wrap}
-    .section-title{
-      font-size:14px;font-weight:900;color:#fff;
-      display:flex;align-items:center;gap:8px;
-    }
-    .template-actions{display:flex;gap:8px;flex-wrap:wrap}
-
-    /* WICHTIG: Vorlagen untereinander (immer) */
-    .template-cards{
-      display:grid;
-      grid-template-columns:1fr; /* <- war 1fr 1fr */
-      gap:16px;
-    }
-
-    .template-card{
-      background:rgba(0,0,0,.20);
-      border-radius:var(--radius-md);
-      padding:16px;
-      border:1px solid rgba(255,255,255,.08);
-    }
-    .template-card.completed{border-color:var(--secondary)}
-    .template-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px}
-    .template-card-title{
-      font-size:13px;font-weight:900;color:#fff;
-      display:flex;align-items:center;gap:6px;
-    }
-    .template-badge{
-      font-size:10px;font-weight:900;
-      padding:3px 8px;border-radius:12px;
-      background:rgba(79,70,229,.10);
-      color:var(--primary-light);
-      white-space:nowrap;
-    }
-    .template-content{
-      font-family:Consolas,Monaco,monospace;
-      background:rgba(0,0,0,.30);
-      padding:12px;
-      border-radius:var(--radius-sm);
-      border-left:2px solid var(--primary);
-      overflow-x:auto;
-      white-space:pre-wrap;
-      word-wrap:break-word;
-      font-size:11px;
-      line-height:1.4;
-      color:var(--gray-light);
-      max-height:180px;
-      overflow-y:auto;
-    }
-    .template-card.completed .template-content{border-left-color:var(--secondary)}
-
     /* Floating Buttons Container */
     .floating-buttons-container {
       position: fixed;
@@ -874,63 +817,8 @@
       gap: 4px;
     }
 
-    /* GEÄNDERT: Sonstiges mit gleichem Styling wie Notizen */
-    .soldaten-item-notizen {
-      color: var(--gray-light);
-      font-size: 13px;
-      line-height: 1.5;
-      margin-bottom: 12px;
-      padding: 12px;
-      background: rgba(0,0,0,.2);
-      border-radius: var(--radius-sm);
-      border-left: 2px solid var(--warning);
-      max-height: 100px;
-      overflow-y: auto;
-    }
-
-    .soldaten-item-notizen::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .soldaten-item-notizen::-webkit-scrollbar-track {
-      background: rgba(255,255,255,.03);
-      border-radius: 2px;
-    }
-
-    .soldaten-item-notizen::-webkit-scrollbar-thumb {
-      background: rgba(245,158,11,.30);
-      border-radius: 2px;
-    }
-
-    /* Soldatengespräch Sonstiges Styling (jetzt wie Notizen) */
-    .soldaten-item-sonstiges {
-      color: var(--gray-light);
-      font-size: 13px;
-      line-height: 1.5;
-      margin-bottom: 12px;
-      padding: 12px;
-      background: rgba(0,0,0,.2);
-      border-radius: var(--radius-sm);
-      border-left: 2px solid var(--warning);
-      max-height: 100px;
-      overflow-y: auto;
-    }
-
-    .soldaten-item-sonstiges::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .soldaten-item-sonstiges::-webkit-scrollbar-track {
-      background: rgba(255,255,255,.03);
-      border-radius: 2px;
-    }
-
-    .soldaten-item-sonstiges::-webkit-scrollbar-thumb {
-      background: rgba(245,158,11,.30);
-      border-radius: 2px;
-    }
-
-    .soldaten-item-template {
+    /* Soldatengespräch Vorlage */
+    .soldaten-item-vorlage {
       font-family: 'Consolas', 'Monaco', monospace;
       white-space: pre-wrap;
       word-wrap: break-word;
@@ -946,16 +834,16 @@
       margin-bottom: 12px;
     }
 
-    .soldaten-item-template::-webkit-scrollbar {
+    .soldaten-item-vorlage::-webkit-scrollbar {
       width: 4px;
     }
 
-    .soldaten-item-template::-webkit-scrollbar-track {
+    .soldaten-item-vorlage::-webkit-scrollbar-track {
       background: rgba(255,255,255,.03);
       border-radius: 2px;
     }
 
-    .soldaten-item-template::-webkit-scrollbar-thumb {
+    .soldaten-item-vorlage::-webkit-scrollbar-thumb {
       background: rgba(245,158,11,.30);
       border-radius: 2px;
     }
@@ -2692,14 +2580,9 @@ Sonstiges: ${sonstiges || ''}
                 ${gespräch.rank || 'Kein Rang'}
               </div>
             </div>
-            <div class="soldaten-item-notizen">
-              ${escapeHtml(gespräch.notizen.length > 200 ? gespräch.notizen.substring(0, 200) + '...' : gespräch.notizen)}
+            <div class="soldaten-item-vorlage">
+              ${escapeHtml(gespräch.template || '')}
             </div>
-            ${gespräch.sonstiges ? `
-            <div class="soldaten-item-sonstiges">
-              ${escapeHtml(gespräch.sonstiges.length > 200 ? gespräch.sonstiges.substring(0, 200) + '...' : gespräch.sonstiges)}
-            </div>
-            ` : ''}
             <div class="soldaten-item-actions">
               <button class="soldaten-item-btn soldaten-item-btn-copy" onclick="copySoldatenFromList('${gespräch.id}')">
                 <i class="fas fa-copy"></i> Kopieren
@@ -2742,7 +2625,7 @@ Sonstiges: ${sonstiges || ''}
       }
     }
 
-    // Beobachtungs Akten Functions (behalten)
+    // Beobachtungs Akten Functions (mit Bearbeitungsfunktion)
     function openBeobachtungAktenModal() {
       openModal('beobachtungAktenModal');
       updateBeobachtungPreview();
@@ -3045,6 +2928,10 @@ Grund: ${grund || ''}
       const akte = akten.find(a => a.id === akteId);
       if (!akte) return;
 
+      // Bearbeitungs-Formular erstellen
+      let bearbeitenForm = '';
+      
+      // Wenn keine Beobachtungen existieren, zeige eine Meldung
       let beobachtungenHtml = '';
       if (akte.beobachtungen && akte.beobachtungen.length > 0) {
         akte.beobachtungen.forEach(beobachtung => {
@@ -3080,6 +2967,65 @@ Grund: ${grund || ''}
         `;
       }
 
+      // Bearbeitungs-Formular
+      bearbeitenForm = `
+        <div style="background: rgba(0,0,0,.2); border-radius: var(--radius-md); padding: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,.1);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div style="font-weight: 900; color: #fff; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+              <i class="fas fa-edit"></i> Person bearbeiten
+            </div>
+            <button onclick="saveAkteChanges('${akte.id}')" style="background: var(--secondary); color: #fff; border: none; border-radius: var(--radius-md); padding: 8px 16px; font-weight: 900; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: var(--transition);">
+              <i class="fas fa-save"></i> Speichern
+            </button>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+              <label style="display: block; font-weight: 900; color: var(--gray-light); font-size: 11px; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 6px;">Name</label>
+              <input type="text" id="editAkteName" value="${escapeHtml(akte.name)}" style="width: 100%; padding: 10px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: var(--radius-sm); color: #fff; font-size: 14px;">
+            </div>
+            <div>
+              <label style="display: block; font-weight: 900; color: var(--gray-light); font-size: 11px; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 6px;">Dienstnummer (DN)</label>
+              <input type="number" id="editAkteDN" value="${akte.dn}" style="width: 100%; padding: 10px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: var(--radius-sm); color: #fff; font-size: 14px;">
+            </div>
+            <div>
+              <label style="display: block; font-weight: 900; color: var(--gray-light); font-size: 11px; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 6px;">Unit</label>
+              <select id="editAkteUnit" style="width: 100%; padding: 10px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: var(--radius-sm); color: #fff; font-size: 14px; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg fill=\"white\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 10l5 5 5-5z\"/><path d=\"M0 0h24v24H0z\" fill=\"none\"/></svg>'); background-repeat: no-repeat; background-position: right 10px center;">
+                <option value="">Unit auswählen</option>
+                <option value="Air Force" ${akte.unit === 'Air Force' ? 'selected' : ''}>Air Force</option>
+                <option value="S.O.C" ${akte.unit === 'S.O.C' ? 'selected' : ''}>S.O.C</option>
+                <option value="Infantry" ${akte.unit === 'Infantry' ? 'selected' : ''}>Infantry</option>
+                <option value="Military Police" ${akte.unit === 'Military Police' ? 'selected' : ''}>Military Police</option>
+                <option value="Navy Marine" ${akte.unit === 'Navy Marine' ? 'selected' : ''}>Navy Marine</option>
+                <option value="Navy SEALs" ${akte.unit === 'Navy SEALs' ? 'selected' : ''}>Navy SEALs</option>
+              </select>
+            </div>
+            <div>
+              <label style="display: block; font-weight: 900; color: var(--gray-light); font-size: 11px; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 6px;">Rang</label>
+              <select id="editAkteRank" style="width: 100%; padding: 10px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: var(--radius-sm); color: #fff; font-size: 14px; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg fill=\"white\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 10l5 5 5-5z\"/><path d=\"M0 0h24v24H0z\" fill=\"none\"/></svg>'); background-repeat: no-repeat; background-position: right 10px center;">
+                <option value="">Rang auswählen</option>
+                <option value="Private" ${akte.rank === 'Private' ? 'selected' : ''}>Private</option>
+                <option value="Private First Class" ${akte.rank === 'Private First Class' ? 'selected' : ''}>Private First Class</option>
+                <option value="Specialist" ${akte.rank === 'Specialist' ? 'selected' : ''}>Specialist</option>
+                <option value="Corporal" ${akte.rank === 'Corporal' ? 'selected' : ''}>Corporal</option>
+                <option value="Sergeant" ${akte.rank === 'Sergeant' ? 'selected' : ''}>Sergeant</option>
+                <option value="Staff Sergeant" ${akte.rank === 'Staff Sergeant' ? 'selected' : ''}>Staff Sergeant</option>
+                <option value="Sergeant First Class" ${akte.rank === 'Sergeant First Class' ? 'selected' : ''}>Sergeant First Class</option>
+                <option value="Master Sergeant" ${akte.rank === 'Master Sergeant' ? 'selected' : ''}>Master Sergeant</option>
+                <option value="Sergeant Major" ${akte.rank === 'Sergeant Major' ? 'selected' : ''}>Sergeant Major</option>
+                <option value="Lieutenant" ${akte.rank === 'Lieutenant' ? 'selected' : ''}>Lieutenant</option>
+                <option value="Captain" ${akte.rank === 'Captain' ? 'selected' : ''}>Captain</option>
+                <option value="Major" ${akte.rank === 'Major' ? 'selected' : ''}>Major</option>
+                <option value="Colonel" ${akte.rank === 'Colonel' ? 'selected' : ''}>Colonel</option>
+                <option value="Major General" ${akte.rank === 'Major General' ? 'selected' : ''}>Major General</option>
+                <option value="Lieutenant General" ${akte.rank === 'Lieutenant General' ? 'selected' : ''}>Lieutenant General</option>
+                <option value="Vice General of Army" ${akte.rank === 'Vice General of Army' ? 'selected' : ''}>Vice General of Army</option>
+                <option value="General of Army" ${akte.rank === 'General of Army' ? 'selected' : ''}>General of Army</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      `;
+
       // Show in a modal
       const modalHtml = `
         <div class="beobachtung-akten-modal active" onclick="if(event.target===this)closeModal('akteDetailModal')">
@@ -3093,17 +3039,7 @@ Grund: ${grund || ''}
               </button>
             </div>
             <div class="beobachtung-akten-body">
-              <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
-                <div style="background: rgba(79,70,229,.10); color: var(--primary-light); padding: 8px 16px; border-radius: var(--radius-md); font-size: 13px; font-weight: 900; border: 1px solid rgba(79,70,229,.20);">
-                  <i class="fas fa-building"></i> ${akte.unit || 'Keine Unit'}
-                </div>
-                <div style="background: rgba(16,185,129,.10); color: #86efac; padding: 8px 16px; border-radius: var(--radius-md); font-size: 13px; font-weight: 900; border: 1px solid rgba(16,185,129,.20);">
-                  <i class="fas fa-user-tie"></i> ${akte.rank || 'Kein Rang'}
-                </div>
-                <div style="background: rgba(245,158,11,.10); color: #fcd34d; padding: 8px 16px; border-radius: var(--radius-md); font-size: 13px; font-weight: 900; border: 1px solid rgba(245,158,11,.20);">
-                  <i class="fas fa-eye"></i> ${akte.beobachtungen ? akte.beobachtungen.length : 0} Beobachtungen
-                </div>
-              </div>
+              ${bearbeitenForm}
               
               <div class="beobachtung-akten-liste">
                 ${beobachtungenHtml}
@@ -3123,6 +3059,51 @@ Grund: ${grund || ''}
       modalContainer.id = 'akteDetailModal';
       modalContainer.innerHTML = modalHtml;
       document.body.appendChild(modalContainer);
+    }
+
+    async function saveAkteChanges(akteId) {
+      const akte = akten.find(a => a.id === akteId);
+      if (!akte) return;
+
+      const name = document.getElementById('editAkteName').value.trim();
+      const dn = document.getElementById('editAkteDN').value;
+      const unit = document.getElementById('editAkteUnit').value;
+      const rank = document.getElementById('editAkteRank').value;
+
+      if (!name || !dn) {
+        showNotification('Name und Dienstnummer sind Pflichtfelder', 'warning');
+        return;
+      }
+
+      // Update akte
+      akte.name = name;
+      akte.dn = dn;
+      akte.unit = unit || '';
+      akte.rank = rank || '';
+      akte.lastUpdated = new Date().toISOString();
+
+      try {
+        // Update in Firebase
+        await db.collection('hrAkten').doc(akteId).update({
+          name: akte.name,
+          dn: akte.dn,
+          unit: akte.unit,
+          rank: akte.rank,
+          lastUpdated: akte.lastUpdated
+        });
+        
+        showNotification('Aktendaten erfolgreich aktualisiert', 'success');
+        
+        // Update lists
+        renderAktenListe();
+        
+        // Re-open akte detail to refresh view
+        closeModal('akteDetailModal');
+        setTimeout(() => openAkteDetail(akteId), 100);
+      } catch (error) {
+        console.error('Fehler beim Speichern der Aktendaten:', error);
+        showNotification('Fehler beim Speichern: ' + error.message, 'error');
+      }
     }
 
     async function copyBeobachtungFromAkte(akteId, beobachtungId) {
