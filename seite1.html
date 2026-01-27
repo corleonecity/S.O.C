@@ -3114,3 +3114,1629 @@ Grund:
       </div>
     </div>
   </div>
+
+  <script>
+    // Firebase-Konfiguration (ersetzen Sie diese mit Ihren eigenen Daten!)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCy4aX_j7e7wRpQoMxxQZ-70WqXlJ0qDlY",
+      authDomain: "hr-einweisung.firebaseapp.com",
+      projectId: "hr-einweisung",
+      storageBucket: "hr-einweisung.firebasestorage.app",
+      messagingSenderId: "1097625910242447422",
+      appId: "1:1097625910242447422:web:3b9e1f2e8f1c4b2e9f3a1c"
+    };
+
+    // Firebase initialisieren
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // App State
+    let currentEmployee = null;
+    let employees = [];
+    let filteredEmployees = [];
+    let currentFilter = 'all';
+
+    // DOM Elemente
+    const employeeList = document.getElementById('employeeList');
+    const employeeHeader = document.getElementById('employeeHeader');
+    const inductionContent = document.getElementById('inductionContent');
+    const currentEmployeeName = document.getElementById('currentEmployeeName');
+    const currentEmployeeDN = document.getElementById('currentEmployeeDN');
+    const currentEmployeeUnit = document.getElementById('currentEmployeeUnit');
+    const currentEmployeeRank = document.getElementById('currentEmployeeRank');
+    const employeeCount = document.getElementById('employeeCount');
+    const totalEmployees = document.getElementById('totalEmployees');
+    const totalAkten = document.getElementById('totalAkten');
+    const searchEmployeesInput = document.getElementById('searchEmployees');
+
+    // Formularfelder
+    const oralDate = document.getElementById('oralDate');
+    const oralTimeStart = document.getElementById('oralTimeStart');
+    const oralTimeEnd = document.getElementById('oralTimeEnd');
+    const oralPerson = document.getElementById('oralPerson');
+    const unitSelect = document.getElementById('unitSelect');
+    const rankSelect = document.getElementById('rankSelect');
+    const oralNotes = document.getElementById('oralNotes');
+    const oralInductionToggle = document.getElementById('oralInductionToggle');
+    const oralInductionStatus = document.getElementById('oralInductionStatus');
+    const oralInductionCard = document.getElementById('oralInductionCard');
+
+    const orgDate = document.getElementById('orgDate');
+    const orgTimeStart = document.getElementById('orgTimeStart');
+    const orgTimeEnd = document.getElementById('orgTimeEnd');
+    const orgPerson = document.getElementById('orgPerson');
+    const unitSelect2 = document.getElementById('unitSelect2');
+    const rankSelect2 = document.getElementById('rankSelect2');
+    const orgNotes = document.getElementById('orgNotes');
+    const orgInductionToggle = document.getElementById('orgInductionToggle');
+    const orgInductionStatus = document.getElementById('orgInductionStatus');
+    const orgInductionCard = document.getElementById('orgInductionCard');
+
+    // Template Felder
+    const oralTemplateContent = document.getElementById('oralTemplateContent');
+    const orgTemplateContent = document.getElementById('orgTemplateContent');
+    const oralTemplateBadge = document.getElementById('oralTemplateBadge');
+    const orgTemplateBadge = document.getElementById('orgTemplateBadge');
+    const oralTemplateCard = document.getElementById('oralTemplateCard');
+    const orgTemplateCard = document.getElementById('orgTemplateCard');
+
+    // Datum auf heute setzen
+    const today = new Date().toISOString().split('T')[0];
+    oralDate.value = today;
+    orgDate.value = today;
+
+    // Event Listener
+    document.addEventListener('DOMContentLoaded', () => {
+      loadEmployees();
+      setupEventListeners();
+    });
+
+    function setupEventListeners() {
+      // Suchfunktion für Mitarbeiter
+      searchEmployeesInput.addEventListener('input', debounce((e) => {
+        searchEmployees(e.target.value);
+      }, 300));
+
+      // Event Listener für alle Formularfelder
+      const formFields = [
+        oralDate, oralTimeStart, oralTimeEnd, oralPerson, unitSelect, rankSelect, oralNotes,
+        orgDate, orgTimeStart, orgTimeEnd, orgPerson, unitSelect2, rankSelect2, orgNotes
+      ];
+
+      formFields.forEach(field => {
+        if (field) {
+          field.addEventListener('input', debounce(saveCurrentInductionData, 1000));
+          field.addEventListener('change', saveCurrentInductionData);
+        }
+      });
+
+      // Event Listener für Toggle Switches
+      if (oralInductionToggle) {
+        oralInductionToggle.addEventListener('change', (e) => {
+          toggleInduction('oral', e.target.checked);
+        });
+      }
+
+      if (orgInductionToggle) {
+        orgInductionToggle.addEventListener('change', (e) => {
+          toggleInduction('org', e.target.checked);
+        });
+      }
+    }
+
+    // Funktion zum Laden aller Mitarbeiter
+    async function loadEmployees() {
+      try {
+        showLoading();
+        const snapshot = await db.collection('employees').get();
+        employees = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          employees.push({
+            id: doc.id,
+            ...data,
+            oralInduction: data.oralInduction || { completed: false },
+            orgInduction: data.orgInduction || { completed: false }
+          });
+        });
+
+        updateEmployeeStats();
+        filterEmployeesByType(currentFilter);
+        
+        // Laden der Akten für Statistik
+        const aktenSnapshot = await db.collection('beobachtungAkten').get();
+        totalAkten.textContent = aktenSnapshot.size;
+        
+      } catch (error) {
+        console.error('Fehler beim Laden der Mitarbeiter:', error);
+        showNotification('Fehler beim Laden der Daten', 'danger');
+      }
+    }
+
+    // Funktion zum Anzeigen des Ladestatus
+    function showLoading() {
+      employeeList.innerHTML = `
+        <div class="loading">
+          <div class="loading-spinner"></div>
+          <div>Lade Mitarbeiter...</div>
+        </div>
+      `;
+    }
+
+    // Funktion zum Aktualisieren der Mitarbeiterstatistiken
+    function updateEmployeeStats() {
+      totalEmployees.textContent = employees.length;
+      employeeCount.textContent = employees.length;
+      
+      const completedOral = employees.filter(emp => emp.oralInduction?.completed).length;
+      const completedOrg = employees.filter(emp => emp.orgInduction?.completed).length;
+      
+      // Hier könnten Sie weitere Statistiken aktualisieren
+    }
+
+    // Funktion zum Filtern der Mitarbeiter
+    function filterEmployeesByType(type) {
+      currentFilter = type;
+      
+      // Filter-Buttons aktualisieren
+      document.querySelectorAll('.sidebar-filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event?.target.classList.add('active');
+      
+      // Mitarbeiter filtern
+      switch(type) {
+        case 'oral':
+          filteredEmployees = employees.filter(emp => !emp.oralInduction?.completed);
+          break;
+        case 'org':
+          filteredEmployees = employees.filter(emp => !emp.orgInduction?.completed);
+          break;
+        case 'all':
+        default:
+          filteredEmployees = [...employees];
+      }
+      
+      renderEmployeeList();
+    }
+
+    // Funktion zum Suchen von Mitarbeitern
+    function searchEmployees(query) {
+      if (!query.trim()) {
+        filterEmployeesByType(currentFilter);
+        return;
+      }
+      
+      const searchTerm = query.toLowerCase();
+      filteredEmployees = employees.filter(emp => 
+        emp.name.toLowerCase().includes(searchTerm) || 
+        emp.dn.toString().includes(searchTerm) ||
+        emp.unit?.toLowerCase().includes(searchTerm) ||
+        emp.rank?.toLowerCase().includes(searchTerm)
+      );
+      
+      renderEmployeeList();
+    }
+
+    // Funktion zum Rendern der Mitarbeiterliste
+    function renderEmployeeList() {
+      if (filteredEmployees.length === 0) {
+        employeeList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon"><i class="fas fa-user-slash"></i></div>
+            <div class="empty-title">Keine Mitarbeiter gefunden</div>
+            <div class="empty-description">Versuchen Sie einen anderen Suchbegriff</div>
+          </div>
+        `;
+        return;
+      }
+      
+      employeeList.innerHTML = filteredEmployees.map(employee => `
+        <div class="employee-card ${currentEmployee?.id === employee.id ? 'active' : ''}" 
+             onclick="selectEmployee('${employee.id}')">
+          <div class="employee-top-row">
+            <div class="employee-name">${employee.name}</div>
+            <div class="employee-dn">DN-${employee.dn}</div>
+          </div>
+          <div class="employee-meta">
+            <i class="fas fa-building"></i> ${employee.unit || 'Keine Unit'}
+            <i class="fas fa-user-tie"></i> ${employee.rank || 'Kein Rang'}
+          </div>
+          <div class="induction-badges">
+            <div class="induction-badge badge-oral ${employee.oralInduction?.completed ? 'completed' : 'pending'}">
+              <i class="fas fa-comments"></i> Mündlich
+            </div>
+            <div class="induction-badge badge-org ${employee.orgInduction?.completed ? 'completed' : 'pending'}">
+              <i class="fas fa-clipboard-list"></i> Organisatorisch
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Funktion zum Auswählen eines Mitarbeiters
+    async function selectEmployee(employeeId) {
+      const employee = employees.find(emp => emp.id === employeeId);
+      if (!employee) return;
+      
+      currentEmployee = employee;
+      
+      // Aktive Karte aktualisieren
+      document.querySelectorAll('.employee-card').forEach(card => {
+        card.classList.remove('active');
+      });
+      event?.target.closest('.employee-card')?.classList.add('active');
+      
+      // Header aktualisieren
+      currentEmployeeName.textContent = employee.name;
+      currentEmployeeDN.textContent = `DN-${employee.dn}`;
+      currentEmployeeUnit.textContent = employee.unit || 'Keine Unit';
+      currentEmployeeRank.textContent = employee.rank || 'Kein Rang';
+      
+      employeeHeader.style.display = 'flex';
+      inductionContent.style.display = 'flex';
+      
+      // Formulardaten laden
+      loadInductionData(employee);
+      
+      // Templates aktualisieren
+      updateTemplates();
+    }
+
+    // Funktion zum Laden der Einweisungsdaten
+    function loadInductionData(employee) {
+      // Mündliche Einweisung
+      const oral = employee.oralInduction || {};
+      oralDate.value = oral.date || today;
+      oralTimeStart.value = oral.timeStart || '';
+      oralTimeEnd.value = oral.timeEnd || '';
+      oralPerson.value = oral.person || '';
+      unitSelect.value = oral.unit || employee.unit || '';
+      rankSelect.value = oral.rank || employee.rank || '';
+      oralNotes.value = oral.notes || '';
+      oralInductionToggle.checked = oral.completed || false;
+      updateInductionUI('oral', oral.completed);
+      
+      // Organisatorische Einweisung
+      const org = employee.orgInduction || {};
+      orgDate.value = org.date || today;
+      orgTimeStart.value = org.timeStart || '';
+      orgTimeEnd.value = org.timeEnd || '';
+      orgPerson.value = org.person || '';
+      unitSelect2.value = org.unit || employee.unit || '';
+      rankSelect2.value = org.rank || employee.rank || '';
+      orgNotes.value = org.notes || '';
+      orgInductionToggle.checked = org.completed || false;
+      updateInductionUI('org', org.completed);
+    }
+
+    // Funktion zum Speichern der Einweisungsdaten
+    async function saveCurrentInductionData() {
+      if (!currentEmployee) return;
+      
+      try {
+        const oralData = {
+          date: oralDate.value,
+          timeStart: oralTimeStart.value,
+          timeEnd: oralTimeEnd.value,
+          person: oralPerson.value,
+          unit: unitSelect.value,
+          rank: rankSelect.value,
+          notes: oralNotes.value,
+          completed: oralInductionToggle.checked,
+          lastUpdated: new Date().toISOString()
+        };
+        
+        const orgData = {
+          date: orgDate.value,
+          timeStart: orgTimeStart.value,
+          timeEnd: orgTimeEnd.value,
+          person: orgPerson.value,
+          unit: unitSelect2.value,
+          rank: rankSelect2.value,
+          notes: orgNotes.value,
+          completed: orgInductionToggle.checked,
+          lastUpdated: new Date().toISOString()
+        };
+        
+        await db.collection('employees').doc(currentEmployee.id).update({
+          oralInduction: oralData,
+          orgInduction: orgData
+        });
+        
+        // Lokale Daten aktualisieren
+        const employeeIndex = employees.findIndex(emp => emp.id === currentEmployee.id);
+        if (employeeIndex !== -1) {
+          employees[employeeIndex].oralInduction = oralData;
+          employees[employeeIndex].orgInduction = orgData;
+        }
+        
+        updateInductionUI('oral', oralData.completed);
+        updateInductionUI('org', orgData.completed);
+        updateTemplates();
+        
+        showNotification('Änderungen gespeichert', 'success');
+        
+      } catch (error) {
+        console.error('Fehler beim Speichern:', error);
+        showNotification('Fehler beim Speichern', 'danger');
+      }
+    }
+
+    // Funktion zum Umschalten der Einweisung
+    async function toggleInduction(type, completed) {
+      if (!currentEmployee) return;
+      
+      try {
+        const field = type === 'oral' ? 'oralInduction' : 'orgInduction';
+        const data = {
+          [field]: {
+            ...(type === 'oral' ? currentEmployee.oralInduction : currentEmployee.orgInduction),
+            completed,
+            lastUpdated: new Date().toISOString()
+          }
+        };
+        
+        await db.collection('employees').doc(currentEmployee.id).update(data);
+        
+        // Lokale Daten aktualisieren
+        const employeeIndex = employees.findIndex(emp => emp.id === currentEmployee.id);
+        if (employeeIndex !== -1) {
+          if (type === 'oral') {
+            employees[employeeIndex].oralInduction = data.oralInduction;
+          } else {
+            employees[employeeIndex].orgInduction = data.orgInduction;
+          }
+        }
+        
+        updateInductionUI(type, completed);
+        updateTemplates();
+        
+        showNotification(`${type === 'oral' ? 'Mündliche' : 'Organisatorische'} Einweisung ${completed ? 'bestanden' : 'ausstehend'}`, 'success');
+        
+      } catch (error) {
+        console.error('Fehler beim Umschalten:', error);
+        showNotification('Fehler beim Speichern', 'danger');
+      }
+    }
+
+    // Funktion zum Aktualisieren der UI der Einweisung
+    function updateInductionUI(type, completed) {
+      if (type === 'oral') {
+        oralInductionStatus.textContent = completed ? 'BESTANDEN' : 'AUSSTEHEND';
+        oralInductionCard.classList.toggle('completed', completed);
+        oralTemplateBadge.textContent = completed ? 'BESTANDEN' : 'AUSSTEHEND';
+        oralTemplateCard.classList.toggle('completed', completed);
+      } else {
+        orgInductionStatus.textContent = completed ? 'BESTANDEN' : 'AUSSTEHEND';
+        orgInductionCard.classList.toggle('completed', completed);
+        orgTemplateBadge.textContent = completed ? 'BESTANDEN' : 'AUSSTEHEND';
+        orgTemplateCard.classList.toggle('completed', completed);
+      }
+    }
+
+    // Funktion zum Aktualisieren der Templates
+    function updateTemplates() {
+      if (!currentEmployee) return;
+      
+      const oral = currentEmployee.oralInduction || {};
+      const org = currentEmployee.orgInduction || {};
+      
+      // Mündliches Template
+      oralTemplateContent.textContent = generateOralTemplate(currentEmployee, oral);
+      
+      // Organisatorisches Template
+      orgTemplateContent.textContent = generateOrgTemplate(currentEmployee, org);
+    }
+
+    // Funktion zum Generieren des mündlichen Templates
+    function generateOralTemplate(employee, data) {
+      const date = data.date ? new Date(data.date).toLocaleDateString('de-DE') : '-';
+      const time = data.timeStart && data.timeEnd ? `${data.timeStart} - ${data.timeEnd}` : '-';
+      
+      return `╔═══════════════════════════════════════════════════════════════════════╗
+MÜNDLICHE EINWEISUNG
+
+Name: ${employee.name}
+DN: ${employee.dn}
+Unit: ${data.unit || employee.unit || '-'}
+Rang: ${data.rank || employee.rank || '-'}
+Datum: ${date}
+Uhrzeit: ${time}
+Beteiligte Person: ${data.person || '-'}
+
+Sonstige Bemerkungen:
+${data.notes || '-'}
+
+Status: ${data.completed ? '✅ BESTANDEN' : '❌ AUSSTEHEND'}
+╚═══════════════════════════════════════════════════════════════════════╝`;
+    }
+
+    // Funktion zum Generieren des organisatorischen Templates
+    function generateOrgTemplate(employee, data) {
+      const date = data.date ? new Date(data.date).toLocaleDateString('de-DE') : '-';
+      const time = data.timeStart && data.timeEnd ? `${data.timeStart} - ${data.timeEnd}` : '-';
+      
+      return `╔═══════════════════════════════════════════════════════════════════════╗
+ORGANISATORISCHE EINWEISUNG
+
+Name: ${employee.name}
+DN: ${employee.dn}
+Unit: ${data.unit || employee.unit || '-'}
+Rang: ${data.rank || employee.rank || '-'}
+Datum: ${date}
+Uhrzeit: ${time}
+Beteiligte Person: ${data.person || '-'}
+
+Sonstige Bemerkungen:
+${data.notes || '-'}
+
+Status: ${data.completed ? '✅ BESTANDEN' : '❌ AUSSTEHEND'}
+╚═══════════════════════════════════════════════════════════════════════╝`;
+    }
+
+    // Funktion zum Kopieren des mündlichen Templates
+    async function copyOralTemplate() {
+      if (!currentEmployee) {
+        showNotification('Bitte wählen Sie zuerst einen Mitarbeiter aus', 'warning');
+        return;
+      }
+      
+      try {
+        await navigator.clipboard.writeText(oralTemplateContent.textContent);
+        showNotification('Mündliches Template kopiert', 'success');
+      } catch (error) {
+        console.error('Fehler beim Kopieren:', error);
+        showNotification('Fehler beim Kopieren', 'danger');
+      }
+    }
+
+    // Funktion zum Kopieren des organisatorischen Templates
+    async function copyOrgTemplate() {
+      if (!currentEmployee) {
+        showNotification('Bitte wählen Sie zuerst einen Mitarbeiter aus', 'warning');
+        return;
+      }
+      
+      try {
+        await navigator.clipboard.writeText(orgTemplateContent.textContent);
+        showNotification('Organisatorisches Template kopiert', 'success');
+      } catch (error) {
+        console.error('Fehler beim Kopieren:', error);
+        showNotification('Fehler beim Kopieren', 'danger');
+      }
+    }
+
+    // Funktion zum Öffnen des Modals für neue Mitarbeiter
+    function openNewEmployeeModal() {
+      document.getElementById('newEmployeeModal').classList.add('active');
+      document.getElementById('newEmployeeName').value = '';
+      document.getElementById('newEmployeeDN').value = '';
+      document.getElementById('newEmployeeUnit').value = '';
+      document.getElementById('newEmployeeRank').value = '';
+    }
+
+    // Funktion zum Erstellen eines neuen Mitarbeiters
+    async function createNewEmployee() {
+      const name = document.getElementById('newEmployeeName').value.trim();
+      const dn = document.getElementById('newEmployeeDN').value;
+      const unit = document.getElementById('newEmployeeUnit').value;
+      const rank = document.getElementById('newEmployeeRank').value;
+      
+      if (!name || !dn) {
+        showNotification('Bitte Name und Dienstnummer eingeben', 'warning');
+        return;
+      }
+      
+      if (employees.some(emp => emp.dn.toString() === dn)) {
+        showNotification('Diese Dienstnummer existiert bereits', 'warning');
+        return;
+      }
+      
+      try {
+        const employeeData = {
+          name,
+          dn: parseInt(dn),
+          unit: unit || '',
+          rank: rank || '',
+          oralInduction: { completed: false },
+          orgInduction: { completed: false },
+          createdAt: new Date().toISOString()
+        };
+        
+        const docRef = await db.collection('employees').add(employeeData);
+        
+        employees.push({
+          id: docRef.id,
+          ...employeeData
+        });
+        
+        updateEmployeeStats();
+        filterEmployeesByType(currentFilter);
+        closeModal('newEmployeeModal');
+        showNotification('Mitarbeiter erfolgreich erstellt', 'success');
+        
+      } catch (error) {
+        console.error('Fehler beim Erstellen:', error);
+        showNotification('Fehler beim Erstellen des Mitarbeiters', 'danger');
+      }
+    }
+
+    // Funktion zum Öffnen des Bearbeitungsmodals
+    function openEditEmployeeModal() {
+      if (!currentEmployee) {
+        showNotification('Bitte wählen Sie zuerst einen Mitarbeiter aus', 'warning');
+        return;
+      }
+      
+      document.getElementById('editEmployeeModal').classList.add('active');
+      document.getElementById('editEmployeeName').value = currentEmployee.name;
+      document.getElementById('editEmployeeDN').value = currentEmployee.dn;
+      document.getElementById('editEmployeeUnit').value = currentEmployee.unit || '';
+      document.getElementById('editEmployeeRank').value = currentEmployee.rank || '';
+    }
+
+    // Funktion zum Speichern der bearbeiteten Mitarbeiterdaten
+    async function saveEditedEmployee() {
+      if (!currentEmployee) return;
+      
+      const name = document.getElementById('editEmployeeName').value.trim();
+      const dn = document.getElementById('editEmployeeDN').value;
+      const unit = document.getElementById('editEmployeeUnit').value;
+      const rank = document.getElementById('editEmployeeRank').value;
+      
+      if (!name || !dn) {
+        showNotification('Bitte Name und Dienstnummer eingeben', 'warning');
+        return;
+      }
+      
+      // Prüfen, ob DN bereits von einem anderen Mitarbeiter verwendet wird
+      const dnExists = employees.some(emp => 
+        emp.id !== currentEmployee.id && emp.dn.toString() === dn
+      );
+      
+      if (dnExists) {
+        showNotification('Diese Dienstnummer wird bereits verwendet', 'warning');
+        return;
+      }
+      
+      try {
+        const updateData = {
+          name,
+          dn: parseInt(dn),
+          unit: unit || '',
+          rank: rank || '',
+          updatedAt: new Date().toISOString()
+        };
+        
+        await db.collection('employees').doc(currentEmployee.id).update(updateData);
+        
+        // Lokale Daten aktualisieren
+        const employeeIndex = employees.findIndex(emp => emp.id === currentEmployee.id);
+        if (employeeIndex !== -1) {
+          employees[employeeIndex] = {
+            ...employees[employeeIndex],
+            ...updateData
+          };
+        }
+        
+        // Aktuelle Ansicht aktualisieren
+        currentEmployee = {
+          ...currentEmployee,
+          ...updateData
+        };
+        
+        currentEmployeeName.textContent = name;
+        currentEmployeeDN.textContent = `DN-${dn}`;
+        currentEmployeeUnit.textContent = unit || 'Keine Unit';
+        currentEmployeeRank.textContent = rank || 'Kein Rang';
+        
+        closeModal('editEmployeeModal');
+        renderEmployeeList();
+        updateTemplates();
+        showNotification('Mitarbeiter erfolgreich aktualisiert', 'success');
+        
+      } catch (error) {
+        console.error('Fehler beim Aktualisieren:', error);
+        showNotification('Fehler beim Aktualisieren des Mitarbeiters', 'danger');
+      }
+    }
+
+    // Funktion zum Löschen des aktuellen Mitarbeiters
+    async function deleteCurrentEmployee() {
+      if (!currentEmployee) return;
+      
+      if (!confirm(`Möchten Sie den Mitarbeiter "${currentEmployee.name}" wirklich löschen?`)) {
+        return;
+      }
+      
+      try {
+        await db.collection('employees').doc(currentEmployee.id).delete();
+        
+        // Aus lokaler Liste entfernen
+        employees = employees.filter(emp => emp.id !== currentEmployee.id);
+        
+        // Reset current view
+        currentEmployee = null;
+        employeeHeader.style.display = 'none';
+        inductionContent.style.display = 'none';
+        
+        updateEmployeeStats();
+        filterEmployeesByType(currentFilter);
+        closeModal('editEmployeeModal');
+        showNotification('Mitarbeiter erfolgreich gelöscht', 'success');
+        
+      } catch (error) {
+        console.error('Fehler beim Löschen:', error);
+        showNotification('Fehler beim Löschen des Mitarbeiters', 'danger');
+      }
+    }
+
+    // Funktion zum Anzeigen von Benachrichtigungen
+    function showNotification(message, type = 'success') {
+      const notification = document.getElementById('notification');
+      const notificationMessage = document.getElementById('notificationMessage');
+      
+      notification.className = 'notification';
+      notification.classList.add(type === 'success' ? 'success' : type === 'warning' ? 'warning' : 'danger');
+      notificationMessage.textContent = message;
+      
+      notification.classList.add('show');
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+
+    // Funktion zum Schließen von Modals
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    // Debounce-Funktion für Suchfunktion
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    // Funktionen für Ankündigungen Modal
+    function openAnkundigungModal() {
+      document.getElementById('ankundigungModal').classList.add('active');
+      switchAnkundigungTab('new');
+    }
+
+    function switchAnkundigungTab(tab) {
+      // Tabs aktualisieren
+      document.querySelectorAll('.ankundigung-tab').forEach(t => t.classList.remove('active'));
+      event?.target.classList.add('active');
+      
+      // Tab-Inhalte ausblenden
+      document.querySelectorAll('.ankundigung-tab-content').forEach(content => {
+        content.style.display = 'none';
+      });
+      
+      // Gewählten Tab anzeigen
+      document.getElementById(`ankundigung${capitalizeFirstLetter(tab)}Tab`).style.display = 'flex';
+      
+      if (tab === 'list') {
+        loadAnkundigungen();
+      }
+    }
+
+    // Funktionen für Soldatengespräche Modal
+    function openSoldatenModal() {
+      document.getElementById('soldatenModal').classList.add('active');
+      switchSoldatenTab('new');
+    }
+
+    function switchSoldatenTab(tab) {
+      // Tabs aktualisieren
+      document.querySelectorAll('.soldaten-tab').forEach(t => t.classList.remove('active'));
+      event?.target.classList.add('active');
+      
+      // Tab-Inhalte ausblenden
+      document.querySelectorAll('.soldaten-tab-content').forEach(content => {
+        content.style.display = 'none';
+      });
+      
+      // Gewählten Tab anzeigen
+      document.getElementById(`soldaten${capitalizeFirstLetter(tab)}Tab`).style.display = 'flex';
+      
+      if (tab === 'list') {
+        loadSoldatenGespräche();
+      }
+    }
+
+    // Funktionen für Beobachtungs-Akten Modal
+    function openBeobachtungAktenModal() {
+      document.getElementById('beobachtungAktenModal').classList.add('active');
+      switchBeobachtungTab('new');
+    }
+
+    function switchBeobachtungTab(tab) {
+      // Tabs aktualisieren
+      document.querySelectorAll('.beobachtung-tab').forEach(t => t.classList.remove('active'));
+      event?.target.classList.add('active');
+      
+      // Tab-Inhalte ausblenden
+      document.querySelectorAll('.beobachtung-tab-content').forEach(content => {
+        content.style.display = 'none';
+      });
+      
+      // Gewählten Tab anzeigen
+      document.getElementById(`beobachtung${capitalizeFirstLetter(tab)}Tab`).style.display = 'flex';
+      
+      if (tab === 'list') {
+        loadAkten();
+      }
+    }
+
+    // Hilfsfunktion für Großbuchstaben
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    // Laden von Ankündigungen
+    async function loadAnkundigungen() {
+      try {
+        const snapshot = await db.collection('ankundigungen').orderBy('createdAt', 'desc').get();
+        const ankundigungen = [];
+        snapshot.forEach(doc => {
+          ankundigungen.push({
+            id: doc.id,
+            ...doc.data()
+          });
+        });
+        renderAnkundigungen(ankundigungen);
+      } catch (error) {
+        console.error('Fehler beim Laden der Ankündigungen:', error);
+      }
+    }
+
+    // Rendern von Ankündigungen
+    function renderAnkundigungen(ankundigungen) {
+      const container = document.getElementById('ankundigungListe');
+      if (!ankundigungen.length) {
+        container.innerHTML = `
+          <div class="empty-ankundigung">
+            <div class="empty-ankundigung-icon"><i class="fas fa-bullhorn"></i></div>
+            <div class="empty-ankundigung-title">Keine Ankündigungen gefunden</div>
+            <div class="empty-description">Erstellen Sie Ihre erste Ankündigung</div>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = ankundigungen.map(item => `
+        <div class="ankundigung-item">
+          <div class="ankundigung-item-header">
+            <div class="ankundigung-item-title">${item.title || 'Ohne Titel'}</div>
+            <div class="ankundigung-item-type">${item.type || 'Ankündigung'}</div>
+          </div>
+          <div class="ankundigung-item-date">
+            <i class="fas fa-calendar"></i> ${new Date(item.createdAt).toLocaleDateString('de-DE')}
+          </div>
+          <div class="ankundigung-item-content">${item.content || ''}</div>
+          ${item.template ? `<div class="ankundigung-item-template">${item.template}</div>` : ''}
+          <div class="ankundigung-item-actions">
+            <button class="ankundigung-item-btn ankundigung-item-btn-copy" onclick="copyToClipboard('${item.template || item.content}')">
+              <i class="fas fa-copy"></i> Kopieren
+            </button>
+            <button class="ankundigung-item-btn ankundigung-item-btn-delete" onclick="deleteAnkundigung('${item.id}')">
+              <i class="fas fa-trash"></i> Löschen
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Laden von Soldatengesprächen
+    async function loadSoldatenGespräche() {
+      try {
+        const snapshot = await db.collection('soldatenGespräche').orderBy('datum', 'desc').get();
+        const gespräche = [];
+        snapshot.forEach(doc => {
+          gespräche.push({
+            id: doc.id,
+            ...doc.data()
+          });
+        });
+        renderSoldatenGespräche(gespräche);
+      } catch (error) {
+        console.error('Fehler beim Laden der Gespräche:', error);
+      }
+    }
+
+    // Rendern von Soldatengesprächen
+    function renderSoldatenGespräche(gespräche) {
+      const container = document.getElementById('soldatenListe');
+      if (!gespräche.length) {
+        container.innerHTML = `
+          <div class="empty-soldaten">
+            <div class="empty-soldaten-icon"><i class="fas fa-comments"></i></div>
+            <div class="empty-soldaten-title">Keine Gespräche gefunden</div>
+            <div class="empty-description">Erstellen Sie Ihr erstes Soldatengespräch</div>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = gespräche.map(item => `
+        <div class="soldaten-item">
+          <div class="soldaten-item-header">
+            <div class="soldaten-item-name">${item.name || 'Unbekannt'}</div>
+            <div class="soldaten-item-dn">DN-${item.dn || '???'}</div>
+          </div>
+          <div class="soldaten-item-date">
+            <i class="fas fa-calendar"></i> ${new Date(item.datum).toLocaleDateString('de-DE')} 
+            <i class="fas fa-clock"></i> ${item.uhrzeit || ''}
+          </div>
+          ${item.notizen ? `<div class="soldaten-item-notizen">${item.notizen}</div>` : ''}
+          ${item.sonstiges ? `<div class="soldaten-item-sonstiges">${item.sonstiges}</div>` : ''}
+          ${item.template ? `<div class="soldaten-item-template">${item.template}</div>` : ''}
+          <div class="soldaten-item-actions">
+            <button class="soldaten-item-btn soldaten-item-btn-copy" onclick="copyToClipboard('${item.template || item.notizen}')">
+              <i class="fas fa-copy"></i> Kopieren
+            </button>
+            <button class="soldaten-item-btn soldaten-item-btn-delete" onclick="deleteSoldatenGespräch('${item.id}')">
+              <i class="fas fa-trash"></i> Löschen
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Laden von Akten
+    async function loadAkten() {
+      try {
+        const snapshot = await db.collection('beobachtungAkten').orderBy('createdAt', 'desc').get();
+        const akten = [];
+        snapshot.forEach(doc => {
+          akten.push({
+            id: doc.id,
+            ...doc.data()
+          });
+        });
+        renderAkten(akten);
+      } catch (error) {
+        console.error('Fehler beim Laden der Akten:', error);
+      }
+    }
+
+    // Rendern von Akten
+    function renderAkten(akten) {
+      const container = document.getElementById('aktenListe');
+      if (!akten.length) {
+        container.innerHTML = `
+          <div class="empty-beobachtungen">
+            <div class="empty-beobachtungen-icon"><i class="fas fa-folder-open"></i></div>
+            <div class="empty-beobachtungen-title">Keine Akten gefunden</div>
+            <div class="empty-description">Erstellen Sie Ihre erste Akte</div>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = akten.map(item => `
+        <div class="beobachtung-akte-item">
+          <div class="beobachtung-akte-header">
+            <div class="beobachtung-akte-name">${item.name || 'Unbekannt'}</div>
+            <div class="beobachtung-akte-dn">DN-${item.dn || '???'}</div>
+          </div>
+          <div class="beobachtung-akte-date">
+            <i class="fas fa-calendar"></i> ${new Date(item.createdAt).toLocaleDateString('de-DE')}
+          </div>
+          ${item.grund ? `<div class="beobachtung-akte-grund">${item.grund}</div>` : ''}
+          ${item.template ? `<div class="beobachtung-akte-template">${item.template}</div>` : ''}
+          <div class="beobachtung-akte-actions">
+            <button class="beobachtung-akte-btn beobachtung-akte-btn-copy" onclick="copyToClipboard('${item.template || item.grund}')">
+              <i class="fas fa-copy"></i> Kopieren
+            </button>
+            <button class="beobachtung-akte-btn beobachtung-akte-btn-delete" onclick="deleteAkte('${item.id}')">
+              <i class="fas fa-trash"></i> Löschen
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Kopieren in die Zwischenablage
+    async function copyToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        showNotification('In Zwischenablage kopiert', 'success');
+      } catch (error) {
+        console.error('Fehler beim Kopieren:', error);
+        showNotification('Fehler beim Kopieren', 'danger');
+      }
+    }
+
+    // Suchfunktion für Ankündigungen
+    async function searchAnkundigungen(query) {
+      try {
+        let ankundigungen = [];
+        const snapshot = await db.collection('ankundigungen').orderBy('createdAt', 'desc').get();
+        
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          if (query.trim() === '' || 
+              (data.title && data.title.toLowerCase().includes(query.toLowerCase())) ||
+              (data.content && data.content.toLowerCase().includes(query.toLowerCase()))) {
+            ankundigungen.push({
+              id: doc.id,
+              ...data
+            });
+          }
+        });
+        
+        renderAnkundigungen(ankundigungen);
+      } catch (error) {
+        console.error('Fehler bei der Suche:', error);
+      }
+    }
+
+    // Suchfunktion für Soldatengespräche
+    async function searchSoldaten(query) {
+      try {
+        let gespräche = [];
+        const snapshot = await db.collection('soldatenGespräche').orderBy('datum', 'desc').get();
+        
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          if (query.trim() === '' || 
+              (data.name && data.name.toLowerCase().includes(query.toLowerCase())) ||
+              (data.dn && data.dn.toString().includes(query))) {
+            gespräche.push({
+              id: doc.id,
+              ...data
+            });
+          }
+        });
+        
+        renderSoldatenGespräche(gespräche);
+      } catch (error) {
+        console.error('Fehler bei der Suche:', error);
+      }
+    }
+
+    // Suchfunktion für Akten
+    async function searchAkten(query) {
+      try {
+        let akten = [];
+        const snapshot = await db.collection('beobachtungAkten').orderBy('createdAt', 'desc').get();
+        
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          if (query.trim() === '' || 
+              (data.name && data.name.toLowerCase().includes(query.toLowerCase())) ||
+              (data.dn && data.dn.toString().includes(query))) {
+            akten.push({
+              id: doc.id,
+              ...data
+            });
+          }
+        });
+        
+        renderAkten(akten);
+      } catch (error) {
+        console.error('Fehler bei der Suche:', error);
+      }
+    }
+
+    // Funktion zum Speichern einer Ankündigung
+    async function saveAnkundigung() {
+      const title = document.getElementById('ankundigungTitle').value.trim();
+      const content = document.getElementById('ankundigungContent').value.trim();
+      
+      if (!content) {
+        showNotification('Bitte geben Sie einen Inhalt ein', 'warning');
+        return;
+      }
+      
+      try {
+        const template = generateAnkundigungTemplate(title, content);
+        const ankundigungData = {
+          type: 'Ankündigung',
+          title: title || 'Ohne Titel',
+          content,
+          template,
+          createdAt: new Date().toISOString()
+        };
+        
+        await db.collection('ankundigungen').add(ankundigungData);
+        
+        // Formular zurücksetzen
+        document.getElementById('ankundigungTitle').value = '';
+        document.getElementById('ankundigungContent').value = '';
+        document.getElementById('ankundigungPreview').textContent = '🪧 **Ankündigung**\n\n';
+        
+        showNotification('Ankündigung gespeichert', 'success');
+        
+      } catch (error) {
+        console.error('Fehler beim Speichern:', error);
+        showNotification('Fehler beim Speichern', 'danger');
+      }
+    }
+
+    // Funktion zum Generieren des Ankündigungstemplates
+    function generateAnkundigungTemplate(title, content) {
+      return `🪧 **${title || 'Ankündigung'}**
+
+${content}
+
+─────────────────────`;
+    }
+
+    // Funktion zum Kopieren des Ankündigungstemplates
+    async function copyAnkundigungTemplate() {
+      const title = document.getElementById('ankundigungTitle').value.trim();
+      const content = document.getElementById('ankundigungContent').value.trim();
+      
+      if (!content) {
+        showNotification('Bitte geben Sie einen Inhalt ein', 'warning');
+        return;
+      }
+      
+      const template = generateAnkündigungTemplate(title, content);
+      
+      try {
+        await navigator.clipboard.writeText(template);
+        showNotification('Ankündigung kopiert', 'success');
+      } catch (error) {
+        console.error('Fehler beim Kopieren:', error);
+        showNotification('Fehler beim Kopieren', 'danger');
+      }
+    }
+
+    // Funktion zum Speichern einer Besprechung
+    async function saveBesprechung() {
+      const thema = document.getElementById('besprechungThema').value.trim();
+      const date = document.getElementById('besprechungDate').value;
+      const time = document.getElementById('besprechungTime').value;
+      const ort = document.getElementById('besprechungOrt').value.trim();
+      const content = document.getElementById('besprechungContent').value.trim();
+      
+      if (!thema || !date || !time || !content) {
+        showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
+        return;
+      }
+      
+      try {
+        const template = generateBesprechungTemplate(thema, date, time, ort, content);
+        const besprechungData = {
+          type: 'Besprechung',
+          thema,
+          date,
+          time,
+          ort,
+          content,
+          template,
+          createdAt: new Date().toISOString()
+        };
+        
+        await db.collection('ankundigungen').add(besprechungData);
+        
+        // Formular zurücksetzen
+        document.getElementById('besprechungThema').value = '';
+        document.getElementById('besprechungDate').value = '';
+        document.getElementById('besprechungTime').value = '';
+        document.getElementById('besprechungOrt').value = '';
+        document.getElementById('besprechungContent').value = '';
+        document.getElementById('besprechungPreview').textContent = '🖊️ **Besprechung**\n\nThema: \nDatum: \nUhrzeit: \nOrt: \n\n';
+        
+        showNotification('Besprechung gespeichert', 'success');
+        
+      } catch (error) {
+        console.error('Fehler beim Speichern:', error);
+        showNotification('Fehler beim Speichern', 'danger');
+      }
+    }
+
+    // Funktion zum Generieren des Besprechungstemplates
+    function generateBesprechungTemplate(thema, date, time, ort, content) {
+      const formattedDate = new Date(date).toLocaleDateString('de-DE');
+      
+      return `🖊️ **Besprechung**
+
+Thema: ${thema}
+Datum: ${formattedDate}
+Uhrzeit: ${time}
+Ort: ${ort || '-'}
+
+${content}
+
+─────────────────────`;
+    }
+
+    // Funktion zum Kopieren des Besprechungstemplates
+    async function copyBesprechungTemplate() {
+      const thema = document.getElementById('besprechungThema').value.trim();
+      const date = document.getElementById('besprechungDate').value;
+      const time = document.getElementById('besprechungTime').value;
+      const ort = document.getElementById('besprechungOrt').value.trim();
+      const content = document.getElementById('besprechungContent').value.trim();
+      
+      if (!thema || !date || !time || !content) {
+        showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
+        return;
+      }
+      
+      const template = generateBesprechungTemplate(thema, date, time, ort, content);
+      
+      try {
+        await navigator.clipboard.writeText(template);
+        showNotification('Besprechung kopiert', 'success');
+      } catch (error) {
+        console.error('Fehler beim Kopieren:', error);
+        showNotification('Fehler beim Kopieren', 'danger');
+      }
+    }
+
+    // Funktion zum Speichern einer Aufstellung
+    async function saveAufstellung() {
+      const typ = document.getElementById('aufstellungTyp').value;
+      const date = document.getElementById('aufstellungDate').value;
+      const time = document.getElementById('aufstellungTime').value;
+      const ort = document.getElementById('aufstellungOrt').value.trim();
+      const bemerkungen = document.getElementById('aufstellungBemerkungen').value.trim();
+      
+      if (!typ || !date || !time || !ort) {
+        showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
+        return;
+      }
+      
+      try {
+        const template = generateAufstellungTemplate(typ, date, time, ort, bemerkungen);
+        const aufstellungData = {
+          type: 'Aufstellung',
+          typ,
+          date,
+          time,
+          ort,
+          bemerkungen,
+          template,
+          createdAt: new Date().toISOString()
+        };
+        
+        await db.collection('ankundigungen').add(aufstellungData);
+        
+        // Formular zurücksetzen
+        document.getElementById('aufstellungTyp').value = '';
+        document.getElementById('aufstellungDate').value = '';
+        document.getElementById('aufstellungTime').value = '';
+        document.getElementById('aufstellungOrt').value = '';
+        document.getElementById('aufstellungBemerkungen').value = '';
+        document.getElementById('aufstellungPreview').textContent = '🕛 **Aufstellung**\n\nTyp: \nDatum: \nUhrzeit: \nOrt: \nBemerkungen:\n';
+        
+        showNotification('Aufstellung gespeichert', 'success');
+        
+      } catch (error) {
+        console.error('Fehler beim Speichern:', error);
+        showNotification('Fehler beim Speichern', 'danger');
+      }
+    }
+
+    // Funktion zum Generieren des Aufstellungstemplates
+    function generateAufstellungTemplate(typ, date, time, ort, bemerkungen) {
+      const formattedDate = new Date(date).toLocaleDateString('de-DE');
+      
+      return `🕛 **${typ}**
+
+Datum: ${formattedDate}
+Uhrzeit: ${time}
+Ort: ${ort}
+${bemerkungen ? `Bemerkungen: ${bemerkungen}` : ''}
+
+─────────────────────`;
+    }
+
+    // Funktion zum Kopieren des Aufstellungstemplates
+    async function copyAufstellungTemplate() {
+      const typ = document.getElementById('aufstellungTyp').value;
+      const date = document.getElementById('aufstellungDate').value;
+      const time = document.getElementById('aufstellungTime').value;
+      const ort = document.getElementById('aufstellungOrt').value.trim();
+      const bemerkungen = document.getElementById('aufstellungBemerkungen').value.trim();
+      
+      if (!typ || !date || !time || !ort) {
+        showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
+        return;
+      }
+      
+      const template = generateAufstellungTemplate(typ, date, time, ort, bemerkungen);
+      
+      try {
+        await navigator.clipboard.writeText(template);
+        showNotification('Aufstellung kopiert', 'success');
+      } catch (error) {
+        console.error('Fehler beim Kopieren:', error);
+        showNotification('Fehler beim Kopieren', 'danger');
+      }
+    }
+
+    // Funktion zum Speichern eines Soldatengesprächs
+    async function saveSoldatenGespräch() {
+      const name = document.getElementById('soldatenName').value.trim();
+      const dn = document.getElementById('soldatenDN').value;
+      const unit = document.getElementById('soldatenUnit').value;
+      const rank = document.getElementById('soldatenRank').value;
+      const date = document.getElementById('soldatenDate').value;
+      const time = document.getElementById('soldatenTime').value;
+      const notizen = document.getElementById('soldatenNotizen').value.trim();
+      const sonstiges = document.getElementById('soldatenSonstiges').value.trim();
+      
+      if (!name || !dn || !date || !time || !notizen) {
+        showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
+        return;
+      }
+      
+      try {
+        const template = generateSoldatenTemplate(name, dn, unit, rank, date, time, notizen, sonstiges);
+        const gesprächData = {
+          name,
+          dn: parseInt(dn),
+          unit: unit || '',
+          rank: rank || '',
+          datum: date,
+          uhrzeit: time,
+          notizen,
+          sonstiges: sonstiges || '',
+          template,
+          createdAt: new Date().toISOString()
+        };
+        
+        await db.collection('soldatenGespräche').add(gesprächData);
+        
+        // Formular zurücksetzen
+        document.getElementById('soldatenName').value = '';
+        document.getElementById('soldatenDN').value = '';
+        document.getElementById('soldatenUnit').value = '';
+        document.getElementById('soldatenRank').value = '';
+        document.getElementById('soldatenDate').value = '';
+        document.getElementById('soldatenTime').value = '';
+        document.getElementById('soldatenNotizen').value = '';
+        document.getElementById('soldatenSonstiges').value = '';
+        document.getElementById('soldatenPreview').textContent = `╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+Soldatengespräch
+
+Name: 
+DN: 
+Hauptunit: 
+Rang: 
+Datum:
+Uhrzeit: 
+Notizen:
+Sonstiges:
+
+/////////////////////////////////////////////////////////////////////////
+<@&1097625910242447422>
+╚══════════════════`;
+        
+        showNotification('Soldatengespräch gespeichert', 'success');
+        
+      } catch (error) {
+        console.error('Fehler beim Speichern:', error);
+        showNotification('Fehler beim Speichern', 'danger');
+      }
+    }
+
+    // Funktion zum Generieren des Soldatengespräch-Templates
+    function generateSoldatenTemplate(name, dn, unit, rank, date, time, notizen, sonstiges) {
+      const formattedDate = new Date(date).toLocaleDateString('de-DE');
+      
+      return `╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+Soldatengespräch
+
+Name: ${name}
+DN: ${dn}
+Hauptunit: ${unit || '-'}
+Rang: ${rank || '-'}
+Datum: ${formattedDate}
+Uhrzeit: ${time}
+Notizen: ${notizen}
+${sonstiges ? `Sonstiges: ${sonstiges}` : ''}
+
+/////////////////////////////////////////////////////////////////////////
+<@&1097625910242447422>
+╚══════════════════╝`;
+    }
+
+    // Funktion zum Kopieren des Soldatengespräch-Templates
+    async function copySoldatenTemplate() {
+      const name = document.getElementById('soldatenName').value.trim();
+      const dn = document.getElementById('soldatenDN').value;
+      const unit = document.getElementById('soldatenUnit').value;
+      const rank = document.getElementById('soldatenRank').value;
+      const date = document.getElementById('soldatenDate').value;
+      const time = document.getElementById('soldatenTime').value;
+      const notizen = document.getElementById('soldatenNotizen').value.trim();
+      const sonstiges = document.getElementById('soldatenSonstiges').value.trim();
+      
+      if (!name || !dn || !date || !time || !notizen) {
+        showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
+        return;
+      }
+      
+      const template = generateSoldatenTemplate(name, dn, unit, rank, date, time, notizen, sonstiges);
+      
+      try {
+        await navigator.clipboard.writeText(template);
+        showNotification('Soldatengespräch kopiert', 'success');
+      } catch (error) {
+        console.error('Fehler beim Kopieren:', error);
+        showNotification('Fehler beim Kopieren', 'danger');
+      }
+    }
+
+    // Funktion zum Erstellen einer neuen Akte
+    async function createNewAkte() {
+      const name = document.getElementById('akteName').value.trim();
+      const dn = document.getElementById('akteDN').value;
+      const unit = document.getElementById('akteUnit').value;
+      const rank = document.getElementById('akteRank').value;
+      
+      if (!name || !dn) {
+        showNotification('Bitte geben Sie Name und Dienstnummer ein', 'warning');
+        return;
+      }
+      
+      try {
+        const akteData = {
+          name,
+          dn: parseInt(dn),
+          unit: unit || '',
+          rank: rank || '',
+          createdAt: new Date().toISOString(),
+          beobachtungen: []
+        };
+        
+        await db.collection('beobachtungAkten').add(akteData);
+        
+        // Formular zurücksetzen
+        document.getElementById('akteName').value = '';
+        document.getElementById('akteDN').value = '';
+        document.getElementById('akteUnit').value = '';
+        document.getElementById('akteRank').value = '';
+        
+        showNotification('Akte erstellt', 'success');
+        
+      } catch (error) {
+        console.error('Fehler beim Erstellen:', error);
+        showNotification('Fehler beim Erstellen', 'danger');
+      }
+    }
+
+    // Funktion zum Speichern einer Beobachtung in einer Akte
+    async function saveBeobachtungToAkte() {
+      const name = document.getElementById('beobachtungName').value.trim();
+      const dn = document.getElementById('beobachtungDN').value;
+      const grund = document.getElementById('beobachtungGrund').value.trim();
+      
+      if (!name || !dn || !grund) {
+        showNotification('Bitte füllen Sie alle Felder aus', 'warning');
+        return;
+      }
+      
+      try {
+        const template = generateBeobachtungTemplate(name, dn, grund);
+        const beobachtungData = {
+          name,
+          dn: parseInt(dn),
+          grund,
+          template,
+          createdAt: new Date().toISOString()
+        };
+        
+        // Hier könnten Sie die Beobachtung einer bestehenden Akte hinzufügen
+        // Für jetzt erstellen wir eine neue Beobachtung
+        await db.collection('beobachtungAkten').add(beobachtungData);
+        
+        // Formular zurücksetzen
+        document.getElementById('beobachtungName').value = '';
+        document.getElementById('beobachtungDN').value = '';
+        document.getElementById('beobachtungGrund').value = '';
+        document.getElementById('beobachtungPreview').textContent = `╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+Beobachtung
+Name: 
+DN:  
+Grund:
+/////////////////////////////////////////////////////////////////////////
+<@&1097625910242447422>
+╚══════════════════╝`;
+        
+        showNotification('Beobachtung gespeichert', 'success');
+        
+      } catch (error) {
+        console.error('Fehler beim Speichern:', error);
+        showNotification('Fehler beim Speichern', 'danger');
+      }
+    }
+
+    // Funktion zum Generieren des Beobachtungstemplates
+    function generateBeobachtungTemplate(name, dn, grund) {
+      return `╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+Beobachtung
+Name: ${name}
+DN: ${dn}
+Grund: ${grund}
+/////////////////////////////////////////////////////////////////////////
+<@&1097625910242447422>
+╚══════════════════╝`;
+    }
+
+    // Funktion zum Kopieren des Beobachtungstemplates
+    async function copyBeobachtungTemplate() {
+      const name = document.getElementById('beobachtungName').value.trim();
+      const dn = document.getElementById('beobachtungDN').value;
+      const grund = document.getElementById('beobachtungGrund').value.trim();
+      
+      if (!name || !dn || !grund) {
+        showNotification('Bitte füllen Sie alle Felder aus', 'warning');
+        return;
+      }
+      
+      const template = generateBeobachtungTemplate(name, dn, grund);
+      
+      try {
+        await navigator.clipboard.writeText(template);
+        showNotification('Beobachtung kopiert', 'success');
+      } catch (error) {
+        console.error('Fehler beim Kopieren:', error);
+        showNotification('Fehler beim Kopieren', 'danger');
+      }
+    }
+
+    // Funktion zum Löschen einer Ankündigung
+    async function deleteAnkundigung(id) {
+      if (!confirm('Möchten Sie diese Ankündigung wirklich löschen?')) {
+        return;
+      }
+      
+      try {
+        await db.collection('ankundigungen').doc(id).delete();
+        loadAnkundigungen();
+        showNotification('Ankündigung gelöscht', 'success');
+      } catch (error) {
+        console.error('Fehler beim Löschen:', error);
+        showNotification('Fehler beim Löschen', 'danger');
+      }
+    }
+
+    // Funktion zum Löschen eines Soldatengesprächs
+    async function deleteSoldatenGespräch(id) {
+      if (!confirm('Möchten Sie dieses Gespräch wirklich löschen?')) {
+        return;
+      }
+      
+      try {
+        await db.collection('soldatenGespräche').doc(id).delete();
+        loadSoldatenGespräche();
+        showNotification('Gespräch gelöscht', 'success');
+      } catch (error) {
+        console.error('Fehler beim Löschen:', error);
+        showNotification('Fehler beim Löschen', 'danger');
+      }
+    }
+
+    // Funktion zum Löschen einer Akte
+    async function deleteAkte(id) {
+      if (!confirm('Möchten Sie diese Akte wirklich löschen?')) {
+        return;
+      }
+      
+      try {
+        await db.collection('beobachtungAkten').doc(id).delete();
+        loadAkten();
+        showNotification('Akte gelöscht', 'success');
+      } catch (error) {
+        console.error('Fehler beim Löschen:', error);
+        showNotification('Fehler beim Löschen', 'danger');
+      }
+    }
+
+    // Event Listener für Live-Updates der Templates
+    document.addEventListener('input', function(e) {
+      // Ankündigung Live-Update
+      if (e.target.id === 'ankundigungTitle' || e.target.id === 'ankundigungContent') {
+        const title = document.getElementById('ankundigungTitle').value.trim();
+        const content = document.getElementById('ankundigungContent').value.trim();
+        document.getElementById('ankundigungPreview').textContent = generateAnkundigungTemplate(title, content);
+      }
+      
+      // Besprechung Live-Update
+      if (['besprechungThema', 'besprechungDate', 'besprechungTime', 'besprechungOrt', 'besprechungContent'].includes(e.target.id)) {
+        const thema = document.getElementById('besprechungThema').value.trim();
+        const date = document.getElementById('besprechungDate').value;
+        const time = document.getElementById('besprechungTime').value;
+        const ort = document.getElementById('besprechungOrt').value.trim();
+        const content = document.getElementById('besprechungContent').value.trim();
+        
+        const formattedDate = date ? new Date(date).toLocaleDateString('de-DE') : '';
+        document.getElementById('besprechungPreview').textContent = `🖊️ **Besprechung**
+
+Thema: ${thema}
+Datum: ${formattedDate}
+Uhrzeit: ${time}
+Ort: ${ort}
+
+${content}`;
+      }
+      
+      // Aufstellung Live-Update
+      if (['aufstellungTyp', 'aufstellungDate', 'aufstellungTime', 'aufstellungOrt', 'aufstellungBemerkungen'].includes(e.target.id)) {
+        const typ = document.getElementById('aufstellungTyp').value;
+        const date = document.getElementById('aufstellungDate').value;
+        const time = document.getElementById('aufstellungTime').value;
+        const ort = document.getElementById('aufstellungOrt').value.trim();
+        const bemerkungen = document.getElementById('aufstellungBemerkungen').value.trim();
+        
+        const formattedDate = date ? new Date(date).toLocaleDateString('de-DE') : '';
+        document.getElementById('aufstellungPreview').textContent = `🕛 **${typ || 'Aufstellung'}
+
+Datum: ${formattedDate}
+Uhrzeit: ${time}
+Ort: ${ort}
+${bemerkungen ? `Bemerkungen: ${bemerkungen}` : ''}`;
+      }
+      
+      // Soldatengespräch Live-Update
+      if (['soldatenName', 'soldatenDN', 'soldatenUnit', 'soldatenRank', 'soldatenDate', 'soldatenTime', 'soldatenNotizen', 'soldatenSonstiges'].includes(e.target.id)) {
+        const name = document.getElementById('soldatenName').value.trim();
+        const dn = document.getElementById('soldatenDN').value;
+        const unit = document.getElementById('soldatenUnit').value;
+        const rank = document.getElementById('soldatenRank').value;
+        const date = document.getElementById('soldatenDate').value;
+        const time = document.getElementById('soldatenTime').value;
+        const notizen = document.getElementById('soldatenNotizen').value.trim();
+        const sonstiges = document.getElementById('soldatenSonstiges').value.trim();
+        
+        const formattedDate = date ? new Date(date).toLocaleDateString('de-DE') : '';
+        document.getElementById('soldatenPreview').textContent = `╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+Soldatengespräch
+
+Name: ${name}
+DN: ${dn}
+Hauptunit: ${unit}
+Rang: ${rank}
+Datum: ${formattedDate}
+Uhrzeit: ${time}
+Notizen: ${notizen}
+${sonstiges ? `Sonstiges: ${sonstiges}` : ''}
+
+/////////////////////////////////////////////////////////////////////////
+<@&1097625910242447422>
+╚══════════════════`;
+      }
+      
+      // Beobachtung Live-Update
+      if (['beobachtungName', 'beobachtungDN', 'beobachtungGrund'].includes(e.target.id)) {
+        const name = document.getElementById('beobachtungName').value.trim();
+        const dn = document.getElementById('beobachtungDN').value;
+        const grund = document.getElementById('beobachtungGrund').value.trim();
+        
+        document.getElementById('beobachtungPreview').textContent = `╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+Beobachtung
+Name: ${name}
+DN: ${dn}
+Grund: ${grund}
+/////////////////////////////////////////////////////////////////////////
+<@&1097625910242447422>
+╚══════════════════╝`;
+      }
+    });
+  </script>
+</body>
+</html>
