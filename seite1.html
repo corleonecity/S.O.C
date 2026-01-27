@@ -3,18 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>📋 HR - Einweisungsmanagement</title>
+  
+  <!-- CACHE-CONTROL META TAGS -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
+  <title>📋 HR - Einweisungsmanagement v1.0</title>
 
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Font Awesome mit Cache-Busting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?v=20240128">
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js?v=20240128"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js?v=20240128"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js?v=20240128"></script>
 
   <style>
     :root{
@@ -3133,6 +3139,58 @@ Grund:
   </div>
 
   <script>
+    // ==================== CACHE-BUSTING CODE ====================
+    // Erzwingt Neuladen bei Version-Änderung
+    const APP_VERSION = '1.0.20240128';
+    const LAST_VERSION_KEY = 'hr_app_last_version';
+    
+    // Prüfe ob neue Version geladen werden muss
+    const lastVersion = localStorage.getItem(LAST_VERSION_KEY);
+    if (lastVersion !== APP_VERSION) {
+      console.log(`Neue Version erkannt: ${lastVersion} -> ${APP_VERSION}`);
+      
+      // Lösche alle Caches
+      if ('caches' in window) {
+        caches.keys().then(function(names) {
+          for (let name of names) {
+            caches.delete(name);
+          }
+          console.log('Service Worker Caches gelöscht');
+        });
+      }
+      
+      // Speichere neue Version
+      localStorage.setItem(LAST_VERSION_KEY, APP_VERSION);
+      
+      // Erzwinge Hard Refresh
+      if (performance.navigation.type === 0 || performance.navigation.type === 1) {
+        // NavigationType: 0 = fresh load, 1 = reload
+        console.log('Erzwinge Hard Refresh für neue Version');
+        setTimeout(() => {
+          window.location.reload(true);
+        }, 100);
+      }
+    }
+    
+    // Füge Version zu allen dynamischen Elementen hinzu
+    document.addEventListener('DOMContentLoaded', function() {
+      // Setze Version in Footer/Title
+      document.title = document.title.replace('v1.0', `v${APP_VERSION}`);
+      
+      // Cache-Busting für dynamische Inhalte
+      const now = Date.now();
+      const cacheBuster = `?v=${APP_VERSION}&t=${now}`;
+      
+      // Füge Cache-Buster zu allen Skripten hinzu
+      const scripts = document.querySelectorAll('script[src]');
+      scripts.forEach(script => {
+        if (!script.src.includes('?v=')) {
+          script.src = script.src + cacheBuster;
+        }
+      });
+    });
+    // ==================== ENDE CACHE-BUSTING ====================
+
     // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBTnsLNw68UuOd5Xa2ymMffWk4SYGDQjso",
@@ -3192,6 +3250,7 @@ Grund:
     let currentAnkundigungTab = 'new';
 
     document.addEventListener('DOMContentLoaded', function () {
+      console.log(`HR App Version ${APP_VERSION} geladen`);
       initializeApp();
       setupEventListeners();
       updateStats();
