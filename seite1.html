@@ -14,6 +14,7 @@
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 
   <style>
     :root{
@@ -79,15 +80,61 @@
     }
     .header-content{display:flex;justify-content:space-between;align-items:center}
     .brand{display:flex;align-items:center;gap:12px}
-    .logo{
-      width:40px;height:40px;
-      background:var(--primary);
-      border-radius:var(--radius-md);
-      display:flex;align-items:center;justify-content:center;
-      font-size:18px;color:#fff;
-      transition:var(--transition);
-    }
-    .logo:hover{transform:scale(1.05);background:var(--primary-dark)}
+   /* Logo */
+.logo {
+  width: 40px;
+  height: 40px;
+  background: var(--primary);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #fff;
+  transition: var(--transition);
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+.logo:hover {
+  transform: scale(1.05);
+  background: var(--primary-dark);
+}
+.logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Optional: Tooltip für Logo */
+.logo[title] {
+  position: relative;
+}
+.logo[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  white-space: pre-line;
+  z-index: 1000;
+  margin-bottom: 8px;
+  min-width: 140px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,.1);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(10px);
+}
+
+#logoUpload {
+  display: none;
+}
     .brand-text h1{font-size:18px;font-weight:800;color:#fff;margin-bottom:2px}
     .brand-text .subtitle{font-size:11px;color:var(--gray);font-weight:600}
     .header-stats{display:flex;gap:12px}
@@ -2731,27 +2778,39 @@ Grund:
   </div>
 
   <div class="app-container">
-    <header class="app-header">
-      <div class="header-content">
-        <div class="brand">
-          <div class="logo"><i class="fas fa-user-check"></i></div>
-          <div class="brand-text">
-            <h1>Human Resources</h1>
-            <div class="subtitle">•</div>
-          </div>
-        </div>
-        <div class="header-stats">
-          <div class="stat-card">
-            <div class="stat-value" id="totalEmployees">0</div>
-            <div class="stat-label">Mitarbeiter</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="totalAkten">0</div>
-            <div class="stat-label">Beobachtung</div>
-          </div>
-        </div>
+   <header class="app-header">
+  <div class="header-content">
+    <div class="brand">
+      <div class="logo" id="logoContainer">
+        <!-- Hier wird das Bild angezeigt -->
+        <i class="fas fa-user-check" id="defaultLogoIcon" style="display: block;"></i>
+        <img id="logoImage" style="display: none; width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-md);">
       </div>
-    </header>
+      <div class="brand-text">
+        <h1>Human Resources</h1>
+        <div class="subtitle">•</div>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="stat-card">
+        <div class="stat-value" id="totalEmployees">0</div>
+        <div class="stat-label">Mitarbeiter</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="totalAkten">0</div>
+        <div class="stat-label">Beobachtung</div>
+      </div>
+      <!-- Upload Button -->
+      <div class="stat-card" style="cursor: pointer;" onclick="document.getElementById('logoUpload').click()">
+        <div class="stat-value"><i class="fas fa-camera"></i></div>
+        <div class="stat-label">Logo ändern</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Hidden file input -->
+<input type="file" id="logoUpload" accept="image/*" style="display: none;" onchange="uploadLogo(event)">
 
     <aside class="sidebar">
       <div class="sidebar-header">
@@ -2824,6 +2883,10 @@ Grund:
             </div>
 
             <div class="oral-form-grid">
+              <div class="form-group">
+                <label class="form-label">Prüfer</label>
+                <input type="text" class="form-input" id="oralExaminer" placeholder="Name des Prüfers">
+              </div>
               <div class="form-group">
                 <label class="form-label">Datum</label>
                 <input type="date" class="form-input" id="oralDate">
@@ -2900,6 +2963,10 @@ Grund:
             </div>
 
             <div class="org-form-grid">
+              <div class="form-group">
+                <label class="form-label">Prüfer</label>
+                <input type="text" class="form-input" id="orgExaminer" placeholder="Name des Prüfers">
+              </div>
               <div class="form-group">
                 <label class="form-label">Datum</label>
                 <input type="date" class="form-input" id="orgDate">
@@ -3173,15 +3240,29 @@ Grund:
     let currentSoldatenTab = 'new';
     let currentAnkundigungTab = 'new';
 
-    document.addEventListener('DOMContentLoaded', function () {
-      initializeApp();
-      setupEventListeners();
-      updateStats();
-      adjustSidebarHeight();
-      loadAkten();
-      loadSoldatenGespräche();
-      loadAnkundigungen();
+   document.addEventListener('DOMContentLoaded', function () {
+  // Logo-Funktionalität initialisieren
+  const logoContainer = document.getElementById('logoContainer');
+  if (logoContainer) {
+    logoContainer.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      resetLogo();
+      return false;
     });
+  }
+  
+  // Logo beim Start laden
+  loadLogo();
+  
+  // Dann den Rest initialisieren
+  initializeApp();
+  setupEventListeners();
+  updateStats();
+  adjustSidebarHeight();
+  loadAkten();
+  loadSoldatenGespräche();
+  loadAnkundigungen();
+});
 
     function initializeApp() {
       const today = new Date().toISOString().split('T')[0];
@@ -3909,7 +3990,7 @@ Sonstiges: ${sonstiges || ''}
   });
 
   container.innerHTML = html;
-}  
+}
 
     function searchSoldaten(searchTerm) {
       renderSoldatenListe();
@@ -4578,6 +4659,7 @@ Grund: ${grund || ''}
       const oralData = currentEmployee.oralData || {};
       const orgData = currentEmployee.orgData || {};
 
+      document.getElementById('oralExaminer').value = oralData.examiner || '';
       document.getElementById('oralDate').value = oralData.date || (new Date().toISOString().split('T')[0]);
       document.getElementById('oralTimeStart').value = oralData.timeStart || '16:40';
       document.getElementById('oralTimeEnd').value = oralData.timeEnd || '18:00';
@@ -4586,6 +4668,7 @@ Grund: ${grund || ''}
       document.getElementById('unitSelect').value = oralData.unit || currentEmployee.unit || '';
       document.getElementById('rankSelect').value = oralData.rank || currentEmployee.rank || '';
 
+      document.getElementById('orgExaminer').value = orgData.examiner || '';
       document.getElementById('orgDate').value = orgData.date || (new Date().toISOString().split('T')[0]);
       document.getElementById('orgTimeStart').value = orgData.timeStart || '22:10';
       document.getElementById('orgTimeEnd').value = orgData.timeEnd || '23:05';
@@ -4645,6 +4728,7 @@ Grund: ${grund || ''}
       if (!currentEmployee) return;
 
       currentEmployee.oralData = {
+        examiner: document.getElementById('oralExaminer').value,
         date: document.getElementById('oralDate').value,
         timeStart: document.getElementById('oralTimeStart').value,
         timeEnd: document.getElementById('oralTimeEnd').value,
@@ -4655,6 +4739,7 @@ Grund: ${grund || ''}
       };
 
       currentEmployee.orgData = {
+        examiner: document.getElementById('orgExaminer').value,
         date: document.getElementById('orgDate').value,
         timeStart: document.getElementById('orgTimeStart').value,
         timeEnd: document.getElementById('orgTimeEnd').value,
@@ -4827,6 +4912,7 @@ Grund: ${grund || ''}
       const timeEnd = data?.timeEnd || '';
       const person = data?.person || '';
       const notes = data?.notes || '';
+      const examiner = data?.examiner || '';
 
       const timeSeparator = isOral ? 'bis' : '-';
 
@@ -4840,6 +4926,7 @@ Grund: ${grund || ''}
 /////////////////////////////////////////////////////////////////////////
 ${isOral ? 'Mündliche Einweisung' : 'Organisatorische Einweisung'}
 
+Prüfer : ${examiner}
 Name: ${name}
 DN: ${dn}
 Hauptunit: ${unitDisplay}
@@ -5067,8 +5154,8 @@ Sonstiges: ${notes}
         rank: rank || '',
         lastUpdated: new Date().toISOString(),
         inductions: { oral: { completed: false }, org: { completed: false } },
-        oralData: { date: '', timeStart: '16:40', timeEnd: '18:00', person: '', notes: '', unit: unit || '', rank: rank || '' },
-        orgData: { date: '', timeStart: '22:10', timeEnd: '23:05', person: '', notes: '', unit: unit || '', rank: rank || '' }
+        oralData: { examiner: '', date: '', timeStart: '16:40', timeEnd: '18:00', person: '', notes: '', unit: unit || '', rank: rank || '' },
+        orgData: { examiner: '', date: '', timeStart: '22:10', timeEnd: '23:05', person: '', notes: '', unit: unit || '', rank: rank || '' }
       };
 
       const success = await saveEmployeeToFirebase(newEmployee);
@@ -5124,8 +5211,8 @@ Sonstiges: ${notes}
         unit: 'Air Force',
         rank: 'Captain',
         inductions: { oral: { completed: false }, org: { completed: false } },
-        oralData: { date: '2026-01-21', timeStart: '16:40', timeEnd: '18:00', person: 'HR Team', notes: '', unit: 'Air Force', rank: 'Captain' },
-        orgData: { date: '2026-01-21', timeStart: '22:10', timeEnd: '23:05', person: 'HR Team', notes: '', unit: 'Air Force', rank: 'Captain' }
+        oralData: { examiner: 'HR Team', date: '2026-01-21', timeStart: '16:40', timeEnd: '18:00', person: 'HR Team', notes: '', unit: 'Air Force', rank: 'Captain' },
+        orgData: { examiner: 'HR Team', date: '2026-01-21', timeStart: '22:10', timeEnd: '23:05', person: 'HR Team', notes: '', unit: 'Air Force', rank: 'Captain' }
       }];
 
       renderEmployeeList();
@@ -5138,6 +5225,7 @@ Sonstiges: ${notes}
 /////////////////////////////////////////////////////////////////////////
 Mündliche Einweisung
 
+Prüfer :
 Name:
 DN:
 Hauptunit:
@@ -5155,6 +5243,7 @@ Sonstiges:
 /////////////////////////////////////////////////////////////////////////
 Organisatorische Einweisung
 
+Prüfer :
 Name:
 DN:
 Hauptunit:
@@ -5177,6 +5266,195 @@ Sonstiges:
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
     }
+	    // ==================== FIREBASE STORAGE & LOGO FUNKTIONEN ====================
+
+    // Firebase Storage initialisieren
+    const storage = firebase.storage();
+
+    // Logo-Daten speichern/laden
+    const LOGO_STORAGE_KEY = 'hr_logo_url';
+
+    // Logo beim Start laden
+    async function loadLogo() {
+      try {
+        // 1. Aus localStorage laden (schnell)
+        const cachedLogo = localStorage.getItem(LOGO_STORAGE_KEY);
+        if (cachedLogo) {
+          setLogoImage(cachedLogo);
+        }
+        
+        // 2. Aus Firestore laden (persistent)
+        const doc = await db.collection('hrSettings').doc('logo').get();
+        if (doc.exists && doc.data().url) {
+          const logoUrl = doc.data().url;
+          localStorage.setItem(LOGO_STORAGE_KEY, logoUrl);
+          setLogoImage(logoUrl);
+        }
+      } catch (error) {
+        console.error('Fehler beim Laden des Logos:', error);
+      }
+    }
+
+    // Logo anzeigen
+    function setLogoImage(url) {
+      const logoImage = document.getElementById('logoImage');
+      const defaultIcon = document.getElementById('defaultLogoIcon');
+      
+      if (url) {
+        // Bild laden und anzeigen
+        logoImage.onload = function() {
+          logoImage.style.display = 'block';
+          defaultIcon.style.display = 'none';
+        };
+        logoImage.onerror = function() {
+          // Fallback bei fehlerhaftem Bild
+          logoImage.style.display = 'none';
+          defaultIcon.style.display = 'block';
+          localStorage.removeItem(LOGO_STORAGE_KEY);
+        };
+        logoImage.src = url;
+        
+        // Tooltip setzen
+        const logoContainer = document.getElementById('logoContainer');
+        if (logoContainer) {
+          logoContainer.title = "Linksklick: Logo ändern\nRechtsklick: Zurücksetzen";
+        }
+      } else {
+        // Standard-Icon anzeigen
+        logoImage.style.display = 'none';
+        defaultIcon.style.display = 'block';
+        
+        // Tooltip entfernen
+        const logoContainer = document.getElementById('logoContainer');
+        if (logoContainer) {
+          logoContainer.title = "";
+        }
+      }
+    }
+
+    // Logo hochladen
+    async function uploadLogo(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      // Datei validieren
+      if (!file.type.startsWith('image/')) {
+        showNotification('❌ Bitte nur Bilddateien hochladen (JPG, PNG, etc.)', 'error');
+        return;
+      }
+      
+      // Größenlimit: 5MB
+      if (file.size > 5 * 1024 * 1024) {
+        showNotification('❌ Bild zu groß (max. 5MB)', 'error');
+        return;
+      }
+      
+      try {
+        showNotification('📤 Bild wird hochgeladen...', 'info');
+        
+        // Eindeutigen Dateinamen generieren
+        const timestamp = Date.now();
+        const randomId = Math.random().toString(36).substring(2, 9);
+        const fileName = `hr_logo_${timestamp}_${randomId}.${file.name.split('.').pop()}`;
+        const storageRef = storage.ref(`hr_logos/${fileName}`);
+        
+        // Datei hochladen
+        const uploadTask = storageRef.put(file);
+        
+        uploadTask.on('state_changed',
+          (snapshot) => {
+            // Optional: Progress anzeigen
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log(`Upload: ${progress.toFixed(1)}%`);
+          },
+          (error) => {
+            console.error('Upload-Fehler:', error);
+            showNotification('❌ Upload fehlgeschlagen: ' + error.message, 'error');
+          },
+          async () => {
+            // Upload erfolgreich
+            const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+            
+            // URL in Firestore speichern
+            await db.collection('hrSettings').doc('logo').set({
+              url: downloadURL,
+              fileName: fileName,
+              uploadedAt: new Date().toISOString(),
+              fileSize: file.size,
+              fileType: file.type,
+              dimensions: '40x40px (wird automatisch angepasst)'
+            }, { merge: true });
+            
+            // Im localStorage cachen
+            localStorage.setItem(LOGO_STORAGE_KEY, downloadURL);
+            
+            // Logo anzeigen
+            setLogoImage(downloadURL);
+            
+            showNotification('✅ Logo erfolgreich aktualisiert!', 'success');
+            
+            // File input zurücksetzen
+            event.target.value = '';
+          }
+        );
+        
+      } catch (error) {
+        console.error('Fehler beim Hochladen:', error);
+        showNotification('❌ Fehler: ' + error.message, 'error');
+      }
+    }
+
+    // Logo zurücksetzen
+    async function resetLogo() {
+      if (confirm('Möchten Sie das Logo wirklich auf das Standard-Icon zurücksetzen?\n\nDas hochgeladene Bild wird aus Firebase Storage gelöscht.')) {
+        try {
+          showNotification('🔄 Logo wird zurückgesetzt...', 'info');
+          
+          // Alte Logo-URL aus Firestore holen
+          const doc = await db.collection('hrSettings').doc('logo').get();
+          
+          // Altes Bild aus Storage löschen (falls vorhanden)
+          if (doc.exists && doc.data().fileName) {
+            try {
+              const oldFileRef = storage.ref(`hr_logos/${doc.data().fileName}`);
+              await oldFileRef.delete();
+            } catch (deleteError) {
+              console.warn('Altes Bild konnte nicht gelöscht werden:', deleteError);
+            }
+          }
+          
+          // Aus Firestore löschen
+          await db.collection('hrSettings').doc('logo').delete();
+          
+          // Aus localStorage löschen
+          localStorage.removeItem(LOGO_STORAGE_KEY);
+          
+          // Standard-Icon anzeigen
+          setLogoImage(null);
+          
+          showNotification('✅ Logo erfolgreich zurückgesetzt', 'success');
+        } catch (error) {
+          console.error('Fehler beim Zurücksetzen:', error);
+          showNotification('❌ Fehler beim Zurücksetzen', 'error');
+        }
+      }
+    }
+
+    // Logo-Event-Listener einrichten
+    function setupLogoFunctionality() {
+      const logoContainer = document.getElementById('logoContainer');
+      if (logoContainer) {
+        // Rechtsklick zum Zurücksetzen
+        logoContainer.addEventListener('contextmenu', function(e) {
+          e.preventDefault();
+          resetLogo();
+          return false;
+        });
+      }
+    }
+
+  }); // WICHTIG: Diese Klammer schließt die DOMContentLoaded-Funktion
+  
   </script>
 </body>
 </html>
