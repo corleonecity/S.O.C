@@ -3249,16 +3249,128 @@ Grund:
     let currentSoldatenTab = 'new';
     let currentAnkundigungTab = 'new';
 
+    // Unsubscribe-Funktionen für Listener
+    let unsubscribeFunctions = [];
+
     document.addEventListener('DOMContentLoaded', function () {
       console.log(`HR App Version ${APP_VERSION} geladen`);
       initializeApp();
       setupEventListeners();
       updateStats();
       adjustSidebarHeight();
-      loadAkten();
-      loadSoldatenGespräche();
-      loadAnkundigungen();
+      setupRealtimeListeners();
     });
+
+    // ==================== REALTIME LISTENER SETUP ====================
+    function setupRealtimeListeners() {
+      // Listener für Mitarbeiter
+      const unsubscribeEmployees = db.collection('hrEmployees')
+        .orderBy('lastUpdated', 'desc')
+        .onSnapshot((snapshot) => {
+          employees = [];
+          
+          snapshot.forEach(doc => {
+            employees.push({ id: doc.id, ...doc.data() });
+          });
+
+          renderEmployeeList();
+          updateStats();
+          
+          // Wenn ein Mitarbeiter ausgewählt ist, aktualisiere die Daten
+          if (currentEmployee) {
+            const updatedEmployee = employees.find(emp => emp.id === currentEmployee.id);
+            if (updatedEmployee) {
+              selectEmployee(updatedEmployee);
+            }
+          }
+          
+          setTimeout(updateInductionDisplay, 100);
+        }, (error) => {
+          console.error('Fehler beim Lauschen auf Mitarbeiter-Änderungen:', error);
+          showNotification('Fehler bei Live-Updates', 'error');
+        });
+
+      // Listener für Akten
+      const unsubscribeAkten = db.collection('hrAkten')
+        .orderBy('lastUpdated', 'desc')
+        .limit(100)
+        .onSnapshot((snapshot) => {
+          akten = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            akten.push({ 
+              id: doc.id, 
+              ...data,
+              createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE')
+            });
+          });
+          updateStats();
+          renderAktenListe();
+        }, (error) => {
+          console.error('Fehler beim Lauschen auf Akten-Änderungen:', error);
+        });
+
+      // Listener für Soldatengespräche
+      const unsubscribeSoldaten = db.collection('hrSoldatenGespräche')
+        .orderBy('created', 'desc')
+        .limit(100)
+        .onSnapshot((snapshot) => {
+          soldatenGespräche = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            soldatenGespräche.push({ 
+              id: doc.id, 
+              ...data,
+              createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE'),
+              dateFormatted: data.dateFormatted || (data.date ? new Date(data.date).toLocaleDateString('de-DE') : '')
+            });
+          });
+          renderSoldatenListe();
+        }, (error) => {
+          console.error('Fehler beim Lauschen auf Soldatengespräche:', error);
+        });
+
+      // Listener für Ankündigungen
+      const unsubscribeAnkundigungen = db.collection('hrAnkundigungen')
+        .orderBy('created', 'desc')
+        .limit(100)
+        .onSnapshot((snapshot) => {
+          ankundigungen = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            ankundigungen.push({ 
+              id: doc.id, 
+              ...data,
+              createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE'),
+              dateFormatted: data.dateFormatted || (data.date ? new Date(data.date).toLocaleDateString('de-DE') : '')
+            });
+          });
+          renderAnkundigungListe();
+        }, (error) => {
+          console.error('Fehler beim Lauschen auf Ankündigungen:', error);
+        });
+
+      // Speichere Unsubscribe-Funktionen
+      unsubscribeFunctions = [
+        unsubscribeEmployees,
+        unsubscribeAkten,
+        unsubscribeSoldaten,
+        unsubscribeAnkundigungen
+      ];
+    }
+
+    function cleanupRealtimeListeners() {
+      // Entferne alle Listener bei Seitenverlassen
+      unsubscribeFunctions.forEach(unsubscribe => {
+        if (typeof unsubscribe === 'function') {
+          unsubscribe();
+        }
+      });
+      unsubscribeFunctions = [];
+    }
+
+    // Füge Event Listener für Seitenverlassen hinzu
+    window.addEventListener('beforeunload', cleanupRealtimeListeners);
 
     // ==================== HAUPTFUNKTIONEN ====================
     function initializeApp() {
@@ -3281,7 +3393,6 @@ Grund:
       document.getElementById('orgTimeStart').value = '22:10';
       document.getElementById('orgTimeEnd').value = '23:05';
 
-      loadEmployees();
       setupFormChangeListeners();
       seedTemplateBoxes();
       setupBeobachtungEventListeners();
@@ -3496,7 +3607,6 @@ Bemerkungen: ${bemerkungen || ''}`;
 
       try {
         await db.collection('hrAnkundigungen').doc(ankundigung.id).set(ankundigung);
-        ankundigungen.unshift(ankundigung);
         
         showNotification('Ankündigung erfolgreich gespeichert', 'success');
         document.getElementById('ankundigungTitle').value = '';
@@ -3539,7 +3649,6 @@ Bemerkungen: ${bemerkungen || ''}`;
 
       try {
         await db.collection('hrAnkundigungen').doc(besprechung.id).set(besprechung);
-        ankundigungen.unshift(besprechung);
         
         showNotification('Besprechung erfolgreich gespeichert', 'success');
         document.getElementById('besprechungThema').value = '';
@@ -3585,7 +3694,6 @@ Bemerkungen: ${bemerkungen || ''}`;
 
       try {
         await db.collection('hrAnkundigungen').doc(aufstellung.id).set(aufstellung);
-        ankundigungen.unshift(aufstellung);
         
         showNotification('Aufstellung erfolgreich gespeichert', 'success');
         document.getElementById('aufstellungTyp').value = '';
@@ -3599,25 +3707,6 @@ Bemerkungen: ${bemerkungen || ''}`;
       } catch (error) {
         console.error('Fehler beim Speichern der Aufstellung:', error);
         showNotification('Fehler beim Speichern: ' + error.message, 'error');
-      }
-    }
-
-    async function loadAnkundigungen() {
-      try {
-        const snapshot = await db.collection('hrAnkundigungen').orderBy('created', 'desc').limit(100).get();
-        ankundigungen = [];
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          ankundigungen.push({ 
-            id: doc.id, 
-            ...data,
-            createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE'),
-            dateFormatted: data.dateFormatted || (data.date ? new Date(data.date).toLocaleDateString('de-DE') : '')
-          });
-        });
-        renderAnkundigungListe();
-      } catch (error) {
-        console.error('Fehler beim Laden der Ankündigungen:', error);
       }
     }
 
@@ -3731,8 +3820,6 @@ Bemerkungen: ${bemerkungen || ''}`;
 
       try {
         await db.collection('hrAnkundigungen').doc(itemId).delete();
-        ankundigungen = ankundigungen.filter(i => i.id !== itemId);
-        renderAnkundigungListe();
         showNotification('Eintrag gelöscht', 'success');
       } catch (error) {
         console.error('Fehler beim Löschen des Eintrags:', error);
@@ -3843,7 +3930,6 @@ Sonstiges: ${sonstiges || ''}
 
       try {
         await db.collection('hrSoldatenGespräche').doc(gespräch.id).set(gespräch);
-        soldatenGespräche.unshift(gespräch);
         
         showNotification('Soldatengespräch erfolgreich gespeichert', 'success');
         document.getElementById('soldatenName').value = '';
@@ -3860,25 +3946,6 @@ Sonstiges: ${sonstiges || ''}
       } catch (error) {
         console.error('Fehler beim Speichern des Soldatengesprächs:', error);
         showNotification('Fehler beim Speichern: ' + error.message, 'error');
-      }
-    }
-
-    async function loadSoldatenGespräche() {
-      try {
-        const snapshot = await db.collection('hrSoldatenGespräche').orderBy('created', 'desc').limit(100).get();
-        soldatenGespräche = [];
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          soldatenGespräche.push({ 
-            id: doc.id, 
-            ...data,
-            createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE'),
-            dateFormatted: data.dateFormatted || (data.date ? new Date(data.date).toLocaleDateString('de-DE') : '')
-          });
-        });
-        renderSoldatenListe();
-      } catch (error) {
-        console.error('Fehler beim Laden der Soldatengespräche:', error);
       }
     }
 
@@ -3975,8 +4042,6 @@ Sonstiges: ${sonstiges || ''}
 
       try {
         await db.collection('hrSoldatenGespräche').doc(gesprächId).delete();
-        soldatenGespräche = soldatenGespräche.filter(g => g.id !== gesprächId);
-        renderSoldatenListe();
         showNotification('Soldatengespräch gelöscht', 'success');
       } catch (error) {
         console.error('Fehler beim Löschen des Soldatengesprächs:', error);
@@ -4072,7 +4137,6 @@ Grund: ${grund || ''}
 
       try {
         await db.collection('hrAkten').doc(akte.id).set(akte);
-        akten.unshift(akte);
         showNotification('Akte erfolgreich erstellt', 'success');
         document.getElementById('akteName').value = '';
         document.getElementById('akteDN').value = '';
@@ -4120,7 +4184,6 @@ Grund: ${grund || ''}
         try {
           await db.collection('hrAkten').doc(newAkte.id).set(newAkte);
           akte = newAkte;
-          akten.unshift(akte);
         } catch (error) {
           console.error('Fehler beim Erstellen der Akte:', error);
           showNotification('Fehler beim Erstellen der Akte: ' + error.message, 'error');
@@ -4158,25 +4221,6 @@ Grund: ${grund || ''}
       } catch (error) {
         console.error('Fehler beim Speichern der Beobachtung:', error);
         showNotification('Fehler beim Speichern: ' + error.message, 'error');
-      }
-    }
-
-    async function loadAkten() {
-      try {
-        const snapshot = await db.collection('hrAkten').orderBy('lastUpdated', 'desc').limit(100).get();
-        akten = [];
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          akten.push({ 
-            id: doc.id, 
-            ...data,
-            createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE')
-          });
-        });
-        updateStats();
-        renderAktenListe();
-      } catch (error) {
-        console.error('Fehler beim Laden der Akten:', error);
       }
     }
 
@@ -4385,9 +4429,6 @@ Grund: ${grund || ''}
 
       try {
         await db.collection('hrAkten').doc(akteId).delete();
-        akten = akten.filter(a => a.id !== akteId);
-        updateStats();
-        renderAktenListe();
         showNotification('Akte gelöscht', 'success');
       } catch (error) {
         console.error('Fehler beim Löschen der Akte:', error);
@@ -4408,61 +4449,6 @@ Grund: ${grund || ''}
     }
 
     // ==================== MITARBEITER FUNKTIONEN ====================
-    async function loadEmployees() {
-      try {
-        showLoading();
-        const snapshot = await db.collection('hrEmployees').orderBy('lastUpdated', 'desc').get();
-        employees = [];
-
-        snapshot.forEach(doc => {
-          employees.push({ id: doc.id, ...doc.data() });
-        });
-
-        renderEmployeeList();
-        updateStats();
-        hideLoading();
-        setTimeout(updateInductionDisplay, 100);
-      } catch (error) {
-        console.error('Fehler beim Laden der Mitarbeiter:', error);
-        showNotification('Fehler beim Laden der Daten', 'error');
-        loadMockEmployees();
-        hideLoading();
-      }
-    }
-
-    async function saveEmployeeToFirebase(employee) {
-      try {
-        const dataToSave = {
-          name: employee.name,
-          dn: employee.dn,
-          unit: employee.unit,
-          rank: employee.rank,
-          lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
-          inductions: employee.inductions || {},
-          oralData: employee.oralData || {},
-          orgData: employee.orgData || {}
-        };
-
-        await db.collection('hrEmployees').doc(employee.id).set(dataToSave, { merge: true });
-        return true;
-      } catch (error) {
-        console.error('Fehler beim Speichern:', error);
-        showNotification('Fehler beim Speichern: ' + error.message, 'error');
-        return false;
-      }
-    }
-
-    async function deleteEmployeeFromFirebase(employeeId) {
-      try {
-        await db.collection('hrEmployees').doc(employeeId).delete();
-        return true;
-      } catch (error) {
-        console.error('Fehler beim Löschen:', error);
-        showNotification('Fehler beim Löschen: ' + error.message, 'error');
-        return false;
-      }
-    }
-
     function renderEmployeeList() {
       const container = document.getElementById('employeeList');
       const countElement = document.getElementById('employeeCount');
@@ -4733,7 +4719,6 @@ Grund: ${grund || ''}
 
       const success = await deleteEmployeeFromFirebase(currentEmployee.id);
       if (success) {
-        employees = employees.filter(emp => emp.id !== currentEmployee.id);
         closeModal('editEmployeeModal');
         currentEmployee = null;
         document.getElementById('employeeHeader').style.display = 'none';
@@ -4859,19 +4844,36 @@ Sonstiges: ${notes}
 ╚══════════════════╝`;
     }
 
-    async function saveEmployeeData(isAutoSave = false) {
-      if (!currentEmployee) return;
-
+    async function saveEmployeeToFirebase(employee) {
       try {
-        const success = await saveEmployeeToFirebase(currentEmployee);
-        if (success) {
-          if (!isAutoSave) showNotification('Änderungen gespeichert', 'success');
-          renderEmployeeList();
-          updateStats();
-        }
+        const dataToSave = {
+          name: employee.name,
+          dn: employee.dn,
+          unit: employee.unit,
+          rank: employee.rank,
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+          inductions: employee.inductions || {},
+          oralData: employee.oralData || {},
+          orgData: employee.orgData || {}
+        };
+
+        await db.collection('hrEmployees').doc(employee.id).set(dataToSave, { merge: true });
+        return true;
       } catch (error) {
         console.error('Fehler beim Speichern:', error);
-        if (!isAutoSave) showNotification('Fehler beim Speichern', 'error');
+        showNotification('Fehler beim Speichern: ' + error.message, 'error');
+        return false;
+      }
+    }
+
+    async function deleteEmployeeFromFirebase(employeeId) {
+      try {
+        await db.collection('hrEmployees').doc(employeeId).delete();
+        return true;
+      } catch (error) {
+        console.error('Fehler beim Löschen:', error);
+        showNotification('Fehler beim Löschen: ' + error.message, 'error');
+        return false;
       }
     }
 
@@ -4946,16 +4948,12 @@ Sonstiges: ${notes}
 
       const success = await deleteEmployeeFromFirebase(employeeId);
       if (success) {
-        employees = employees.filter(emp => emp.id !== employeeId);
-
         if (currentEmployee?.id === employeeId) {
           currentEmployee = null;
           document.getElementById('employeeHeader').style.display = 'none';
           document.getElementById('inductionContent').style.display = 'none';
         }
 
-        renderEmployeeList();
-        updateStats();
         showNotification('Mitarbeiter gelöscht', 'success');
         document.getElementById('contextMenu')?.remove();
       }
@@ -4974,9 +4972,6 @@ Sonstiges: ${notes}
 
       const success = await saveEmployeeToFirebase(newEmployee);
       if (success) {
-        employees.unshift(newEmployee);
-        renderEmployeeList();
-        updateStats();
         showNotification('Mitarbeiter dupliziert', 'success');
         document.getElementById('contextMenu')?.remove();
       }
@@ -5078,9 +5073,7 @@ Sonstiges: ${notes}
 
       const success = await saveEmployeeToFirebase(newEmployee);
       if (success) {
-        employees.unshift(newEmployee);
         closeModal('newEmployeeModal');
-        renderEmployeeList();
         selectEmployee(newEmployee);
         updateStats();
 
@@ -5105,37 +5098,6 @@ Sonstiges: ${notes}
 
       notification.classList.add('show');
       setTimeout(() => notification.classList.remove('show'), 3000);
-    }
-
-    function showLoading() {
-      const content = document.getElementById('employeeList');
-      content.innerHTML = `
-        <div class="loading">
-          <div class="loading-spinner"></div>
-          <div style="color: var(--gray); font-weight: 900; font-size: 13px;">Lade Mitarbeiter...</div>
-        </div>
-      `;
-    }
-
-    function hideLoading() {
-      // Wird automatisch durch renderEmployeeList() erledigt
-    }
-
-    function loadMockEmployees() {
-      employees = [{
-        id: 'emp1',
-        name: 'Chapo Anatolian',
-        dn: '43',
-        unit: 'Air Force',
-        rank: 'Captain',
-        inductions: { oral: { completed: false }, org: { completed: false } },
-        oralData: { date: '2026-01-21', timeStart: '16:40', timeEnd: '18:00', person: 'HR Team', notes: '', unit: 'Air Force', rank: 'Captain' },
-        orgData: { date: '2026-01-21', timeStart: '22:10', timeEnd: '23:05', person: 'HR Team', notes: '', unit: 'Air Force', rank: 'Captain' }
-      }];
-
-      renderEmployeeList();
-      updateStats();
-      seedTemplateBoxes();
     }
 
     function seedTemplateBoxes() {
