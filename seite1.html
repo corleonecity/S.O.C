@@ -3278,27 +3278,44 @@ Grund:
       const defaultIcon = document.getElementById('defaultLogoIcon');
       
       if (url) {
-        logoImage.onload = function() {
+        // Vorheriges Bild zurücksetzen
+        logoImage.style.display = 'none';
+        defaultIcon.style.display = 'block';
+        
+        // Neues Bild erstellen, um onload-Event zuverlässig zu triggern
+        const img = new Image();
+        
+        img.onload = function() {
+          // Bild erfolgreich geladen
+          logoImage.src = url;
           logoImage.style.display = 'block';
           defaultIcon.style.display = 'none';
+          
           // Tooltip setzen
           const logoContainer = document.getElementById('logoContainer');
           if (logoContainer) {
             logoContainer.title = "Linksklick: Logo ändern\nRechtsklick: Zurücksetzen";
           }
         };
-        logoImage.onerror = function() {
+        
+        img.onerror = function() {
           // Falls Fehler beim Laden: Standard-Icon anzeigen
+          console.warn('Logo konnte nicht geladen werden:', url);
           logoImage.style.display = 'none';
           defaultIcon.style.display = 'block';
+          logoImage.src = '';
           localStorage.removeItem(LOGO_STORAGE_KEY);
+          
           // Tooltip zurücksetzen
           const logoContainer = document.getElementById('logoContainer');
           if (logoContainer) {
             logoContainer.title = "Linksklick: Logo ändern\nRechtsklick: Zurücksetzen";
           }
         };
-        logoImage.src = url;
+        
+        // Bild laden starten
+        img.src = url;
+        
       } else {
         // Kein Logo: Standard-Icon anzeigen
         logoImage.style.display = 'none';
