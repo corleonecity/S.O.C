@@ -2781,8 +2781,8 @@ Grund:
     <header class="app-header">
       <div class="header-content">
         <div class="brand">
-          <div class="logo" id="logoContainer">
-            <!-- Hier wird das Bild angezeigt -->
+          <!-- Geändert: Logo mit Linksklick-Funktionalität -->
+          <div class="logo" id="logoContainer" onclick="document.getElementById('logoUpload').click()">
             <i class="fas fa-user-check" id="defaultLogoIcon" style="display: block;"></i>
             <img id="logoImage" style="display: none; width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-md);">
           </div>
@@ -2800,16 +2800,12 @@ Grund:
             <div class="stat-value" id="totalAkten">0</div>
             <div class="stat-label">Beobachtung</div>
           </div>
-          <!-- Upload Button -->
-          <div class="stat-card" style="cursor: pointer;" onclick="document.getElementById('logoUpload').click()">
-            <div class="stat-value"><i class="fas fa-camera"></i></div>
-            <div class="stat-label">Logo ändern</div>
-          </div>
+          <!-- Entfernt: Getrennter Logo-Ändern-Button, da jetzt das Logo selbst klickbar ist -->
         </div>
       </div>
     </header>
 
-    <!-- Hidden file input -->
+    <!-- Hidden file input für Logo-Upload -->
     <input type="file" id="logoUpload" accept="image/*" style="display: none;" onchange="uploadLogo(event)">
 
     <aside class="sidebar">
@@ -3285,25 +3281,34 @@ Grund:
         logoImage.onload = function() {
           logoImage.style.display = 'block';
           defaultIcon.style.display = 'none';
+          // Tooltip setzen
+          const logoContainer = document.getElementById('logoContainer');
+          if (logoContainer) {
+            logoContainer.title = "Linksklick: Logo ändern\nRechtsklick: Zurücksetzen";
+          }
         };
         logoImage.onerror = function() {
+          // Falls Fehler beim Laden: Standard-Icon anzeigen
           logoImage.style.display = 'none';
           defaultIcon.style.display = 'block';
           localStorage.removeItem(LOGO_STORAGE_KEY);
+          // Tooltip zurücksetzen
+          const logoContainer = document.getElementById('logoContainer');
+          if (logoContainer) {
+            logoContainer.title = "Linksklick: Logo ändern\nRechtsklick: Zurücksetzen";
+          }
         };
         logoImage.src = url;
+      } else {
+        // Kein Logo: Standard-Icon anzeigen
+        logoImage.style.display = 'none';
+        logoImage.src = '';
+        defaultIcon.style.display = 'block';
         
+        // Tooltip setzen
         const logoContainer = document.getElementById('logoContainer');
         if (logoContainer) {
           logoContainer.title = "Linksklick: Logo ändern\nRechtsklick: Zurücksetzen";
-        }
-      } else {
-        logoImage.style.display = 'none';
-        defaultIcon.style.display = 'block';
-        
-        const logoContainer = document.getElementById('logoContainer');
-        if (logoContainer) {
-          logoContainer.title = "";
         }
       }
     }
