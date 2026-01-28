@@ -474,7 +474,7 @@
       color:#fff !important;
       background-color:rgba(255,255,255,.05) !important;
       appearance:none;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
       background-repeat:no-repeat;
       background-position:right 10px center;
       padding-right:30px;
@@ -1014,7 +1014,7 @@
       transform: translateY(-1px);
     }
 
-    /* Status Filter */
+    /* Status Filter - GEÄNDERT: "Mitarbeiter" statt "Aktiv" */
     .status-filter {
       display: flex;
       gap: 6px;
@@ -3269,13 +3269,15 @@ Grund:
           </div>
         </div>
         <div class="header-stats">
+          <!-- GEÄNDERT: "Mitarbeiter" statt "Aktiv" -->
           <div class="stat-card">
             <div class="stat-value" id="totalEmployees">0</div>
-            <div class="stat-label">Aktiv</div>
+            <div class="stat-label">Mitarbeiter</div>
           </div>
+          <!-- GEÄNDERT: "Archiviert" durch "Beobachtung" ersetzt -->
           <div class="stat-card">
-            <div class="stat-value" id="totalArchived">0</div>
-            <div class="stat-label">Archiviert</div>
+            <div class="stat-value" id="totalBeobachtungen">0</div>
+            <div class="stat-label">Beobachtung</div>
           </div>
           <div class="stat-card">
             <div class="stat-value" id="totalDeleted">0</div>
@@ -3292,9 +3294,10 @@ Grund:
       </div>
 
       <div class="sidebar-controls">
+        <!-- GEÄNDERT: Status-Filter - "Mitarbeiter" statt "Aktiv" und "Beobachtung" statt "Archiviert" -->
         <div class="status-filter">
-          <button class="status-filter-btn active" onclick="filterByStatus('active')">Aktiv</button>
-          <button class="status-filter-btn" onclick="filterByStatus('archived')">Archiviert</button>
+          <button class="status-filter-btn active" onclick="filterByStatus('active')">Mitarbeiter</button>
+          <button class="status-filter-btn" onclick="filterByStatus('archived')">Beobachtung</button>
           <button class="status-filter-btn" onclick="filterByStatus('deleted')">Gelöscht</button>
         </div>
 
@@ -3324,8 +3327,9 @@ Grund:
         <button class="quick-action-btn" onclick="openNewEmployeeModal()">
           <i class="fas fa-user-plus"></i> Neuer Mitarbeiter
         </button>
-        <button class="quick-action-btn" onclick="toggleArchiveFilter()" id="toggleArchiveBtn">
-          <i class="fas fa-archive"></i> Archiv anzeigen
+        <!-- GEÄNDERT: "Archiv anzeigen" durch "Beobachtung anzeigen" -->
+        <button class="quick-action-btn" onclick="toggleBeobachtungFilter()" id="toggleBeobachtungBtn">
+          <i class="fas fa-eye"></i> Beobachtung anzeigen
         </button>
       </div>
     </aside>
@@ -3343,7 +3347,8 @@ Grund:
         </div>
         <div class="action-buttons">
           <button class="btn btn-secondary" onclick="openEditEmployeeModal()"><i class="fas fa-edit"></i> Bearbeiten</button>
-          <button class="btn btn-archived" onclick="toggleArchiveEmployee()"><i class="fas fa-archive"></i> Archivieren</button>
+          <!-- GEÄNDERT: "Archivieren" durch "Beobachtung" -->
+          <button class="btn btn-archived" onclick="toggleBeobachtungEmployee()"><i class="fas fa-eye"></i> Beobachtung</button>
           <button class="btn btn-danger" onclick="softDeleteEmployee()"><i class="fas fa-trash"></i> Löschen</button>
         </div>
       </div>
@@ -3690,7 +3695,129 @@ Grund:
       setupBeobachtungEventListeners();
       setupSoldatenEventListeners();
       setupAnkundigungEventListeners();
+      
+      // Starte Echtzeit-Update-Listener
+      startRealtimeUpdates();
     }
+
+    // ==================== ECHTZEIT-UPDATES ====================
+    // Diese Funktion startet alle Listener für Echtzeit-Updates
+    function startRealtimeUpdates() {
+      setupRealtimeListeners();
+      
+      // Spezielle Listener für Formularänderungen
+      setupFormRealtimeListeners();
+    }
+
+    // Diese Funktion setzt Listener für Formularänderungen
+    function setupFormRealtimeListeners() {
+      // Listener für alle Formular-Inputs
+      const formInputs = document.querySelectorAll('.form-input, .form-select, .form-textarea, .toggle-switch input');
+      
+      formInputs.forEach(input => {
+        // Entferne alte Event-Listener
+        const newInput = input.cloneNode(true);
+        input.parentNode.replaceChild(newInput, input);
+        
+        // Füge neuen Event-Listener hinzu
+        newInput.addEventListener('input', function() {
+          // Speichere den Wert im localStorage mit Timestamp
+          const inputId = this.id;
+          const inputValue = this.value;
+          const isChecked = this.type === 'checkbox' ? this.checked : null;
+          
+          const data = {
+            value: inputValue,
+            checked: isChecked,
+            timestamp: Date.now(),
+            employeeId: currentEmployee ? currentEmployee.id : null
+          };
+          
+          localStorage.setItem(`hr_form_${inputId}`, JSON.stringify(data));
+          
+          // Trigger für andere Tabs
+          window.dispatchEvent(new CustomEvent('formDataChanged', {
+            detail: { inputId, data }
+          }));
+          
+          // Auto-save nach 5 Sekunden Inaktivität
+          clearTimeout(window.formSaveTimeout);
+          window.formSaveTimeout = setTimeout(() => {
+            if (currentEmployee) {
+              saveEmployeeData(true);
+              showNotification('Änderungen gespeichert', 'success');
+            }
+          }, 5000);
+        });
+        
+        newInput.addEventListener('change', function() {
+          if (currentEmployee) {
+            handleFormChange();
+          }
+        });
+      });
+    }
+
+    // Listener für formDataChanged Event (wird von anderen Tabs ausgelöst)
+    window.addEventListener('formDataChanged', function(e) {
+      const { inputId, data } = e.detail;
+      
+      // Prüfe ob die Daten älter als 1 Sekunde sind (um eigene Änderungen zu ignorieren)
+      if (Date.now() - data.timestamp > 1000) {
+        const inputElement = document.getElementById(inputId);
+        if (inputElement) {
+          if (inputElement.type === 'checkbox') {
+            inputElement.checked = data.checked;
+          } else {
+            inputElement.value = data.value;
+          }
+          
+          // Trigger change event
+          const event = new Event('change', { bubbles: true });
+          inputElement.dispatchEvent(event);
+        }
+      }
+    });
+
+    // Prüfe regelmäßig auf Änderungen in localStorage (für Cross-Tab Kommunikation)
+    function checkForExternalChanges() {
+      const keys = Object.keys(localStorage).filter(key => key.startsWith('hr_form_'));
+      
+      keys.forEach(key => {
+        const dataStr = localStorage.getItem(key);
+        if (dataStr) {
+          try {
+            const data = JSON.parse(dataStr);
+            const inputId = key.replace('hr_form_', '');
+            
+            // Wenn die Daten jünger als 10 Sekunden sind und von einem anderen Tab stammen
+            if (Date.now() - data.timestamp < 10000) {
+              const inputElement = document.getElementById(inputId);
+              if (inputElement && 
+                  ((inputElement.type === 'checkbox' && inputElement.checked !== data.checked) ||
+                   (inputElement.type !== 'checkbox' && inputElement.value !== data.value))) {
+                
+                // Update das Input-Feld
+                if (inputElement.type === 'checkbox') {
+                  inputElement.checked = data.checked;
+                } else {
+                  inputElement.value = data.value;
+                }
+                
+                // Trigger change event
+                const event = new Event('change', { bubbles: true });
+                inputElement.dispatchEvent(event);
+              }
+            }
+          } catch (e) {
+            console.error('Fehler beim Parsen von localStorage Daten:', e);
+          }
+        }
+      });
+    }
+
+    // Starte regelmäßige Prüfung auf externe Änderungen
+    setInterval(checkForExternalChanges, 2000);
 
     // ==================== REALTIME LISTENER SETUP ====================
     function setupRealtimeListeners() {
@@ -4263,12 +4390,13 @@ Grund:
       showNotification(`${latestLogs.length} Audit Log Einträge an Discord gesendet`, 'success');
     }
 
-    // ==================== MITARBEITER FUNKTIONEN MIT SOFT DELETE & ARCHIVIERUNG ====================
+    // ==================== MITARBEITER FUNKTIONEN MIT SOFT DELETE & BEOBACHTUNG ====================
     function filterByStatus(status) {
       currentStatusFilter = status;
       
       document.querySelectorAll('.status-filter-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.status-filter-btn')[status === 'active' ? 0 : status === 'archived' ? 1 : 2].classList.add('active');
+      const btnIndex = status === 'active' ? 0 : status === 'archived' ? 1 : 2;
+      document.querySelectorAll('.status-filter-btn')[btnIndex].classList.add('active');
       
       renderEmployeeList();
       updateStats();
@@ -4286,6 +4414,7 @@ Grund:
           emp.status === 'active' && !emp.isDeleted && !emp.archived
         );
       } else if (currentStatusFilter === 'archived') {
+        // GEÄNDERT: "Archiviert" zu "Beobachtung"
         filteredEmployees = filteredEmployees.filter(emp => emp.archived);
       } else if (currentStatusFilter === 'deleted') {
         filteredEmployees = filteredEmployees.filter(emp => emp.isDeleted);
@@ -4330,7 +4459,8 @@ Grund:
         if (employee.isDeleted) {
           statusBadge = `<div style="position: absolute; top: 4px; right: 4px; background: var(--danger); color: white; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px;">GELÖSCHT</div>`;
         } else if (employee.archived) {
-          statusBadge = `<div style="position: absolute; top: 4px; right: 4px; background: var(--archived); color: white; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px;">ARCHIVIERT</div>`;
+          // GEÄNDERT: "ARCHIVIERT" zu "BEOBACHTUNG"
+          statusBadge = `<div style="position: absolute; top: 4px; right: 4px; background: var(--archived); color: white; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px;">BEOBACHTUNG</div>`;
         }
 
         card.innerHTML = `
@@ -4364,11 +4494,12 @@ Grund:
         emp.status === 'active' && !emp.isDeleted && !emp.archived
       ).length;
       
-      const archivedEmployees = employees.filter(emp => emp.archived).length;
+      // GEÄNDERT: "Archiviert" zu "Beobachtung"
+      const beobachtungEmployees = employees.filter(emp => emp.archived).length;
       const deletedEmployees = employees.filter(emp => emp.isDeleted).length;
       
       document.getElementById('totalEmployees').textContent = activeEmployees;
-      document.getElementById('totalArchived').textContent = archivedEmployees;
+      document.getElementById('totalBeobachtungen').textContent = beobachtungEmployees;
       document.getElementById('totalDeleted').textContent = deletedEmployees;
     }
 
@@ -4430,14 +4561,15 @@ Grund:
       }
     }
 
-    async function toggleArchiveEmployee() {
+    // GEÄNDERT: toggleArchiveEmployee zu toggleBeobachtungEmployee
+    async function toggleBeobachtungEmployee() {
       if (!currentEmployee) {
         showNotification('Bitte wählen Sie zuerst einen Mitarbeiter aus', 'warning');
         return;
       }
 
-      const isCurrentlyArchived = currentEmployee.archived || false;
-      const action = isCurrentlyArchived ? 'wiederherstellen' : 'archivieren';
+      const isCurrentlyInBeobachtung = currentEmployee.archived || false;
+      const action = isCurrentlyInBeobachtung ? 'aus Beobachtung entfernen' : 'zur Beobachtung hinzufügen';
       
       if (!confirm(`Mitarbeiter "${currentEmployee.name}" wirklich ${action}?`)) {
         return;
@@ -4445,13 +4577,13 @@ Grund:
 
       try {
         const updateData = {
-          archived: !isCurrentlyArchived,
+          archived: !isCurrentlyInBeobachtung,
           archivedAt: firebase.firestore.FieldValue.serverTimestamp(),
           archivedBy: getCurrentUser(),
           lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
         };
         
-        if (!isCurrentlyArchived) {
+        if (!isCurrentlyInBeobachtung) {
           updateData.status = 'archived';
         } else {
           updateData.status = 'active';
@@ -4460,31 +4592,32 @@ Grund:
         await db.collection('hrEmployees').doc(currentEmployee.id).update(updateData);
         
         // Audit Log erstellen
-        const logAction = isCurrentlyArchived ? 'restore' : 'archive';
+        const logAction = isCurrentlyInBeobachtung ? 'restore' : 'archive';
         await createAuditLog(logAction, 'employee', currentEmployee.id, 
-          `${isCurrentlyArchived ? 'Wiederhergestellt' : 'Archiviert'}: ${currentEmployee.name} (DN ${currentEmployee.dn})`);
+          `${isCurrentlyInBeobachtung ? 'Aus Beobachtung entfernt' : 'Zur Beobachtung hinzugefügt'}: ${currentEmployee.name} (DN ${currentEmployee.dn})`);
         
-        showNotification(`Mitarbeiter ${action === 'archivieren' ? 'archiviert' : 'wiederhergestellt'}`, 'success');
+        showNotification(`Mitarbeiter ${action === 'zur Beobachtung hinzufügen' ? 'zur Beobachtung hinzugefügt' : 'aus Beobachtung entfernt'}`, 'success');
         
-        if (isCurrentlyArchived) {
+        if (isCurrentlyInBeobachtung) {
           filterByStatus('active');
         } else {
           filterByStatus('archived');
         }
       } catch (error) {
-        console.error('Fehler beim Archivieren/Wiederherstellen:', error);
+        console.error('Fehler beim Beobachtung-Status ändern:', error);
         showNotification('Fehler: ' + error.message, 'error');
       }
     }
 
-    function toggleArchiveFilter() {
+    // GEÄNDERT: toggleArchiveFilter zu toggleBeobachtungFilter
+    function toggleBeobachtungFilter() {
       showArchived = !showArchived;
-      const btn = document.getElementById('toggleArchiveBtn');
+      const btn = document.getElementById('toggleBeobachtungBtn');
       if (showArchived) {
-        btn.innerHTML = '<i class="fas fa-eye-slash"></i> Archiv ausblenden';
+        btn.innerHTML = '<i class="fas fa-eye-slash"></i> Beobachtung ausblenden';
         filterByStatus('archived');
       } else {
-        btn.innerHTML = '<i class="fas fa-archive"></i> Archiv anzeigen';
+        btn.innerHTML = '<i class="fas fa-eye"></i> Beobachtung anzeigen';
         filterByStatus('active');
       }
     }
@@ -4637,7 +4770,8 @@ Grund:
         status = 'Gelöscht';
         statusColor = 'var(--danger)';
       } else if (currentEmployee.archived) {
-        status = 'Archiviert';
+        // GEÄNDERT: "Archiviert" zu "Beobachtung"
+        status = 'Beobachtung';
         statusColor = 'var(--archived)';
       }
       
@@ -4998,13 +5132,13 @@ Sonstiges: ${notes}
     }
 
     function getEmptyStateTitle() {
-      if (currentStatusFilter === 'archived') return 'Keine archivierten Mitarbeiter';
+      if (currentStatusFilter === 'archived') return 'Keine Beobachtungen'; // GEÄNDERT
       if (currentStatusFilter === 'deleted') return 'Keine gelöschten Mitarbeiter';
       return 'Keine Mitarbeiter';
     }
 
     function getEmptyStateDescription() {
-      if (currentStatusFilter === 'archived') return 'Keine Mitarbeiter im Archiv';
+      if (currentStatusFilter === 'archived') return 'Keine Mitarbeiter unter Beobachtung'; // GEÄNDERT
       if (currentStatusFilter === 'deleted') return 'Keine gelöschten Mitarbeiter';
       if (currentFilter === 'oral') return 'Keine Mitarbeiter mit ausstehender mündlicher Einweisung';
       if (currentFilter === 'org') return 'Keine Mitarbeiter mit ausstehender organisatorischer Einweisung';
