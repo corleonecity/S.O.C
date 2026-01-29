@@ -3,17 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>📋 HR - Einweisungsmanagement</title>
+  
+  <!-- CACHE-CONTROL META TAGS -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
+  <title>📋 HR - Einweisungsmanagement v1.0</title>
 
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Font Awesome mit Cache-Busting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?v=20240128">
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js?v=20240128"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js?v=20240128"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js?v=20240128"></script>
 
   <style>
     :root{
@@ -79,15 +86,28 @@
     }
     .header-content{display:flex;justify-content:space-between;align-items:center}
     .brand{display:flex;align-items:center;gap:12px}
-    .logo{
-      width:40px;height:40px;
-      background:var(--primary);
-      border-radius:var(--radius-md);
-      display:flex;align-items:center;justify-content:center;
-      font-size:18px;color:#fff;
-      transition:var(--transition);
+    /* Logo */
+    .logo {
+      width: 40px;
+      height: 40px;
+      background: var(--primary);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #fff;
+      transition: var(--transition);
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
     }
-    .logo:hover{transform:scale(1.05);background:var(--primary-dark)}
+    .logo:hover {
+      transform: scale(1.05);
+      background: var(--primary-dark);
+    }
+
     .brand-text h1{font-size:18px;font-weight:800;color:#fff;margin-bottom:2px}
     .brand-text .subtitle{font-size:11px;color:var(--gray);font-weight:600}
     .header-stats{display:flex;gap:12px}
@@ -1323,7 +1343,7 @@
       flex: 1;
       overflow: hidden;
       display: flex;
-      flex-direction: column;
+      flex-direction:column;
       min-height: 0;
     }
 
@@ -2734,7 +2754,10 @@ Grund:
     <header class="app-header">
       <div class="header-content">
         <div class="brand">
-          <div class="logo"><i class="fas fa-user-check"></i></div>
+          <!-- Vereinfachtes Logo ohne Upload-Funktionalität -->
+          <div class="logo">
+            <i class="fas fa-user-check"></i>
+          </div>
           <div class="brand-text">
             <h1>Human Resources</h1>
             <div class="subtitle">•</div>
@@ -3116,6 +3139,49 @@ Grund:
   </div>
 
   <script>
+    // ==================== ENHANCED CACHE-BUSTING ====================
+    // Erzwingt Neuladen bei Version-Änderung mit Zeitstempel
+    const APP_VERSION = '1.0.' + Date.now();
+    const LAST_VERSION_KEY = 'hr_app_last_version';
+    
+    // Prüfe und aktualisiere Version
+    const lastVersion = localStorage.getItem(LAST_VERSION_KEY);
+    console.log(`App Version: ${APP_VERSION}, Letzte Version: ${lastVersion}`);
+    
+    if (lastVersion !== APP_VERSION) {
+      console.log('Neue Version erkannt - erzwinge Hard Refresh');
+      
+      // Lösche alle Caches
+      if ('caches' in window) {
+        caches.keys().then(function(names) {
+          names.forEach(name => caches.delete(name));
+          console.log('Service Worker Caches gelöscht');
+        });
+      }
+      
+      // Lösche localStorage für Firebase-Cache
+      Object.keys(localStorage).forEach(key => {
+        if (key.includes('firebase') || key.includes('firestore')) {
+          localStorage.removeItem(key);
+        }
+      });
+      
+      // Speichere neue Version
+      localStorage.setItem(LAST_VERSION_KEY, APP_VERSION);
+      
+      // Erzwinge Hard Refresh
+      if (!window.location.search.includes('hardRefresh')) {
+        window.location.href = window.location.href.split('?')[0] + '?hardRefresh=true&v=' + Date.now();
+      }
+    }
+    
+    // Version im Title anzeigen
+    document.addEventListener('DOMContentLoaded', function() {
+      const versionText = APP_VERSION.split('.')[2]?.substring(0, 8) || 'dev';
+      document.title = document.title.replace('v1.0', `v1.0.${versionText}`);
+    });
+    // ==================== ENDE CACHE-BUSTING ====================
+
     // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBTnsLNw68UuOd5Xa2ymMffWk4SYGDQjso",
@@ -3127,8 +3193,10 @@ Grund:
       measurementId: "G-9SZREFTJS6"
     };
 
+    // Firebase initialisieren
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const storage = firebase.storage();
 
     // Discord IDs for Units
     const unitDiscordIds = {
@@ -3173,16 +3241,194 @@ Grund:
     let currentSoldatenTab = 'new';
     let currentAnkundigungTab = 'new';
 
+    // Unsubscribe-Funktionen für Listener
+    let unsubscribeFunctions = [];
+
     document.addEventListener('DOMContentLoaded', function () {
+      console.log(`HR App Version ${APP_VERSION} geladen`);
       initializeApp();
       setupEventListeners();
       updateStats();
       adjustSidebarHeight();
-      loadAkten();
-      loadSoldatenGespräche();
-      loadAnkundigungen();
+      
+      // Warte kurz und starte dann Listener
+      setTimeout(() => {
+        setupRealtimeListeners();
+      }, 500);
     });
 
+    // ==================== ENHANCED REALTIME LISTENER SETUP ====================
+    function setupRealtimeListeners() {
+      console.log('=== SETUP REALTIME LISTENERS ===');
+      
+      // Cleanup alte Listener
+      cleanupRealtimeListeners();
+      
+      // Listener für Mitarbeiter mit erweitertem Logging
+      const unsubscribeEmployees = db.collection('hrEmployees')
+        .orderBy('lastUpdated', 'desc')
+        .onSnapshot((snapshot) => {
+          console.log(`🔥 Mitarbeiter Update: ${snapshot.size} Dokumente`);
+          
+          employees = [];
+          
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            employees.push({ 
+              id: doc.id, 
+              ...data,
+              lastUpdated: data.lastUpdated ? data.lastUpdated.toDate() : new Date()
+            });
+          });
+
+          renderEmployeeList();
+          updateStats();
+          
+          // Wenn ein Mitarbeiter ausgewählt ist, aktualisiere die Daten
+          if (currentEmployee) {
+            const updatedEmployee = employees.find(emp => emp.id === currentEmployee.id);
+            if (updatedEmployee) {
+              console.log(`🔥 Aktualisiere ausgewählten Mitarbeiter: ${updatedEmployee.name}`);
+              selectEmployee(updatedEmployee);
+            }
+          }
+          
+          // Log für Debugging
+          console.log(`Gespeicherte Mitarbeiter: ${employees.length}`);
+          employees.forEach(emp => {
+            console.log(`- ${emp.name} (DN: ${emp.dn}), Updated: ${emp.lastUpdated}`);
+          });
+          
+          setTimeout(updateInductionDisplay, 100);
+        }, (error) => {
+          console.error('❌ Fehler beim Lauschen auf Mitarbeiter-Änderungen:', error);
+          showNotification('Verbindungsfehler bei Live-Updates', 'error');
+        });
+
+      // Listener für Akten
+      const unsubscribeAkten = db.collection('hrAkten')
+        .orderBy('lastUpdated', 'desc')
+        .limit(100)
+        .onSnapshot((snapshot) => {
+          console.log(`📁 Akten Update: ${snapshot.size} Dokumente`);
+          akten = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            akten.push({ 
+              id: doc.id, 
+              ...data,
+              createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE'),
+              lastUpdated: data.lastUpdated ? data.lastUpdated.toDate() : new Date()
+            });
+          });
+          updateStats();
+          renderAktenListe();
+        }, (error) => {
+          console.error('❌ Fehler beim Lauschen auf Akten-Änderungen:', error);
+        });
+
+      // Listener für Soldatengespräche
+      const unsubscribeSoldaten = db.collection('hrSoldatenGespräche')
+        .orderBy('created', 'desc')
+        .limit(100)
+        .onSnapshot((snapshot) => {
+          console.log(`💬 Soldatengespräche Update: ${snapshot.size} Dokumente`);
+          soldatenGespräche = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            soldatenGespräche.push({ 
+              id: doc.id, 
+              ...data,
+              createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE'),
+              dateFormatted: data.dateFormatted || (data.date ? new Date(data.date).toLocaleDateString('de-DE') : '')
+            });
+          });
+          renderSoldatenListe();
+        }, (error) => {
+          console.error('❌ Fehler beim Lauschen auf Soldatengespräche:', error);
+        });
+
+      // Listener für Ankündigungen
+      const unsubscribeAnkundigungen = db.collection('hrAnkundigungen')
+        .orderBy('created', 'desc')
+        .limit(100)
+        .onSnapshot((snapshot) => {
+          console.log(`📢 Ankündigungen Update: ${snapshot.size} Dokumente`);
+          ankundigungen = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            ankundigungen.push({ 
+              id: doc.id, 
+              ...data,
+              createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE'),
+              dateFormatted: data.dateFormatted || (data.date ? new Date(data.date).toLocaleDateString('de-DE') : '')
+            });
+          });
+          renderAnkundigungListe();
+        }, (error) => {
+          console.error('❌ Fehler beim Lauschen auf Ankündigungen:', error);
+        });
+
+      // Speichere Unsubscribe-Funktionen
+      unsubscribeFunctions = [
+        unsubscribeEmployees,
+        unsubscribeAkten,
+        unsubscribeSoldaten,
+        unsubscribeAnkundigungen
+      ];
+      
+      console.log(`✅ ${unsubscribeFunctions.length} Realtime Listener aktiv`);
+    }
+
+    function cleanupRealtimeListeners() {
+      console.log('🧹 Cleanup Realtime Listener');
+      unsubscribeFunctions.forEach(unsubscribe => {
+        if (typeof unsubscribe === 'function') {
+          unsubscribe();
+        }
+      });
+      unsubscribeFunctions = [];
+    }
+
+    // Füge Event Listener für Seitenverlassen hinzu
+    window.addEventListener('beforeunload', cleanupRealtimeListeners);
+
+    // Manuelle Refresh Funktion
+    function manualRefresh() {
+      console.log('🔄 Manuelles Refresh gestartet');
+      cleanupRealtimeListeners();
+      setTimeout(() => {
+        setupRealtimeListeners();
+        showNotification('Daten manuell aktualisiert', 'success');
+      }, 500);
+    }
+
+    // Debug Funktion
+    function debugRealtimeStatus() {
+      console.log('=== REALTIME STATUS ===');
+      console.log('Aktive Listener:', unsubscribeFunctions.length);
+      console.log('Mitarbeiter:', employees.length);
+      console.log('Akten:', akten.length);
+      console.log('Soldatengespräche:', soldatenGespräche.length);
+      console.log('Ankündigungen:', ankundigungen.length);
+      
+      // Test-Query
+      db.collection('hrEmployees').get().then(snapshot => {
+        console.log('📊 Datenbank Mitarbeiter (alle):', snapshot.size);
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          console.log(`  - ${data.name || 'Unbekannt'} (DN: ${data.dn || '?'}), Updated: ${data.lastUpdated ? data.lastUpdated.toDate().toLocaleString() : '?'}`);
+        });
+      });
+      
+      showNotification('Status in Konsole ausgegeben', 'info');
+    }
+
+    // Zum Testen in der Konsole aufrufbar machen
+    window.debugApp = debugRealtimeStatus;
+    window.refreshApp = manualRefresh;
+
+    // ==================== HAUPTFUNKTIONEN ====================
     function initializeApp() {
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('oralDate').value = today;
@@ -3203,7 +3449,6 @@ Grund:
       document.getElementById('orgTimeStart').value = '22:10';
       document.getElementById('orgTimeEnd').value = '23:05';
 
-      loadEmployees();
       setupFormChangeListeners();
       seedTemplateBoxes();
       setupBeobachtungEventListeners();
@@ -3223,6 +3468,8 @@ Grund:
         if (e.ctrlKey && e.key === 'b') { e.preventDefault(); openBeobachtungAktenModal(); }
         if (e.ctrlKey && e.key === 's') { e.preventDefault(); openSoldatenModal(); }
         if (e.ctrlKey && e.key === 'a') { e.preventDefault(); openAnkundigungModal(); }
+        if (e.ctrlKey && e.key === 'r') { e.preventDefault(); manualRefresh(); }
+        if (e.ctrlKey && e.key === 'd') { e.preventDefault(); debugRealtimeStatus(); }
       });
 
       window.addEventListener('resize', adjustSidebarHeight);
@@ -3286,7 +3533,7 @@ Grund:
       sidebar.style.height = `${newHeight}px`;
     }
 
-    // Ankündigungen/Besprechungen/Aufstellungen Functions
+    // ==================== ANKÜNDIGUNGEN FUNKTIONEN ====================
     function openAnkundigungModal() {
       openModal('ankundigungModal');
       updateAnkundigungPreview();
@@ -3299,7 +3546,6 @@ Grund:
     function switchAnkundigungTab(tabName) {
       currentAnkundigungTab = tabName;
       
-      // Update tab buttons
       document.querySelectorAll('.ankundigung-tab').forEach(tab => {
         tab.classList.remove('active');
       });
@@ -3311,7 +3557,6 @@ Grund:
       
       document.querySelectorAll('.ankundigung-tab')[tabIndex].classList.add('active');
       
-      // Update tab content
       document.querySelectorAll('.ankundigung-tab-content').forEach(content => {
         content.style.display = 'none';
       });
@@ -3323,7 +3568,6 @@ Grund:
       
       document.getElementById(tabId).style.display = 'block';
       
-      // Load data for the tab
       if (tabName === 'list') {
         renderAnkundigungListe();
       }
@@ -3416,23 +3660,19 @@ Bemerkungen: ${bemerkungen || ''}`;
         date: new Date().toISOString(),
         dateFormatted: new Date().toLocaleDateString('de-DE'),
         template: document.getElementById('ankundigungPreview').textContent,
-        icon: '🪧'
+        icon: '🪧',
+        created: firebase.firestore.FieldValue.serverTimestamp(),
+        syncVersion: Date.now()
       };
 
       try {
         await db.collection('hrAnkundigungen').doc(ankundigung.id).set(ankundigung);
-        ankundigungen.unshift(ankundigung);
         
         showNotification('Ankündigung erfolgreich gespeichert', 'success');
-        
-        // Felder leeren
         document.getElementById('ankundigungTitle').value = '';
         document.getElementById('ankundigungContent').value = '';
-        
         updateAnkundigungPreview();
         renderAnkundigungListe();
-        
-        // Switch to list tab to show the new entry
         switchAnkundigungTab('list');
       } catch (error) {
         console.error('Fehler beim Speichern der Ankündigung:', error);
@@ -3460,30 +3700,25 @@ Bemerkungen: ${bemerkungen || ''}`;
         time,
         ort: ort || '',
         content,
-        created: new Date().toISOString(),
+        created: firebase.firestore.FieldValue.serverTimestamp(),
         createdFormatted: new Date().toLocaleDateString('de-DE'),
         dateFormatted: new Date(date).toLocaleDateString('de-DE'),
         template: document.getElementById('besprechungPreview').textContent,
-        icon: '🖊️'
+        icon: '🖊️',
+        syncVersion: Date.now()
       };
 
       try {
         await db.collection('hrAnkundigungen').doc(besprechung.id).set(besprechung);
-        ankundigungen.unshift(besprechung);
         
         showNotification('Besprechung erfolgreich gespeichert', 'success');
-        
-        // Felder leeren
         document.getElementById('besprechungThema').value = '';
         document.getElementById('besprechungDate').value = new Date().toISOString().split('T')[0];
         document.getElementById('besprechungTime').value = '';
         document.getElementById('besprechungOrt').value = '';
         document.getElementById('besprechungContent').value = '';
-        
         updateBesprechungPreview();
         renderAnkundigungListe();
-        
-        // Switch to list tab to show the new entry
         switchAnkundigungTab('list');
       } catch (error) {
         console.error('Fehler beim Speichern der Besprechung:', error);
@@ -3511,30 +3746,25 @@ Bemerkungen: ${bemerkungen || ''}`;
         time,
         ort,
         bemerkungen: bemerkungen || '',
-        created: new Date().toISOString(),
+        created: firebase.firestore.FieldValue.serverTimestamp(),
         createdFormatted: new Date().toLocaleDateString('de-DE'),
         dateFormatted: new Date(date).toLocaleDateString('de-DE'),
         template: document.getElementById('aufstellungPreview').textContent,
-        icon: '🕛'
+        icon: '🕛',
+        syncVersion: Date.now()
       };
 
       try {
         await db.collection('hrAnkundigungen').doc(aufstellung.id).set(aufstellung);
-        ankundigungen.unshift(aufstellung);
         
         showNotification('Aufstellung erfolgreich gespeichert', 'success');
-        
-        // Felder leeren
         document.getElementById('aufstellungTyp').value = '';
         document.getElementById('aufstellungDate').value = new Date().toISOString().split('T')[0];
         document.getElementById('aufstellungTime').value = '';
         document.getElementById('aufstellungOrt').value = '';
         document.getElementById('aufstellungBemerkungen').value = '';
-        
         updateAufstellungPreview();
         renderAnkundigungListe();
-        
-        // Switch to list tab to show the new entry
         switchAnkundigungTab('list');
       } catch (error) {
         console.error('Fehler beim Speichern der Aufstellung:', error);
@@ -3542,30 +3772,10 @@ Bemerkungen: ${bemerkungen || ''}`;
       }
     }
 
-    async function loadAnkundigungen() {
-      try {
-        const snapshot = await db.collection('hrAnkundigungen').orderBy('created', 'desc').limit(100).get();
-        ankundigungen = [];
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          ankundigungen.push({ 
-            id: doc.id, 
-            ...data,
-            createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE'),
-            dateFormatted: data.dateFormatted || (data.date ? new Date(data.date).toLocaleDateString('de-DE') : '')
-          });
-        });
-        renderAnkundigungListe();
-      } catch (error) {
-        console.error('Fehler beim Laden der Ankündigungen:', error);
-      }
-    }
-
     function renderAnkundigungListe() {
       const container = document.getElementById('ankundigungListe');
       const searchTerm = document.getElementById('ankundigungSearch')?.value.toLowerCase() || '';
       
-      // Filter ankundigungen based on search term
       let filteredAnkundigungen = ankundigungen;
       if (searchTerm) {
         filteredAnkundigungen = ankundigungen.filter(item => 
@@ -3672,9 +3882,6 @@ Bemerkungen: ${bemerkungen || ''}`;
 
       try {
         await db.collection('hrAnkundigungen').doc(itemId).delete();
-        ankundigungen = ankundigungen.filter(i => i.id !== itemId);
-        
-        renderAnkundigungListe();
         showNotification('Eintrag gelöscht', 'success');
       } catch (error) {
         console.error('Fehler beim Löschen des Eintrags:', error);
@@ -3682,7 +3889,7 @@ Bemerkungen: ${bemerkungen || ''}`;
       }
     }
 
-    // Soldatengespräch Functions
+    // ==================== SOLDATENGESPRÄCH FUNKTIONEN ====================
     function openSoldatenModal() {
       openModal('soldatenModal');
       updateSoldatenPreview();
@@ -3695,13 +3902,11 @@ Bemerkungen: ${bemerkungen || ''}`;
     function switchSoldatenTab(tabName) {
       currentSoldatenTab = tabName;
       
-      // Update tab buttons
       document.querySelectorAll('.soldaten-tab').forEach(tab => {
         tab.classList.remove('active');
       });
       document.querySelectorAll('.soldaten-tab')[tabName === 'new' ? 0 : 1].classList.add('active');
       
-      // Update tab content
       document.querySelectorAll('.soldaten-tab-content').forEach(content => {
         content.style.display = 'none';
       });
@@ -3711,7 +3916,6 @@ Bemerkungen: ${bemerkungen || ''}`;
       
       document.getElementById(tabId).style.display = 'block';
       
-      // Load data for the tab
       if (tabName === 'list') {
         renderSoldatenListe();
       }
@@ -3780,19 +3984,17 @@ Sonstiges: ${sonstiges || ''}
         time,
         notizen,
         sonstiges: sonstiges || '',
-        created: new Date().toISOString(),
+        created: firebase.firestore.FieldValue.serverTimestamp(),
         createdFormatted: new Date().toLocaleDateString('de-DE'),
         dateFormatted: new Date(date).toLocaleDateString('de-DE'),
-        template: document.getElementById('soldatenPreview').textContent
+        template: document.getElementById('soldatenPreview').textContent,
+        syncVersion: Date.now()
       };
 
       try {
         await db.collection('hrSoldatenGespräche').doc(gespräch.id).set(gespräch);
-        soldatenGespräche.unshift(gespräch);
         
         showNotification('Soldatengespräch erfolgreich gespeichert', 'success');
-        
-        // Felder leeren
         document.getElementById('soldatenName').value = '';
         document.getElementById('soldatenDN').value = '';
         document.getElementById('soldatenUnit').value = '';
@@ -3801,11 +4003,8 @@ Sonstiges: ${sonstiges || ''}
         document.getElementById('soldatenTime').value = '';
         document.getElementById('soldatenNotizen').value = '';
         document.getElementById('soldatenSonstiges').value = '';
-        
         updateSoldatenPreview();
         renderSoldatenListe();
-        
-        // Switch to list tab to show the new entry
         switchSoldatenTab('list');
       } catch (error) {
         console.error('Fehler beim Speichern des Soldatengesprächs:', error);
@@ -3813,103 +4012,81 @@ Sonstiges: ${sonstiges || ''}
       }
     }
 
-    async function loadSoldatenGespräche() {
-      try {
-        const snapshot = await db.collection('hrSoldatenGespräche').orderBy('created', 'desc').limit(100).get();
-        soldatenGespräche = [];
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          soldatenGespräche.push({ 
-            id: doc.id, 
-            ...data,
-            createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE'),
-            dateFormatted: data.dateFormatted || (data.date ? new Date(data.date).toLocaleDateString('de-DE') : '')
-          });
-        });
-        renderSoldatenListe();
-      } catch (error) {
-        console.error('Fehler beim Laden der Soldatengespräche:', error);
-      }
-    }
-
     function renderSoldatenListe() {
-  const container = document.getElementById('soldatenListe');
-  const searchTerm = document.getElementById('soldatenSearch')?.value.toLowerCase() || '';
-  
-  // Filter gespräche based on search term
-  let filteredGespräche = soldatenGespräche;
-  if (searchTerm) {
-    filteredGespräche = soldatenGespräche.filter(gespräch => 
-      gespräch.name.toLowerCase().includes(searchTerm) || 
-      gespräch.dn.toString().includes(searchTerm)
-    );
-  }
-  
-  if (filteredGespräche.length === 0) {
-    container.innerHTML = `
-      <div class="empty-soldaten">
-        <div class="empty-soldaten-icon"><i class="fas fa-comments"></i></div>
-        <div class="empty-soldaten-title">${searchTerm ? 'Keine passenden Gespräche gefunden' : 'Keine Gespräche gefunden'}</div>
-        <div class="empty-description">${searchTerm ? 'Versuchen Sie einen anderen Suchbegriff' : 'Erstellen Sie Ihr erstes Soldatengespräch'}</div>
-      </div>
-    `;
-    return;
-  }
+      const container = document.getElementById('soldatenListe');
+      const searchTerm = document.getElementById('soldatenSearch')?.value.toLowerCase() || '';
+      
+      let filteredGespräche = soldatenGespräche;
+      if (searchTerm) {
+        filteredGespräche = soldatenGespräche.filter(gespräch => 
+          gespräch.name.toLowerCase().includes(searchTerm) || 
+          gespräch.dn.toString().includes(searchTerm)
+        );
+      }
+      
+      if (filteredGespräche.length === 0) {
+        container.innerHTML = `
+          <div class="empty-soldaten">
+            <div class="empty-soldaten-icon"><i class="fas fa-comments"></i></div>
+            <div class="empty-soldaten-title">${searchTerm ? 'Keine passenden Gespräche gefunden' : 'Keine Gespräche gefunden'}</div>
+            <div class="empty-description">${searchTerm ? 'Versuchen Sie einen anderen Suchbegriff' : 'Erstellen Sie Ihr erstes Soldatengespräch'}</div>
+          </div>
+        `;
+        return;
+      }
 
-  let html = '';
-  filteredGespräche.forEach(gespräch => {
-    html += `
-      <div class="soldaten-item">
-        <div class="soldaten-item-header">
-          <div class="soldaten-item-name">${escapeHtml(gespräch.name)}</div>
-          <div class="soldaten-item-dn">DN ${escapeHtml(gespräch.dn)}</div>
-        </div>
-        <div class="soldaten-item-date">
-          <i class="fas fa-calendar"></i> Gespräch am: ${gespräch.dateFormatted} um ${gespräch.time || ''}
-        </div>
-        <div style="display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
-          <div style="background: rgba(245,158,11,.10); color: #fcd34d; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; border: 1px solid rgba(245,158,11,.20);">
-            ${gespräch.unit || 'Keine Unit'}
+      let html = '';
+      filteredGespräche.forEach(gespräch => {
+        html += `
+          <div class="soldaten-item">
+            <div class="soldaten-item-header">
+              <div class="soldaten-item-name">${escapeHtml(gespräch.name)}</div>
+              <div class="soldaten-item-dn">DN ${escapeHtml(gespräch.dn)}</div>
+            </div>
+            <div class="soldaten-item-date">
+              <i class="fas fa-calendar"></i> Gespräch am: ${gespräch.dateFormatted} um ${gespräch.time || ''}
+            </div>
+            <div style="display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
+              <div style="background: rgba(245,158,11,.10); color: #fcd34d; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; border: 1px solid rgba(245,158,11,.20);">
+                ${gespräch.unit || 'Keine Unit'}
+              </div>
+              <div style="background: rgba(245,158,11,.10); color: #fcd34d; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; border: 1px solid rgba(245,158,11,.20);">
+                ${gespräch.rank || 'Kein Rang'}
+              </div>
+            </div>
+            
+            <div class="soldaten-item-notizen">
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+                <i class="fas fa-sticky-note" style="color: var(--warning); font-size: 12px;"></i>
+                <span style="font-weight: 900; color: var(--warning); font-size: 12px;">Notizen:</span>
+              </div>
+              ${escapeHtml(gespräch.notizen.length > 200 ? gespräch.notizen.substring(0, 200) + '...' : gespräch.notizen)}
+            </div>
+            
+            ${gespräch.sonstiges ? `
+            <div class="soldaten-item-sonstiges">
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+                <i class="fas fa-ellipsis-h" style="color: var(--warning); font-size: 12px;"></i>
+                <span style="font-weight: 900; color: var(--warning); font-size: 12px;">Sonstiges:</span>
+              </div>
+              ${escapeHtml(gespräch.sonstiges.length > 200 ? gespräch.sonstiges.substring(0, 200) + '...' : gespräch.sonstiges)}
+            </div>
+            ` : ''}
+            
+            <div class="soldaten-item-actions">
+              <button class="soldaten-item-btn soldaten-item-btn-copy" onclick="copySoldatenFromList('${gespräch.id}')">
+                <i class="fas fa-copy"></i> Kopieren
+              </button>
+              <button class="soldaten-item-btn soldaten-item-btn-delete" onclick="deleteSoldatenGespräch('${gespräch.id}')">
+                <i class="fas fa-trash"></i> Löschen
+              </button>
+            </div>
           </div>
-          <div style="background: rgba(245,158,11,.10); color: #fcd34d; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; border: 1px solid rgba(245,158,11,.20);">
-            ${gespräch.rank || 'Kein Rang'}
-          </div>
-        </div>
-        
-        <!-- Notizen mit Überschrift -->
-        <div class="soldaten-item-notizen">
-          <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
-            <i class="fas fa-sticky-note" style="color: var(--warning); font-size: 12px;"></i>
-            <span style="font-weight: 900; color: var(--warning); font-size: 12px;">Notizen:</span>
-          </div>
-          ${escapeHtml(gespräch.notizen.length > 200 ? gespräch.notizen.substring(0, 200) + '...' : gespräch.notizen)}
-        </div>
-        
-        <!-- Sonstiges mit Überschrift (falls vorhanden) -->
-        ${gespräch.sonstiges ? `
-        <div class="soldaten-item-sonstiges">
-          <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
-            <i class="fas fa-ellipsis-h" style="color: var(--warning); font-size: 12px;"></i>
-            <span style="font-weight: 900; color: var(--warning); font-size: 12px;">Sonstiges:</span>
-          </div>
-          ${escapeHtml(gespräch.sonstiges.length > 200 ? gespräch.sonstiges.substring(0, 200) + '...' : gespräch.sonstiges)}
-        </div>
-        ` : ''}
-        
-        <div class="soldaten-item-actions">
-          <button class="soldaten-item-btn soldaten-item-btn-copy" onclick="copySoldatenFromList('${gespräch.id}')">
-            <i class="fas fa-copy"></i> Kopieren
-          </button>
-          <button class="soldaten-item-btn soldaten-item-btn-delete" onclick="deleteSoldatenGespräch('${gespräch.id}')">
-            <i class="fas fa-trash"></i> Löschen
-          </button>
-        </div>
-      </div>
-    `;
-  });
+        `;
+      });
 
-  container.innerHTML = html;
-}  
+      container.innerHTML = html;
+    }  
 
     function searchSoldaten(searchTerm) {
       renderSoldatenListe();
@@ -3928,9 +4105,6 @@ Sonstiges: ${sonstiges || ''}
 
       try {
         await db.collection('hrSoldatenGespräche').doc(gesprächId).delete();
-        soldatenGespräche = soldatenGespräche.filter(g => g.id !== gesprächId);
-        
-        renderSoldatenListe();
         showNotification('Soldatengespräch gelöscht', 'success');
       } catch (error) {
         console.error('Fehler beim Löschen des Soldatengesprächs:', error);
@@ -3938,7 +4112,7 @@ Sonstiges: ${sonstiges || ''}
       }
     }
 
-    // Beobachtungs Akten Functions (behalten)
+    // ==================== BEOBACHTUNGS AKTEN FUNKTIONEN ====================
     function openBeobachtungAktenModal() {
       openModal('beobachtungAktenModal');
       updateBeobachtungPreview();
@@ -3951,13 +4125,11 @@ Sonstiges: ${sonstiges || ''}
     function switchBeobachtungTab(tabName) {
       currentBeobachtungTab = tabName;
       
-      // Update tab buttons
       document.querySelectorAll('.beobachtung-tab').forEach(tab => {
         tab.classList.remove('active');
       });
       document.querySelectorAll('.beobachtung-tab')[tabName === 'new' ? 0 : tabName === 'list' ? 1 : 2].classList.add('active');
       
-      // Update tab content
       document.querySelectorAll('.beobachtung-tab-content').forEach(content => {
         content.style.display = 'none';
       });
@@ -3968,7 +4140,6 @@ Sonstiges: ${sonstiges || ''}
       
       document.getElementById(tabId).style.display = 'block';
       
-      // Load data for the tab
       if (tabName === 'list') {
         renderAktenListe();
       }
@@ -4009,7 +4180,6 @@ Grund: ${grund || ''}
         return;
       }
 
-      // Check if akte already exists
       const existingAkte = akten.find(a => a.dn == dn && a.name.toLowerCase() === name.toLowerCase());
       if (existingAkte) {
         showNotification('Eine Akte für diese Person existiert bereits', 'warning');
@@ -4022,29 +4192,22 @@ Grund: ${grund || ''}
         dn,
         unit: unit || '',
         rank: rank || '',
-        created: new Date().toISOString(),
+        created: firebase.firestore.FieldValue.serverTimestamp(),
         createdFormatted: new Date().toLocaleDateString('de-DE'),
         beobachtungen: [],
-        lastUpdated: new Date().toISOString()
+        lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+        syncVersion: Date.now()
       };
 
       try {
         await db.collection('hrAkten').doc(akte.id).set(akte);
-        akten.unshift(akte);
-        
         showNotification('Akte erfolgreich erstellt', 'success');
-        
-        // Felder leeren
         document.getElementById('akteName').value = '';
         document.getElementById('akteDN').value = '';
         document.getElementById('akteUnit').value = '';
         document.getElementById('akteRank').value = '';
-        
-        // Update stats and lists
         updateStats();
         renderAktenListe();
-        
-        // Switch to list tab to show the new entry
         switchBeobachtungTab('list');
       } catch (error) {
         console.error('Fehler beim Erstellen der Akte:', error);
@@ -4067,27 +4230,25 @@ Grund: ${grund || ''}
         return;
       }
 
-      // Find or create akte
       let akte = akten.find(a => a.dn == dn && a.name.toLowerCase() === name.toLowerCase());
       
       if (!akte) {
-        // Create new akte if it doesn't exist
         const newAkte = {
           id: `AKTE-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
           name,
           dn,
           unit: '',
           rank: '',
-          created: new Date().toISOString(),
+          created: firebase.firestore.FieldValue.serverTimestamp(),
           createdFormatted: new Date().toLocaleDateString('de-DE'),
           beobachtungen: [],
-          lastUpdated: new Date().toISOString()
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+          syncVersion: Date.now()
         };
         
         try {
           await db.collection('hrAkten').doc(newAkte.id).set(newAkte);
           akte = newAkte;
-          akten.unshift(akte);
         } catch (error) {
           console.error('Fehler beim Erstellen der Akte:', error);
           showNotification('Fehler beim Erstellen der Akte: ' + error.message, 'error');
@@ -4095,7 +4256,6 @@ Grund: ${grund || ''}
         }
       }
 
-      // Create beobachtung
       const beobachtung = {
         id: `BEO-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
         name,
@@ -4103,30 +4263,27 @@ Grund: ${grund || ''}
         grund,
         date: new Date().toISOString(),
         dateFormatted: new Date().toLocaleDateString('de-DE'),
-        template: document.getElementById('beobachtungPreview').textContent
+        template: document.getElementById('beobachtungPreview').textContent,
+        created: firebase.firestore.FieldValue.serverTimestamp()
       };
 
       try {
-        // Add beobachtung to akte
         if (!akte.beobachtungen) akte.beobachtungen = [];
         akte.beobachtungen.unshift(beobachtung);
-        akte.lastUpdated = new Date().toISOString();
+        akte.lastUpdated = firebase.firestore.FieldValue.serverTimestamp();
+        akte.syncVersion = Date.now();
         
-        // Update in Firebase
         await db.collection('hrAkten').doc(akte.id).update({
           beobachtungen: akte.beobachtungen,
-          lastUpdated: akte.lastUpdated
+          lastUpdated: akte.lastUpdated,
+          syncVersion: akte.syncVersion
         });
         
         showNotification('Beobachtung zur Akte hinzugefügt', 'success');
-        
-        // Felder leeren
         document.getElementById('beobachtungName').value = '';
         document.getElementById('beobachtungDN').value = '';
         document.getElementById('beobachtungGrund').value = '';
         updateBeobachtungPreview();
-        
-        // Update stats and lists
         updateStats();
         renderAktenListe();
       } catch (error) {
@@ -4135,30 +4292,10 @@ Grund: ${grund || ''}
       }
     }
 
-    async function loadAkten() {
-      try {
-        const snapshot = await db.collection('hrAkten').orderBy('lastUpdated', 'desc').limit(100).get();
-        akten = [];
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          akten.push({ 
-            id: doc.id, 
-            ...data,
-            createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE')
-          });
-        });
-        updateStats();
-        renderAktenListe();
-      } catch (error) {
-        console.error('Fehler beim Laden der Akten:', error);
-      }
-    }
-
     function renderAktenListe() {
       const container = document.getElementById('aktenListe');
       const searchTerm = document.getElementById('aktenSearch')?.value.toLowerCase() || '';
       
-      // Filter akten based on search term
       let filteredAkten = akten;
       if (searchTerm) {
         filteredAkten = akten.filter(akte => 
@@ -4204,7 +4341,6 @@ Grund: ${grund || ''}
             </div>
         `;
 
-        // Show latest beobachtung if exists
         if (beobachtungenCount > 0) {
           const latestBeobachtung = akte.beobachtungen[0];
           html += `
@@ -4276,7 +4412,6 @@ Grund: ${grund || ''}
         `;
       }
 
-      // Show in a modal
       const modalHtml = `
         <div class="beobachtung-akten-modal active" onclick="if(event.target===this)closeModal('akteDetailModal')">
           <div class="beobachtung-akten-content">
@@ -4339,23 +4474,19 @@ Grund: ${grund || ''}
       if (!akte || !akte.beobachtungen) return;
 
       try {
-        // Remove beobachtung from array
         akte.beobachtungen = akte.beobachtungen.filter(b => b.id !== beobachtungId);
-        akte.lastUpdated = new Date().toISOString();
+        akte.lastUpdated = firebase.firestore.FieldValue.serverTimestamp();
+        akte.syncVersion = Date.now();
         
-        // Update in Firebase
         await db.collection('hrAkten').doc(akteId).update({
           beobachtungen: akte.beobachtungen,
-          lastUpdated: akte.lastUpdated
+          lastUpdated: akte.lastUpdated,
+          syncVersion: akte.syncVersion
         });
         
         showNotification('Beobachtung gelöscht', 'success');
-        
-        // Re-open akte detail to refresh view
         closeModal('akteDetailModal');
         setTimeout(() => openAkteDetail(akteId), 100);
-        
-        // Update main list
         renderAktenListe();
       } catch (error) {
         console.error('Fehler beim Löschen der Beobachtung:', error);
@@ -4368,10 +4499,6 @@ Grund: ${grund || ''}
 
       try {
         await db.collection('hrAkten').doc(akteId).delete();
-        akten = akten.filter(a => a.id !== akteId);
-        
-        updateStats();
-        renderAktenListe();
         showNotification('Akte gelöscht', 'success');
       } catch (error) {
         console.error('Fehler beim Löschen der Akte:', error);
@@ -4383,77 +4510,15 @@ Grund: ${grund || ''}
       const akte = akten.find(a => a.id === akteId);
       if (!akte) return;
 
-      // Close detail modal
       closeModal('akteDetailModal');
-      
-      // Open main modal with beobachtung tab
       openBeobachtungAktenModal();
       switchBeobachtungTab('beobachtung');
-      
-      // Pre-fill name and DN
       document.getElementById('beobachtungName').value = akte.name;
       document.getElementById('beobachtungDN').value = akte.dn;
       updateBeobachtungPreview();
     }
 
-    // Firebase Functions for Employees (unchanged)
-    async function loadEmployees() {
-      try {
-        showLoading();
-        const snapshot = await db.collection('hrEmployees').orderBy('lastUpdated', 'desc').get();
-        employees = [];
-
-        snapshot.forEach(doc => {
-          employees.push({ id: doc.id, ...doc.data() });
-        });
-
-        renderEmployeeList();
-        updateStats();
-        hideLoading();
-
-        setTimeout(updateInductionDisplay, 100);
-      } catch (error) {
-        console.error('Fehler beim Laden der Mitarbeiter:', error);
-        showNotification('Fehler beim Laden der Daten', 'error');
-        loadMockEmployees();
-        hideLoading();
-      }
-    }
-
-    async function saveEmployeeToFirebase(employee) {
-      try {
-        const dataToSave = {
-          name: employee.name,
-          dn: employee.dn,
-          unit: employee.unit,
-          rank: employee.rank,
-          lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
-          inductions: employee.inductions || {},
-          oralData: employee.oralData || {},
-          orgData: employee.orgData || {}
-        };
-
-        await db.collection('hrEmployees').doc(employee.id).set(dataToSave, { merge: true });
-        return true;
-      } catch (error) {
-        console.error('Fehler beim Speichern:', error);
-        showNotification('Fehler beim Speichern: ' + error.message, 'error');
-        return false;
-      }
-    }
-
-    async function deleteEmployeeFromFirebase(employeeId) {
-      try {
-        await db.collection('hrEmployees').doc(employeeId).delete();
-        return true;
-      } catch (error) {
-        console.error('Fehler beim Löschen:', error);
-        showNotification('Fehler beim Löschen: ' + error.message, 'error');
-        return false;
-      }
-    }
-
-    // Employee List (unchanged)
+    // ==================== ENHANCED MITARBEITER FUNKTIONEN ====================
     function renderEmployeeList() {
       const container = document.getElementById('employeeList');
       const countElement = document.getElementById('employeeCount');
@@ -4561,6 +4626,7 @@ Grund: ${grund || ''}
     }
 
     function selectEmployee(employee) {
+      console.log(`📌 Mitarbeiter ausgewählt: ${employee.name} (${employee.id})`);
       currentEmployee = employee;
 
       document.getElementById('employeeHeader').style.display = 'flex';
@@ -4574,6 +4640,8 @@ Grund: ${grund || ''}
 
     function loadEmployeeData() {
       if (!currentEmployee) return;
+
+      console.log(`📂 Lade Daten für Mitarbeiter: ${currentEmployee.name}`);
 
       const oralData = currentEmployee.oralData || {};
       const orgData = currentEmployee.orgData || {};
@@ -4672,6 +4740,44 @@ Grund: ${grund || ''}
       currentEmployee.lastUpdated = new Date().toISOString();
     }
 
+    async function saveEmployeeData(isAutoSave = false) {
+      if (!currentEmployee) return;
+
+      // Formular-Daten speichern
+      saveFormData();
+      
+      try {
+        // Update mit serverTimestamp für konsistente Updates
+        const updateData = {
+          name: currentEmployee.name,
+          dn: currentEmployee.dn,
+          unit: currentEmployee.unit || '',
+          rank: currentEmployee.rank || '',
+          inductions: currentEmployee.inductions || {},
+          oralData: currentEmployee.oralData || {},
+          orgData: currentEmployee.orgData || {},
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+          syncVersion: Date.now() // Für Konfliktlösung
+        };
+        
+        console.log(`💾 Speichere Mitarbeiter: ${currentEmployee.name}`, updateData);
+        
+        await db.collection('hrEmployees').doc(currentEmployee.id).set(updateData, { merge: true });
+        
+        console.log(`✅ Mitarbeiter ${currentEmployee.id} gespeichert`);
+        
+        if (!isAutoSave) {
+          showNotification('Änderungen gespeichert', 'success');
+        }
+        
+        return true;
+      } catch (error) {
+        console.error('❌ Fehler beim Speichern:', error);
+        showNotification('Fehler beim Speichern: ' + error.message, 'error');
+        return false;
+      }
+    }
+
     function openEditEmployeeModal() {
       if (!currentEmployee) {
         showNotification('Bitte wählen Sie zuerst einen Mitarbeiter aus', 'warning');
@@ -4702,7 +4808,7 @@ Grund: ${grund || ''}
       currentEmployee.unit = document.getElementById('editEmployeeUnit').value || '';
       currentEmployee.rank = document.getElementById('editEmployeeRank').value || '';
 
-      const success = await saveEmployeeToFirebase(currentEmployee);
+      const success = await saveEmployeeData(false);
       if (success) {
         closeModal('editEmployeeModal');
         updateEmployeeHeader();
@@ -4722,19 +4828,21 @@ Grund: ${grund || ''}
         return;
       }
 
-      const success = await deleteEmployeeFromFirebase(currentEmployee.id);
-      if (success) {
-        employees = employees.filter(emp => emp.id !== currentEmployee.id);
-
+      try {
+        await db.collection('hrEmployees').doc(currentEmployee.id).delete();
+        showNotification('Mitarbeiter erfolgreich gelöscht', 'success');
+        
         closeModal('editEmployeeModal');
-
         currentEmployee = null;
         document.getElementById('employeeHeader').style.display = 'none';
         document.getElementById('inductionContent').style.display = 'none';
-
         renderEmployeeList();
         updateStats();
-        showNotification('Mitarbeiter erfolgreich gelöscht', 'success');
+        
+      } catch (error) {
+        console.error('Fehler beim Löschen:', error);
+        showNotification('Fehler beim Löschen: ' + error.message, 'error');
+        return false;
       }
     }
 
@@ -4751,7 +4859,6 @@ Grund: ${grund || ''}
 
       updateInductionUI(type, completed);
       updateTemplates();
-
       saveEmployeeData(true);
       checkBothInductionsCompleted();
       renderEmployeeList();
@@ -4854,22 +4961,6 @@ Sonstiges: ${notes}
 ╚══════════════════╝`;
     }
 
-    async function saveEmployeeData(isAutoSave = false) {
-      if (!currentEmployee) return;
-
-      try {
-        const success = await saveEmployeeToFirebase(currentEmployee);
-        if (success) {
-          if (!isAutoSave) showNotification('Änderungen gespeichert', 'success');
-          renderEmployeeList();
-          updateStats();
-        }
-      } catch (error) {
-        console.error('Fehler beim Speichern:', error);
-        if (!isAutoSave) showNotification('Fehler beim Speichern', 'error');
-      }
-    }
-
     function updateStats() {
       document.getElementById('totalEmployees').textContent = employees.length;
       document.getElementById('totalAkten').textContent = akten.length;
@@ -4939,20 +5030,20 @@ Sonstiges: ${notes}
     async function deleteEmployee(employeeId) {
       if (!confirm('Mitarbeiter wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) return;
 
-      const success = await deleteEmployeeFromFirebase(employeeId);
-      if (success) {
-        employees = employees.filter(emp => emp.id !== employeeId);
-
+      try {
+        await db.collection('hrEmployees').doc(employeeId).delete();
+        showNotification('Mitarbeiter gelöscht', 'success');
+        
         if (currentEmployee?.id === employeeId) {
           currentEmployee = null;
           document.getElementById('employeeHeader').style.display = 'none';
           document.getElementById('inductionContent').style.display = 'none';
         }
 
-        renderEmployeeList();
-        updateStats();
-        showNotification('Mitarbeiter gelöscht', 'success');
         document.getElementById('contextMenu')?.remove();
+      } catch (error) {
+        console.error('Fehler beim Löschen:', error);
+        showNotification('Fehler beim Löschen: ' + error.message, 'error');
       }
     }
 
@@ -4964,16 +5055,19 @@ Sonstiges: ${notes}
         ...JSON.parse(JSON.stringify(employee)),
         id: `EMP-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
         name: `${employee.name} (Kopie)`,
-        lastUpdated: new Date().toISOString()
+        lastUpdated: new Date().toISOString(),
+        syncVersion: Date.now()
       };
 
-      const success = await saveEmployeeToFirebase(newEmployee);
-      if (success) {
-        employees.unshift(newEmployee);
-        renderEmployeeList();
-        updateStats();
+      delete newEmployee.id; // Neue ID wird von Firebase generiert
+      
+      try {
+        await db.collection('hrEmployees').add(newEmployee);
         showNotification('Mitarbeiter dupliziert', 'success');
         document.getElementById('contextMenu')?.remove();
+      } catch (error) {
+        console.error('Fehler beim Duplizieren:', error);
+        showNotification('Fehler beim Duplizieren: ' + error.message, 'error');
       }
     }
 
@@ -4987,7 +5081,7 @@ Sonstiges: ${notes}
 
       const a = document.createElement('a');
       a.href = url;
-      a.download = `mitarbeiter-${(employee.name || 'unbekannt')}-${(employee.dn || '')}.json`;
+      a.download = `mitarbeiter-${(employee.name || 'unbekannt').replace(/[^a-z0-9]/gi, '_')}-${(employee.dn || '')}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -5057,25 +5151,34 @@ Sonstiges: ${notes}
         return;
       }
 
-      const employeeId = `EMP-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+      // Prüfe ob DN bereits existiert
+      const existingEmployee = employees.find(emp => emp.dn == dn);
+      if (existingEmployee) {
+        showNotification(`Die Dienstnummer ${dn} wird bereits von ${existingEmployee.name} verwendet`, 'warning');
+        return;
+      }
 
-      const newEmployee = {
-        id: employeeId,
+      const employeeData = {
         name,
         dn,
         unit: unit || '',
         rank: rank || '',
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
         inductions: { oral: { completed: false }, org: { completed: false } },
         oralData: { date: '', timeStart: '16:40', timeEnd: '18:00', person: '', notes: '', unit: unit || '', rank: rank || '' },
-        orgData: { date: '', timeStart: '22:10', timeEnd: '23:05', person: '', notes: '', unit: unit || '', rank: rank || '' }
+        orgData: { date: '', timeStart: '22:10', timeEnd: '23:05', person: '', notes: '', unit: unit || '', rank: rank || '' },
+        syncVersion: Date.now()
       };
 
-      const success = await saveEmployeeToFirebase(newEmployee);
-      if (success) {
-        employees.unshift(newEmployee);
+      try {
+        const docRef = await db.collection('hrEmployees').add(employeeData);
+        
+        const newEmployee = {
+          id: docRef.id,
+          ...employeeData
+        };
+        
         closeModal('newEmployeeModal');
-        renderEmployeeList();
         selectEmployee(newEmployee);
         updateStats();
 
@@ -5085,6 +5188,10 @@ Sonstiges: ${notes}
         document.getElementById('newEmployeeRank').value = '';
 
         showNotification(`Mitarbeiter "${name}" erstellt`, 'success');
+        
+      } catch (error) {
+        console.error('Fehler beim Erstellen des Mitarbeiters:', error);
+        showNotification('Fehler beim Erstellen: ' + error.message, 'error');
       }
     }
 
@@ -5093,44 +5200,22 @@ Sonstiges: ${notes}
       const messageElement = document.getElementById('notificationMessage');
       messageElement.textContent = message;
 
-      if (type === 'success') notification.style.background = 'var(--secondary)';
-      else if (type === 'error') notification.style.background = 'var(--danger)';
-      else if (type === 'warning') notification.style.background = 'var(--warning)';
-      else notification.style.background = 'var(--primary)';
+      if (type === 'success') {
+        notification.style.background = 'var(--secondary)';
+        notification.querySelector('.notification-icon').className = 'fas fa-check notification-icon';
+      } else if (type === 'error') {
+        notification.style.background = 'var(--danger)';
+        notification.querySelector('.notification-icon').className = 'fas fa-exclamation-triangle notification-icon';
+      } else if (type === 'warning') {
+        notification.style.background = 'var(--warning)';
+        notification.querySelector('.notification-icon').className = 'fas fa-exclamation-circle notification-icon';
+      } else {
+        notification.style.background = 'var(--primary)';
+        notification.querySelector('.notification-icon').className = 'fas fa-info-circle notification-icon';
+      }
 
       notification.classList.add('show');
       setTimeout(() => notification.classList.remove('show'), 3000);
-    }
-
-    function showLoading() {
-      const content = document.getElementById('employeeList');
-      content.innerHTML = `
-        <div class="loading">
-          <div class="loading-spinner"></div>
-          <div style="color: var(--gray); font-weight: 900; font-size: 13px;">Lade Mitarbeiter...</div>
-        </div>
-      `;
-    }
-
-    function hideLoading() {
-      // renderEmployeeList() wird nach loadEmployees() sowieso aufgerufen
-    }
-
-    function loadMockEmployees() {
-      employees = [{
-        id: 'emp1',
-        name: 'Chapo Anatolian',
-        dn: '43',
-        unit: 'Air Force',
-        rank: 'Captain',
-        inductions: { oral: { completed: false }, org: { completed: false } },
-        oralData: { date: '2026-01-21', timeStart: '16:40', timeEnd: '18:00', person: 'HR Team', notes: '', unit: 'Air Force', rank: 'Captain' },
-        orgData: { date: '2026-01-21', timeStart: '22:10', timeEnd: '23:05', person: 'HR Team', notes: '', unit: 'Air Force', rank: 'Captain' }
-      }];
-
-      renderEmployeeList();
-      updateStats();
-      seedTemplateBoxes();
     }
 
     function seedTemplateBoxes() {
