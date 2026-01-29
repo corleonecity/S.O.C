@@ -9,9 +9,9 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <title>📋 HR - Einweisungsmanagement v2.0</title>
+  <title>📋 HR - Einweisungsmanagement v1.0</title>
 
-  <!-- Font Awesome -->
+  <!-- Font Awesome mit Cache-Busting -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?v=20240128">
 
   <!-- Google Fonts -->
@@ -31,7 +31,6 @@
       --dark:#111827; --dark-card:#1f2937;
       --light:#f9fafb; --gray:#6b7280; --gray-light:#d1d5db;
       --border:rgba(255,255,255,.12);
-      --archived:#6b7280; --archived-dark:#4b5563;
 
       --shadow-lg:0 10px 25px -5px rgba(0,0,0,.2);
       --shadow-md:0 4px 12px rgba(0,0,0,.08);
@@ -65,7 +64,7 @@
     }
 
     .app-container{
-      max-width:1400px;
+      max-width:1200px;
       margin:0 auto;
       padding:16px;
       display:grid;
@@ -212,7 +211,7 @@
     .employee-list::-webkit-scrollbar-track{background:rgba(255,255,255,.05);border-radius:3px}
     .employee-list::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px}
 
-    /* Employee Cards */
+    /* Employee Cards (kompakter + Badges höher) */
     .employee-card{
       background:rgba(255,255,255,.03);
       border-radius:var(--radius-md);
@@ -225,6 +224,7 @@
       display:flex;
       flex-direction:column;
       gap:8px;
+
       min-height:110px;
       justify-content:flex-start;
     }
@@ -238,40 +238,6 @@
       background:rgba(79,70,229,.10);
       border-color:var(--primary);
       box-shadow:0 0 0 1px var(--primary);
-    }
-    .employee-card.archived{
-      opacity:0.7;
-      background:rgba(107,114,128,.05);
-      border-color:rgba(107,114,128,.3);
-    }
-    .employee-card.archived::after{
-      content:'ARCHIVIERT';
-      position:absolute;
-      top:4px;
-      right:4px;
-      background:var(--archived);
-      color:white;
-      font-size:9px;
-      font-weight:900;
-      padding:2px 6px;
-      border-radius:4px;
-    }
-    .employee-card.deleted{
-      opacity:0.5;
-      background:rgba(239,68,68,.05);
-      border-color:rgba(239,68,68,.3);
-    }
-    .employee-card.deleted::after{
-      content:'GELÖSCHT';
-      position:absolute;
-      top:4px;
-      right:4px;
-      background:var(--danger);
-      color:white;
-      font-size:9px;
-      font-weight:900;
-      padding:2px 6px;
-      border-radius:4px;
     }
     .employee-card::before{
       content:'';
@@ -398,8 +364,6 @@
     .btn-secondary:hover{background:rgba(255,255,255,.12);transform:translateY(-1px)}
     .btn-danger{background:var(--danger);color:#fff}
     .btn-danger:hover{background:var(--danger-dark);transform:translateY(-1px)}
-    .btn-archived{background:var(--archived);color:#fff}
-    .btn-archived:hover{background:var(--archived-dark);transform:translateY(-1px)}
 
     .induction-content{
       padding:20px;
@@ -534,9 +498,10 @@
     }
     .template-actions{display:flex;gap:8px;flex-wrap:wrap}
 
+    /* WICHTIG: Vorlagen untereinander (immer) */
     .template-cards{
       display:grid;
-      grid-template-columns:1fr;
+      grid-template-columns:1fr; /* <- war 1fr 1fr */
       gap:16px;
     }
 
@@ -609,14 +574,6 @@
       box-shadow: 0 10px 25px rgba(79,70,229,.3);
     }
 
-    .floating-button.settings {
-      background: var(--archived);
-    }
-
-    .floating-button.settings:hover {
-      background: var(--archived-dark);
-    }
-
     .floating-button.soldaten {
       background: var(--warning);
     }
@@ -631,416 +588,6 @@
 
     .floating-button.ankundigung:hover {
       background: #7c3aed;
-    }
-
-    .floating-button.beobachtung {
-      background: #8b5cf6;
-    }
-
-    .floating-button.beobachtung:hover {
-      background: #7c3aed;
-    }
-
-    /* Settings Modal */
-    .settings-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.85);
-      backdrop-filter: blur(4px);
-      z-index: 2000;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      animation: fadeIn .2s ease;
-    }
-
-    .settings-modal.active {
-      display: flex;
-    }
-
-    .settings-content {
-      background: rgba(31,41,55,.95);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      width: 100%;
-      max-width: 1000px;
-      max-height: 90vh;
-      border: 1px solid rgba(255,255,255,.15);
-      box-shadow: var(--shadow-lg);
-      animation: slideUp .2s ease;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .settings-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid rgba(255,255,255,.1);
-      flex-shrink: 0;
-    }
-
-    .settings-title {
-      font-size: 18px;
-      font-weight: 900;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .settings-title i {
-      color: var(--archived);
-      font-size: 20px;
-    }
-
-    .settings-close {
-      background: none;
-      border: none;
-      color: var(--gray);
-      font-size: 20px;
-      cursor: pointer;
-      transition: var(--transition);
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-    }
-
-    .settings-close:hover {
-      color: #fff;
-      background: rgba(255,255,255,.1);
-    }
-
-    .settings-body {
-      flex: 1;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-    }
-
-    .settings-tabs {
-      display: flex;
-      gap: 2px;
-      margin-bottom: 16px;
-      border-bottom: 1px solid rgba(255,255,255,.1);
-      flex-shrink: 0;
-    }
-
-    .settings-tab {
-      padding: 12px 20px;
-      background: none;
-      border: none;
-      color: var(--gray);
-      font-weight: 900;
-      cursor: pointer;
-      transition: var(--transition);
-      font-size: 13px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .settings-tab:hover {
-      color: var(--archived);
-    }
-
-    .settings-tab.active {
-      color: var(--archived);
-    }
-
-    .settings-tab.active::after {
-      content: '';
-      position: absolute;
-      bottom: -1px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--archived);
-    }
-
-    .settings-form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-
-    .settings-form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .settings-label {
-      font-weight: 900;
-      color: var(--gray-light);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-    }
-
-    .settings-input {
-      padding: 12px 16px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: var(--radius-md);
-      color: #fff;
-      font-size: 14px;
-      transition: var(--transition);
-      width: 100%;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .settings-input:focus {
-      outline: none;
-      border-color: var(--archived);
-      background: rgba(255,255,255,.08);
-      box-shadow: 0 0 0 3px rgba(107,114,128,.15);
-    }
-
-    .settings-textarea {
-      min-height: 80px;
-      resize: vertical;
-      line-height: 1.5;
-    }
-
-    .settings-unit-list {
-      background: rgba(0,0,0,.2);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      margin-bottom: 20px;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    .settings-unit-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px;
-      background: rgba(255,255,255,.03);
-      border-radius: var(--radius-sm);
-      margin-bottom: 8px;
-      border: 1px solid rgba(255,255,255,.08);
-    }
-
-    .settings-unit-item:last-child {
-      margin-bottom: 0;
-    }
-
-    .settings-unit-name {
-      font-weight: 900;
-      color: #fff;
-      font-size: 13px;
-    }
-
-    .settings-unit-discord {
-      font-family: 'Consolas', 'Monaco', monospace;
-      background: rgba(107,114,128,.15);
-      color: #9ca3af;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 900;
-      border: 1px solid rgba(107,114,128,.25);
-    }
-
-    .settings-unit-actions {
-      display: flex;
-      gap: 6px;
-    }
-
-    .settings-unit-btn {
-      padding: 6px 12px;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-weight: 900;
-      cursor: pointer;
-      transition: var(--transition);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      font-size: 11px;
-    }
-
-    .settings-unit-btn-edit {
-      background: rgba(107,114,128,.15);
-      color: #9ca3af;
-      border: 1px solid rgba(107,114,128,.25);
-    }
-
-    .settings-unit-btn-edit:hover {
-      background: rgba(107,114,128,.25);
-    }
-
-    .settings-unit-btn-delete {
-      background: rgba(239,68,68,.15);
-      color: #fca5a5;
-      border: 1px solid rgba(239,68,68,.25);
-    }
-
-    .settings-unit-btn-delete:hover {
-      background: rgba(239,68,68,.25);
-    }
-
-    .settings-audit-log {
-      background: rgba(0,0,0,.2);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      margin-bottom: 20px;
-      max-height: 400px;
-      overflow-y: auto;
-    }
-
-    .settings-audit-item {
-      background: rgba(255,255,255,.03);
-      border-radius: var(--radius-sm);
-      padding: 12px;
-      margin-bottom: 8px;
-      border-left: 3px solid var(--primary);
-    }
-
-    .settings-audit-item:last-child {
-      margin-bottom: 0;
-    }
-
-    .settings-audit-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .settings-audit-action {
-      font-weight: 900;
-      color: #fff;
-      font-size: 13px;
-    }
-
-    .settings-audit-entity {
-      background: rgba(79,70,229,.15);
-      color: var(--primary-light);
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 900;
-      border: 1px solid rgba(79,70,229,.25);
-    }
-
-    .settings-audit-info {
-      color: var(--gray);
-      font-size: 11px;
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .settings-audit-user {
-      color: #fff;
-      font-weight: 700;
-    }
-
-    .settings-audit-timestamp {
-      color: var(--gray);
-    }
-
-    .empty-settings {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--gray);
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .empty-settings-icon {
-      font-size: 36px;
-      margin-bottom: 12px;
-      opacity: .3;
-    }
-
-    .empty-settings-title {
-      font-size: 14px;
-      font-weight: 900;
-      margin-bottom: 6px;
-      color: var(--gray-light);
-    }
-
-    .settings-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-top: 10px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(255,255,255,.1);
-      flex-shrink: 0;
-    }
-
-    .settings-btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: var(--radius-md);
-      font-weight: 900;
-      cursor: pointer;
-      transition: var(--transition);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-size: 13px;
-    }
-
-    .settings-btn-save {
-      background: var(--archived);
-      color: #fff;
-    }
-
-    .settings-btn-save:hover {
-      background: var(--archived-dark);
-      transform: translateY(-1px);
-    }
-
-    /* Status Filter */
-    .status-filter {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 12px;
-    }
-
-    .status-filter-btn {
-      padding: 6px 12px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: var(--radius-sm);
-      color: var(--gray-light);
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .status-filter-btn:hover {
-      background: rgba(255,255,255,.08);
-    }
-
-    .status-filter-btn.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
     }
 
     /* Ankündigungen/Besprechungen/Aufstellungen Modal */
@@ -1264,6 +811,7 @@
       border-radius: 3px;
     }
 
+    /* Container für den "Neue Ankündigung" Tab-Inhalt */
     .ankundigung-tab-content {
       flex: 1;
       overflow-y: auto;
@@ -1272,6 +820,7 @@
       min-height: 0;
     }
 
+    /* WICHTIG: Scrollbar für Ankündigungen-Liste */
     .ankundigung-liste-container {
       flex: 1;
       overflow: hidden;
@@ -1750,6 +1299,7 @@
       gap: 6px;
     }
 
+    /* WICHTIG: Scrollbar für die Vorschau im "Neues Gespräch" Tab */
     .soldaten-preview-content {
       font-family: 'Consolas', 'Monaco', monospace;
       white-space: pre-wrap;
@@ -1779,6 +1329,7 @@
       border-radius: 3px;
     }
 
+    /* Container für den "Neues Gespräch" Tab-Inhalt */
     .soldaten-tab-content {
       flex: 1;
       overflow-y: auto;
@@ -1787,11 +1338,12 @@
       min-height: 0;
     }
 
+    /* WICHTIG: Scrollbar für Soldatengespräch-Liste */
     .soldaten-liste-container {
       flex: 1;
       overflow: hidden;
       display: flex;
-      flex-direction: column;
+      flex-direction:column;
       min-height: 0;
     }
 
@@ -1870,6 +1422,7 @@
       gap: 4px;
     }
 
+    /* GEÄNDERT: Sonstiges mit gleichem Styling wie Notizen */
     .soldaten-item-notizen {
       color: var(--gray-light);
       font-size: 13px;
@@ -1897,6 +1450,7 @@
       border-radius: 2px;
     }
 
+    /* Soldatengespräch Sonstiges Styling (jetzt wie Notizen) */
     .soldaten-item-sonstiges {
       color: var(--gray-light);
       font-size: 13px;
@@ -2100,7 +1654,7 @@
       font-size: 16px;
     }
 
-    /* Beobachtungs Akten Modal */
+    /* Beobachtungs Akten Modal (behalten für Akten) */
     .beobachtung-akten-modal{
       display:none;
       position:fixed;
@@ -2633,6 +2187,7 @@
       .app-container{grid-template-columns:1fr;padding:16px;gap:16px}
       .sidebar{position:static;max-height:500px;height:auto}
       .induction-grid{grid-template-columns:1fr}
+      /* template-cards bleibt 1fr */
     }
     @media (max-width:768px){
       .app-header{padding:14px 16px}
@@ -2646,17 +2201,28 @@
       .employee-tags{flex-direction:column;gap:6px}
       .induction-content{padding:16px}
       .oral-form-grid,.org-form-grid{grid-template-columns:1fr}
-      .settings-form-grid{grid-template-columns:1fr}
-      .soldaten-form-grid,.akte-form-grid{grid-template-columns:1fr}
+      .soldaten-modal,
+      .beobachtung-akten-modal,
+      .ankundigung-modal{padding:12px}
+      .soldaten-content,
+      .beobachtung-akten-content,
+      .ankundigung-content{padding:20px}
+      .soldaten-actions,
+      .beobachtung-actions,
+      .ankundigung-actions{flex-direction:column;align-items:stretch}
       .floating-buttons-container{
         bottom: 16px;
         right: 16px;
       }
-      .settings-tabs{flex-direction:column}
-      .settings-tab{text-align:left;padding:10px 16px}
-      .soldaten-tabs,.beobachtung-tabs,.ankundigung-tabs{flex-direction:column}
-      .soldaten-tab,.beobachtung-tab,.ankundigung-tab{text-align:left;padding:10px 16px}
-      .soldaten-actions,.beobachtung-actions,.ankundigung-actions{flex-direction:column;align-items:stretch}
+      .soldaten-tabs,
+      .beobachtung-tabs,
+      .ankundigung-tabs{flex-direction:column}
+      .soldaten-tab,
+      .beobachtung-tab,
+      .ankundigung-tab{text-align:left;padding:10px 16px}
+      .soldaten-form-grid,
+      .akte-form-grid,
+      .ankundigung-form-grid{grid-template-columns:1fr}
     }
     @media (max-width:480px){
       .app-container{padding:12px}
@@ -2666,8 +2232,12 @@
       .sidebar{padding:14px}
       .modal{padding:16px;margin:12px}
       .notification{left:12px;right:12px;bottom:12px;min-width:auto}
-      .soldaten-content,.beobachtung-akten-content,.ankundigung-content{padding:16px}
-      .soldaten-item-actions,.beobachtung-akte-actions,.ankundigung-item-actions{flex-direction:column}
+      .soldaten-content,
+      .beobachtung-akten-content,
+      .ankundigung-content{padding:16px}
+      .soldaten-item-actions,
+      .beobachtung-akte-actions,
+      .ankundigung-item-actions{flex-direction:column}
     }
   </style>
 </head>
@@ -2677,139 +2247,15 @@
 
   <!-- Floating Buttons -->
   <div class="floating-buttons-container">
-    <button class="floating-button settings" onclick="openSettingsModal()" title="Einstellungen">
-      <i class="fas fa-cog"></i>
-    </button>
     <button class="floating-button ankundigung" onclick="openAnkundigungModal()" title="Ankündigungen">
       🪧
     </button>
     <button class="floating-button soldaten" onclick="openSoldatenModal()" title="Soldatengespräche">
       <i class="fas fa-comments"></i>
     </button>
-    <button class="floating-button beobachtung" onclick="openBeobachtungAktenModal()" title="Beobachtungs-Akten">
+    <button class="floating-button" onclick="openBeobachtungAktenModal()" title="Beobachtungs-Akten">
       <i class="fas fa-folder-open"></i>
     </button>
-  </div>
-
-  <!-- Settings Modal -->
-  <div class="settings-modal" id="settingsModal" onclick="if(event.target===this)closeModal('settingsModal')">
-    <div class="settings-content">
-      <div class="settings-header">
-        <div class="settings-title">
-          <i class="fas fa-cog"></i> Einstellungen
-        </div>
-        <button class="settings-close" onclick="closeModal('settingsModal')">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      
-      <div class="settings-body">
-        <div class="settings-tabs">
-          <button class="settings-tab active" onclick="switchSettingsTab('units')">
-            <i class="fas fa-building"></i> Units & Ränge
-          </button>
-          <button class="settings-tab" onclick="switchSettingsTab('discord')">
-            <i class="fab fa-discord"></i> Discord IDs
-          </button>
-          <button class="settings-tab" onclick="switchSettingsTab('hr')">
-            <i class="fas fa-users"></i> HR Rollen
-          </button>
-          <button class="settings-tab" onclick="switchSettingsTab('audit')">
-            <i class="fas fa-history"></i> Audit Log
-          </button>
-        </div>
-        
-        <!-- Units & Ränge Tab -->
-        <div class="settings-tab-content" id="settingsUnitsTab">
-          <div class="settings-form-grid">
-            <div class="settings-form-group">
-              <label class="settings-label">Neue Unit</label>
-              <input type="text" class="settings-input" id="newUnitName" placeholder="Unit Name">
-            </div>
-            
-            <div class="settings-form-group">
-              <label class="settings-label">Neuer Rang</label>
-              <input type="text" class="settings-input" id="newRankName" placeholder="Rang Name">
-            </div>
-          </div>
-          
-          <div class="settings-unit-list" id="unitsList">
-            <!-- Units werden hier dynamisch geladen -->
-          </div>
-          
-          <div class="settings-actions">
-            <button class="settings-btn settings-btn-save" onclick="saveNewUnit()">
-              <i class="fas fa-plus"></i> Unit hinzufügen
-            </button>
-          </div>
-        </div>
-        
-        <!-- Discord IDs Tab -->
-        <div class="settings-tab-content" id="settingsDiscordTab" style="display:none;">
-          <div class="settings-form-grid">
-            <div class="settings-form-group">
-              <label class="settings-label">Unit</label>
-              <select class="settings-input" id="discordUnitSelect">
-                <option value="">Unit auswählen</option>
-                <!-- Options werden dynamisch geladen -->
-              </select>
-            </div>
-            
-            <div class="settings-form-group">
-              <label class="settings-label">Discord Rollen-ID</label>
-              <input type="text" class="settings-input" id="discordRoleId" placeholder="z.B. 123456789012345678">
-            </div>
-            
-            <div class="settings-form-group">
-              <label class="settings-label">Rang</label>
-              <select class="settings-input" id="discordRankSelect">
-                <option value="">Rang auswählen</option>
-                <!-- Options werden dynamisch geladen -->
-              </select>
-            </div>
-            
-            <div class="settings-form-group">
-              <label class="settings-label">Discord Rollen-ID</label>
-              <input type="text" class="settings-input" id="discordRankRoleId" placeholder="z.B. 123456789012345678">
-            </div>
-          </div>
-          
-          <div class="settings-actions">
-            <button class="settings-btn settings-btn-save" onclick="saveDiscordIds()">
-              <i class="fas fa-save"></i> Discord IDs speichern
-            </button>
-          </div>
-        </div>
-        
-        <!-- HR Rollen Tab -->
-        <div class="settings-tab-content" id="settingsHrTab" style="display:none;">
-          <div class="settings-form-grid">
-            <div class="settings-form-group">
-              <label class="settings-label">HR Discord Rollen-ID</label>
-              <input type="text" class="settings-input" id="hrDiscordRoleId" placeholder="z.B. 1097625910242447422">
-            </div>
-            
-            <div class="settings-form-group">
-              <label class="settings-label">Webhook URL</label>
-              <input type="text" class="settings-input" id="discordWebhookUrl" placeholder="https://discord.com/api/webhooks/...">
-            </div>
-          </div>
-          
-          <div class="settings-actions">
-            <button class="settings-btn settings-btn-save" onclick="saveHrSettings()">
-              <i class="fas fa-save"></i> HR Einstellungen speichern
-            </button>
-          </div>
-        </div>
-        
-        <!-- Audit Log Tab -->
-        <div class="settings-tab-content" id="settingsAuditTab" style="display:none;">
-          <div class="settings-audit-log" id="auditLogList">
-            <!-- Audit Log Einträge werden hier dynamisch geladen -->
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- Ankündigungen/Besprechungen/Aufstellungen Modal -->
@@ -2869,7 +2315,7 @@
             <button class="ankundigung-btn ankundigung-btn-copy" onclick="copyAnkundigungTemplate()">
               <i class="fas fa-copy"></i> In Zwischenablage kopieren
             </button>
-            <button class="ankundigung-btn ankundigung-btn-save" onclick="saveAnkundigung()">
+            <button class="ankundigung-btn ankundigung-btn-save" onclick="saveAnkündigung()">
               <i class="fas fa-save"></i> Ankündigung speichern
             </button>
           </div>
@@ -2997,6 +2443,7 @@ Bemerkungen:
             <input type="text" class="ankundigung-search-input" id="ankundigungSearch" placeholder="Nach Titel oder Inhalt suchen..." oninput="searchAnkundigungen(this.value)">
           </div>
           
+          <!-- Scrollbar-Container für die Liste -->
           <div class="ankundigung-liste-container">
             <div class="ankundigung-liste" id="ankundigungListe">
               <div class="empty-ankundigung">
@@ -3046,6 +2493,12 @@ Bemerkungen:
               <label class="soldaten-label">Hauptunit</label>
               <select class="soldaten-input" id="soldatenUnit">
                 <option value="">Unit auswählen</option>
+                <option value="Air Force">Air Force</option>
+                <option value="S.O.C">S.O.C</option>
+                <option value="Infantry">Infantry</option>
+                <option value="Military Police">Military Police</option>
+                <option value="Navy Marine">Navy Marine</option>
+                <option value="Navy SEALs">Navy SEALs</option>
               </select>
             </div>
             
@@ -3053,6 +2506,23 @@ Bemerkungen:
               <label class="soldaten-label">Rang</label>
               <select class="soldaten-input" id="soldatenRank">
                 <option value="">Rang auswählen</option>
+                <option value="Private">Private</option>
+                <option value="Private First Class">Private First Class</option>
+                <option value="Specialist">Specialist</option>
+                <option value="Corporal">Corporal</option>
+                <option value="Sergeant">Sergeant</option>
+                <option value="Staff Sergeant">Staff Sergeant</option>
+                <option value="Sergeant First Class">Sergeant First Class</option>
+                <option value="Master Sergeant">Master Sergeant</option>
+                <option value="Sergeant Major">Sergeant Major</option>
+                <option value="Lieutenant">Lieutenant</option>
+                <option value="Captain">Captain</option>
+                <option value="Major">Major</option>
+                <option value="Colonel">Colonel</option>
+                <option value="Major General">Major General</option>
+                <option value="Lieutenant General">Lieutenant General</option>
+                <option value="Vice General of Army">Vice General of Army</option>
+                <option value="General of Army">General of Army</option>
               </select>
             </div>
             
@@ -3118,6 +2588,7 @@ Sonstiges:
             <input type="text" class="soldaten-search-input" id="soldatenSearch" placeholder="Nach Name oder DN suchen..." oninput="searchSoldaten(this.value)">
           </div>
           
+          <!-- Scrollbar-Container für die Liste -->
           <div class="soldaten-liste-container">
             <div class="soldaten-liste" id="soldatenListe">
               <div class="empty-soldaten">
@@ -3168,6 +2639,12 @@ Sonstiges:
               <label class="akte-label">Unit</label>
               <select class="akte-input" id="akteUnit">
                 <option value="">Unit auswählen</option>
+                <option value="Air Force">Air Force</option>
+                <option value="S.O.C">S.O.C</option>
+                <option value="Infantry">Infantry</option>
+                <option value="Military Police">Military Police</option>
+                <option value="Navy Marine">Navy Marine</option>
+                <option value="Navy SEALs">Navy SEALs</option>
               </select>
             </div>
             
@@ -3175,6 +2652,23 @@ Sonstiges:
               <label class="akte-label">Rang</label>
               <select class="akte-input" id="akteRank">
                 <option value="">Rang auswählen</option>
+                <option value="Private">Private</option>
+                <option value="Private First Class">Private First Class</option>
+                <option value="Specialist">Specialist</option>
+                <option value="Corporal">Corporal</option>
+                <option value="Sergeant">Sergeant</option>
+                <option value="Staff Sergeant">Staff Sergeant</option>
+                <option value="Sergeant First Class">Sergeant First Class</option>
+                <option value="Master Sergeant">Master Sergeant</option>
+                <option value="Sergeant Major">Sergeant Major</option>
+                <option value="Lieutenant">Lieutenant</option>
+                <option value="Captain">Captain</option>
+                <option value="Major">Major</option>
+                <option value="Colonel">Colonel</option>
+                <option value="Major General">Major General</option>
+                <option value="Lieutenant General">Lieutenant General</option>
+                <option value="Vice General of Army">Vice General of Army</option>
+                <option value="General of Army">General of Army</option>
               </select>
             </div>
           </div>
@@ -3260,24 +2754,23 @@ Grund:
     <header class="app-header">
       <div class="header-content">
         <div class="brand">
+          <!-- Vereinfachtes Logo ohne Upload-Funktionalität -->
           <div class="logo">
             <i class="fas fa-user-check"></i>
           </div>
           <div class="brand-text">
-            <h1>Human Resources v2.0</h1>
-            <div class="subtitle">• Soft Delete • Audit Log • Archivierung</div>
+            <h1>Human Resources</h1>
+            <div class="subtitle">•</div>
           </div>
         </div>
         <div class="header-stats">
-          <!-- NUR MITGLIEDER STATISTIK -->
           <div class="stat-card">
             <div class="stat-value" id="totalEmployees">0</div>
-            <div class="stat-label">Mitglieder</div>
+            <div class="stat-label">Mitarbeiter</div>
           </div>
-          <!-- NUR VIELE BEOBACHTUNG STATISTIK -->
           <div class="stat-card">
-            <div class="stat-value" id="totalBeobachtungen">0</div>
-            <div class="stat-label">Viele Beobachtung</div>
+            <div class="stat-value" id="totalAkten">0</div>
+            <div class="stat-label">Beobachtung</div>
           </div>
         </div>
       </div>
@@ -3290,16 +2783,10 @@ Grund:
       </div>
 
       <div class="sidebar-controls">
-        <div class="status-filter">
-          <button class="status-filter-btn active" onclick="filterByStatus('active')">Aktiv</button>
-          <button class="status-filter-btn" onclick="filterByStatus('archived')">Archiviert</button>
-          <button class="status-filter-btn" onclick="filterByStatus('deleted')">Gelöscht</button>
-        </div>
-
         <div class="sidebar-filter-buttons">
           <button class="sidebar-filter-btn active" onclick="filterEmployeesByType('all')">Alle</button>
           <button class="sidebar-filter-btn" onclick="filterEmployeesByType('oral')">Mündlich</button>
-          <button class="sidebar-filter-btn" onclick="filterEmployeesByType('org')">Organisatorisch</button>
+          <button class="sidebar-filter-btn" onclick="filterEmployeesByType('org')">Organisatorische</button>
         </div>
 
         <div class="search-container">
@@ -3322,9 +2809,6 @@ Grund:
         <button class="quick-action-btn" onclick="openNewEmployeeModal()">
           <i class="fas fa-user-plus"></i> Neuer Mitarbeiter
         </button>
-        <button class="quick-action-btn" onclick="toggleArchiveFilter()" id="toggleArchiveBtn">
-          <i class="fas fa-archive"></i> Archiv anzeigen
-        </button>
       </div>
     </aside>
 
@@ -3336,13 +2820,10 @@ Grund:
             <div class="employee-tag"><i class="fas fa-hashtag"></i> <span class="tag-value" id="currentEmployeeDN">DN-</span></div>
             <div class="employee-tag"><i class="fas fa-building"></i> <span class="tag-value" id="currentEmployeeUnit">Unit</span></div>
             <div class="employee-tag"><i class="fas fa-user-tie"></i> <span class="tag-value" id="currentEmployeeRank">Rang</span></div>
-            <div class="employee-tag"><i class="fas fa-info-circle"></i> <span class="tag-value" id="currentEmployeeStatus">Status</span></div>
           </div>
         </div>
         <div class="action-buttons">
           <button class="btn btn-secondary" onclick="openEditEmployeeModal()"><i class="fas fa-edit"></i> Bearbeiten</button>
-          <button class="btn btn-archived" onclick="toggleArchiveEmployee()"><i class="fas fa-archive"></i> Archivieren</button>
-          <button class="btn btn-danger" onclick="softDeleteEmployee()"><i class="fas fa-trash"></i> Löschen</button>
         </div>
       </div>
 
@@ -3386,12 +2867,35 @@ Grund:
                 <label class="form-label">Unit</label>
                 <select class="form-select" id="unitSelect">
                   <option value="">Unit auswählen</option>
+                  <option value="Air Force">Air Force</option>
+                  <option value="S.O.C">S.O.C</option>
+                  <option value="Infantry">Infantry</option>
+                  <option value="Military Police">Military Police</option>
+                  <option value="Navy Marine">Navy Marine</option>
+                  <option value="Navy SEALs">Navy SEALs</option>
                 </select>
               </div>
               <div class="form-group">
                 <label class="form-label">Rang</label>
                 <select class="form-select" id="rankSelect">
                   <option value="">Rang auswählen</option>
+                  <option value="Private">Private</option>
+                  <option value="Private First Class">Private First Class</option>
+                  <option value="Specialist">Specialist</option>
+                  <option value="Corporal">Corporal</option>
+                  <option value="Sergeant">Sergeant</option>
+                  <option value="Staff Sergeant">Staff Sergeant</option>
+                  <option value="Sergeant First Class">Sergeant First Class</option>
+                  <option value="Master Sergeant">Master Sergeant</option>
+                  <option value="Sergeant Major">Sergeant Major</option>
+                  <option value="Lieutenant">Lieutenant</option>
+                  <option value="Captain">Captain</option>
+                  <option value="Major">Major</option>
+                  <option value="Colonel">Colonel</option>
+                  <option value="Major General">Major General</option>
+                  <option value="Lieutenant General">Lieutenant General</option>
+                  <option value="Vice General of Army">Vice General of Army</option>
+                  <option value="General of Army">General of Army</option>
                 </select>
               </div>
               <div class="form-group">
@@ -3439,12 +2943,35 @@ Grund:
                 <label class="form-label">Unit</label>
                 <select class="form-select" id="unitSelect2">
                   <option value="">Unit auswählen</option>
+                  <option value="Air Force">Air Force</option>
+                  <option value="S.O.C">S.O.C</option>
+                  <option value="Infantry">Infantry</option>
+                  <option value="Military Police">Military Police</option>
+                  <option value="Navy Marine">Navy Marine</option>
+                  <option value="Navy SEALs">Navy SEALs</option>
                 </select>
               </div>
               <div class="form-group">
                 <label class="form-label">Rang</label>
                 <select class="form-select" id="rankSelect2">
                   <option value="">Rang auswählen</option>
+                  <option value="Private">Private</option>
+                  <option value="Private First Class">Private First Class</option>
+                  <option value="Specialist">Specialist</option>
+                  <option value="Corporal">Corporal</option>
+                  <option value="Sergeant">Sergeant</option>
+                  <option value="Staff Sergeant">Staff Sergeant</option>
+                  <option value="Sergeant First Class">Sergeant First Class</option>
+                  <option value="Master Sergeant">Master Sergeant</option>
+                  <option value="Sergeant Major">Sergeant Major</option>
+                  <option value="Lieutenant">Lieutenant</option>
+                  <option value="Captain">Captain</option>
+                  <option value="Major">Major</option>
+                  <option value="Colonel">Colonel</option>
+                  <option value="Major General">Major General</option>
+                  <option value="Lieutenant General">Lieutenant General</option>
+                  <option value="Vice General of Army">Vice General of Army</option>
+                  <option value="General of Army">General of Army</option>
                 </select>
               </div>
               <div class="form-group">
@@ -3461,7 +2988,6 @@ Grund:
             <div class="template-actions">
               <button class="btn btn-secondary" onclick="copyOralTemplate()"><i class="fas fa-comments"></i> Mündlich</button>
               <button class="btn btn-secondary" onclick="copyOrgTemplate()"><i class="fas fa-clipboard-list"></i> Organisatorisch</button>
-              <button class="btn btn-secondary" onclick="copyAuditToDiscord()"><i class="fab fa-discord"></i> Audit an Discord</button>
             </div>
           </div>
 
@@ -3508,12 +3034,35 @@ Grund:
           <label class="form-label">Unit</label>
           <select class="form-select" id="newEmployeeUnit">
             <option value="">Unit auswählen</option>
+            <option value="Air Force">Air Force</option>
+            <option value="S.O.C">S.O.C</option>
+            <option value="Infantry">Infantry</option>
+            <option value="Military Police">Military Police</option>
+            <option value="Navy Marine">Navy Marine</option>
+            <option value="Navy SEALs">Navy SEALs</option>
           </select>
         </div>
         <div class="form-group">
           <label class="form-label">Rang</label>
           <select class="form-select" id="newEmployeeRank">
             <option value="">Rang auswählen</option>
+            <option value="Private">Private</option>
+            <option value="Private First Class">Private First Class</option>
+            <option value="Specialist">Specialist</option>
+            <option value="Corporal">Corporal</option>
+            <option value="Sergeant">Sergeant</option>
+            <option value="Staff Sergeant">Staff Sergeant</option>
+            <option value="Sergeant First Class">Sergeant First Class</option>
+            <option value="Master Sergeant">Master Sergeant</option>
+            <option value="Sergeant Major">Sergeant Major</option>
+            <option value="Lieutenant">Lieutenant</option>
+            <option value="Captain">Captain</option>
+            <option value="Major">Major</option>
+            <option value="Colonel">Colonel</option>
+            <option value="Major General">Major General</option>
+            <option value="Lieutenant General">Lieutenant General</option>
+            <option value="Vice General of Army">Vice General of Army</option>
+            <option value="General of Army">General of Army</option>
           </select>
         </div>
       </div>
@@ -3546,18 +3095,41 @@ Grund:
           <label class="form-label">Unit</label>
           <select class="form-select" id="editEmployeeUnit">
             <option value="">Unit auswählen</option>
+            <option value="Air Force">Air Force</option>
+            <option value="S.O.C">S.O.C</option>
+            <option value="Infantry">Infantry</option>
+            <option value="Military Police">Military Police</option>
+            <option value="Navy Marine">Navy Marine</option>
+            <option value="Navy SEALs">Navy SEALs</option>
           </select>
         </div>
         <div class="form-group">
           <label class="form-label">Rang</label>
           <select class="form-select" id="editEmployeeRank">
             <option value="">Rang auswählen</option>
+            <option value="Private">Private</option>
+            <option value="Private First Class">Private First Class</option>
+            <option value="Specialist">Specialist</option>
+            <option value="Corporal">Corporal</option>
+            <option value="Sergeant">Sergeant</option>
+            <option value="Staff Sergeant">Staff Sergeant</option>
+            <option value="Sergeant First Class">Sergeant First Class</option>
+            <option value="Master Sergeant">Master Sergeant</option>
+            <option value="Sergeant Major">Sergeant Major</option>
+            <option value="Lieutenant">Lieutenant</option>
+            <option value="Captain">Captain</option>
+            <option value="Major">Major</option>
+            <option value="Colonel">Colonel</option>
+            <option value="Major General">Major General</option>
+            <option value="Lieutenant General">Lieutenant General</option>
+            <option value="Vice General of Army">Vice General of Army</option>
+            <option value="General of Army">General of Army</option>
           </select>
         </div>
       </div>
 
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:16px;">
-        <button class="btn btn-danger" onclick="permanentlyDeleteEmployee()" style="margin-right:auto;"><i class="fas fa-skull-crossbones"></i> Endgültig löschen</button>
+        <button class="btn btn-danger" onclick="deleteCurrentEmployee()" style="margin-right:auto;"><i class="fas fa-trash"></i> Löschen</button>
         <div style="display:flex;gap:8px;">
           <button class="btn btn-secondary" onclick="closeModal('editEmployeeModal')">Abbrechen</button>
           <button class="btn btn-primary" onclick="saveEditedEmployee()"><i class="fas fa-save"></i> Änderungen speichern</button>
@@ -3567,47 +3139,46 @@ Grund:
   </div>
 
   <script>
-    // ==================== CACHE-BUSTING CODE ====================
-    const APP_VERSION = '2.0.20240128';
+    // ==================== ENHANCED CACHE-BUSTING ====================
+    // Erzwingt Neuladen bei Version-Änderung mit Zeitstempel
+    const APP_VERSION = '1.0.' + Date.now();
     const LAST_VERSION_KEY = 'hr_app_last_version';
     
+    // Prüfe und aktualisiere Version
     const lastVersion = localStorage.getItem(LAST_VERSION_KEY);
+    console.log(`App Version: ${APP_VERSION}, Letzte Version: ${lastVersion}`);
+    
     if (lastVersion !== APP_VERSION) {
-      console.log(`Neue Version erkannt: ${lastVersion} -> ${APP_VERSION}`);
+      console.log('Neue Version erkannt - erzwinge Hard Refresh');
       
+      // Lösche alle Caches
       if ('caches' in window) {
         caches.keys().then(function(names) {
-          for (let name of names) {
-            caches.delete(name);
-          }
+          names.forEach(name => caches.delete(name));
           console.log('Service Worker Caches gelöscht');
         });
       }
       
-      localStorage.setItem(LAST_VERSION_KEY, APP_VERSION);
-      
-      if (performance.navigation.type === 0 || performance.navigation.type === 1) {
-        console.log('Erzwinge Hard Refresh für neue Version');
-        setTimeout(() => {
-          window.location.reload(true);
-        }, 100);
-      }
-    }
-    
-    document.addEventListener('DOMContentLoaded', function() {
-      document.title = document.title.replace('v1.0', `v${APP_VERSION}`);
-      
-      const now = Date.now();
-      const cacheBuster = `?v=${APP_VERSION}&t=${now}`;
-      
-      const scripts = document.querySelectorAll('script[src]');
-      scripts.forEach(script => {
-        if (!script.src.includes('?v=')) {
-          script.src = script.src + cacheBuster;
+      // Lösche localStorage für Firebase-Cache
+      Object.keys(localStorage).forEach(key => {
+        if (key.includes('firebase') || key.includes('firestore')) {
+          localStorage.removeItem(key);
         }
       });
       
-      initializeApp();
+      // Speichere neue Version
+      localStorage.setItem(LAST_VERSION_KEY, APP_VERSION);
+      
+      // Erzwinge Hard Refresh
+      if (!window.location.search.includes('hardRefresh')) {
+        window.location.href = window.location.href.split('?')[0] + '?hardRefresh=true&v=' + Date.now();
+      }
+    }
+    
+    // Version im Title anzeigen
+    document.addEventListener('DOMContentLoaded', function() {
+      const versionText = APP_VERSION.split('.')[2]?.substring(0, 8) || 'dev';
+      document.title = document.title.replace('v1.0', `v1.0.${versionText}`);
     });
     // ==================== ENDE CACHE-BUSTING ====================
 
@@ -3622,31 +3193,47 @@ Grund:
       measurementId: "G-9SZREFTJS6"
     };
 
+    // Firebase initialisieren
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const storage = firebase.storage();
 
-    // Discord Webhook URL
-    const DEFAULT_DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1465894064980365363/Tls9jtrEkn8oK3jpIqImiNWI1ljF5EVnSQaswJZ8WpQ9HVwCgpbajxzgEu19jPzRUYuK";
+    // Discord IDs for Units
+    const unitDiscordIds = {
+      "Air Force": "1269229762400878675",
+      "S.O.C": "1339523576159666218",
+      "Infantry": "1187756956425920645",
+      "Military Police": "1289716541658497055",
+      "Navy Marine": "1097653037968920776",
+      "Navy SEALs": "1125174901989445693"
+    };
+
+    // Discord IDs for Ranks
+    const rankDiscordIds = {
+      "Private": "1097625924104626198",
+      "Private First Class": "1098190829295771739",
+      "Specialist": "1097625921516748830",
+      "Corporal": "1097625914763919532",
+      "Sergeant": "1097625913274933298",
+      "Staff Sergeant": "1097625912163451112",
+      "Sergeant First Class": "1348414845862674524",
+      "Master Sergeant": "1348414845862674524",
+      "Sergeant Major": "",
+      "Lieutenant": "1097625900125782278",
+      "Captain": "1097625898880077955",
+      "Major": "1097625896560640024",
+      "Colonel": "1097625895541428275",
+      "Major General": "1097625893880479777",
+      "Lieutenant General": "",
+      "Vice General of Army": "",
+      "General of Army": "1097625891632316436"
+    };
 
     // App State
     let currentEmployee = null;
     let employees = [];
-    let settings = {
-      units: [],
-      ranks: [],
-      unitDiscordIds: {},
-      rankDiscordIds: {},
-      hrDiscordRoleId: "1097625910242447422",
-      discordWebhookUrl: DEFAULT_DISCORD_WEBHOOK_URL
-    };
-    let auditLogs = [];
+    let bothInductionsCompleted = false;
     let currentFilter = 'all';
-    let currentStatusFilter = 'active';
-    let showArchived = false;
-    let showDeleted = false;
-    let unsubscribeFunctions = [];
-    
     let akten = [];
     let soldatenGespräche = [];
     let ankundigungen = [];
@@ -3654,10 +3241,195 @@ Grund:
     let currentSoldatenTab = 'new';
     let currentAnkundigungTab = 'new';
 
-    // ==================== INITIALISIERUNG ====================
-    function initializeApp() {
+    // Unsubscribe-Funktionen für Listener
+    let unsubscribeFunctions = [];
+
+    document.addEventListener('DOMContentLoaded', function () {
       console.log(`HR App Version ${APP_VERSION} geladen`);
+      initializeApp();
+      setupEventListeners();
+      updateStats();
+      adjustSidebarHeight();
       
+      // Warte kurz und starte dann Listener
+      setTimeout(() => {
+        setupRealtimeListeners();
+      }, 500);
+    });
+
+    // ==================== ENHANCED REALTIME LISTENER SETUP ====================
+    function setupRealtimeListeners() {
+      console.log('=== SETUP REALTIME LISTENERS ===');
+      
+      // Cleanup alte Listener
+      cleanupRealtimeListeners();
+      
+      // Listener für Mitarbeiter mit erweitertem Logging
+      const unsubscribeEmployees = db.collection('hrEmployees')
+        .orderBy('lastUpdated', 'desc')
+        .onSnapshot((snapshot) => {
+          console.log(`🔥 Mitarbeiter Update: ${snapshot.size} Dokumente`);
+          
+          employees = [];
+          
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            employees.push({ 
+              id: doc.id, 
+              ...data,
+              lastUpdated: data.lastUpdated ? data.lastUpdated.toDate() : new Date()
+            });
+          });
+
+          renderEmployeeList();
+          updateStats();
+          
+          // Wenn ein Mitarbeiter ausgewählt ist, aktualisiere die Daten
+          if (currentEmployee) {
+            const updatedEmployee = employees.find(emp => emp.id === currentEmployee.id);
+            if (updatedEmployee) {
+              console.log(`🔥 Aktualisiere ausgewählten Mitarbeiter: ${updatedEmployee.name}`);
+              selectEmployee(updatedEmployee);
+            }
+          }
+          
+          // Log für Debugging
+          console.log(`Gespeicherte Mitarbeiter: ${employees.length}`);
+          employees.forEach(emp => {
+            console.log(`- ${emp.name} (DN: ${emp.dn}), Updated: ${emp.lastUpdated}`);
+          });
+          
+          setTimeout(updateInductionDisplay, 100);
+        }, (error) => {
+          console.error('❌ Fehler beim Lauschen auf Mitarbeiter-Änderungen:', error);
+          showNotification('Verbindungsfehler bei Live-Updates', 'error');
+        });
+
+      // Listener für Akten
+      const unsubscribeAkten = db.collection('hrAkten')
+        .orderBy('lastUpdated', 'desc')
+        .limit(100)
+        .onSnapshot((snapshot) => {
+          console.log(`📁 Akten Update: ${snapshot.size} Dokumente`);
+          akten = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            akten.push({ 
+              id: doc.id, 
+              ...data,
+              createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE'),
+              lastUpdated: data.lastUpdated ? data.lastUpdated.toDate() : new Date()
+            });
+          });
+          updateStats();
+          renderAktenListe();
+        }, (error) => {
+          console.error('❌ Fehler beim Lauschen auf Akten-Änderungen:', error);
+        });
+
+      // Listener für Soldatengespräche
+      const unsubscribeSoldaten = db.collection('hrSoldatenGespräche')
+        .orderBy('created', 'desc')
+        .limit(100)
+        .onSnapshot((snapshot) => {
+          console.log(`💬 Soldatengespräche Update: ${snapshot.size} Dokumente`);
+          soldatenGespräche = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            soldatenGespräche.push({ 
+              id: doc.id, 
+              ...data,
+              createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE'),
+              dateFormatted: data.dateFormatted || (data.date ? new Date(data.date).toLocaleDateString('de-DE') : '')
+            });
+          });
+          renderSoldatenListe();
+        }, (error) => {
+          console.error('❌ Fehler beim Lauschen auf Soldatengespräche:', error);
+        });
+
+      // Listener für Ankündigungen
+      const unsubscribeAnkundigungen = db.collection('hrAnkundigungen')
+        .orderBy('created', 'desc')
+        .limit(100)
+        .onSnapshot((snapshot) => {
+          console.log(`📢 Ankündigungen Update: ${snapshot.size} Dokumente`);
+          ankundigungen = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            ankundigungen.push({ 
+              id: doc.id, 
+              ...data,
+              createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE'),
+              dateFormatted: data.dateFormatted || (data.date ? new Date(data.date).toLocaleDateString('de-DE') : '')
+            });
+          });
+          renderAnkundigungListe();
+        }, (error) => {
+          console.error('❌ Fehler beim Lauschen auf Ankündigungen:', error);
+        });
+
+      // Speichere Unsubscribe-Funktionen
+      unsubscribeFunctions = [
+        unsubscribeEmployees,
+        unsubscribeAkten,
+        unsubscribeSoldaten,
+        unsubscribeAnkundigungen
+      ];
+      
+      console.log(`✅ ${unsubscribeFunctions.length} Realtime Listener aktiv`);
+    }
+
+    function cleanupRealtimeListeners() {
+      console.log('🧹 Cleanup Realtime Listener');
+      unsubscribeFunctions.forEach(unsubscribe => {
+        if (typeof unsubscribe === 'function') {
+          unsubscribe();
+        }
+      });
+      unsubscribeFunctions = [];
+    }
+
+    // Füge Event Listener für Seitenverlassen hinzu
+    window.addEventListener('beforeunload', cleanupRealtimeListeners);
+
+    // Manuelle Refresh Funktion
+    function manualRefresh() {
+      console.log('🔄 Manuelles Refresh gestartet');
+      cleanupRealtimeListeners();
+      setTimeout(() => {
+        setupRealtimeListeners();
+        showNotification('Daten manuell aktualisiert', 'success');
+      }, 500);
+    }
+
+    // Debug Funktion
+    function debugRealtimeStatus() {
+      console.log('=== REALTIME STATUS ===');
+      console.log('Aktive Listener:', unsubscribeFunctions.length);
+      console.log('Mitarbeiter:', employees.length);
+      console.log('Akten:', akten.length);
+      console.log('Soldatengespräche:', soldatenGespräche.length);
+      console.log('Ankündigungen:', ankundigungen.length);
+      
+      // Test-Query
+      db.collection('hrEmployees').get().then(snapshot => {
+        console.log('📊 Datenbank Mitarbeiter (alle):', snapshot.size);
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          console.log(`  - ${data.name || 'Unbekannt'} (DN: ${data.dn || '?'}), Updated: ${data.lastUpdated ? data.lastUpdated.toDate().toLocaleString() : '?'}`);
+        });
+      });
+      
+      showNotification('Status in Konsole ausgegeben', 'info');
+    }
+
+    // Zum Testen in der Konsole aufrufbar machen
+    window.debugApp = debugRealtimeStatus;
+    window.refreshApp = manualRefresh;
+
+    // ==================== HAUPTFUNKTIONEN ====================
+    function initializeApp() {
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('oralDate').value = today;
       document.getElementById('orgDate').value = today;
@@ -3677,12 +3449,6 @@ Grund:
       document.getElementById('orgTimeStart').value = '22:10';
       document.getElementById('orgTimeEnd').value = '23:05';
 
-      setupEventListeners();
-      updateStats();
-      adjustSidebarHeight();
-      setupRealtimeListeners();
-      loadSettings();
-      
       setupFormChangeListeners();
       seedTemplateBoxes();
       setupBeobachtungEventListeners();
@@ -3690,810 +3456,6 @@ Grund:
       setupAnkundigungEventListeners();
     }
 
-    // ==================== REALTIME LISTENER SETUP ====================
-    function setupRealtimeListeners() {
-      // Listener für Mitarbeiter mit Status-Filter
-      const unsubscribeEmployees = db.collection('hrEmployees')
-        .orderBy('lastUpdated', 'desc')
-        .onSnapshot((snapshot) => {
-          employees = [];
-          
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            employees.push({ 
-              id: doc.id, 
-              ...data,
-              status: data.status || 'active',
-              isDeleted: data.isDeleted || false,
-              archived: data.archived || false,
-              deletedAt: data.deletedAt || null,
-              archivedAt: data.archivedAt || null,
-              deletedBy: data.deletedBy || null,
-              archivedBy: data.archivedBy || null
-            });
-          });
-
-          renderEmployeeList();
-          updateStats();
-          
-          if (currentEmployee) {
-            const updatedEmployee = employees.find(emp => emp.id === currentEmployee.id);
-            if (updatedEmployee) {
-              selectEmployee(updatedEmployee);
-            }
-          }
-          
-          setTimeout(updateInductionDisplay, 100);
-        }, (error) => {
-          console.error('Fehler beim Lauschen auf Mitarbeiter-Änderungen:', error);
-          showNotification('Fehler bei Live-Updates', 'error');
-        });
-
-      // Listener für Settings
-      const unsubscribeSettings = db.collection('hrSettings').doc('settings')
-        .onSnapshot((doc) => {
-          if (doc.exists) {
-            const data = doc.data();
-            settings = { ...settings, ...data };
-            updateSettingsUI();
-            updateUnitAndRankSelects();
-          }
-        }, (error) => {
-          console.error('Fehler beim Lauschen auf Settings:', error);
-        });
-
-      // Listener für Audit Log
-      const unsubscribeAuditLog = db.collection('hrAuditLog')
-        .orderBy('timestamp', 'desc')
-        .limit(100)
-        .onSnapshot((snapshot) => {
-          auditLogs = [];
-          snapshot.forEach(doc => {
-            auditLogs.push({ 
-              id: doc.id, 
-              ...doc.data(),
-              timestampFormatted: doc.data().timestamp ? 
-                new Date(doc.data().timestamp.toDate()).toLocaleString('de-DE') : 
-                new Date().toLocaleString('de-DE')
-            });
-          });
-          renderAuditLog();
-        }, (error) => {
-          console.error('Fehler beim Lauschen auf Audit Log:', error);
-        });
-
-      // Listener für Akten
-      const unsubscribeAkten = db.collection('hrAkten')
-        .orderBy('lastUpdated', 'desc')
-        .onSnapshot((snapshot) => {
-          akten = [];
-          let totalBeobachtungen = 0;
-          
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            const beobachtungenCount = data.beobachtungen ? data.beobachtungen.length : 0;
-            totalBeobachtungen += beobachtungenCount;
-            
-            akten.push({ 
-              id: doc.id, 
-              ...data,
-              createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE'),
-              beobachtungenCount: beobachtungenCount
-            });
-          });
-          
-          // Update Beobachtungen Statistik
-          document.getElementById('totalBeobachtungen').textContent = totalBeobachtungen;
-        }, (error) => {
-          console.error('Fehler beim Lauschen auf Akten-Änderungen:', error);
-        });
-
-      // Listener für Soldatengespräche
-      const unsubscribeSoldaten = db.collection('hrSoldatenGespräche')
-        .orderBy('created', 'desc')
-        .limit(100)
-        .onSnapshot((snapshot) => {
-          soldatenGespräche = [];
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            soldatenGespräche.push({ 
-              id: doc.id, 
-              ...data,
-              createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE'),
-              dateFormatted: data.dateFormatted || (data.date ? new Date(data.date).toLocaleDateString('de-DE') : '')
-            });
-          });
-        }, (error) => {
-          console.error('Fehler beim Lauschen auf Soldatengespräche:', error);
-        });
-
-      // Listener für Ankündigungen
-      const unsubscribeAnkundigungen = db.collection('hrAnkundigungen')
-        .orderBy('created', 'desc')
-        .limit(100)
-        .onSnapshot((snapshot) => {
-          ankundigungen = [];
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            ankundigungen.push({ 
-              id: doc.id, 
-              ...data,
-              createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE'),
-              dateFormatted: data.dateFormatted || (data.date ? new Date(data.date).toLocaleDateString('de-DE') : '')
-            });
-          });
-        }, (error) => {
-          console.error('Fehler beim Lauschen auf Ankündigungen:', error);
-        });
-
-      unsubscribeFunctions = [
-        unsubscribeEmployees,
-        unsubscribeSettings,
-        unsubscribeAuditLog,
-        unsubscribeAkten,
-        unsubscribeSoldaten,
-        unsubscribeAnkundigungen
-      ];
-    }
-
-    function cleanupRealtimeListeners() {
-      unsubscribeFunctions.forEach(unsubscribe => {
-        if (typeof unsubscribe === 'function') {
-          unsubscribe();
-        }
-      });
-      unsubscribeFunctions = [];
-    }
-
-    window.addEventListener('beforeunload', cleanupRealtimeListeners);
-
-    // ==================== SETTINGS FUNKTIONEN ====================
-    async function loadSettings() {
-      try {
-        const doc = await db.collection('hrSettings').doc('settings').get();
-        if (doc.exists) {
-          const data = doc.data();
-          settings = { ...settings, ...data };
-          updateSettingsUI();
-          updateUnitAndRankSelects();
-        } else {
-          // Default Settings erstellen
-          const defaultSettings = {
-            units: ["Air Force", "S.O.C", "Infantry", "Military Police", "Navy Marine", "Navy SEALs"],
-            ranks: ["Private", "Private First Class", "Specialist", "Corporal", "Sergeant", "Staff Sergeant", 
-                   "Sergeant First Class", "Master Sergeant", "Sergeant Major", "Lieutenant", "Captain", 
-                   "Major", "Colonel", "Major General", "Lieutenant General", "Vice General of Army", "General of Army"],
-            unitDiscordIds: {},
-            rankDiscordIds: {},
-            hrDiscordRoleId: "1097625910242447422",
-            discordWebhookUrl: DEFAULT_DISCORD_WEBHOOK_URL
-          };
-          
-          await db.collection('hrSettings').doc('settings').set(defaultSettings);
-          settings = defaultSettings;
-          updateSettingsUI();
-          updateUnitAndRankSelects();
-        }
-      } catch (error) {
-        console.error('Fehler beim Laden der Settings:', error);
-        showNotification('Fehler beim Laden der Einstellungen', 'error');
-      }
-    }
-
-    function openSettingsModal() {
-      openModal('settingsModal');
-      updateSettingsUI();
-      renderUnitsList();
-      renderAuditLog();
-    }
-
-    function closeSettingsModal() {
-      closeModal('settingsModal');
-    }
-
-    function switchSettingsTab(tabName) {
-      document.querySelectorAll('.settings-tab').forEach(tab => {
-        tab.classList.remove('active');
-      });
-      
-      const tabIndex = ['units', 'discord', 'hr', 'audit'].indexOf(tabName);
-      document.querySelectorAll('.settings-tab')[tabIndex].classList.add('active');
-      
-      document.querySelectorAll('.settings-tab-content').forEach(content => {
-        content.style.display = 'none';
-      });
-      
-      document.getElementById(`settings${tabName.charAt(0).toUpperCase() + tabName.slice(1)}Tab`).style.display = 'block';
-    }
-
-    function updateSettingsUI() {
-      document.getElementById('hrDiscordRoleId').value = settings.hrDiscordRoleId || '';
-      document.getElementById('discordWebhookUrl').value = settings.discordWebhookUrl || DEFAULT_DISCORD_WEBHOOK_URL;
-      
-      // Unit Select im Discord Tab füllen
-      const unitSelect = document.getElementById('discordUnitSelect');
-      unitSelect.innerHTML = '<option value="">Unit auswählen</option>';
-      settings.units.forEach(unit => {
-        const option = document.createElement('option');
-        option.value = unit;
-        option.textContent = unit;
-        unitSelect.appendChild(option);
-      });
-      
-      // Rank Select im Discord Tab füllen
-      const rankSelect = document.getElementById('discordRankSelect');
-      rankSelect.innerHTML = '<option value="">Rang auswählen</option>';
-      settings.ranks.forEach(rank => {
-        const option = document.createElement('option');
-        option.value = rank;
-        option.textContent = rank;
-        rankSelect.appendChild(option);
-      });
-    }
-
-    function renderUnitsList() {
-      const container = document.getElementById('unitsList');
-      
-      if (!settings.units || settings.units.length === 0) {
-        container.innerHTML = `
-          <div class="empty-settings">
-            <div class="empty-settings-icon"><i class="fas fa-building"></i></div>
-            <div class="empty-settings-title">Keine Units definiert</div>
-            <div class="empty-description">Fügen Sie Ihre erste Unit hinzu</div>
-          </div>
-        `;
-        return;
-      }
-
-      let html = '';
-      settings.units.forEach(unit => {
-        const discordId = settings.unitDiscordIds[unit] || '';
-        
-        html += `
-          <div class="settings-unit-item">
-            <div class="settings-unit-name">${escapeHtml(unit)}</div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-              ${discordId ? `<div class="settings-unit-discord">${discordId}</div>` : ''}
-              <div class="settings-unit-actions">
-                <button class="settings-unit-btn settings-unit-btn-edit" onclick="editUnit('${escapeHtml(unit)}')">
-                  <i class="fas fa-edit"></i>
-                </button>
-                <button class="settings-unit-btn settings-unit-btn-delete" onclick="deleteUnit('${escapeHtml(unit)}')">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-      });
-
-      container.innerHTML = html;
-    }
-
-    async function saveNewUnit() {
-      const unitName = document.getElementById('newUnitName').value.trim();
-      const rankName = document.getElementById('newRankName').value.trim();
-      
-      if (!unitName && !rankName) {
-        showNotification('Bitte geben Sie eine Unit oder einen Rang ein', 'warning');
-        return;
-      }
-      
-      try {
-        if (unitName) {
-          if (!settings.units.includes(unitName)) {
-            settings.units.push(unitName);
-          }
-        }
-        
-        if (rankName) {
-          if (!settings.ranks.includes(rankName)) {
-            settings.ranks.push(rankName);
-          }
-        }
-        
-        await db.collection('hrSettings').doc('settings').update({
-          units: settings.units,
-          ranks: settings.ranks
-        });
-        
-        document.getElementById('newUnitName').value = '';
-        document.getElementById('newRankName').value = '';
-        
-        updateUnitAndRankSelects();
-        renderUnitsList();
-        showNotification('Unit/Rang hinzugefügt', 'success');
-        
-        // Audit Log erstellen
-        await createAuditLog('create', 'settings', unitName || rankName, `${unitName ? 'Unit' : 'Rang'} erstellt`);
-      } catch (error) {
-        console.error('Fehler beim Speichern:', error);
-        showNotification('Fehler beim Speichern: ' + error.message, 'error');
-      }
-    }
-
-    async function deleteUnit(unitName) {
-      if (!confirm(`Unit "${unitName}" wirklich löschen?`)) return;
-      
-      try {
-        settings.units = settings.units.filter(u => u !== unitName);
-        delete settings.unitDiscordIds[unitName];
-        
-        await db.collection('hrSettings').doc('settings').update({
-          units: settings.units,
-          unitDiscordIds: settings.unitDiscordIds
-        });
-        
-        updateUnitAndRankSelects();
-        renderUnitsList();
-        showNotification('Unit gelöscht', 'success');
-        
-        // Audit Log erstellen
-        await createAuditLog('delete', 'settings', unitName, 'Unit gelöscht');
-      } catch (error) {
-        console.error('Fehler beim Löschen:', error);
-        showNotification('Fehler beim Löschen: ' + error.message, 'error');
-      }
-    }
-
-    function editUnit(unitName) {
-      const discordId = prompt(`Discord Rollen-ID für "${unitName}" eingeben:`, settings.unitDiscordIds[unitName] || '');
-      
-      if (discordId !== null) {
-        saveUnitDiscordId(unitName, discordId);
-      }
-    }
-
-    async function saveUnitDiscordId(unitName, discordId) {
-      try {
-        settings.unitDiscordIds[unitName] = discordId.trim();
-        
-        await db.collection('hrSettings').doc('settings').update({
-          unitDiscordIds: settings.unitDiscordIds
-        });
-        
-        renderUnitsList();
-        showNotification('Discord ID gespeichert', 'success');
-        
-        // Audit Log erstellen
-        await createAuditLog('update', 'settings', unitName, `Discord ID für Unit aktualisiert: ${discordId}`);
-      } catch (error) {
-        console.error('Fehler beim Speichern:', error);
-        showNotification('Fehler beim Speichern: ' + error.message, 'error');
-      }
-    }
-
-    async function saveDiscordIds() {
-      const unit = document.getElementById('discordUnitSelect').value;
-      const unitDiscordId = document.getElementById('discordRoleId').value.trim();
-      const rank = document.getElementById('discordRankSelect').value;
-      const rankDiscordId = document.getElementById('discordRankRoleId').value.trim();
-      
-      try {
-        if (unit && unitDiscordId) {
-          settings.unitDiscordIds[unit] = unitDiscordId;
-        }
-        
-        if (rank && rankDiscordId) {
-          settings.rankDiscordIds[rank] = rankDiscordId;
-        }
-        
-        await db.collection('hrSettings').doc('settings').update({
-          unitDiscordIds: settings.unitDiscordIds,
-          rankDiscordIds: settings.rankDiscordIds
-        });
-        
-        document.getElementById('discordRoleId').value = '';
-        document.getElementById('discordRankRoleId').value = '';
-        
-        renderUnitsList();
-        showNotification('Discord IDs gespeichert', 'success');
-        
-        // Audit Log erstellen
-        await createAuditLog('update', 'settings', 'discord_ids', 'Discord IDs aktualisiert');
-      } catch (error) {
-        console.error('Fehler beim Speichern:', error);
-        showNotification('Fehler beim Speichern: ' + error.message, 'error');
-      }
-    }
-
-    async function saveHrSettings() {
-      const hrDiscordRoleId = document.getElementById('hrDiscordRoleId').value.trim();
-      const discordWebhookUrl = document.getElementById('discordWebhookUrl').value.trim();
-      
-      try {
-        settings.hrDiscordRoleId = hrDiscordRoleId;
-        settings.discordWebhookUrl = discordWebhookUrl;
-        
-        await db.collection('hrSettings').doc('settings').update({
-          hrDiscordRoleId: hrDiscordRoleId,
-          discordWebhookUrl: discordWebhookUrl
-        });
-        
-        showNotification('HR Einstellungen gespeichert', 'success');
-        
-        // Audit Log erstellen
-        await createAuditLog('update', 'settings', 'hr_settings', 'HR Einstellungen aktualisiert');
-      } catch (error) {
-        console.error('Fehler beim Speichern:', error);
-        showNotification('Fehler beim Speichern: ' + error.message, 'error');
-      }
-    }
-
-    function renderAuditLog() {
-      const container = document.getElementById('auditLogList');
-      
-      if (auditLogs.length === 0) {
-        container.innerHTML = `
-          <div class="empty-settings">
-            <div class="empty-settings-icon"><i class="fas fa-history"></i></div>
-            <div class="empty-settings-title">Keine Audit Log Einträge</div>
-            <div class="empty-description">Änderungen werden hier protokolliert</div>
-          </div>
-        `;
-        return;
-      }
-
-      let html = '';
-      auditLogs.forEach(log => {
-        const actionIcon = log.action === 'create' ? 'fa-plus' : 
-                          log.action === 'update' ? 'fa-edit' : 
-                          log.action === 'delete' ? 'fa-trash' : 
-                          log.action === 'archive' ? 'fa-archive' : 'fa-info-circle';
-        
-        const actionColor = log.action === 'create' ? 'var(--secondary)' : 
-                           log.action === 'update' ? 'var(--warning)' : 
-                           log.action === 'delete' ? 'var(--danger)' : 
-                           log.action === 'archive' ? 'var(--archived)' : 'var(--primary)';
-        
-        html += `
-          <div class="settings-audit-item" style="border-left-color: ${actionColor}">
-            <div class="settings-audit-header">
-              <div class="settings-audit-action">
-                <i class="fas ${actionIcon}"></i> ${getActionText(log.action)}
-              </div>
-              <div class="settings-audit-entity">
-                ${escapeHtml(log.entityType)}: ${escapeHtml(log.entityId)}
-              </div>
-            </div>
-            <div class="settings-audit-info">
-              <i class="fas fa-user"></i> <span class="settings-audit-user">${escapeHtml(log.user || 'System')}</span>
-              <i class="fas fa-clock"></i> <span class="settings-audit-timestamp">${log.timestampFormatted}</span>
-            </div>
-            ${log.details ? `<div style="color: var(--gray-light); font-size: 12px; margin-top: 4px;">${escapeHtml(log.details)}</div>` : ''}
-          </div>
-        `;
-      });
-
-      container.innerHTML = html;
-    }
-
-    function getActionText(action) {
-      const actions = {
-        'create': 'Erstellt',
-        'update': 'Aktualisiert',
-        'delete': 'Gelöscht',
-        'archive': 'Archiviert',
-        'restore': 'Wiederhergestellt'
-      };
-      return actions[action] || action;
-    }
-
-    // ==================== AUDIT LOG FUNKTIONEN ====================
-    async function createAuditLog(action, entityType, entityId, details = '', user = getCurrentUser()) {
-      try {
-        const auditLog = {
-          action,
-          entityType,
-          entityId,
-          user,
-          details,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-          timestampFormatted: new Date().toLocaleString('de-DE')
-        };
-        
-        await db.collection('hrAuditLog').add(auditLog);
-        
-        // Discord Webhook senden
-        sendAuditToDiscord(auditLog);
-        
-        console.log('Audit Log erstellt:', auditLog);
-      } catch (error) {
-        console.error('Fehler beim Erstellen des Audit Logs:', error);
-      }
-    }
-
-    function getCurrentUser() {
-      // In einer echten App würde man hier den eingeloggten Benutzer verwenden
-      // Für dieses Beispiel verwenden wir einen simulierten Benutzer
-      return localStorage.getItem('hr_current_user') || 'Admin';
-    }
-
-    async function sendAuditToDiscord(auditLog) {
-      if (!settings.discordWebhookUrl) return;
-      
-      const embed = {
-        title: `📝 HR Audit Log: ${getActionText(auditLog.action)}`,
-        description: `**Typ:** ${auditLog.entityType}\n**ID:** ${auditLog.entityId}\n**Benutzer:** ${auditLog.user}\n**Details:** ${auditLog.details}`,
-        color: getDiscordColorForAction(auditLog.action),
-        timestamp: new Date().toISOString(),
-        footer: {
-          text: 'HR Management System'
-        }
-      };
-      
-      const payload = {
-        embeds: [embed]
-      };
-      
-      try {
-        const response = await fetch(settings.discordWebhookUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
-        
-        if (!response.ok) {
-          console.error('Fehler beim Senden an Discord:', await response.text());
-        }
-      } catch (error) {
-        console.error('Fehler beim Senden an Discord:', error);
-      }
-    }
-
-    function getDiscordColorForAction(action) {
-      const colors = {
-        'create': 0x10b981, // Grün
-        'update': 0xf59e0b, // Orange
-        'delete': 0xef4444, // Rot
-        'archive': 0x6b7280, // Grau
-        'restore': 0x8b5cf6  // Lila
-      };
-      return colors[action] || 0x4f46e5; // Default: Indigo
-    }
-
-    async function copyAuditToDiscord() {
-      if (auditLogs.length === 0) {
-        showNotification('Keine Audit Log Einträge zum Senden', 'warning');
-        return;
-      }
-      
-      const latestLogs = auditLogs.slice(0, 5); // Letzten 5 Einträge senden
-      
-      for (const log of latestLogs) {
-        await sendAuditToDiscord(log);
-      }
-      
-      showNotification(`${latestLogs.length} Audit Log Einträge an Discord gesendet`, 'success');
-    }
-
-    // ==================== MITARBEITER FUNKTIONEN MIT SOFT DELETE & ARCHIVIERUNG ====================
-    function filterByStatus(status) {
-      currentStatusFilter = status;
-      
-      document.querySelectorAll('.status-filter-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.status-filter-btn')[status === 'active' ? 0 : status === 'archived' ? 1 : 2].classList.add('active');
-      
-      renderEmployeeList();
-      updateStats();
-    }
-
-    function renderEmployeeList() {
-      const container = document.getElementById('employeeList');
-      const countElement = document.getElementById('employeeCount');
-
-      let filteredEmployees = getFilteredEmployees();
-      
-      // Status Filter anwenden
-      if (currentStatusFilter === 'active') {
-        filteredEmployees = filteredEmployees.filter(emp => 
-          emp.status === 'active' && !emp.isDeleted && !emp.archived
-        );
-      } else if (currentStatusFilter === 'archived') {
-        filteredEmployees = filteredEmployees.filter(emp => emp.archived);
-      } else if (currentStatusFilter === 'deleted') {
-        filteredEmployees = filteredEmployees.filter(emp => emp.isDeleted);
-      }
-
-      filteredEmployees.sort((a, b) => {
-        const nameA = (a.name || '').toUpperCase();
-        const nameB = (b.name || '').toUpperCase();
-        return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
-      });
-
-      if (filteredEmployees.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon"><i class="fas fa-user-plus"></i></div>
-            <div class="empty-title">${getEmptyStateTitle()}</div>
-            <div class="empty-description">${getEmptyStateDescription()}</div>
-          </div>
-        `;
-        countElement.textContent = '0';
-        return;
-      }
-
-      container.innerHTML = '';
-      countElement.textContent = filteredEmployees.length;
-
-      filteredEmployees.forEach(employee => {
-        let cardClass = 'employee-card';
-        if (currentEmployee?.id === employee.id) cardClass += ' active';
-        if (employee.archived) cardClass += ' archived';
-        if (employee.isDeleted) cardClass += ' deleted';
-
-        const card = document.createElement('div');
-        card.className = cardClass;
-        card.onclick = () => selectEmployee(employee);
-        card.oncontextmenu = (e) => { e.preventDefault(); showEmployeeContextMenu(e, employee); };
-
-        const oralCompleted = employee.inductions?.oral?.completed || false;
-        const orgCompleted = employee.inductions?.org?.completed || false;
-
-        let statusBadge = '';
-        if (employee.isDeleted) {
-          statusBadge = `<div style="position: absolute; top: 4px; right: 4px; background: var(--danger); color: white; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px;">GELÖSCHT</div>`;
-        } else if (employee.archived) {
-          statusBadge = `<div style="position: absolute; top: 4px; right: 4px; background: var(--archived); color: white; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px;">ARCHIVIERT</div>`;
-        }
-
-        card.innerHTML = `
-          ${statusBadge}
-          <div class="employee-top-row">
-            <div class="employee-name">${escapeHtml(employee.name || '')}</div>
-            <div class="employee-dn">DN ${escapeHtml(employee.dn || '')}</div>
-          </div>
-          <div class="employee-meta">
-            <i class="fas fa-user-tie"></i> ${escapeHtml(employee.rank || 'Kein Rang')} •
-            <i class="fas fa-building"></i> ${escapeHtml(employee.unit || 'Keine Unit')}
-          </div>
-          <div class="induction-badges">
-            <div class="induction-badge badge-oral ${oralCompleted ? 'completed' : 'pending'}">
-              <i class="fas ${oralCompleted ? 'fa-check-circle' : 'fa-clock'}"></i>
-              Mündlich
-            </div>
-            <div class="induction-badge badge-org ${orgCompleted ? 'completed' : 'pending'}">
-              <i class="fas ${orgCompleted ? 'fa-check-circle' : 'fa-clock'}"></i>
-              Organisatorisch
-            </div>
-          </div>
-        `;
-
-        container.appendChild(card);
-      });
-    }
-
-    function updateStats() {
-      // Nur aktive Mitarbeiter zählen (keine archivierten oder gelöschten)
-      const activeEmployees = employees.filter(emp => 
-        emp.status === 'active' && !emp.isDeleted && !emp.archived
-      ).length;
-      
-      // Beobachtungen werden bereits im Akten-Listener aktualisiert
-      // Hier nur die Mitglieder-Statistik setzen
-      document.getElementById('totalEmployees').textContent = activeEmployees;
-    }
-
-    async function softDeleteEmployee() {
-      if (!currentEmployee) {
-        showNotification('Bitte wählen Sie zuerst einen Mitarbeiter aus', 'warning');
-        return;
-      }
-
-      if (!confirm(`Mitarbeiter "${currentEmployee.name}" (DN ${currentEmployee.dn}) wirklich als gelöscht markieren?\n\nDer Mitarbeiter wird nicht physisch gelöscht, sondern nur als gelöscht markiert.`)) {
-        return;
-      }
-
-      try {
-        await db.collection('hrEmployees').doc(currentEmployee.id).update({
-          isDeleted: true,
-          deletedAt: firebase.firestore.FieldValue.serverTimestamp(),
-          deletedBy: getCurrentUser(),
-          status: 'deleted',
-          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        
-        // Audit Log erstellen
-        await createAuditLog('delete', 'employee', currentEmployee.id, `Mitarbeiter als gelöscht markiert: ${currentEmployee.name} (DN ${currentEmployee.dn})`);
-        
-        showNotification('Mitarbeiter als gelöscht markiert', 'success');
-        filterByStatus('deleted');
-      } catch (error) {
-        console.error('Fehler beim Soft Delete:', error);
-        showNotification('Fehler beim Löschen: ' + error.message, 'error');
-      }
-    }
-
-    async function permanentlyDeleteEmployee() {
-      if (!currentEmployee) {
-        showNotification('Bitte wählen Sie zuerst einen Mitarbeiter aus', 'warning');
-        return;
-      }
-
-      if (!confirm(`Mitarbeiter "${currentEmployee.name}" (DN ${currentEmployee.dn}) ENDGÜLTIG löschen?\n\nDiese Aktion kann nicht rückgängig gemacht werden!`)) {
-        return;
-      }
-
-      try {
-        // Audit Log erstellen vor dem Löschen
-        await createAuditLog('delete', 'employee', currentEmployee.id, `Mitarbeiter endgültig gelöscht: ${currentEmployee.name} (DN ${currentEmployee.dn})`);
-        
-        await db.collection('hrEmployees').doc(currentEmployee.id).delete();
-        
-        currentEmployee = null;
-        document.getElementById('employeeHeader').style.display = 'none';
-        document.getElementById('inductionContent').style.display = 'none';
-        
-        showNotification('Mitarbeiter endgültig gelöscht', 'success');
-        closeModal('editEmployeeModal');
-      } catch (error) {
-        console.error('Fehler beim endgültigen Löschen:', error);
-        showNotification('Fehler beim Löschen: ' + error.message, 'error');
-      }
-    }
-
-    async function toggleArchiveEmployee() {
-      if (!currentEmployee) {
-        showNotification('Bitte wählen Sie zuerst einen Mitarbeiter aus', 'warning');
-        return;
-      }
-
-      const isCurrentlyArchived = currentEmployee.archived || false;
-      const action = isCurrentlyArchived ? 'wiederherstellen' : 'archivieren';
-      
-      if (!confirm(`Mitarbeiter "${currentEmployee.name}" wirklich ${action}?`)) {
-        return;
-      }
-
-      try {
-        const updateData = {
-          archived: !isCurrentlyArchived,
-          archivedAt: firebase.firestore.FieldValue.serverTimestamp(),
-          archivedBy: getCurrentUser(),
-          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-        };
-        
-        if (!isCurrentlyArchived) {
-          updateData.status = 'archived';
-        } else {
-          updateData.status = 'active';
-        }
-        
-        await db.collection('hrEmployees').doc(currentEmployee.id).update(updateData);
-        
-        // Audit Log erstellen
-        const logAction = isCurrentlyArchived ? 'restore' : 'archive';
-        await createAuditLog(logAction, 'employee', currentEmployee.id, 
-          `${isCurrentlyArchived ? 'Wiederhergestellt' : 'Archiviert'}: ${currentEmployee.name} (DN ${currentEmployee.dn})`);
-        
-        showNotification(`Mitarbeiter ${action === 'archivieren' ? 'archiviert' : 'wiederhergestellt'}`, 'success');
-        
-        if (isCurrentlyArchived) {
-          filterByStatus('active');
-        } else {
-          filterByStatus('archived');
-        }
-      } catch (error) {
-        console.error('Fehler beim Archivieren/Wiederherstellen:', error);
-        showNotification('Fehler: ' + error.message, 'error');
-      }
-    }
-
-    function toggleArchiveFilter() {
-      showArchived = !showArchived;
-      const btn = document.getElementById('toggleArchiveBtn');
-      if (showArchived) {
-        btn.innerHTML = '<i class="fas fa-eye-slash"></i> Archiv ausblenden';
-        filterByStatus('archived');
-      } else {
-        btn.innerHTML = '<i class="fas fa-archive"></i> Archiv anzeigen';
-        filterByStatus('active');
-      }
-    }
-
-    // ==================== BESTEHENDE FUNKTIONEN (angepasst) ====================
     function setupEventListeners() {
       document.getElementById('searchEmployees').addEventListener('input', function (e) {
         filterEmployees(e.target.value);
@@ -4506,21 +3468,11 @@ Grund:
         if (e.ctrlKey && e.key === 'b') { e.preventDefault(); openBeobachtungAktenModal(); }
         if (e.ctrlKey && e.key === 's') { e.preventDefault(); openSoldatenModal(); }
         if (e.ctrlKey && e.key === 'a') { e.preventDefault(); openAnkundigungModal(); }
-        if (e.ctrlKey && e.key === 'p') { e.preventDefault(); openSettingsModal(); }
+        if (e.ctrlKey && e.key === 'r') { e.preventDefault(); manualRefresh(); }
+        if (e.ctrlKey && e.key === 'd') { e.preventDefault(); debugRealtimeStatus(); }
       });
 
       window.addEventListener('resize', adjustSidebarHeight);
-    }
-
-    function adjustSidebarHeight() {
-      const sidebar = document.querySelector('.sidebar');
-      const header = document.querySelector('.app-header');
-      const windowHeight = window.innerHeight;
-      const headerHeight = header.offsetHeight;
-
-      const availableHeight = windowHeight - headerHeight - 40;
-      const newHeight = Math.max(availableHeight, 500);
-      sidebar.style.height = `${newHeight}px`;
     }
 
     function setupFormChangeListeners() {
@@ -4570,475 +3522,15 @@ Grund:
       }
     }
 
-    function updateUnitAndRankSelects() {
-      const unitSelects = [
-        document.getElementById('unitSelect'),
-        document.getElementById('unitSelect2'),
-        document.getElementById('newEmployeeUnit'),
-        document.getElementById('editEmployeeUnit'),
-        document.getElementById('soldatenUnit'),
-        document.getElementById('akteUnit')
-      ];
-      
-      const rankSelects = [
-        document.getElementById('rankSelect'),
-        document.getElementById('rankSelect2'),
-        document.getElementById('newEmployeeRank'),
-        document.getElementById('editEmployeeRank'),
-        document.getElementById('soldatenRank'),
-        document.getElementById('akteRank')
-      ];
-      
-      unitSelects.forEach(select => {
-        if (select) {
-          select.innerHTML = '<option value="">Unit auswählen</option>';
-          (settings.units || []).forEach(unit => {
-            const option = document.createElement('option');
-            option.value = unit;
-            option.textContent = unit;
-            select.appendChild(option);
-          });
-        }
-      });
-      
-      rankSelects.forEach(select => {
-        if (select) {
-          select.innerHTML = '<option value="">Rang auswählen</option>';
-          (settings.ranks || []).forEach(rank => {
-            const option = document.createElement('option');
-            option.value = rank;
-            option.textContent = rank;
-            select.appendChild(option);
-          });
-        }
-      });
-    }
-
-    function selectEmployee(employee) {
-      currentEmployee = employee;
-
-      document.getElementById('employeeHeader').style.display = 'flex';
-      document.getElementById('inductionContent').style.display = 'block';
-
-      updateEmployeeHeader();
-      loadEmployeeData();
-      updateInductionDisplay();
-      renderEmployeeList();
-    }
-
-    function updateEmployeeHeader() {
-      if (!currentEmployee) return;
-
-      document.getElementById('currentEmployeeName').textContent = currentEmployee.name || '';
-      document.getElementById('currentEmployeeDN').textContent = currentEmployee.dn || '';
-      document.getElementById('currentEmployeeUnit').textContent = currentEmployee.unit || 'Keine Unit';
-      document.getElementById('currentEmployeeRank').textContent = currentEmployee.rank || 'Kein Rang';
-      
-      let status = 'Aktiv';
-      let statusColor = 'var(--secondary)';
-      
-      if (currentEmployee.isDeleted) {
-        status = 'Gelöscht';
-        statusColor = 'var(--danger)';
-      } else if (currentEmployee.archived) {
-        status = 'Archiviert';
-        statusColor = 'var(--archived)';
-      }
-      
-      document.getElementById('currentEmployeeStatus').textContent = status;
-      document.getElementById('currentEmployeeStatus').style.color = statusColor;
-    }
-
-    function loadEmployeeData() {
-      if (!currentEmployee) return;
-
-      const oralData = currentEmployee.oralData || {};
-      const orgData = currentEmployee.orgData || {};
-
-      document.getElementById('oralDate').value = oralData.date || (new Date().toISOString().split('T')[0]);
-      document.getElementById('oralTimeStart').value = oralData.timeStart || '16:40';
-      document.getElementById('oralTimeEnd').value = oralData.timeEnd || '18:00';
-      document.getElementById('oralPerson').value = oralData.person || '';
-      document.getElementById('oralNotes').value = oralData.notes || '';
-      document.getElementById('unitSelect').value = oralData.unit || currentEmployee.unit || '';
-      document.getElementById('rankSelect').value = oralData.rank || currentEmployee.rank || '';
-
-      document.getElementById('orgDate').value = orgData.date || (new Date().toISOString().split('T')[0]);
-      document.getElementById('orgTimeStart').value = orgData.timeStart || '22:10';
-      document.getElementById('orgTimeEnd').value = orgData.timeEnd || '23:05';
-      document.getElementById('orgPerson').value = orgData.person || '';
-      document.getElementById('orgNotes').value = orgData.notes || '';
-      document.getElementById('unitSelect2').value = orgData.unit || currentEmployee.unit || '';
-      document.getElementById('rankSelect2').value = orgData.rank || currentEmployee.rank || '';
-
-      const oralCompleted = currentEmployee.inductions?.oral?.completed || false;
-      const orgCompleted = currentEmployee.inductions?.org?.completed || false;
-
-      document.getElementById('oralInductionToggle').checked = oralCompleted;
-      document.getElementById('orgInductionToggle').checked = orgCompleted;
-
-      updateInductionUI('oral', oralCompleted);
-      updateInductionUI('org', orgCompleted);
-
-      checkBothInductionsCompleted();
-      updateTemplates();
-    }
-
-    function updateInductionDisplay() {
-      if (!currentEmployee) return;
-
-      const oralCompleted = currentEmployee.inductions?.oral?.completed || false;
-      const orgCompleted = currentEmployee.inductions?.org?.completed || false;
-
-      updateInductionUI('oral', oralCompleted);
-      updateInductionUI('org', orgCompleted);
-
-      renderEmployeeList();
-    }
-
-    function updateInductionUI(type, completed) {
-      const card = document.getElementById(`${type}InductionCard`);
-      const status = document.getElementById(`${type}InductionStatus`);
-
-      if (completed) {
-        card.classList.add('completed');
-        status.textContent = 'BESTANDEN';
-      } else {
-        card.classList.remove('completed');
-        status.textContent = 'AUSSTEHEND';
-      }
-    }
-
-    function saveFormData() {
-      if (!currentEmployee) return;
-
-      currentEmployee.oralData = {
-        date: document.getElementById('oralDate').value,
-        timeStart: document.getElementById('oralTimeStart').value,
-        timeEnd: document.getElementById('oralTimeEnd').value,
-        person: document.getElementById('oralPerson').value,
-        notes: document.getElementById('oralNotes').value,
-        unit: document.getElementById('unitSelect').value,
-        rank: document.getElementById('rankSelect').value
-      };
-
-      currentEmployee.orgData = {
-        date: document.getElementById('orgDate').value,
-        timeStart: document.getElementById('orgTimeStart').value,
-        timeEnd: document.getElementById('orgTimeEnd').value,
-        person: document.getElementById('orgPerson').value,
-        notes: document.getElementById('orgNotes').value,
-        unit: document.getElementById('unitSelect2').value,
-        rank: document.getElementById('rankSelect2').value
-      };
-
-      const unitSelectValue = document.getElementById('unitSelect').value;
-      const rankSelectValue = document.getElementById('rankSelect').value;
-      if (unitSelectValue) currentEmployee.unit = unitSelectValue;
-      if (rankSelectValue) currentEmployee.rank = rankSelectValue;
-
-      currentEmployee.lastUpdated = new Date().toISOString();
-    }
-
-    function openEditEmployeeModal() {
-      if (!currentEmployee) {
-        showNotification('Bitte wählen Sie zuerst einen Mitarbeiter aus', 'warning');
-        return;
-      }
-
-      document.getElementById('editEmployeeName').value = currentEmployee.name || '';
-      document.getElementById('editEmployeeDN').value = currentEmployee.dn || '';
-      document.getElementById('editEmployeeUnit').value = currentEmployee.unit || '';
-      document.getElementById('editEmployeeRank').value = currentEmployee.rank || '';
-
-      openModal('editEmployeeModal');
-    }
-
-    async function saveEditedEmployee() {
-      if (!currentEmployee) return;
-
-      const name = document.getElementById('editEmployeeName').value.trim();
-      const dn = document.getElementById('editEmployeeDN').value;
-
-      if (!name || !dn) {
-        showNotification('Name und Dienstnummer sind Pflichtfelder', 'warning');
-        return;
-      }
-
-      currentEmployee.name = name;
-      currentEmployee.dn = dn;
-      currentEmployee.unit = document.getElementById('editEmployeeUnit').value || '';
-      currentEmployee.rank = document.getElementById('editEmployeeRank').value || '';
-
-      const success = await saveEmployeeToFirebase(currentEmployee);
-      if (success) {
-        closeModal('editEmployeeModal');
-        updateEmployeeHeader();
-        renderEmployeeList();
-        updateTemplates();
-        showNotification('Mitarbeiterdaten erfolgreich aktualisiert', 'success');
-        
-        // Audit Log erstellen
-        await createAuditLog('update', 'employee', currentEmployee.id, `Mitarbeiter aktualisiert: ${name} (DN ${dn})`);
-      }
-    }
-
-    function toggleInduction(type, completed) {
-      if (!currentEmployee) return;
-
-      if (!currentEmployee.inductions) currentEmployee.inductions = {};
-
-      currentEmployee.inductions[type] = {
-        completed: completed,
-        date: completed ? new Date().toISOString() : null,
-        updatedBy: 'System'
-      };
-
-      updateInductionUI(type, completed);
-      updateTemplates();
-      saveEmployeeData(true);
-      checkBothInductionsCompleted();
-      renderEmployeeList();
-      updateStats();
-
-      const typeName = type === 'oral' ? 'Mündliche' : 'Organisatorische';
-      const status = completed ? 'bestanden' : 'als ausstehend markiert';
-      showNotification(`${typeName} Einweisung ${status}`, 'success');
-      
-      // Audit Log erstellen
-      createAuditLog('update', 'employee', currentEmployee.id, `${typeName} Einweisung ${status} für ${currentEmployee.name}`);
-    }
-
-    function checkBothInductionsCompleted() {
-      if (!currentEmployee) return false;
-
-      const oralCompleted = currentEmployee.inductions?.oral?.completed || false;
-      const orgCompleted = currentEmployee.inductions?.org?.completed || false;
-
-      const nowBothCompleted = oralCompleted && orgCompleted;
-
-      if (nowBothCompleted && !bothInductionsCompleted) {
-        bothInductionsCompleted = true;
-      } else if (!nowBothCompleted) {
-        bothInductionsCompleted = false;
-      }
-
-      return nowBothCompleted;
-    }
-
-    function updateTemplates() {
-      if (!currentEmployee) {
-        seedTemplateBoxes();
-        return;
-      }
-
-      saveFormData();
-
-      const oralTemplate = generateTemplate('oral');
-      document.getElementById('oralTemplateContent').textContent = oralTemplate;
-
-      const orgTemplate = generateTemplate('org');
-      document.getElementById('orgTemplateContent').textContent = orgTemplate;
-
-      const oralCompleted = currentEmployee.inductions?.oral?.completed || false;
-      const orgCompleted = currentEmployee.inductions?.org?.completed || false;
-
-      document.getElementById('oralTemplateBadge').textContent = oralCompleted ? 'BESTANDEN' : 'AUSSTEHEND';
-      document.getElementById('orgTemplateBadge').textContent = orgCompleted ? 'BESTANDEN' : 'AUSSTEHEND';
-
-      document.getElementById('oralTemplateCard').classList.toggle('completed', oralCompleted);
-      document.getElementById('orgTemplateCard').classList.toggle('completed', orgCompleted);
-    }
-
-    function generateTemplate(type) {
-      const isOral = type === 'oral';
-      const completed = isOral
-        ? (currentEmployee.inductions?.oral?.completed || false)
-        : (currentEmployee.inductions?.org?.completed || false);
-
-      const data = isOral ? currentEmployee.oralData : currentEmployee.orgData;
-
-      const name = currentEmployee.name || '';
-      const dn = currentEmployee.dn || '';
-
-      const unit = isOral
-        ? (document.getElementById('unitSelect').value || currentEmployee.unit || '')
-        : (document.getElementById('unitSelect2').value || currentEmployee.unit || '');
-
-      const rank = isOral
-        ? (document.getElementById('rankSelect').value || currentEmployee.rank || '')
-        : (document.getElementById('rankSelect2').value || currentEmployee.rank || '');
-
-      const date = data?.date ? new Date(data.date).toLocaleDateString('de-DE') : '';
-      const timeStart = data?.timeStart || '';
-      const timeEnd = data?.timeEnd || '';
-      const person = data?.person || '';
-      const notes = data?.notes || '';
-
-      const timeSeparator = isOral ? 'bis' : '-';
-
-      const unitDiscordId = settings.unitDiscordIds[unit] || '';
-      const rankDiscordId = settings.rankDiscordIds[rank] || '';
-
-      const unitDisplay = unitDiscordId ? `<@&${unitDiscordId}>` : unit;
-      const rankDisplay = rankDiscordId ? `<@&${rankDiscordId}>` : rank;
-
-      return `╔══════════════════╗
-/////////////////////////////////////////////////////////////////////////
-${isOral ? 'Mündliche Einweisung' : 'Organisatorische Einweisung'}
-
-Name: ${name}
-DN: ${dn}
-Hauptunit: ${unitDisplay}
-Rang: ${rankDisplay}
-Datum: ${date}
-Uhrzeit: ${timeStart} ${timeSeparator} ${timeEnd}
-Beteiligte: ${person}
-Sonstiges: ${notes}
-
-/////////////////////////////////////////////////////////////////////////
-<@&${settings.hrDiscordRoleId}>
-╚══════════════════╝`;
-    }
-
-    async function saveEmployeeToFirebase(employee) {
-      try {
-        const dataToSave = {
-          name: employee.name,
-          dn: employee.dn,
-          unit: employee.unit,
-          rank: employee.rank,
-          lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
-          inductions: employee.inductions || {},
-          oralData: employee.oralData || {},
-          orgData: employee.orgData || {},
-          status: employee.status || 'active',
-          isDeleted: employee.isDeleted || false,
-          archived: employee.archived || false
-        };
-
-        await db.collection('hrEmployees').doc(employee.id).set(dataToSave, { merge: true });
-        return true;
-      } catch (error) {
-        console.error('Fehler beim Speichern:', error);
-        showNotification('Fehler beim Speichern: ' + error.message, 'error');
-        return false;
-      }
-    }
-
-    function saveEmployeeData(autosave = false) {
-      if (!currentEmployee || !autosave) return;
-      
-      // Auto-save nach 2 Sekunden Inaktivität
-      clearTimeout(window.saveTimeout);
-      window.saveTimeout = setTimeout(async () => {
-        const success = await saveEmployeeToFirebase(currentEmployee);
-        if (success) {
-          console.log('Autosave erfolgreich');
-        }
-      }, 2000);
-    }
-
-    async function createNewEmployee() {
-      const name = document.getElementById('newEmployeeName').value.trim();
-      const dn = document.getElementById('newEmployeeDN').value;
-      const unit = document.getElementById('newEmployeeUnit').value;
-      const rank = document.getElementById('newEmployeeRank').value;
-
-      if (!name || !dn) {
-        showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
-        return;
-      }
-
-      const employeeId = `EMP-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-
-      const newEmployee = {
-        id: employeeId,
-        name,
-        dn,
-        unit: unit || '',
-        rank: rank || '',
-        status: 'active',
-        isDeleted: false,
-        archived: false,
-        lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
-        inductions: { oral: { completed: false }, org: { completed: false } },
-        oralData: { date: '', timeStart: '16:40', timeEnd: '18:00', person: '', notes: '', unit: unit || '', rank: rank || '' },
-        orgData: { date: '', timeStart: '22:10', timeEnd: '23:05', person: '', notes: '', unit: unit || '', rank: rank || '' }
-      };
-
-      try {
-        await db.collection('hrEmployees').doc(employeeId).set(newEmployee);
-        
-        // Audit Log erstellen
-        await createAuditLog('create', 'employee', employeeId, `Neuer Mitarbeiter: ${name} (DN ${dn})`);
-        
-        closeModal('newEmployeeModal');
-        selectEmployee(newEmployee);
-        updateStats();
-
-        document.getElementById('newEmployeeName').value = '';
-        document.getElementById('newEmployeeDN').value = '';
-        document.getElementById('newEmployeeUnit').value = '';
-        document.getElementById('newEmployeeRank').value = '';
-
-        showNotification(`Mitarbeiter "${name}" erstellt`, 'success');
-      } catch (error) {
-        console.error('Fehler beim Erstellen:', error);
-        showNotification('Fehler beim Erstellen: ' + error.message, 'error');
-      }
-    }
-
-    function getFilteredEmployees() {
-      let filtered = employees;
-      
-      if (currentFilter === 'oral') {
-        filtered = filtered.filter(emp => !(emp.inductions?.oral?.completed));
-      } else if (currentFilter === 'org') {
-        filtered = filtered.filter(emp => !(emp.inductions?.org?.completed));
-      }
-      
-      return filtered;
-    }
-
-    function getEmptyStateTitle() {
-      if (currentStatusFilter === 'archived') return 'Keine archivierten Mitarbeiter';
-      if (currentStatusFilter === 'deleted') return 'Keine gelöschten Mitarbeiter';
-      return 'Keine Mitarbeiter';
-    }
-
-    function getEmptyStateDescription() {
-      if (currentStatusFilter === 'archived') return 'Keine Mitarbeiter im Archiv';
-      if (currentStatusFilter === 'deleted') return 'Keine gelöschten Mitarbeiter';
-      if (currentFilter === 'oral') return 'Keine Mitarbeiter mit ausstehender mündlicher Einweisung';
-      if (currentFilter === 'org') return 'Keine Mitarbeiter mit ausstehender organisatorischer Einweisung';
-      return 'Fügen Sie Ihren ersten Mitarbeiter hinzu';
-    }
-
-    function filterEmployeesByType(type) {
-      currentFilter = type;
-
-      document.querySelectorAll('.sidebar-filter-btn').forEach(btn => btn.classList.remove('active'));
-      if (type === 'all') document.querySelectorAll('.sidebar-filter-btn')[0].classList.add('active');
-      if (type === 'oral') document.querySelectorAll('.sidebar-filter-btn')[1].classList.add('active');
-      if (type === 'org') document.querySelectorAll('.sidebar-filter-btn')[2].classList.add('active');
-
-      renderEmployeeList();
-    }
-
-    function filterEmployees(searchTerm) {
-      const cards = document.querySelectorAll('.employee-card');
-      const term = (searchTerm || '').toLowerCase().trim();
-
-      if (!term) {
-        cards.forEach(card => card.style.display = 'flex');
-        return;
-      }
-
-      cards.forEach(card => {
-        const text = card.textContent.toLowerCase();
-        card.style.display = text.includes(term) ? 'flex' : 'none';
-      });
+    function adjustSidebarHeight() {
+      const sidebar = document.querySelector('.sidebar');
+      const header = document.querySelector('.app-header');
+      const windowHeight = window.innerHeight;
+      const headerHeight = header.offsetHeight;
+
+      const availableHeight = windowHeight - headerHeight - 40;
+      const newHeight = Math.max(availableHeight, 500);
+      sidebar.style.height = `${newHeight}px`;
     }
 
     // ==================== ANKÜNDIGUNGEN FUNKTIONEN ====================
@@ -5151,7 +3643,7 @@ Bemerkungen: ${bemerkungen || ''}`;
       showNotification(success ? 'Aufstellung kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
     }
 
-    async function saveAnkundigung() {
+    async function saveAnkündigung() {
       const title = document.getElementById('ankundigungTitle').value.trim();
       const content = document.getElementById('ankundigungContent').value.trim();
 
@@ -5168,14 +3660,13 @@ Bemerkungen: ${bemerkungen || ''}`;
         date: new Date().toISOString(),
         dateFormatted: new Date().toLocaleDateString('de-DE'),
         template: document.getElementById('ankundigungPreview').textContent,
-        icon: '🪧'
+        icon: '🪧',
+        created: firebase.firestore.FieldValue.serverTimestamp(),
+        syncVersion: Date.now()
       };
 
       try {
         await db.collection('hrAnkundigungen').doc(ankundigung.id).set(ankundigung);
-        
-        // Audit Log erstellen
-        await createAuditLog('create', 'ankundigung', ankundigung.id, `Ankündigung erstellt: ${title || 'Ohne Titel'}`);
         
         showNotification('Ankündigung erfolgreich gespeichert', 'success');
         document.getElementById('ankundigungTitle').value = '';
@@ -5209,18 +3700,16 @@ Bemerkungen: ${bemerkungen || ''}`;
         time,
         ort: ort || '',
         content,
-        created: new Date().toISOString(),
+        created: firebase.firestore.FieldValue.serverTimestamp(),
         createdFormatted: new Date().toLocaleDateString('de-DE'),
         dateFormatted: new Date(date).toLocaleDateString('de-DE'),
         template: document.getElementById('besprechungPreview').textContent,
-        icon: '🖊️'
+        icon: '🖊️',
+        syncVersion: Date.now()
       };
 
       try {
         await db.collection('hrAnkundigungen').doc(besprechung.id).set(besprechung);
-        
-        // Audit Log erstellen
-        await createAuditLog('create', 'besprechung', besprechung.id, `Besprechung erstellt: ${thema}`);
         
         showNotification('Besprechung erfolgreich gespeichert', 'success');
         document.getElementById('besprechungThema').value = '';
@@ -5257,18 +3746,16 @@ Bemerkungen: ${bemerkungen || ''}`;
         time,
         ort,
         bemerkungen: bemerkungen || '',
-        created: new Date().toISOString(),
+        created: firebase.firestore.FieldValue.serverTimestamp(),
         createdFormatted: new Date().toLocaleDateString('de-DE'),
         dateFormatted: new Date(date).toLocaleDateString('de-DE'),
         template: document.getElementById('aufstellungPreview').textContent,
-        icon: '🕛'
+        icon: '🕛',
+        syncVersion: Date.now()
       };
 
       try {
         await db.collection('hrAnkundigungen').doc(aufstellung.id).set(aufstellung);
-        
-        // Audit Log erstellen
-        await createAuditLog('create', 'aufstellung', aufstellung.id, `Aufstellung erstellt: ${typ}`);
         
         showNotification('Aufstellung erfolgreich gespeichert', 'success');
         document.getElementById('aufstellungTyp').value = '';
@@ -5394,12 +3881,6 @@ Bemerkungen: ${bemerkungen || ''}`;
       if (!confirm('Eintrag wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) return;
 
       try {
-        // Audit Log erstellen
-        const item = ankundigungen.find(i => i.id === itemId);
-        if (item) {
-          await createAuditLog('delete', item.type, itemId, `Gelöscht: ${item.title || item.thema || item.typ}`);
-        }
-        
         await db.collection('hrAnkundigungen').doc(itemId).delete();
         showNotification('Eintrag gelöscht', 'success');
       } catch (error) {
@@ -5466,7 +3947,7 @@ Notizen: ${notizen || ''}
 Sonstiges: ${sonstiges || ''}
 
 /////////////////////////////////////////////////////////////////////////
-<@&${settings.hrDiscordRoleId}>
+<@&1097625910242447422>
 ╚══════════════════`;
 
       document.getElementById('soldatenPreview').textContent = template;
@@ -5503,17 +3984,15 @@ Sonstiges: ${sonstiges || ''}
         time,
         notizen,
         sonstiges: sonstiges || '',
-        created: new Date().toISOString(),
+        created: firebase.firestore.FieldValue.serverTimestamp(),
         createdFormatted: new Date().toLocaleDateString('de-DE'),
         dateFormatted: new Date(date).toLocaleDateString('de-DE'),
-        template: document.getElementById('soldatenPreview').textContent
+        template: document.getElementById('soldatenPreview').textContent,
+        syncVersion: Date.now()
       };
 
       try {
         await db.collection('hrSoldatenGespräche').doc(gespräch.id).set(gespräch);
-        
-        // Audit Log erstellen
-        await createAuditLog('create', 'soldatengespräch', gespräch.id, `Soldatengespräch erstellt für: ${name} (DN ${dn})`);
         
         showNotification('Soldatengespräch erfolgreich gespeichert', 'success');
         document.getElementById('soldatenName').value = '';
@@ -5607,7 +4086,7 @@ Sonstiges: ${sonstiges || ''}
       });
 
       container.innerHTML = html;
-    }
+    }  
 
     function searchSoldaten(searchTerm) {
       renderSoldatenListe();
@@ -5625,11 +4104,6 @@ Sonstiges: ${sonstiges || ''}
       if (!confirm('Soldatengespräch wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) return;
 
       try {
-        const gespräch = soldatenGespräche.find(g => g.id === gesprächId);
-        if (gespräch) {
-          await createAuditLog('delete', 'soldatengespräch', gesprächId, `Gelöscht: ${gespräch.name} (DN ${gespräch.dn})`);
-        }
-        
         await db.collection('hrSoldatenGespräche').doc(gesprächId).delete();
         showNotification('Soldatengespräch gelöscht', 'success');
       } catch (error) {
@@ -5683,7 +4157,7 @@ Name: ${name || ''}
 DN: ${dn || ''}
 Grund: ${grund || ''}
 /////////////////////////////////////////////////////////////////////////
-<@&${settings.hrDiscordRoleId}>
+<@&1097625910242447422>
 ╚══════════════════╝`;
 
       document.getElementById('beobachtungPreview').textContent = template;
@@ -5718,23 +4192,21 @@ Grund: ${grund || ''}
         dn,
         unit: unit || '',
         rank: rank || '',
-        created: new Date().toISOString(),
+        created: firebase.firestore.FieldValue.serverTimestamp(),
         createdFormatted: new Date().toLocaleDateString('de-DE'),
         beobachtungen: [],
-        lastUpdated: new Date().toISOString()
+        lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+        syncVersion: Date.now()
       };
 
       try {
         await db.collection('hrAkten').doc(akte.id).set(akte);
-        
-        // Audit Log erstellen
-        await createAuditLog('create', 'akte', akte.id, `Neue Akte erstellt: ${name} (DN ${dn})`);
-        
         showNotification('Akte erfolgreich erstellt', 'success');
         document.getElementById('akteName').value = '';
         document.getElementById('akteDN').value = '';
         document.getElementById('akteUnit').value = '';
         document.getElementById('akteRank').value = '';
+        updateStats();
         renderAktenListe();
         switchBeobachtungTab('list');
       } catch (error) {
@@ -5767,18 +4239,15 @@ Grund: ${grund || ''}
           dn,
           unit: '',
           rank: '',
-          created: new Date().toISOString(),
+          created: firebase.firestore.FieldValue.serverTimestamp(),
           createdFormatted: new Date().toLocaleDateString('de-DE'),
           beobachtungen: [],
-          lastUpdated: new Date().toISOString()
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+          syncVersion: Date.now()
         };
         
         try {
           await db.collection('hrAkten').doc(newAkte.id).set(newAkte);
-          
-          // Audit Log erstellen
-          await createAuditLog('create', 'akte', newAkte.id, `Neue Akte erstellt mit Beobachtung: ${name} (DN ${dn})`);
-          
           akte = newAkte;
         } catch (error) {
           console.error('Fehler beim Erstellen der Akte:', error);
@@ -5794,29 +4263,29 @@ Grund: ${grund || ''}
         grund,
         date: new Date().toISOString(),
         dateFormatted: new Date().toLocaleDateString('de-DE'),
-        template: document.getElementById('beobachtungPreview').textContent
+        template: document.getElementById('beobachtungPreview').textContent,
+        created: firebase.firestore.FieldValue.serverTimestamp()
       };
 
       try {
         if (!akte.beobachtungen) akte.beobachtungen = [];
         akte.beobachtungen.unshift(beobachtung);
-        akte.lastUpdated = new Date().toISOString();
+        akte.lastUpdated = firebase.firestore.FieldValue.serverTimestamp();
+        akte.syncVersion = Date.now();
         
         await db.collection('hrAkten').doc(akte.id).update({
           beobachtungen: akte.beobachtungen,
-          lastUpdated: akte.lastUpdated
+          lastUpdated: akte.lastUpdated,
+          syncVersion: akte.syncVersion
         });
-        
-        // Audit Log erstellen
-        await createAuditLog('create', 'beobachtung', beobachtung.id, `Beobachtung hinzugefügt zu Akte: ${name} (DN ${dn})`);
         
         showNotification('Beobachtung zur Akte hinzugefügt', 'success');
         document.getElementById('beobachtungName').value = '';
         document.getElementById('beobachtungDN').value = '';
         document.getElementById('beobachtungGrund').value = '';
         updateBeobachtungPreview();
+        updateStats();
         renderAktenListe();
-        switchBeobachtungTab('list');
       } catch (error) {
         console.error('Fehler beim Speichern der Beobachtung:', error);
         showNotification('Fehler beim Speichern: ' + error.message, 'error');
@@ -6005,19 +4474,15 @@ Grund: ${grund || ''}
       if (!akte || !akte.beobachtungen) return;
 
       try {
-        const beobachtung = akte.beobachtungen.find(b => b.id === beobachtungId);
         akte.beobachtungen = akte.beobachtungen.filter(b => b.id !== beobachtungId);
-        akte.lastUpdated = new Date().toISOString();
+        akte.lastUpdated = firebase.firestore.FieldValue.serverTimestamp();
+        akte.syncVersion = Date.now();
         
         await db.collection('hrAkten').doc(akteId).update({
           beobachtungen: akte.beobachtungen,
-          lastUpdated: akte.lastUpdated
+          lastUpdated: akte.lastUpdated,
+          syncVersion: akte.syncVersion
         });
-        
-        // Audit Log erstellen
-        if (beobachtung) {
-          await createAuditLog('delete', 'beobachtung', beobachtungId, `Beobachtung gelöscht aus Akte: ${akte.name}`);
-        }
         
         showNotification('Beobachtung gelöscht', 'success');
         closeModal('akteDetailModal');
@@ -6033,11 +4498,6 @@ Grund: ${grund || ''}
       if (!confirm('Akte wirklich löschen? Alle Beobachtungen werden ebenfalls gelöscht.')) return;
 
       try {
-        const akte = akten.find(a => a.id === akteId);
-        if (akte) {
-          await createAuditLog('delete', 'akte', akteId, `Akte gelöscht: ${akte.name} (DN ${akte.dn})`);
-        }
-        
         await db.collection('hrAkten').doc(akteId).delete();
         showNotification('Akte gelöscht', 'success');
       } catch (error) {
@@ -6058,41 +4518,596 @@ Grund: ${grund || ''}
       updateBeobachtungPreview();
     }
 
-    // ==================== HILFSFUNKTIONEN ====================
-    function seedTemplateBoxes() {
-      document.getElementById('oralTemplateContent').textContent = `╔══════════════════╗
-/////////////////////////////////////////////////////////////////////////
-Mündliche Einweisung
+    // ==================== ENHANCED MITARBEITER FUNKTIONEN ====================
+    function renderEmployeeList() {
+      const container = document.getElementById('employeeList');
+      const countElement = document.getElementById('employeeCount');
 
-Name:
-DN:
-Hauptunit:
-Rang:
-Datum:
-Uhrzeit:
-Beteiligte:
-Sonstiges:
+      let filteredEmployees = getFilteredEmployees();
+
+      filteredEmployees.sort((a, b) => {
+        const nameA = (a.name || '').toUpperCase();
+        const nameB = (b.name || '').toUpperCase();
+        return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
+      });
+
+      if (filteredEmployees.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon"><i class="fas fa-user-plus"></i></div>
+            <div class="empty-title">${getEmptyStateTitle()}</div>
+            <div class="empty-description">${getEmptyStateDescription()}</div>
+          </div>
+        `;
+        countElement.textContent = '0';
+        return;
+      }
+
+      container.innerHTML = '';
+      countElement.textContent = filteredEmployees.length;
+
+      filteredEmployees.forEach(employee => {
+        const card = document.createElement('div');
+        card.className = `employee-card ${currentEmployee?.id === employee.id ? 'active' : ''}`;
+        card.onclick = () => selectEmployee(employee);
+        card.oncontextmenu = (e) => { e.preventDefault(); showEmployeeContextMenu(e, employee); };
+
+        const oralCompleted = employee.inductions?.oral?.completed || false;
+        const orgCompleted = employee.inductions?.org?.completed || false;
+
+        card.innerHTML = `
+          <div class="employee-top-row">
+            <div class="employee-name">${escapeHtml(employee.name || '')}</div>
+            <div class="employee-dn">DN ${escapeHtml(employee.dn || '')}</div>
+          </div>
+          <div class="employee-meta">
+            <i class="fas fa-user-tie"></i> ${escapeHtml(employee.rank || 'Kein Rang')} •
+            <i class="fas fa-building"></i> ${escapeHtml(employee.unit || 'Keine Unit')}
+          </div>
+          <div class="induction-badges">
+            <div class="induction-badge badge-oral ${oralCompleted ? 'completed' : 'pending'}">
+              <i class="fas ${oralCompleted ? 'fa-check-circle' : 'fa-clock'}"></i>
+              Mündlich
+            </div>
+            <div class="induction-badge badge-org ${orgCompleted ? 'completed' : 'pending'}">
+              <i class="fas ${orgCompleted ? 'fa-check-circle' : 'fa-clock'}"></i>
+              Organisatorisch
+            </div>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    function getEmptyStateTitle() {
+      return 'Keine Mitarbeiter';
+    }
+
+    function getFilteredEmployees() {
+      if (currentFilter === 'oral') {
+        return employees.filter(emp => !(emp.inductions?.oral?.completed));
+      } else if (currentFilter === 'org') {
+        return employees.filter(emp => !(emp.inductions?.org?.completed));
+      }
+      return employees;
+    }
+
+    function getEmptyStateDescription() {
+      if (currentFilter === 'oral') return 'Keine Mitarbeiter mit ausstehender mündlicher Einweisung';
+      if (currentFilter === 'org') return 'Keine Mitarbeiter mit ausstehender organisatorischer Einweisung';
+      return 'Fügen Sie Ihren ersten Mitarbeiter hinzu';
+    }
+
+    function filterEmployees(searchTerm) {
+      const cards = document.querySelectorAll('.employee-card');
+      const term = (searchTerm || '').toLowerCase().trim();
+
+      if (!term) {
+        cards.forEach(card => card.style.display = 'flex');
+        return;
+      }
+
+      cards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(term) ? 'flex' : 'none';
+      });
+    }
+
+    function filterEmployeesByType(type) {
+      currentFilter = type;
+
+      document.querySelectorAll('.sidebar-filter-btn').forEach(btn => btn.classList.remove('active'));
+      if (type === 'all') document.querySelectorAll('.sidebar-filter-btn')[0].classList.add('active');
+      if (type === 'oral') document.querySelectorAll('.sidebar-filter-btn')[1].classList.add('active');
+      if (type === 'org') document.querySelectorAll('.sidebar-filter-btn')[2].classList.add('active');
+
+      renderEmployeeList();
+    }
+
+    function selectEmployee(employee) {
+      console.log(`📌 Mitarbeiter ausgewählt: ${employee.name} (${employee.id})`);
+      currentEmployee = employee;
+
+      document.getElementById('employeeHeader').style.display = 'flex';
+      document.getElementById('inductionContent').style.display = 'block';
+
+      updateEmployeeHeader();
+      loadEmployeeData();
+      updateInductionDisplay();
+      renderEmployeeList();
+    }
+
+    function loadEmployeeData() {
+      if (!currentEmployee) return;
+
+      console.log(`📂 Lade Daten für Mitarbeiter: ${currentEmployee.name}`);
+
+      const oralData = currentEmployee.oralData || {};
+      const orgData = currentEmployee.orgData || {};
+
+      document.getElementById('oralDate').value = oralData.date || (new Date().toISOString().split('T')[0]);
+      document.getElementById('oralTimeStart').value = oralData.timeStart || '16:40';
+      document.getElementById('oralTimeEnd').value = oralData.timeEnd || '18:00';
+      document.getElementById('oralPerson').value = oralData.person || '';
+      document.getElementById('oralNotes').value = oralData.notes || '';
+      document.getElementById('unitSelect').value = oralData.unit || currentEmployee.unit || '';
+      document.getElementById('rankSelect').value = oralData.rank || currentEmployee.rank || '';
+
+      document.getElementById('orgDate').value = orgData.date || (new Date().toISOString().split('T')[0]);
+      document.getElementById('orgTimeStart').value = orgData.timeStart || '22:10';
+      document.getElementById('orgTimeEnd').value = orgData.timeEnd || '23:05';
+      document.getElementById('orgPerson').value = orgData.person || '';
+      document.getElementById('orgNotes').value = orgData.notes || '';
+      document.getElementById('unitSelect2').value = orgData.unit || currentEmployee.unit || '';
+      document.getElementById('rankSelect2').value = orgData.rank || currentEmployee.rank || '';
+
+      const oralCompleted = currentEmployee.inductions?.oral?.completed || false;
+      const orgCompleted = currentEmployee.inductions?.org?.completed || false;
+
+      document.getElementById('oralInductionToggle').checked = oralCompleted;
+      document.getElementById('orgInductionToggle').checked = orgCompleted;
+
+      updateInductionUI('oral', oralCompleted);
+      updateInductionUI('org', orgCompleted);
+
+      checkBothInductionsCompleted();
+      updateTemplates();
+    }
+
+    function updateInductionDisplay() {
+      if (!currentEmployee) return;
+
+      const oralCompleted = currentEmployee.inductions?.oral?.completed || false;
+      const orgCompleted = currentEmployee.inductions?.org?.completed || false;
+
+      updateInductionUI('oral', oralCompleted);
+      updateInductionUI('org', orgCompleted);
+
+      renderEmployeeList();
+    }
+
+    function updateEmployeeHeader() {
+      if (!currentEmployee) return;
+
+      document.getElementById('currentEmployeeName').textContent = currentEmployee.name || '';
+      document.getElementById('currentEmployeeDN').textContent = currentEmployee.dn || '';
+      document.getElementById('currentEmployeeUnit').textContent = currentEmployee.unit || 'Keine Unit';
+      document.getElementById('currentEmployeeRank').textContent = currentEmployee.rank || 'Kein Rang';
+    }
+
+    function updateInductionUI(type, completed) {
+      const card = document.getElementById(`${type}InductionCard`);
+      const status = document.getElementById(`${type}InductionStatus`);
+
+      if (completed) {
+        card.classList.add('completed');
+        status.textContent = 'BESTANDEN';
+      } else {
+        card.classList.remove('completed');
+        status.textContent = 'AUSSTEHEND';
+      }
+    }
+
+    function saveFormData() {
+      if (!currentEmployee) return;
+
+      currentEmployee.oralData = {
+        date: document.getElementById('oralDate').value,
+        timeStart: document.getElementById('oralTimeStart').value,
+        timeEnd: document.getElementById('oralTimeEnd').value,
+        person: document.getElementById('oralPerson').value,
+        notes: document.getElementById('oralNotes').value,
+        unit: document.getElementById('unitSelect').value,
+        rank: document.getElementById('rankSelect').value
+      };
+
+      currentEmployee.orgData = {
+        date: document.getElementById('orgDate').value,
+        timeStart: document.getElementById('orgTimeStart').value,
+        timeEnd: document.getElementById('orgTimeEnd').value,
+        person: document.getElementById('orgPerson').value,
+        notes: document.getElementById('orgNotes').value,
+        unit: document.getElementById('unitSelect2').value,
+        rank: document.getElementById('rankSelect2').value
+      };
+
+      const unitSelectValue = document.getElementById('unitSelect').value;
+      const rankSelectValue = document.getElementById('rankSelect').value;
+      if (unitSelectValue) currentEmployee.unit = unitSelectValue;
+      if (rankSelectValue) currentEmployee.rank = rankSelectValue;
+
+      currentEmployee.lastUpdated = new Date().toISOString();
+    }
+
+    async function saveEmployeeData(isAutoSave = false) {
+      if (!currentEmployee) return;
+
+      // Formular-Daten speichern
+      saveFormData();
+      
+      try {
+        // Update mit serverTimestamp für konsistente Updates
+        const updateData = {
+          name: currentEmployee.name,
+          dn: currentEmployee.dn,
+          unit: currentEmployee.unit || '',
+          rank: currentEmployee.rank || '',
+          inductions: currentEmployee.inductions || {},
+          oralData: currentEmployee.oralData || {},
+          orgData: currentEmployee.orgData || {},
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+          syncVersion: Date.now() // Für Konfliktlösung
+        };
+        
+        console.log(`💾 Speichere Mitarbeiter: ${currentEmployee.name}`, updateData);
+        
+        await db.collection('hrEmployees').doc(currentEmployee.id).set(updateData, { merge: true });
+        
+        console.log(`✅ Mitarbeiter ${currentEmployee.id} gespeichert`);
+        
+        if (!isAutoSave) {
+          showNotification('Änderungen gespeichert', 'success');
+        }
+        
+        return true;
+      } catch (error) {
+        console.error('❌ Fehler beim Speichern:', error);
+        showNotification('Fehler beim Speichern: ' + error.message, 'error');
+        return false;
+      }
+    }
+
+    function openEditEmployeeModal() {
+      if (!currentEmployee) {
+        showNotification('Bitte wählen Sie zuerst einen Mitarbeiter aus', 'warning');
+        return;
+      }
+
+      document.getElementById('editEmployeeName').value = currentEmployee.name || '';
+      document.getElementById('editEmployeeDN').value = currentEmployee.dn || '';
+      document.getElementById('editEmployeeUnit').value = currentEmployee.unit || '';
+      document.getElementById('editEmployeeRank').value = currentEmployee.rank || '';
+
+      openModal('editEmployeeModal');
+    }
+
+    async function saveEditedEmployee() {
+      if (!currentEmployee) return;
+
+      const name = document.getElementById('editEmployeeName').value.trim();
+      const dn = document.getElementById('editEmployeeDN').value;
+
+      if (!name || !dn) {
+        showNotification('Name und Dienstnummer sind Pflichtfelder', 'warning');
+        return;
+      }
+
+      currentEmployee.name = name;
+      currentEmployee.dn = dn;
+      currentEmployee.unit = document.getElementById('editEmployeeUnit').value || '';
+      currentEmployee.rank = document.getElementById('editEmployeeRank').value || '';
+
+      const success = await saveEmployeeData(false);
+      if (success) {
+        closeModal('editEmployeeModal');
+        updateEmployeeHeader();
+        renderEmployeeList();
+        updateTemplates();
+        showNotification('Mitarbeiterdaten erfolgreich aktualisiert', 'success');
+      }
+    }
+
+    async function deleteCurrentEmployee() {
+      if (!currentEmployee) {
+        showNotification('Bitte wählen Sie zuerst einen Mitarbeiter aus', 'warning');
+        return;
+      }
+
+      if (!confirm(`Mitarbeiter "${currentEmployee.name}" (DN ${currentEmployee.dn}) wirklich löschen?\n\nDiese Aktion kann nicht rückgängig gemacht werden!`)) {
+        return;
+      }
+
+      try {
+        await db.collection('hrEmployees').doc(currentEmployee.id).delete();
+        showNotification('Mitarbeiter erfolgreich gelöscht', 'success');
+        
+        closeModal('editEmployeeModal');
+        currentEmployee = null;
+        document.getElementById('employeeHeader').style.display = 'none';
+        document.getElementById('inductionContent').style.display = 'none';
+        renderEmployeeList();
+        updateStats();
+        
+      } catch (error) {
+        console.error('Fehler beim Löschen:', error);
+        showNotification('Fehler beim Löschen: ' + error.message, 'error');
+        return false;
+      }
+    }
+
+    function toggleInduction(type, completed) {
+      if (!currentEmployee) return;
+
+      if (!currentEmployee.inductions) currentEmployee.inductions = {};
+
+      currentEmployee.inductions[type] = {
+        completed: completed,
+        date: completed ? new Date().toISOString() : null,
+        updatedBy: 'System'
+      };
+
+      updateInductionUI(type, completed);
+      updateTemplates();
+      saveEmployeeData(true);
+      checkBothInductionsCompleted();
+      renderEmployeeList();
+      updateStats();
+
+      const typeName = type === 'oral' ? 'Mündliche' : 'Organisatorische';
+      const status = completed ? 'bestanden' : 'als ausstehend markiert';
+      showNotification(`${typeName} Einweisung ${status}`, 'success');
+    }
+
+    function checkBothInductionsCompleted() {
+      if (!currentEmployee) return false;
+
+      const oralCompleted = currentEmployee.inductions?.oral?.completed || false;
+      const orgCompleted = currentEmployee.inductions?.org?.completed || false;
+
+      const nowBothCompleted = oralCompleted && orgCompleted;
+
+      if (nowBothCompleted && !bothInductionsCompleted) {
+        bothInductionsCompleted = true;
+      } else if (!nowBothCompleted) {
+        bothInductionsCompleted = false;
+      }
+
+      return nowBothCompleted;
+    }
+
+    function updateTemplates() {
+      if (!currentEmployee) {
+        seedTemplateBoxes();
+        return;
+      }
+
+      saveFormData();
+
+      const oralTemplate = generateTemplate('oral');
+      document.getElementById('oralTemplateContent').textContent = oralTemplate;
+
+      const orgTemplate = generateTemplate('org');
+      document.getElementById('orgTemplateContent').textContent = orgTemplate;
+
+      const oralCompleted = currentEmployee.inductions?.oral?.completed || false;
+      const orgCompleted = currentEmployee.inductions?.org?.completed || false;
+
+      document.getElementById('oralTemplateBadge').textContent = oralCompleted ? 'BESTANDEN' : 'AUSSTEHEND';
+      document.getElementById('orgTemplateBadge').textContent = orgCompleted ? 'BESTANDEN' : 'AUSSTEHEND';
+
+      document.getElementById('oralTemplateCard').classList.toggle('completed', oralCompleted);
+      document.getElementById('orgTemplateCard').classList.toggle('completed', orgCompleted);
+    }
+
+    function generateTemplate(type) {
+      const isOral = type === 'oral';
+      const completed = isOral
+        ? (currentEmployee.inductions?.oral?.completed || false)
+        : (currentEmployee.inductions?.org?.completed || false);
+
+      const data = isOral ? currentEmployee.oralData : currentEmployee.orgData;
+
+      const name = currentEmployee.name || '';
+      const dn = currentEmployee.dn || '';
+
+      const unit = isOral
+        ? (document.getElementById('unitSelect').value || currentEmployee.unit || '')
+        : (document.getElementById('unitSelect2').value || currentEmployee.unit || '');
+
+      const rank = isOral
+        ? (document.getElementById('rankSelect').value || currentEmployee.rank || '')
+        : (document.getElementById('rankSelect2').value || currentEmployee.rank || '');
+
+      const date = data?.date ? new Date(data.date).toLocaleDateString('de-DE') : '';
+      const timeStart = data?.timeStart || '';
+      const timeEnd = data?.timeEnd || '';
+      const person = data?.person || '';
+      const notes = data?.notes || '';
+
+      const timeSeparator = isOral ? 'bis' : '-';
+
+      const unitDiscordId = unitDiscordIds[unit] || '';
+      const rankDiscordId = rankDiscordIds[rank] || '';
+
+      const unitDisplay = unitDiscordId ? `<@&${unitDiscordId}>` : unit;
+      const rankDisplay = rankDiscordId ? `<@&${rankDiscordId}>` : rank;
+
+      return `╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+${isOral ? 'Mündliche Einweisung' : 'Organisatorische Einweisung'}
+
+Name: ${name}
+DN: ${dn}
+Hauptunit: ${unitDisplay}
+Rang: ${rankDisplay}
+Datum: ${date}
+Uhrzeit: ${timeStart} ${timeSeparator} ${timeEnd}
+Beteiligte: ${person}
+Sonstiges: ${notes}
 
 /////////////////////////////////////////////////////////////////////////
-<@&${settings.hrDiscordRoleId}>
+<@&1097625910242447422>
 ╚══════════════════╝`;
+    }
 
-      document.getElementById('orgTemplateContent').textContent = `╔══════════════════╗
-/////////////////////////////////////////////////////////////////////////
-Organisatorische Einweisung
+    function updateStats() {
+      document.getElementById('totalEmployees').textContent = employees.length;
+      document.getElementById('totalAkten').textContent = akten.length;
+    }
 
-Name:
-DN:
-Hauptunit:
-Rang:
-Datum:
-Uhrzeit:
-Beteiligte:
-Sonstiges:
+    function showEmployeeContextMenu(e, employee) {
+      e.preventDefault();
 
-/////////////////////////////////////////////////////////////////////////
-<@&${settings.hrDiscordRoleId}>
-╚══════════════════╝`;
+      const existingMenu = document.getElementById('contextMenu');
+      if (existingMenu) existingMenu.remove();
+
+      const menu = document.createElement('div');
+      menu.id = 'contextMenu';
+      menu.style.cssText = `
+        position: fixed;
+        background: rgba(31, 41, 55, 0.95);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        padding: 8px;
+        z-index: 1000;
+        min-width: 160px;
+        box-shadow: var(--shadow-md);
+      `;
+
+      menu.innerHTML = `
+        <div style="padding: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+          <div style="font-weight: 900; color: white; margin-bottom: 2px; font-size: 13px;">${escapeHtml(employee.name || '')}</div>
+          <div style="font-size: 11px; color: var(--gray);">DN: ${escapeHtml(employee.dn || '')}</div>
+        </div>
+        <div style="padding: 4px 0;">
+          <button onclick="selectEmployee(employees.find(x => x.id === '${employee.id}')); openEditEmployeeModal(); document.getElementById('contextMenu')?.remove();"
+            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--primary-light);font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:2px;">
+            <i class="fas fa-edit"></i> Bearbeiten
+          </button>
+          <button onclick="deleteEmployee('${employee.id}')"
+            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--danger);font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:2px;">
+            <i class="fas fa-trash"></i> Löschen
+          </button>
+          <button onclick="duplicateEmployee('${employee.id}')"
+            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--primary-light);font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:2px;">
+            <i class="fas fa-copy"></i> Duplizieren
+          </button>
+          <button onclick="exportEmployee('${employee.id}')"
+            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--secondary);font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;">
+            <i class="fas fa-download"></i> Exportieren
+          </button>
+        </div>
+      `;
+
+      menu.style.left = `${Math.min(e.pageX, window.innerWidth - 180)}px`;
+      menu.style.top = `${Math.min(e.pageY, window.innerHeight - 240)}px`;
+
+      document.body.appendChild(menu);
+
+      setTimeout(() => {
+        const closeMenu = (event) => {
+          if (!menu.contains(event.target)) {
+            menu.remove();
+            document.removeEventListener('click', closeMenu);
+          }
+        };
+        document.addEventListener('click', closeMenu);
+      }, 100);
+    }
+
+    async function deleteEmployee(employeeId) {
+      if (!confirm('Mitarbeiter wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) return;
+
+      try {
+        await db.collection('hrEmployees').doc(employeeId).delete();
+        showNotification('Mitarbeiter gelöscht', 'success');
+        
+        if (currentEmployee?.id === employeeId) {
+          currentEmployee = null;
+          document.getElementById('employeeHeader').style.display = 'none';
+          document.getElementById('inductionContent').style.display = 'none';
+        }
+
+        document.getElementById('contextMenu')?.remove();
+      } catch (error) {
+        console.error('Fehler beim Löschen:', error);
+        showNotification('Fehler beim Löschen: ' + error.message, 'error');
+      }
+    }
+
+    async function duplicateEmployee(employeeId) {
+      const employee = employees.find(emp => emp.id === employeeId);
+      if (!employee) return;
+
+      const newEmployee = {
+        ...JSON.parse(JSON.stringify(employee)),
+        id: `EMP-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+        name: `${employee.name} (Kopie)`,
+        lastUpdated: new Date().toISOString(),
+        syncVersion: Date.now()
+      };
+
+      delete newEmployee.id; // Neue ID wird von Firebase generiert
+      
+      try {
+        await db.collection('hrEmployees').add(newEmployee);
+        showNotification('Mitarbeiter dupliziert', 'success');
+        document.getElementById('contextMenu')?.remove();
+      } catch (error) {
+        console.error('Fehler beim Duplizieren:', error);
+        showNotification('Fehler beim Duplizieren: ' + error.message, 'error');
+      }
+    }
+
+    function exportEmployee(employeeId) {
+      const employee = employees.find(emp => emp.id === employeeId);
+      if (!employee) return;
+
+      const data = JSON.stringify(employee, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `mitarbeiter-${(employee.name || 'unbekannt').replace(/[^a-z0-9]/gi, '_')}-${(employee.dn || '')}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      showNotification('Mitarbeiter exportiert', 'success');
+      document.getElementById('contextMenu')?.remove();
+    }
+
+    async function copyToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (err) {
+        try {
+          const textArea = document.createElement('textarea');
+          textArea.value = text;
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textArea);
+          return true;
+        } catch {
+          return false;
+        }
+      }
     }
 
     async function copyOralTemplate() {
@@ -6125,18 +5140,118 @@ Sonstiges:
       openModal('newEmployeeModal');
     }
 
+    async function createNewEmployee() {
+      const name = document.getElementById('newEmployeeName').value.trim();
+      const dn = document.getElementById('newEmployeeDN').value;
+      const unit = document.getElementById('newEmployeeUnit').value;
+      const rank = document.getElementById('newEmployeeRank').value;
+
+      if (!name || !dn) {
+        showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
+        return;
+      }
+
+      // Prüfe ob DN bereits existiert
+      const existingEmployee = employees.find(emp => emp.dn == dn);
+      if (existingEmployee) {
+        showNotification(`Die Dienstnummer ${dn} wird bereits von ${existingEmployee.name} verwendet`, 'warning');
+        return;
+      }
+
+      const employeeData = {
+        name,
+        dn,
+        unit: unit || '',
+        rank: rank || '',
+        lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+        inductions: { oral: { completed: false }, org: { completed: false } },
+        oralData: { date: '', timeStart: '16:40', timeEnd: '18:00', person: '', notes: '', unit: unit || '', rank: rank || '' },
+        orgData: { date: '', timeStart: '22:10', timeEnd: '23:05', person: '', notes: '', unit: unit || '', rank: rank || '' },
+        syncVersion: Date.now()
+      };
+
+      try {
+        const docRef = await db.collection('hrEmployees').add(employeeData);
+        
+        const newEmployee = {
+          id: docRef.id,
+          ...employeeData
+        };
+        
+        closeModal('newEmployeeModal');
+        selectEmployee(newEmployee);
+        updateStats();
+
+        document.getElementById('newEmployeeName').value = '';
+        document.getElementById('newEmployeeDN').value = '';
+        document.getElementById('newEmployeeUnit').value = '';
+        document.getElementById('newEmployeeRank').value = '';
+
+        showNotification(`Mitarbeiter "${name}" erstellt`, 'success');
+        
+      } catch (error) {
+        console.error('Fehler beim Erstellen des Mitarbeiters:', error);
+        showNotification('Fehler beim Erstellen: ' + error.message, 'error');
+      }
+    }
+
     function showNotification(message, type = 'info') {
       const notification = document.getElementById('notification');
       const messageElement = document.getElementById('notificationMessage');
       messageElement.textContent = message;
 
-      if (type === 'success') notification.style.background = 'var(--secondary)';
-      else if (type === 'error') notification.style.background = 'var(--danger)';
-      else if (type === 'warning') notification.style.background = 'var(--warning)';
-      else notification.style.background = 'var(--primary)';
+      if (type === 'success') {
+        notification.style.background = 'var(--secondary)';
+        notification.querySelector('.notification-icon').className = 'fas fa-check notification-icon';
+      } else if (type === 'error') {
+        notification.style.background = 'var(--danger)';
+        notification.querySelector('.notification-icon').className = 'fas fa-exclamation-triangle notification-icon';
+      } else if (type === 'warning') {
+        notification.style.background = 'var(--warning)';
+        notification.querySelector('.notification-icon').className = 'fas fa-exclamation-circle notification-icon';
+      } else {
+        notification.style.background = 'var(--primary)';
+        notification.querySelector('.notification-icon').className = 'fas fa-info-circle notification-icon';
+      }
 
       notification.classList.add('show');
       setTimeout(() => notification.classList.remove('show'), 3000);
+    }
+
+    function seedTemplateBoxes() {
+      document.getElementById('oralTemplateContent').textContent = `╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+Mündliche Einweisung
+
+Name:
+DN:
+Hauptunit:
+Rang:
+Datum:
+Uhrzeit:
+Beteiligte:
+Sonstiges:
+
+/////////////////////////////////////////////////////////////////////////
+<@&1097625910242447422>
+╚══════════════════╝`;
+
+      document.getElementById('orgTemplateContent').textContent = `╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+Organisatorische Einweisung
+
+Name:
+DN:
+Hauptunit:
+Rang:
+Datum:
+Uhrzeit:
+Beteiligte:
+Sonstiges:
+
+/////////////////////////////////////////////////////////////////////////
+<@&1097625910242447422>
+╚══════════════════╝`;
     }
 
     function escapeHtml(str) {
@@ -6147,34 +5262,6 @@ Sonstiges:
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
     }
-
-    async function copyToClipboard(text) {
-      try {
-        await navigator.clipboard.writeText(text);
-        return true;
-      } catch (err) {
-        try {
-          const textArea = document.createElement('textarea');
-          textArea.value = text;
-          document.body.appendChild(textArea);
-          textArea.select();
-          document.execCommand('copy');
-          document.body.removeChild(textArea);
-          return true;
-        } catch {
-          return false;
-        }
-      }
-    }
-
-    // Employee Context Menu Funktionen (vereinfacht)
-    function showEmployeeContextMenu(e, employee) {
-      e.preventDefault();
-      // Vereinfachte Version - könnte erweitert werden
-      selectEmployee(employee);
-      openEditEmployeeModal();
-    }
-
   </script>
 </body>
 </html>
