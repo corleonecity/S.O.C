@@ -11,16 +11,16 @@
   
   <title>📋 HR - Einweisungsmanagement v1.0</title>
 
-  <!-- Font Awesome mit Cache-Busting -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?v=20240128">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js?v=20240128"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js?v=20240128"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js?v=20240128"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 
   <style>
     :root{
@@ -84,31 +84,47 @@
       border:1px solid rgba(255,255,255,.08);
       box-shadow:var(--shadow-md);
     }
-    .header-content{display:flex;justify-content:space-between;align-items:center}
-    .brand{display:flex;align-items:center;gap:12px}
-    /* Logo */
-    .logo {
-      width: 40px;
-      height: 40px;
-      background: var(--primary);
-      border-radius: var(--radius-md);
+    .header-content{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    /* Logo Container entfernt - Logo komplett entfernt */
+    .brand-text {
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      color: #fff;
-      transition: var(--transition);
+      gap: 8px;
+    }
+    .brand-text h1{
+      font-size:18px;
+      font-weight:800;
+      color:#fff;
+      margin-bottom:2px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .header-icons {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-left: 10px;
+    }
+    .header-icon {
+      font-size: 20px;
       cursor: pointer;
-      overflow: hidden;
-      position: relative;
-      flex-shrink: 0;
+      transition: var(--transition);
+      opacity: 0.8;
     }
-    .logo:hover {
-      transform: scale(1.05);
-      background: var(--primary-dark);
+    .header-icon:hover {
+      opacity: 1;
+      transform: scale(1.1);
     }
-
-    .brand-text h1{font-size:18px;font-weight:800;color:#fff;margin-bottom:2px}
     .brand-text .subtitle{font-size:11px;color:var(--gray);font-weight:600}
     .header-stats{display:flex;gap:12px}
     .stat-card{
@@ -124,7 +140,450 @@
     .stat-value{font-size:20px;font-weight:800;color:#fff;margin-bottom:2px}
     .stat-label{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;font-weight:700}
 
-    /* Sidebar */
+    /* Password Modal für Settings */
+    .settings-password-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.85);
+      backdrop-filter: blur(4px);
+      z-index: 3000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: fadeIn .2s ease;
+    }
+
+    .settings-password-modal.active {
+      display: flex;
+    }
+
+    .settings-password-content {
+      background: rgba(31,41,55,.95);
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid rgba(255,255,255,.15);
+      box-shadow: var(--shadow-lg);
+      animation: slideUp .2s ease;
+    }
+
+    .settings-password-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    .settings-password-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .settings-password-close {
+      background: none;
+      border: none;
+      color: var(--gray);
+      font-size: 20px;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .settings-password-close:hover {
+      color: #fff;
+      background: rgba(255,255,255,.1);
+    }
+
+    .settings-password-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .settings-password-input {
+      padding: 12px 16px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--radius-md);
+      color: #fff;
+      font-size: 14px;
+      transition: var(--transition);
+      width: 100%;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .settings-password-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: rgba(255,255,255,.08);
+      box-shadow: 0 0 0 3px rgba(79,70,229,.15);
+    }
+
+    .settings-password-error {
+      color: var(--danger);
+      font-size: 12px;
+      display: none;
+      margin-top: -8px;
+    }
+
+    .settings-password-error.show {
+      display: block;
+    }
+
+    /* Ankündigung Banner */
+    .ankundigung-banner {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(31,41,55,.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(139,92,246,.3);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      z-index: 2000;
+      max-width: 600px;
+      width: 90%;
+      box-shadow: var(--shadow-lg);
+      display: none;
+      animation: slideDown .3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    .ankundigung-banner.show {
+      display: block;
+    }
+
+    .banner-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .banner-title {
+      font-weight: 900;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .banner-close {
+      background: none;
+      border: none;
+      color: var(--gray);
+      cursor: pointer;
+      transition: var(--transition);
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .banner-close:hover {
+      color: #fff;
+      background: rgba(255,255,255,.1);
+    }
+
+    .banner-content {
+      color: var(--gray-light);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .banner-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--gray);
+    }
+
+    .banner-type {
+      background: rgba(139,92,246,.15);
+      color: #a78bfa;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-weight: 900;
+      font-size: 10px;
+    }
+
+    /* Besprechungen Modal - NUR BESPRECHUNGEN */
+    .besprechungen-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.85);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: fadeIn .2s ease;
+    }
+
+    .besprechungen-modal.active {
+      display: flex;
+    }
+
+    .besprechungen-content {
+      background: rgba(31,41,55,.95);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      width: 100%;
+      max-width: 1000px;
+      max-height: 90vh;
+      border: 1px solid rgba(255,255,255,.15);
+      box-shadow: var(--shadow-lg);
+      animation: slideUp .2s ease;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .besprechungen-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      flex-shrink: 0;
+    }
+
+    .besprechungen-title {
+      font-size: 18px;
+      font-weight: 900;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .besprechungen-close {
+      background: none;
+      border: none;
+      color: var(--gray);
+      font-size: 20px;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .besprechungen-close:hover {
+      color: #fff;
+      background: rgba(255,255,255,.1);
+    }
+
+    .besprechungen-body {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .besprechungen-search-container {
+      position: relative;
+      margin-bottom: 20px;
+      flex-shrink: 0;
+    }
+
+    .besprechungen-search-input {
+      width: 100%;
+      padding: 12px 16px 12px 44px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--radius-md);
+      color: #fff;
+      font-size: 14px;
+      transition: var(--transition);
+    }
+
+    .besprechungen-search-input::placeholder {
+      color: rgba(255,255,255,.5);
+    }
+
+    .besprechungen-search-input:focus {
+      outline: none;
+      border-color: #8b5cf6;
+      background: rgba(255,255,255,.08);
+      box-shadow: 0 0 0 3px rgba(139,92,246,.15);
+    }
+
+    .besprechungen-search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+      font-size: 16px;
+    }
+
+    .besprechungen-list-container {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .besprechungen-list {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .besprechungen-list::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .besprechungen-list::-webkit-scrollbar-track {
+      background: rgba(255,255,255,.05);
+      border-radius: 4px;
+    }
+
+    .besprechungen-list::-webkit-scrollbar-thumb {
+      background: #8b5cf6;
+      border-radius: 4px;
+    }
+
+    .besprechungen-item {
+      background: rgba(255,255,255,.03);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      border: 1px solid rgba(255,255,255,.08);
+      transition: var(--transition);
+    }
+
+    .besprechungen-item:hover {
+      background: rgba(255,255,255,.05);
+      border-color: #8b5cf6;
+    }
+
+    .besprechungen-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .besprechungen-item-title {
+      font-weight: 900;
+      color: #fff;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .besprechungen-item-type {
+      background: rgba(139,92,246,.10);
+      color: #a78bfa;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 900;
+      border: 1px solid rgba(139,92,246,.20);
+    }
+
+    .besprechungen-item-date {
+      color: var(--gray);
+      font-size: 11px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .besprechungen-item-content {
+      color: var(--gray-light);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 12px;
+      padding: 12px;
+      background: rgba(0,0,0,.2);
+      border-radius: var(--radius-sm);
+      border-left: 2px solid #8b5cf6;
+      max-height: 100px;
+      overflow-y: auto;
+    }
+
+    .besprechungen-item-content::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .besprechungen-item-content::-webkit-scrollbar-track {
+      background: rgba(255,255,255,.03);
+      border-radius: 2px;
+    }
+
+    .besprechungen-item-content::-webkit-scrollbar-thumb {
+      background: rgba(139,92,246,.30);
+      border-radius: 2px;
+    }
+
+    .empty-besprechungen {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--gray);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .empty-besprechungen-icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+      opacity: .3;
+    }
+
+    .empty-besprechungen-title {
+      font-size: 14px;
+      font-weight: 900;
+      margin-bottom: 6px;
+      color: var(--gray-light);
+    }
+
+    /* Rest des vorhandenen CSS bleibt erhalten */
     .sidebar{
       background:rgba(31,41,55,.8);
       backdrop-filter:blur(12px);
@@ -211,7 +670,7 @@
     .employee-list::-webkit-scrollbar-track{background:rgba(255,255,255,.05);border-radius:3px}
     .employee-list::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px}
 
-    /* Employee Cards (kompakter + Badges höher) */
+    /* Employee Cards */
     .employee-card{
       background:rgba(255,255,255,.03);
       border-radius:var(--radius-md);
@@ -224,7 +683,6 @@
       display:flex;
       flex-direction:column;
       gap:8px;
-
       min-height:110px;
       justify-content:flex-start;
     }
@@ -246,6 +704,15 @@
       opacity:0;transition:var(--transition);
     }
     .employee-card.active::before{opacity:1}
+    .employee-card.archived{
+      opacity:0.7;
+      border-color:var(--warning);
+    }
+    .employee-card.archived .employee-name:after{
+      content:' [ARCHIV]';
+      color:var(--warning);
+      font-size:10px;
+    }
 
     .employee-top-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px}
     .employee-name{font-weight:800;font-size:15px;color:#fff;line-height:1.3;word-break:break-word}
@@ -435,8 +902,8 @@
     }
     .form-input::placeholder,.form-textarea::placeholder{color:rgba(255,255,255,.4)}
     .form-select{
-      color:#fff !important;
-      background-color:rgba(255,255,255,.05) !important;
+      color:#fff;
+      background-color:rgba(255,255,255,.05);
       appearance:none;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
       background-repeat:no-repeat;
@@ -498,10 +965,9 @@
     }
     .template-actions{display:flex;gap:8px;flex-wrap:wrap}
 
-    /* WICHTIG: Vorlagen untereinander (immer) */
     .template-cards{
       display:grid;
-      grid-template-columns:1fr; /* <- war 1fr 1fr */
+      grid-template-columns:1fr;
       gap:16px;
     }
 
@@ -582,16 +1048,8 @@
       background: var(--warning-dark);
     }
 
-    .floating-button.ankundigung {
-      background: #8b5cf6;
-    }
-
-    .floating-button.ankundigung:hover {
-      background: #7c3aed;
-    }
-
-    /* Ankündigungen/Besprechungen/Aufstellungen Modal */
-    .ankundigung-modal {
+    /* Settings Modal */
+    .settings-modal {
       display: none;
       position: fixed;
       inset: 0;
@@ -604,11 +1062,11 @@
       animation: fadeIn .2s ease;
     }
 
-    .ankundigung-modal.active {
+    .settings-modal.active {
       display: flex;
     }
 
-    .ankundigung-content {
+    .settings-content {
       background: rgba(31,41,55,.95);
       border-radius: var(--radius-lg);
       padding: 24px;
@@ -623,7 +1081,7 @@
       overflow: hidden;
     }
 
-    .ankundigung-header {
+    .settings-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -633,7 +1091,7 @@
       flex-shrink: 0;
     }
 
-    .ankundigung-title {
+    .settings-title {
       font-size: 18px;
       font-weight: 900;
       color: #fff;
@@ -642,12 +1100,12 @@
       gap: 10px;
     }
 
-    .ankundigung-title i {
-      color: #8b5cf6;
+    .settings-title i {
+      color: var(--primary);
       font-size: 20px;
     }
 
-    .ankundigung-close {
+    .settings-close {
       background: none;
       border: none;
       color: var(--gray);
@@ -662,12 +1120,12 @@
       border-radius: 50%;
     }
 
-    .ankundigung-close:hover {
+    .settings-close:hover {
       color: #fff;
       background: rgba(255,255,255,.1);
     }
 
-    .ankundigung-body {
+    .settings-body {
       flex: 1;
       overflow: hidden;
       display: flex;
@@ -675,7 +1133,7 @@
       min-height: 0;
     }
 
-    .ankundigung-tabs {
+    .settings-tabs {
       display: flex;
       gap: 2px;
       margin-bottom: 16px;
@@ -683,7 +1141,7 @@
       flex-shrink: 0;
     }
 
-    .ankundigung-tab {
+    .settings-tab {
       padding: 12px 20px;
       background: none;
       border: none;
@@ -698,38 +1156,49 @@
       gap: 8px;
     }
 
-    .ankundigung-tab:hover {
-      color: #8b5cf6;
+    .settings-tab:hover {
+      color: var(--primary-light);
     }
 
-    .ankundigung-tab.active {
-      color: #8b5cf6;
+    .settings-tab.active {
+      color: var(--primary);
     }
 
-    .ankundigung-tab.active::after {
+    .settings-tab.active::after {
       content: '';
       position: absolute;
       bottom: -1px;
       left: 0;
       right: 0;
       height: 2px;
-      background: #8b5cf6;
+      background: var(--primary);
     }
 
-    .ankundigung-form-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-      margin-bottom: 20px;
+    .settings-section {
+      background: rgba(0,0,0,.2);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 16px;
     }
 
-    .ankundigung-form-group {
+    .section-title-settings {
+      font-size: 16px;
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: 16px;
       display: flex;
-      flex-direction: column;
+      align-items: center;
       gap: 8px;
     }
 
-    .ankundigung-label {
+    .settings-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .settings-label {
       font-weight: 900;
       color: var(--gray-light);
       font-size: 12px;
@@ -737,7 +1206,7 @@
       letter-spacing: .5px;
     }
 
-    .ankundigung-input {
+    .settings-input {
       padding: 12px 16px;
       background: rgba(255,255,255,.05);
       border: 1px solid rgba(255,255,255,.1);
@@ -749,79 +1218,144 @@
       font-family: 'Inter', sans-serif;
     }
 
-    .ankundigung-input:focus {
+    .settings-input:focus {
       outline: none;
-      border-color: #8b5cf6;
+      border-color: var(--primary);
       background: rgba(255,255,255,.08);
-      box-shadow: 0 0 0 3px rgba(139,92,246,.15);
+      box-shadow: 0 0 0 3px rgba(79,70,229,.15);
     }
 
-    .ankundigung-textarea {
-      min-height: 120px;
-      resize: vertical;
-      line-height: 1.5;
+    .unit-list, .rank-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 5px;
     }
 
-    .ankundigung-preview {
-      background: rgba(0,0,0,.3);
+    .unit-item, .rank-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: rgba(255,255,255,.03);
       border-radius: var(--radius-md);
-      padding: 20px;
-      border-left: 3px solid #8b5cf6;
-      margin-top: 10px;
-      margin-bottom: 20px;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .unit-name, .rank-name {
+      flex: 1;
+      font-weight: 900;
+      color: #fff;
+      font-size: 13px;
+    }
+
+    .discord-id {
+      background: rgba(79,70,229,.10);
+      color: var(--primary-light);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-family: 'Consolas', monospace;
+      border: 1px solid rgba(79,70,229,.20);
+      min-width: 200px;
+      color: #fff;
+    }
+
+    .discord-id::placeholder {
+      color: rgba(255,255,255,.4);
+    }
+
+    .add-btn {
+      padding: 10px 20px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      font-weight: 900;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      margin-top: 12px;
+    }
+
+    .add-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .settings-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,.1);
       flex-shrink: 0;
     }
 
-    .ankundigung-preview-title {
+    /* Ankündigungen & Besprechungen in Settings */
+    .ankundigungen-section {
+      background: rgba(0,0,0,.2);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .ankundigungen-tabs {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    .ankundigungen-tab {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      color: var(--gray);
       font-weight: 900;
-      color: var(--gray-light);
-      margin-bottom: 12px;
+      cursor: pointer;
+      transition: var(--transition);
       font-size: 13px;
+      position: relative;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
 
-    .ankundigung-preview-content {
-      font-family: 'Consolas', 'Monaco', monospace;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      font-size: 12px;
-      line-height: 1.4;
-      color: #fff;
-      background: rgba(0,0,0,.2);
-      padding: 16px;
-      border-radius: var(--radius-sm);
-      max-height: 200px;
-      overflow-y: auto;
-      min-height: 100px;
+    .ankundigungen-tab:hover {
+      color: #8b5cf6;
     }
 
-    .ankundigung-preview-content::-webkit-scrollbar {
-      width: 6px;
+    .ankundigungen-tab.active {
+      color: #8b5cf6;
     }
 
-    .ankundigung-preview-content::-webkit-scrollbar-track {
-      background: rgba(255,255,255,.05);
-      border-radius: 3px;
-    }
-
-    .ankundigung-preview-content::-webkit-scrollbar-thumb {
+    .ankundigungen-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
       background: #8b5cf6;
-      border-radius: 3px;
     }
 
-    /* Container für den "Neue Ankündigung" Tab-Inhalt */
-    .ankundigung-tab-content {
-      flex: 1;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
+    .ankundigungen-form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
     }
 
-    /* WICHTIG: Scrollbar für Ankündigungen-Liste */
-    .ankundigung-liste-container {
+    .ankundigungen-list-container {
       flex: 1;
       overflow: hidden;
       display: flex;
@@ -829,7 +1363,7 @@
       min-height: 0;
     }
 
-    .ankundigung-liste {
+    .ankundigungen-list {
       flex: 1;
       overflow-y: auto;
       padding-right: 8px;
@@ -839,172 +1373,21 @@
       min-height: 0;
     }
 
-    .ankundigung-liste::-webkit-scrollbar {
+    .ankundigungen-list::-webkit-scrollbar {
       width: 8px;
     }
 
-    .ankundigung-liste::-webkit-scrollbar-track {
+    .ankundigungen-list::-webkit-scrollbar-track {
       background: rgba(255,255,255,.05);
       border-radius: 4px;
     }
 
-    .ankundigung-liste::-webkit-scrollbar-thumb {
+    .ankundigungen-list::-webkit-scrollbar-thumb {
       background: #8b5cf6;
       border-radius: 4px;
     }
 
-    .ankundigung-liste::-webkit-scrollbar-thumb:hover {
-      background: #7c3aed;
-    }
-
-    .ankundigung-item {
-      background: rgba(255,255,255,.03);
-      border-radius: var(--radius-md);
-      padding: 16px;
-      border: 1px solid rgba(255,255,255,.08);
-      transition: var(--transition);
-      flex-shrink: 0;
-    }
-
-    .ankundigung-item:hover {
-      background: rgba(255,255,255,.05);
-      border-color: #8b5cf6;
-    }
-
-    .ankundigung-item-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 12px;
-    }
-
-    .ankundigung-item-title {
-      font-weight: 900;
-      color: #fff;
-      font-size: 15px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .ankundigung-item-type {
-      font-family: 'Inter', monospace;
-      background: rgba(139,92,246,.10);
-      color: #a78bfa;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 900;
-      border: 1px solid rgba(139,92,246,.20);
-    }
-
-    .ankundigung-item-date {
-      color: var(--gray);
-      font-size: 11px;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .ankundigung-item-content {
-      color: var(--gray-light);
-      font-size: 13px;
-      line-height: 1.5;
-      margin-bottom: 12px;
-      padding: 12px;
-      background: rgba(0,0,0,.2);
-      border-radius: var(--radius-sm);
-      border-left: 2px solid #8b5cf6;
-      max-height: 100px;
-      overflow-y: auto;
-    }
-
-    .ankundigung-item-content::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .ankundigung-item-content::-webkit-scrollbar-track {
-      background: rgba(255,255,255,.03);
-      border-radius: 2px;
-    }
-
-    .ankundigung-item-content::-webkit-scrollbar-thumb {
-      background: rgba(139,92,246,.30);
-      border-radius: 2px;
-    }
-
-    .ankundigung-item-template {
-      font-family: 'Consolas', 'Monaco', monospace;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      font-size: 11px;
-      line-height: 1.4;
-      color: var(--gray-light);
-      background: rgba(0,0,0,.3);
-      padding: 12px;
-      border-radius: var(--radius-sm);
-      border: 1px solid rgba(255,255,255,.08);
-      max-height: 150px;
-      overflow-y: auto;
-      margin-bottom: 12px;
-    }
-
-    .ankundigung-item-template::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .ankundigung-item-template::-webkit-scrollbar-track {
-      background: rgba(255,255,255,.03);
-      border-radius: 2px;
-    }
-
-    .ankundigung-item-template::-webkit-scrollbar-thumb {
-      background: rgba(139,92,246,.30);
-      border-radius: 2px;
-    }
-
-    .ankundigung-item-actions {
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-    }
-
-    .ankundigung-item-btn {
-      padding: 6px 12px;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-weight: 900;
-      cursor: pointer;
-      transition: var(--transition);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-size: 11px;
-    }
-
-    .ankundigung-item-btn-copy {
-      background: rgba(139,92,246,.15);
-      color: #a78bfa;
-      border: 1px solid rgba(139,92,246,.25);
-    }
-
-    .ankundigung-item-btn-copy:hover {
-      background: rgba(139,92,246,.25);
-    }
-
-    .ankundigung-item-btn-delete {
-      background: rgba(239,68,68,.15);
-      color: #fca5a5;
-      border: 1px solid rgba(239,68,68,.25);
-    }
-
-    .ankundigung-item-btn-delete:hover {
-      background: rgba(239,68,68,.25);
-    }
-
-    .empty-ankundigung {
+    .empty-ankundigungen {
       text-align: center;
       padding: 40px 20px;
       color: var(--gray);
@@ -1015,32 +1398,62 @@
       justify-content: center;
     }
 
-    .empty-ankundigung-icon {
+    .empty-ankundigungen-icon {
       font-size: 36px;
       margin-bottom: 12px;
       opacity: .3;
     }
 
-    .empty-ankundigung-title {
+    .empty-ankundigungen-title {
       font-size: 14px;
       font-weight: 900;
       margin-bottom: 6px;
       color: var(--gray-light);
     }
 
-    .ankundigung-actions {
+    /* Logo Upload */
+    .logo-upload-container {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-top: 10px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(255,255,255,.1);
-      flex-shrink: 0;
+      flex-direction: column;
+      gap: 16px;
     }
 
-    .ankundigung-btn {
+    .logo-preview {
+      width: 120px; /* Vergrößert von 100px auf 120px */
+      height: 120px; /* Vergrößert von 100px auf 120px */
+      border-radius: var(--radius-md);
+      background: rgba(255,255,255,.05);
+      border: 2px dashed rgba(255,255,255,.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+
+    .logo-preview-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .logo-preview.has-image {
+      border-style: solid;
+    }
+
+    .logo-preview.has-image .logo-preview-image {
+      display: block;
+    }
+
+    .logo-preview.has-image .logo-preview-default {
+      display: none;
+    }
+
+    .logo-upload-btn {
       padding: 10px 20px;
+      background: var(--primary);
+      color: #fff;
       border: none;
       border-radius: var(--radius-md);
       font-weight: 900;
@@ -1051,63 +1464,33 @@
       justify-content: center;
       gap: 8px;
       font-size: 13px;
-    }
-
-    .ankundigung-btn-copy {
-      background: #8b5cf6;
-      color: #fff;
-    }
-
-    .ankundigung-btn-copy:hover {
-      background: #7c3aed;
-      transform: translateY(-1px);
-    }
-
-    .ankundigung-btn-save {
-      background: var(--secondary);
-      color: #fff;
-    }
-
-    .ankundigung-btn-save:hover {
-      background: var(--secondary-dark);
-      transform: translateY(-1px);
-    }
-
-    .ankundigung-search-container {
-      position: relative;
-      margin-bottom: 20px;
-      flex-shrink: 0;
-    }
-
-    .ankundigung-search-input {
       width: 100%;
-      padding: 12px 16px 12px 44px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.1);
+    }
+
+    .logo-upload-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .logo-remove-btn {
+      padding: 8px 16px;
+      background: rgba(239,68,68,.15);
+      color: #fca5a5;
+      border: 1px solid rgba(239,68,68,.25);
       border-radius: var(--radius-md);
-      color: #fff;
-      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
       transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 12px;
+      width: 100%;
     }
 
-    .ankundigung-search-input::placeholder {
-      color: rgba(255,255,255,.5);
-    }
-
-    .ankundigung-search-input:focus {
-      outline: none;
-      border-color: #8b5cf6;
-      background: rgba(255,255,255,.08);
-      box-shadow: 0 0 0 3px rgba(139,92,246,.15);
-    }
-
-    .ankundigung-search-icon {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--gray);
-      font-size: 16px;
+    .logo-remove-btn:hover {
+      background: rgba(239,68,68,.25);
     }
 
     /* Soldatengespräch Modal */
@@ -1240,12 +1623,6 @@
       margin-bottom: 20px;
     }
 
-    .soldaten-form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
     .soldaten-label {
       font-weight: 900;
       color: var(--gray-light);
@@ -1299,7 +1676,6 @@
       gap: 6px;
     }
 
-    /* WICHTIG: Scrollbar für die Vorschau im "Neues Gespräch" Tab */
     .soldaten-preview-content {
       font-family: 'Consolas', 'Monaco', monospace;
       white-space: pre-wrap;
@@ -1329,7 +1705,6 @@
       border-radius: 3px;
     }
 
-    /* Container für den "Neues Gespräch" Tab-Inhalt */
     .soldaten-tab-content {
       flex: 1;
       overflow-y: auto;
@@ -1338,12 +1713,11 @@
       min-height: 0;
     }
 
-    /* WICHTIG: Scrollbar für Soldatengespräch-Liste */
     .soldaten-liste-container {
       flex: 1;
       overflow: hidden;
       display: flex;
-      flex-direction:column;
+      flex-direction: column;
       min-height: 0;
     }
 
@@ -1422,7 +1796,6 @@
       gap: 4px;
     }
 
-    /* GEÄNDERT: Sonstiges mit gleichem Styling wie Notizen */
     .soldaten-item-notizen {
       color: var(--gray-light);
       font-size: 13px;
@@ -1450,7 +1823,6 @@
       border-radius: 2px;
     }
 
-    /* Soldatengespräch Sonstiges Styling (jetzt wie Notizen) */
     .soldaten-item-sonstiges {
       color: var(--gray-light);
       font-size: 13px;
@@ -1654,7 +2026,7 @@
       font-size: 16px;
     }
 
-    /* Beobachtungs Akten Modal (behalten für Akten) */
+    /* Beobachtungs Akten Modal */
     .beobachtung-akten-modal{
       display:none;
       position:fixed;
@@ -1779,12 +2151,6 @@
       grid-template-columns:1fr 1fr;
       gap:12px;
       margin-bottom:20px;
-    }
-    
-    .akte-form-group{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
     }
     
     .akte-label{
@@ -2187,42 +2553,41 @@
       .app-container{grid-template-columns:1fr;padding:16px;gap:16px}
       .sidebar{position:static;max-height:500px;height:auto}
       .induction-grid{grid-template-columns:1fr}
-      /* template-cards bleibt 1fr */
     }
     @media (max-width:768px){
       .app-header{padding:14px 16px}
       .header-content{flex-direction:column;gap:12px;align-items:stretch}
       .header-stats{justify-content:center}
       .brand{gap:10px}
-      .logo{width:36px;height:36px;font-size:16px}
       .brand-text h1{font-size:16px}
       .brand-text .subtitle{font-size:10px}
       .content-header{flex-direction:column;align-items:stretch;padding:14px}
       .employee-tags{flex-direction:column;gap:6px}
       .induction-content{padding:16px}
       .oral-form-grid,.org-form-grid{grid-template-columns:1fr}
+      .settings-modal,
       .soldaten-modal,
       .beobachtung-akten-modal,
-      .ankundigung-modal{padding:12px}
+      .besprechungen-modal{padding:12px}
+      .settings-content,
       .soldaten-content,
       .beobachtung-akten-content,
-      .ankundigung-content{padding:20px}
+      .besprechungen-content{padding:20px}
+      .settings-actions,
       .soldaten-actions,
-      .beobachtung-actions,
-      .ankundigung-actions{flex-direction:column;align-items:stretch}
+      .beobachtung-actions{flex-direction:column;align-items:stretch}
       .floating-buttons-container{
         bottom: 16px;
         right: 16px;
       }
+      .settings-tabs,
       .soldaten-tabs,
-      .beobachtung-tabs,
-      .ankundigung-tabs{flex-direction:column}
+      .beobachtung-tabs{flex-direction:column}
+      .settings-tab,
       .soldaten-tab,
-      .beobachtung-tab,
-      .ankundigung-tab{text-align:left;padding:10px 16px}
+      .beobachtung-tab{text-align:left;padding:10px 16px}
       .soldaten-form-grid,
-      .akte-form-grid,
-      .ankundigung-form-grid{grid-template-columns:1fr}
+      .akte-form-grid{grid-template-columns:1fr}
     }
     @media (max-width:480px){
       .app-container{padding:12px}
@@ -2232,12 +2597,12 @@
       .sidebar{padding:14px}
       .modal{padding:16px;margin:12px}
       .notification{left:12px;right:12px;bottom:12px;min-width:auto}
+      .settings-content,
       .soldaten-content,
       .beobachtung-akten-content,
-      .ankundigung-content{padding:16px}
+      .besprechungen-content{padding:16px}
       .soldaten-item-actions,
-      .beobachtung-akte-actions,
-      .ankundigung-item-actions{flex-direction:column}
+      .beobachtung-akte-actions{flex-direction:column}
     }
   </style>
 </head>
@@ -2245,214 +2610,253 @@
 <body>
   <div class="bg-effects"><div class="bg-gradient"></div></div>
 
+  <!-- Settings Password Modal -->
+  <div class="settings-password-modal" id="settingsPasswordModal">
+    <div class="settings-password-content">
+      <div class="settings-password-header">
+        <div class="settings-password-title">
+          <i class="fas fa-lock"></i> Passwort für Settings erforderlich
+        </div>
+        <button class="settings-password-close" onclick="closeSettingsPasswordModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="settings-password-form">
+        <input type="password" class="settings-password-input" id="settingsPasswordInput" placeholder="Passwort eingeben" onkeypress="if(event.key === 'Enter') checkSettingsPassword()">
+        <div class="settings-password-error" id="settingsPasswordError">Falsches Passwort</div>
+        <button class="btn btn-primary" onclick="checkSettingsPassword()">
+          <i class="fas fa-unlock"></i> Bestätigen
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ankündigung Banner -->
+  <div class="ankundigung-banner" id="ankundigungBanner">
+    <div class="banner-header">
+      <div class="banner-title" id="bannerTitle">
+        <span>🪧</span> Ankündigung
+      </div>
+      <button class="banner-close" onclick="closeBanner()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="banner-content" id="bannerContent">
+      Lade Ankündigung...
+    </div>
+    <div class="banner-meta">
+      <div class="banner-type" id="bannerType">Ankündigung</div>
+      <div id="bannerDate">Heute</div>
+    </div>
+  </div>
+
+  <!-- Besprechungen Modal - NUR BESPRECHUNGEN -->
+  <div class="besprechungen-modal" id="besprechungenModal" onclick="if(event.target===this)closeModal('besprechungenModal')">
+    <div class="besprechungen-content">
+      <div class="besprechungen-header">
+        <div class="besprechungen-title">
+          <i class="fas fa-calendar-alt"></i> Besprechungen
+        </div>
+        <button class="besprechungen-close" onclick="closeModal('besprechungenModal')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="besprechungen-body">
+        <div class="besprechungen-search-container">
+          <i class="fas fa-search besprechungen-search-icon"></i>
+          <input type="text" class="besprechungen-search-input" id="besprechungenSearch" placeholder="Nach Thema oder Inhalt suchen..." oninput="searchBesprechungen(this.value)">
+        </div>
+        
+        <div class="besprechungen-list-container">
+          <div class="besprechungen-list" id="besprechungenList">
+            <div class="empty-besprechungen">
+              <div class="empty-besprechungen-icon"><i class="fas fa-calendar-alt"></i></div>
+              <div class="empty-besprechungen-title">Keine Besprechungen gefunden</div>
+              <div class="empty-description">Erstellen Sie Ihre erste Besprechung in den Settings</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Floating Buttons -->
   <div class="floating-buttons-container">
-    <button class="floating-button ankundigung" onclick="openAnkundigungModal()" title="Ankündigungen">
-      🪧
-    </button>
     <button class="floating-button soldaten" onclick="openSoldatenModal()" title="Soldatengespräche">
       <i class="fas fa-comments"></i>
     </button>
     <button class="floating-button" onclick="openBeobachtungAktenModal()" title="Beobachtungs-Akten">
       <i class="fas fa-folder-open"></i>
     </button>
+    <button class="floating-button" onclick="openSettingsWithPassword()" title="Settings">
+      <i class="fas fa-cog"></i>
+    </button>
   </div>
 
-  <!-- Ankündigungen/Besprechungen/Aufstellungen Modal -->
-  <div class="ankundigung-modal" id="ankundigungModal" onclick="if(event.target===this)closeModal('ankundigungModal')">
-    <div class="ankundigung-content">
-      <div class="ankundigung-header">
-        <div class="ankundigung-title">
-          <i class="fas fa-bullhorn"></i> Ankündigungen & Besprechungen
+  <!-- Settings Modal -->
+  <div class="settings-modal" id="settingsModal" onclick="if(event.target===this)closeModal('settingsModal')">
+    <div class="settings-content">
+      <div class="settings-header">
+        <div class="settings-title">
+          <i class="fas fa-cog"></i> Settings
         </div>
-        <button class="ankundigung-close" onclick="closeModal('ankundigungModal')">
+        <button class="settings-close" onclick="closeModal('settingsModal')">
           <i class="fas fa-times"></i>
         </button>
       </div>
       
-      <div class="ankundigung-body">
-        <div class="ankundigung-tabs">
-          <button class="ankundigung-tab active" onclick="switchAnkundigungTab('new')">
-            <span>🪧</span> Neue Ankündigung
+      <div class="settings-body">
+        <div class="settings-tabs">
+          <button class="settings-tab active" onclick="switchSettingsTab('units')">
+            <i class="fas fa-building"></i> Units
           </button>
-          <button class="ankundigung-tab" onclick="switchAnkundigungTab('besprechung')">
-            <span>🖊️</span> Neue Besprechung
+          <button class="settings-tab" onclick="switchSettingsTab('ranks')">
+            <i class="fas fa-user-tie"></i> Ränge
           </button>
-          <button class="ankundigung-tab" onclick="switchAnkundigungTab('aufstellung')">
-            <span>🕛</span> Neue Aufstellung
+          <button class="settings-tab" onclick="switchSettingsTab('ankundigungen')">
+            <i class="fas fa-bullhorn"></i> Ankündigungen
           </button>
-          <button class="ankundigung-tab" onclick="switchAnkundigungTab('list')">
-            <i class="fas fa-list"></i> Liste
+          <button class="settings-tab" onclick="switchSettingsTab('logo')">
+            <i class="fas fa-image"></i> Logo
           </button>
         </div>
         
-        <!-- Neue Ankündigung Tab -->
-        <div class="ankundigung-tab-content" id="ankundigungNewTab">
-          <div class="ankundigung-form-grid">
-            <div class="ankundigung-form-group">
-              <label class="ankundigung-label">Titel</label>
-              <input type="text" class="ankundigung-input" id="ankundigungTitle" placeholder="Titel der Ankündigung">
+        <!-- Units Tab -->
+        <div class="settings-tab-content" id="unitsTab">
+          <div class="settings-section">
+            <h3 class="section-title-settings"><i class="fas fa-building"></i> Unit-Liste bearbeiten</h3>
+            <div class="unit-list" id="unitList">
+              <!-- Units werden hier dynamisch geladen -->
             </div>
-            
-            <div class="ankundigung-form-group">
-              <label class="ankundigung-label">Inhalt *</label>
-              <textarea class="ankundigung-input ankundigung-textarea" id="ankundigungContent" placeholder="Inhalt der Ankündigung..."></textarea>
-            </div>
-          </div>
-          
-          <div class="ankundigung-preview">
-            <div class="ankundigung-preview-title">
-              <i class="fas fa-file-alt"></i> Vorschau
-            </div>
-            <div class="ankundigung-preview-content" id="ankundigungPreview">
-🪧 **Ankündigung**
-
-
-            </div>
-          </div>
-          
-          <div class="ankundigung-actions">
-            <button class="ankundigung-btn ankundigung-btn-copy" onclick="copyAnkundigungTemplate()">
-              <i class="fas fa-copy"></i> In Zwischenablage kopieren
-            </button>
-            <button class="ankundigung-btn ankundigung-btn-save" onclick="saveAnkundigung()">
-              <i class="fas fa-save"></i> Ankündigung speichern
+            <button class="add-btn" onclick="addNewUnit()">
+              <i class="fas fa-plus"></i> Neue Unit hinzufügen
             </button>
           </div>
         </div>
         
-        <!-- Neue Besprechung Tab -->
-        <div class="ankundigung-tab-content" id="ankundigungBesprechungTab" style="display:none;">
-          <div class="ankundigung-form-grid">
-            <div class="ankundigung-form-group">
-              <label class="ankundigung-label">Thema *</label>
-              <input type="text" class="ankundigung-input" id="besprechungThema" placeholder="Thema der Besprechung">
+        <!-- Ränge Tab -->
+        <div class="settings-tab-content" id="ranksTab" style="display:none;">
+          <div class="settings-section">
+            <h3 class="section-title-settings"><i class="fas fa-user-tie"></i> Rang-Liste bearbeiten</h3>
+            <div class="rank-list" id="rankList">
+              <!-- Ränge werden hier dynamisch geladen -->
             </div>
-            
-            <div class="ankundigung-form-group">
-              <label class="ankundigung-label">Datum *</label>
-              <input type="date" class="ankundigung-input" id="besprechungDate" value="">
-            </div>
-            
-            <div class="ankundigung-form-group">
-              <label class="ankundigung-label">Uhrzeit *</label>
-              <input type="time" class="ankundigung-input" id="besprechungTime" value="">
-            </div>
-            
-            <div class="ankundigung-form-group">
-              <label class="ankundigung-label">Ort</label>
-              <input type="text" class="ankundigung-input" id="besprechungOrt" placeholder="Ort der Besprechung">
-            </div>
-            
-            <div class="ankundigung-form-group">
-              <label class="ankundigung-label">Inhalt *</label>
-              <textarea class="ankundigung-input ankundigung-textarea" id="besprechungContent" placeholder="Inhalt der Besprechung..."></textarea>
-            </div>
-          </div>
-          
-          <div class="ankundigung-preview">
-            <div class="ankundigung-preview-title">
-              <i class="fas fa-file-alt"></i> Vorschau
-            </div>
-            <div class="ankundigung-preview-content" id="besprechungPreview">
-🖊️ **Besprechung**
-
-Thema: 
-Datum: 
-Uhrzeit: 
-Ort: 
-
-
-            </div>
-          </div>
-          
-          <div class="ankundigung-actions">
-            <button class="ankundigung-btn ankundigung-btn-copy" onclick="copyBesprechungTemplate()">
-              <i class="fas fa-copy"></i> In Zwischenablage kopieren
-            </button>
-            <button class="ankundigung-btn ankundigung-btn-save" onclick="saveBesprechung()">
-              <i class="fas fa-save"></i> Besprechung speichern
+            <button class="add-btn" onclick="addNewRank()">
+              <i class="fas fa-plus"></i> Neuen Rang hinzufügen
             </button>
           </div>
         </div>
         
-        <!-- Neue Aufstellung Tab -->
-        <div class="ankundigung-tab-content" id="ankundigungAufstellungTab" style="display:none;">
-          <div class="ankundigung-form-grid">
-            <div class="ankundigung-form-group">
-              <label class="ankundigung-label">Typ *</label>
-              <select class="ankundigung-input" id="aufstellungTyp">
-                <option value="">Typ auswählen</option>
-                <option value="Tagesaufstellung">Tagesaufstellung</option>
-                <option value="Wochenaufstellung">Wochenaufstellung</option>
-                <option value="Sonderaufstellung">Sonderaufstellung</option>
-              </select>
+        <!-- Ankündigungen Tab -->
+        <div class="settings-tab-content" id="ankundigungenTab" style="display:none;">
+          <div class="ankundigungen-section">
+            <div class="ankundigungen-tabs">
+              <button class="ankundigungen-tab active" onclick="switchAnkundigungenTab('manage')">
+                <span>🗂️</span> Verwalten
+              </button>
+              <button class="ankundigungen-tab" onclick="switchAnkundigungenTab('new')">
+                <span>🪧</span> Neue Ankündigung
+              </button>
+              <button class="ankundigungen-tab" onclick="switchAnkundigungenTab('besprechung')">
+                <span>🗃️</span> Neue Besprechung
+              </button>
             </div>
             
-            <div class="ankundigung-form-group">
-              <label class="ankundigung-label">Datum *</label>
-              <input type="date" class="ankundigung-input" id="aufstellungDate" value="">
+            <!-- Verwalten Tab -->
+            <div class="ankundigungen-tab-content" id="ankundigungenManageTab">
+              <div class="ankundigungen-list-container">
+                <div class="ankundigungen-list" id="ankundigungenList">
+                  <div class="empty-ankundigungen">
+                    <div class="empty-ankundigungen-icon"><i class="fas fa-bullhorn"></i></div>
+                    <div class="empty-ankundigungen-title">Keine Ankündigungen gefunden</div>
+                    <div class="empty-description">Erstellen Sie Ihre erste Ankündigung</div>
+                  </div>
+                </div>
+              </div>
             </div>
             
-            <div class="ankundigung-form-group">
-              <label class="ankundigung-label">Uhrzeit *</label>
-              <input type="time" class="ankundigung-input" id="aufstellungTime" value="">
+            <!-- Neue Ankündigung -->
+            <div class="ankundigungen-tab-content" id="ankundigungenNewTab" style="display:none;">
+              <div class="ankundigungen-form-grid">
+                <div class="settings-form-group">
+                  <label class="settings-label">Titel</label>
+                  <input type="text" class="settings-input" id="ankundigungTitle" placeholder="Titel der Ankündigung">
+                </div>
+                <div class="settings-form-group">
+                  <label class="settings-label">Inhalt *</label>
+                  <textarea class="settings-input" id="ankundigungContent" placeholder="Inhalt der Ankündigung..." rows="4"></textarea>
+                </div>
+              </div>
+              <div class="settings-actions">
+                <button class="btn btn-primary" onclick="saveAnkundigung()">
+                  <i class="fas fa-save"></i> Ankündigung speichern
+                </button>
+              </div>
             </div>
             
-            <div class="ankundigung-form-group">
-              <label class="ankundigung-label">Ort *</label>
-              <input type="text" class="ankundigung-input" id="aufstellungOrt" placeholder="Ort der Aufstellung">
-            </div>
-            
-            <div class="ankundigung-form-group">
-              <label class="ankundigung-label">Bemerkungen</label>
-              <textarea class="ankundigung-input ankundigung-textarea" id="aufstellungBemerkungen" placeholder="Bemerkungen zur Aufstellung..."></textarea>
-            </div>
-          </div>
-          
-          <div class="ankundigung-preview">
-            <div class="ankundigung-preview-title">
-              <i class="fas fa-file-alt"></i> Vorschau
-            </div>
-            <div class="ankundigung-preview-content" id="aufstellungPreview">
-🕛 **Aufstellung**
-
-Typ: 
-Datum: 
-Uhrzeit: 
-Ort: 
-Bemerkungen:
-
-            </div>
-          </div>
-          
-          <div class="ankundigung-actions">
-            <button class="ankundigung-btn ankundigung-btn-copy" onclick="copyAufstellungTemplate()">
-              <i class="fas fa-copy"></i> In Zwischenablage kopieren
-            </button>
-            <button class="ankundigung-btn ankundigung-btn-save" onclick="saveAufstellung()">
-              <i class="fas fa-save"></i> Aufstellung speichern
-            </button>
-          </div>
-        </div>
-        
-        <!-- Liste Tab -->
-        <div class="ankundigung-tab-content" id="ankundigungListTab" style="display:none;">
-          <div class="ankundigung-search-container">
-            <i class="fas fa-search ankundigung-search-icon"></i>
-            <input type="text" class="ankundigung-search-input" id="ankundigungSearch" placeholder="Nach Titel oder Inhalt suchen..." oninput="searchAnkundigungen(this.value)">
-          </div>
-          
-          <!-- Scrollbar-Container für die Liste -->
-          <div class="ankundigung-liste-container">
-            <div class="ankundigung-liste" id="ankundigungListe">
-              <div class="empty-ankundigung">
-                <div class="empty-ankundigung-icon"><i class="fas fa-bullhorn"></i></div>
-                <div class="empty-ankundigung-title">Keine Einträge gefunden</div>
-                <div class="empty-description">Erstellen Sie Ihren ersten Eintrag</div>
+            <!-- Neue Besprechung -->
+            <div class="ankundigungen-tab-content" id="ankundigungenBesprechungTab" style="display:none;">
+              <div class="ankundigungen-form-grid">
+                <div class="settings-form-group">
+                  <label class="settings-label">Thema *</label>
+                  <input type="text" class="settings-input" id="besprechungThema" placeholder="Thema der Besprechung">
+                </div>
+                <div class="settings-form-group">
+                  <label class="settings-label">Datum *</label>
+                  <input type="date" class="settings-input" id="besprechungDate" value="">
+                </div>
+                <div class="settings-form-group">
+                  <label class="settings-label">Uhrzeit *</label>
+                  <input type="time" class="settings-input" id="besprechungTime" value="">
+                </div>
+                <div class="settings-form-group">
+                  <label class="settings-label">Ort</label>
+                  <input type="text" class="settings-input" id="besprechungOrt" placeholder="Ort der Besprechung">
+                </div>
+                <div class="settings-form-group">
+                  <label class="settings-label">Inhalt *</label>
+                  <textarea class="settings-input" id="besprechungContent" placeholder="Inhalt der Besprechung..." rows="4"></textarea>
+                </div>
+              </div>
+              <div class="settings-actions">
+                <button class="btn btn-primary" onclick="saveBesprechung()">
+                  <i class="fas fa-save"></i> Besprechung speichern
+                </button>
               </div>
             </div>
           </div>
+        </div>
+        
+        <!-- Logo Tab -->
+        <div class="settings-tab-content" id="logoTab" style="display:none;">
+          <div class="settings-section">
+            <h3 class="section-title-settings"><i class="fas fa-image"></i> Logo anpassen</h3>
+            <div class="logo-upload-container">
+              <div class="logo-preview" id="logoPreview">
+                <img src="" alt="Logo" class="logo-preview-image" id="logoPreviewImage">
+                <div class="logo-preview-default">
+                  <i class="fas fa-image logo-default-icon"></i>
+                </div>
+              </div>
+              <input type="file" id="logoUpload" accept="image/*" style="display: none;" onchange="handleLogoUpload(event)">
+              <button class="logo-upload-btn" onclick="document.getElementById('logoUpload').click()">
+                <i class="fas fa-upload"></i> Logo hochladen
+              </button>
+              <button class="logo-remove-btn" onclick="removeLogo()">
+                <i class="fas fa-trash"></i> Logo entfernen
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="settings-actions">
+          <button class="btn btn-secondary" onclick="closeModal('settingsModal')">
+            <i class="fas fa-times"></i> Schließen
+          </button>
+          <button class="btn btn-primary" onclick="saveSettings()">
+            <i class="fas fa-save"></i> Einstellungen speichern
+          </button>
         </div>
       </div>
     </div>
@@ -2493,12 +2897,6 @@ Bemerkungen:
               <label class="soldaten-label">Hauptunit</label>
               <select class="soldaten-input" id="soldatenUnit">
                 <option value="">Unit auswählen</option>
-                <option value="Air Force">Air Force</option>
-                <option value="S.O.C">S.O.C</option>
-                <option value="Infantry">Infantry</option>
-                <option value="Military Police">Military Police</option>
-                <option value="Navy Marine">Navy Marine</option>
-                <option value="Navy SEALs">Navy SEALs</option>
               </select>
             </div>
             
@@ -2506,23 +2904,6 @@ Bemerkungen:
               <label class="soldaten-label">Rang</label>
               <select class="soldaten-input" id="soldatenRank">
                 <option value="">Rang auswählen</option>
-                <option value="Private">Private</option>
-                <option value="Private First Class">Private First Class</option>
-                <option value="Specialist">Specialist</option>
-                <option value="Corporal">Corporal</option>
-                <option value="Sergeant">Sergeant</option>
-                <option value="Staff Sergeant">Staff Sergeant</option>
-                <option value="Sergeant First Class">Sergeant First Class</option>
-                <option value="Master Sergeant">Master Sergeant</option>
-                <option value="Sergeant Major">Sergeant Major</option>
-                <option value="Lieutenant">Lieutenant</option>
-                <option value="Captain">Captain</option>
-                <option value="Major">Major</option>
-                <option value="Colonel">Colonel</option>
-                <option value="Major General">Major General</option>
-                <option value="Lieutenant General">Lieutenant General</option>
-                <option value="Vice General of Army">Vice General of Army</option>
-                <option value="General of Army">General of Army</option>
               </select>
             </div>
             
@@ -2639,12 +3020,6 @@ Sonstiges:
               <label class="akte-label">Unit</label>
               <select class="akte-input" id="akteUnit">
                 <option value="">Unit auswählen</option>
-                <option value="Air Force">Air Force</option>
-                <option value="S.O.C">S.O.C</option>
-                <option value="Infantry">Infantry</option>
-                <option value="Military Police">Military Police</option>
-                <option value="Navy Marine">Navy Marine</option>
-                <option value="Navy SEALs">Navy SEALs</option>
               </select>
             </div>
             
@@ -2652,23 +3027,6 @@ Sonstiges:
               <label class="akte-label">Rang</label>
               <select class="akte-input" id="akteRank">
                 <option value="">Rang auswählen</option>
-                <option value="Private">Private</option>
-                <option value="Private First Class">Private First Class</option>
-                <option value="Specialist">Specialist</option>
-                <option value="Corporal">Corporal</option>
-                <option value="Sergeant">Sergeant</option>
-                <option value="Staff Sergeant">Staff Sergeant</option>
-                <option value="Sergeant First Class">Sergeant First Class</option>
-                <option value="Master Sergeant">Master Sergeant</option>
-                <option value="Sergeant Major">Sergeant Major</option>
-                <option value="Lieutenant">Lieutenant</option>
-                <option value="Captain">Captain</option>
-                <option value="Major">Major</option>
-                <option value="Colonel">Colonel</option>
-                <option value="Major General">Major General</option>
-                <option value="Lieutenant General">Lieutenant General</option>
-                <option value="Vice General of Army">Vice General of Army</option>
-                <option value="General of Army">General of Army</option>
               </select>
             </div>
           </div>
@@ -2754,12 +3112,12 @@ Grund:
     <header class="app-header">
       <div class="header-content">
         <div class="brand">
-          <!-- Vereinfachtes Logo ohne Upload-Funktionalität -->
-          <div class="logo">
-            <i class="fas fa-user-check"></i>
-          </div>
+          <!-- Logo Container entfernt -->
           <div class="brand-text">
-            <h1>Human Resources</h1>
+            <h1>Human Resources <span class="header-icons">
+              <span class="header-icon" onclick="showAnkundigungBanner()" title="Ankündigungen anzeigen">🔔</span>
+              <span class="header-icon" onclick="openBesprechungenModal()" title="Besprechungen anzeigen">🗃️</span>
+            </span></h1>
             <div class="subtitle">•</div>
           </div>
         </div>
@@ -2771,6 +3129,10 @@ Grund:
           <div class="stat-card">
             <div class="stat-value" id="totalAkten">0</div>
             <div class="stat-label">Beobachtung</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="totalArchived">0</div>
+            <div class="stat-label">Archiviert</div>
           </div>
         </div>
       </div>
@@ -2809,6 +3171,9 @@ Grund:
         <button class="quick-action-btn" onclick="openNewEmployeeModal()">
           <i class="fas fa-user-plus"></i> Neuer Mitarbeiter
         </button>
+        <button class="quick-action-btn" onclick="toggleArchiveView()">
+          <i class="fas fa-archive"></i> <span id="archiveToggleText">Archiv anzeigen</span>
+        </button>
       </div>
     </aside>
 
@@ -2820,10 +3185,16 @@ Grund:
             <div class="employee-tag"><i class="fas fa-hashtag"></i> <span class="tag-value" id="currentEmployeeDN">DN-</span></div>
             <div class="employee-tag"><i class="fas fa-building"></i> <span class="tag-value" id="currentEmployeeUnit">Unit</span></div>
             <div class="employee-tag"><i class="fas fa-user-tie"></i> <span class="tag-value" id="currentEmployeeRank">Rang</span></div>
+            <div class="employee-tag" id="archiveStatusTag" style="display:none;">
+              <i class="fas fa-archive"></i> <span class="tag-value" style="background:var(--warning);">Archiviert</span>
+            </div>
           </div>
         </div>
         <div class="action-buttons">
           <button class="btn btn-secondary" onclick="openEditEmployeeModal()"><i class="fas fa-edit"></i> Bearbeiten</button>
+          <button class="btn btn-secondary" id="archiveButton" onclick="toggleArchiveEmployee()" style="display:none;">
+            <i class="fas fa-archive"></i> <span id="archiveButtonText">Archivieren</span>
+          </button>
         </div>
       </div>
 
@@ -2867,35 +3238,12 @@ Grund:
                 <label class="form-label">Unit</label>
                 <select class="form-select" id="unitSelect">
                   <option value="">Unit auswählen</option>
-                  <option value="Air Force">Air Force</option>
-                  <option value="S.O.C">S.O.C</option>
-                  <option value="Infantry">Infantry</option>
-                  <option value="Military Police">Military Police</option>
-                  <option value="Navy Marine">Navy Marine</option>
-                  <option value="Navy SEALs">Navy SEALs</option>
                 </select>
               </div>
               <div class="form-group">
                 <label class="form-label">Rang</label>
                 <select class="form-select" id="rankSelect">
                   <option value="">Rang auswählen</option>
-                  <option value="Private">Private</option>
-                  <option value="Private First Class">Private First Class</option>
-                  <option value="Specialist">Specialist</option>
-                  <option value="Corporal">Corporal</option>
-                  <option value="Sergeant">Sergeant</option>
-                  <option value="Staff Sergeant">Staff Sergeant</option>
-                  <option value="Sergeant First Class">Sergeant First Class</option>
-                  <option value="Master Sergeant">Master Sergeant</option>
-                  <option value="Sergeant Major">Sergeant Major</option>
-                  <option value="Lieutenant">Lieutenant</option>
-                  <option value="Captain">Captain</option>
-                  <option value="Major">Major</option>
-                  <option value="Colonel">Colonel</option>
-                  <option value="Major General">Major General</option>
-                  <option value="Lieutenant General">Lieutenant General</option>
-                  <option value="Vice General of Army">Vice General of Army</option>
-                  <option value="General of Army">General of Army</option>
                 </select>
               </div>
               <div class="form-group">
@@ -2943,35 +3291,12 @@ Grund:
                 <label class="form-label">Unit</label>
                 <select class="form-select" id="unitSelect2">
                   <option value="">Unit auswählen</option>
-                  <option value="Air Force">Air Force</option>
-                  <option value="S.O.C">S.O.C</option>
-                  <option value="Infantry">Infantry</option>
-                  <option value="Military Police">Military Police</option>
-                  <option value="Navy Marine">Navy Marine</option>
-                  <option value="Navy SEALs">Navy SEALs</option>
                 </select>
               </div>
               <div class="form-group">
                 <label class="form-label">Rang</label>
                 <select class="form-select" id="rankSelect2">
                   <option value="">Rang auswählen</option>
-                  <option value="Private">Private</option>
-                  <option value="Private First Class">Private First Class</option>
-                  <option value="Specialist">Specialist</option>
-                  <option value="Corporal">Corporal</option>
-                  <option value="Sergeant">Sergeant</option>
-                  <option value="Staff Sergeant">Staff Sergeant</option>
-                  <option value="Sergeant First Class">Sergeant First Class</option>
-                  <option value="Master Sergeant">Master Sergeant</option>
-                  <option value="Sergeant Major">Sergeant Major</option>
-                  <option value="Lieutenant">Lieutenant</option>
-                  <option value="Captain">Captain</option>
-                  <option value="Major">Major</option>
-                  <option value="Colonel">Colonel</option>
-                  <option value="Major General">Major General</option>
-                  <option value="Lieutenant General">Lieutenant General</option>
-                  <option value="Vice General of Army">Vice General of Army</option>
-                  <option value="General of Army">General of Army</option>
                 </select>
               </div>
               <div class="form-group">
@@ -3034,35 +3359,12 @@ Grund:
           <label class="form-label">Unit</label>
           <select class="form-select" id="newEmployeeUnit">
             <option value="">Unit auswählen</option>
-            <option value="Air Force">Air Force</option>
-            <option value="S.O.C">S.O.C</option>
-            <option value="Infantry">Infantry</option>
-            <option value="Military Police">Military Police</option>
-            <option value="Navy Marine">Navy Marine</option>
-            <option value="Navy SEALs">Navy SEALs</option>
           </select>
         </div>
         <div class="form-group">
           <label class="form-label">Rang</label>
           <select class="form-select" id="newEmployeeRank">
             <option value="">Rang auswählen</option>
-            <option value="Private">Private</option>
-            <option value="Private First Class">Private First Class</option>
-            <option value="Specialist">Specialist</option>
-            <option value="Corporal">Corporal</option>
-            <option value="Sergeant">Sergeant</option>
-            <option value="Staff Sergeant">Staff Sergeant</option>
-            <option value="Sergeant First Class">Sergeant First Class</option>
-            <option value="Master Sergeant">Master Sergeant</option>
-            <option value="Sergeant Major">Sergeant Major</option>
-            <option value="Lieutenant">Lieutenant</option>
-            <option value="Captain">Captain</option>
-            <option value="Major">Major</option>
-            <option value="Colonel">Colonel</option>
-            <option value="Major General">Major General</option>
-            <option value="Lieutenant General">Lieutenant General</option>
-            <option value="Vice General of Army">Vice General of Army</option>
-            <option value="General of Army">General of Army</option>
           </select>
         </div>
       </div>
@@ -3095,35 +3397,12 @@ Grund:
           <label class="form-label">Unit</label>
           <select class="form-select" id="editEmployeeUnit">
             <option value="">Unit auswählen</option>
-            <option value="Air Force">Air Force</option>
-            <option value="S.O.C">S.O.C</option>
-            <option value="Infantry">Infantry</option>
-            <option value="Military Police">Military Police</option>
-            <option value="Navy Marine">Navy Marine</option>
-            <option value="Navy SEALs">Navy SEALs</option>
           </select>
         </div>
         <div class="form-group">
           <label class="form-label">Rang</label>
           <select class="form-select" id="editEmployeeRank">
             <option value="">Rang auswählen</option>
-            <option value="Private">Private</option>
-            <option value="Private First Class">Private First Class</option>
-            <option value="Specialist">Specialist</option>
-            <option value="Corporal">Corporal</option>
-            <option value="Sergeant">Sergeant</option>
-            <option value="Staff Sergeant">Staff Sergeant</option>
-            <option value="Sergeant First Class">Sergeant First Class</option>
-            <option value="Master Sergeant">Master Sergeant</option>
-            <option value="Sergeant Major">Sergeant Major</option>
-            <option value="Lieutenant">Lieutenant</option>
-            <option value="Captain">Captain</option>
-            <option value="Major">Major</option>
-            <option value="Colonel">Colonel</option>
-            <option value="Major General">Major General</option>
-            <option value="Lieutenant General">Lieutenant General</option>
-            <option value="Vice General of Army">Vice General of Army</option>
-            <option value="General of Army">General of Army</option>
           </select>
         </div>
       </div>
@@ -3139,49 +3418,12 @@ Grund:
   </div>
 
   <script>
-    // ==================== ENHANCED CACHE-BUSTING ====================
-    // Erzwingt Neuladen bei Version-Änderung mit Zeitstempel
-    const APP_VERSION = '1.0.' + Date.now();
-    const LAST_VERSION_KEY = 'hr_app_last_version';
+    // ==================== KONFIGURATION ====================
+    const APP_VERSION = '1.0.20240128';
+    const DEFAULT_PASSWORD = 'soc1';
+    const SETTINGS_PASSWORD = 'soc1';
+    const PASSWORD_EXPIRE_MINUTES = 5;
     
-    // Prüfe und aktualisiere Version
-    const lastVersion = localStorage.getItem(LAST_VERSION_KEY);
-    console.log(`App Version: ${APP_VERSION}, Letzte Version: ${lastVersion}`);
-    
-    if (lastVersion !== APP_VERSION) {
-      console.log('Neue Version erkannt - erzwinge Hard Refresh');
-      
-      // Lösche alle Caches
-      if ('caches' in window) {
-        caches.keys().then(function(names) {
-          names.forEach(name => caches.delete(name));
-          console.log('Service Worker Caches gelöscht');
-        });
-      }
-      
-      // Lösche localStorage für Firebase-Cache
-      Object.keys(localStorage).forEach(key => {
-        if (key.includes('firebase') || key.includes('firestore')) {
-          localStorage.removeItem(key);
-        }
-      });
-      
-      // Speichere neue Version
-      localStorage.setItem(LAST_VERSION_KEY, APP_VERSION);
-      
-      // Erzwinge Hard Refresh
-      if (!window.location.search.includes('hardRefresh')) {
-        window.location.href = window.location.href.split('?')[0] + '?hardRefresh=true&v=' + Date.now();
-      }
-    }
-    
-    // Version im Title anzeigen
-    document.addEventListener('DOMContentLoaded', function() {
-      const versionText = APP_VERSION.split('.')[2]?.substring(0, 8) || 'dev';
-      document.title = document.title.replace('v1.0', `v1.0.${versionText}`);
-    });
-    // ==================== ENDE CACHE-BUSTING ====================
-
     // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBTnsLNw68UuOd5Xa2ymMffWk4SYGDQjso",
@@ -3193,256 +3435,265 @@ Grund:
       measurementId: "G-9SZREFTJS6"
     };
 
-    // Firebase initialisieren
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const storage = firebase.storage();
-
-    // Discord IDs for Units
-    const unitDiscordIds = {
-      "Air Force": "1269229762400878675",
-      "S.O.C": "1339523576159666218",
-      "Infantry": "1187756956425920645",
-      "Military Police": "1289716541658497055",
-      "Navy Marine": "1097653037968920776",
-      "Navy SEALs": "1125174901989445693"
-    };
-
-    // Discord IDs for Ranks
-    const rankDiscordIds = {
-      "Private": "1097625924104626198",
-      "Private First Class": "1098190829295771739",
-      "Specialist": "1097625921516748830",
-      "Corporal": "1097625914763919532",
-      "Sergeant": "1097625913274933298",
-      "Staff Sergeant": "1097625912163451112",
-      "Sergeant First Class": "1348414845862674524",
-      "Master Sergeant": "1348414845862674524",
-      "Sergeant Major": "",
-      "Lieutenant": "1097625900125782278",
-      "Captain": "1097625898880077955",
-      "Major": "1097625896560640024",
-      "Colonel": "1097625895541428275",
-      "Major General": "1097625893880479777",
-      "Lieutenant General": "",
-      "Vice General of Army": "",
-      "General of Army": "1097625891632316436"
-    };
 
     // App State
     let currentEmployee = null;
     let employees = [];
     let bothInductionsCompleted = false;
     let currentFilter = 'all';
-    let akten = [];
-    let soldatenGespräche = [];
+    let settings = {
+      units: [],
+      ranks: [],
+      logoUrl: ''
+    };
+    let showArchived = false;
     let ankundigungen = [];
-    let currentBeobachtungTab = 'new';
+    let soldatenGespräche = [];
+    let akten = [];
+    let currentSettingsTab = 'units';
+    let currentAnkundigungenTab = 'manage';
     let currentSoldatenTab = 'new';
-    let currentAnkundigungTab = 'new';
-
+    let currentBeobachtungTab = 'new';
+    let isAuthenticated = false;
+    let settingsAuthenticated = false;
+    let settingsAuthTimestamp = 0;
+    
     // Unsubscribe-Funktionen für Listener
     let unsubscribeFunctions = [];
 
     document.addEventListener('DOMContentLoaded', function () {
       console.log(`HR App Version ${APP_VERSION} geladen`);
-      initializeApp();
+      checkAuthentication();
       setupEventListeners();
-      updateStats();
       adjustSidebarHeight();
-      
-      // Warte kurz und starte dann Listener
-      setTimeout(() => {
-        setupRealtimeListeners();
-      }, 500);
+      loadLogo();
     });
 
-    // ==================== ENHANCED REALTIME LISTENER SETUP ====================
-    function setupRealtimeListeners() {
-      console.log('=== SETUP REALTIME LISTENERS ===');
+    // ==================== AUTHENTIFIZIERUNG ====================
+    function checkAuthentication() {
+      const savedPassword = localStorage.getItem('hr_app_password');
+      const savedTimestamp = localStorage.getItem('hr_app_password_timestamp');
+      const currentTime = Date.now();
+      const expireTime = PASSWORD_EXPIRE_MINUTES * 60 * 1000;
       
-      // Cleanup alte Listener
-      cleanupRealtimeListeners();
-      
-      // Listener für Mitarbeiter mit erweitertem Logging
-      const unsubscribeEmployees = db.collection('hrEmployees')
-        .orderBy('lastUpdated', 'desc')
-        .onSnapshot((snapshot) => {
-          console.log(`🔥 Mitarbeiter Update: ${snapshot.size} Dokumente`);
-          
-          employees = [];
-          
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            employees.push({ 
-              id: doc.id, 
-              ...data,
-              lastUpdated: data.lastUpdated ? data.lastUpdated.toDate() : new Date()
-            });
-          });
-
-          renderEmployeeList();
-          updateStats();
-          
-          // Wenn ein Mitarbeiter ausgewählt ist, aktualisiere die Daten
-          if (currentEmployee) {
-            const updatedEmployee = employees.find(emp => emp.id === currentEmployee.id);
-            if (updatedEmployee) {
-              console.log(`🔥 Aktualisiere ausgewählten Mitarbeiter: ${updatedEmployee.name}`);
-              selectEmployee(updatedEmployee);
-            }
-          }
-          
-          // Log für Debugging
-          console.log(`Gespeicherte Mitarbeiter: ${employees.length}`);
-          employees.forEach(emp => {
-            console.log(`- ${emp.name} (DN: ${emp.dn}), Updated: ${emp.lastUpdated}`);
-          });
-          
-          setTimeout(updateInductionDisplay, 100);
-        }, (error) => {
-          console.error('❌ Fehler beim Lauschen auf Mitarbeiter-Änderungen:', error);
-          showNotification('Verbindungsfehler bei Live-Updates', 'error');
-        });
-
-      // Listener für Akten
-      const unsubscribeAkten = db.collection('hrAkten')
-        .orderBy('lastUpdated', 'desc')
-        .limit(100)
-        .onSnapshot((snapshot) => {
-          console.log(`📁 Akten Update: ${snapshot.size} Dokumente`);
-          akten = [];
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            akten.push({ 
-              id: doc.id, 
-              ...data,
-              createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE'),
-              lastUpdated: data.lastUpdated ? data.lastUpdated.toDate() : new Date()
-            });
-          });
-          updateStats();
-          renderAktenListe();
-        }, (error) => {
-          console.error('❌ Fehler beim Lauschen auf Akten-Änderungen:', error);
-        });
-
-      // Listener für Soldatengespräche
-      const unsubscribeSoldaten = db.collection('hrSoldatenGespräche')
-        .orderBy('created', 'desc')
-        .limit(100)
-        .onSnapshot((snapshot) => {
-          console.log(`💬 Soldatengespräche Update: ${snapshot.size} Dokumente`);
-          soldatenGespräche = [];
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            soldatenGespräche.push({ 
-              id: doc.id, 
-              ...data,
-              createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE'),
-              dateFormatted: data.dateFormatted || (data.date ? new Date(data.date).toLocaleDateString('de-DE') : '')
-            });
-          });
-          renderSoldatenListe();
-        }, (error) => {
-          console.error('❌ Fehler beim Lauschen auf Soldatengespräche:', error);
-        });
-
-      // Listener für Ankündigungen
-      const unsubscribeAnkundigungen = db.collection('hrAnkundigungen')
-        .orderBy('created', 'desc')
-        .limit(100)
-        .onSnapshot((snapshot) => {
-          console.log(`📢 Ankündigungen Update: ${snapshot.size} Dokumente`);
-          ankundigungen = [];
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            ankundigungen.push({ 
-              id: doc.id, 
-              ...data,
-              createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE'),
-              dateFormatted: data.dateFormatted || (data.date ? new Date(data.date).toLocaleDateString('de-DE') : '')
-            });
-          });
-          renderAnkundigungListe();
-        }, (error) => {
-          console.error('❌ Fehler beim Lauschen auf Ankündigungen:', error);
-        });
-
-      // Speichere Unsubscribe-Funktionen
-      unsubscribeFunctions = [
-        unsubscribeEmployees,
-        unsubscribeAkten,
-        unsubscribeSoldaten,
-        unsubscribeAnkundigungen
-      ];
-      
-      console.log(`✅ ${unsubscribeFunctions.length} Realtime Listener aktiv`);
+      if (savedPassword === DEFAULT_PASSWORD && savedTimestamp && (currentTime - parseInt(savedTimestamp) < expireTime)) {
+        isAuthenticated = true;
+        initializeApp();
+      } else {
+        // Password expired or not set, show password modal
+        showMainPasswordModal();
+      }
     }
 
-    function cleanupRealtimeListeners() {
-      console.log('🧹 Cleanup Realtime Listener');
-      unsubscribeFunctions.forEach(unsubscribe => {
-        if (typeof unsubscribe === 'function') {
-          unsubscribe();
-        }
-      });
-      unsubscribeFunctions = [];
-    }
-
-    // Füge Event Listener für Seitenverlassen hinzu
-    window.addEventListener('beforeunload', cleanupRealtimeListeners);
-
-    // Manuelle Refresh Funktion
-    function manualRefresh() {
-      console.log('🔄 Manuelles Refresh gestartet');
-      cleanupRealtimeListeners();
+    function showMainPasswordModal() {
+      // Create a new password modal for main app
+      const passwordModal = document.createElement('div');
+      passwordModal.className = 'settings-password-modal active';
+      passwordModal.innerHTML = `
+        <div class="settings-password-content">
+          <div class="settings-password-header">
+            <div class="settings-password-title">
+              <i class="fas fa-lock"></i> Passwort für HR App erforderlich
+            </div>
+          </div>
+          <div class="settings-password-form">
+            <input type="password" class="settings-password-input" id="mainPasswordInput" placeholder="Passwort eingeben" onkeypress="if(event.key === 'Enter') checkMainPassword()">
+            <div class="settings-password-error" id="mainPasswordError" style="display:none">Falsches Passwort</div>
+            <button class="btn btn-primary" onclick="checkMainPassword()">
+              <i class="fas fa-unlock"></i> Bestätigen
+            </button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(passwordModal);
+      
+      // Focus the input field
       setTimeout(() => {
-        setupRealtimeListeners();
-        showNotification('Daten manuell aktualisiert', 'success');
-      }, 500);
+        const input = document.getElementById('mainPasswordInput');
+        if (input) input.focus();
+      }, 100);
     }
 
-    // Debug Funktion
-    function debugRealtimeStatus() {
-      console.log('=== REALTIME STATUS ===');
-      console.log('Aktive Listener:', unsubscribeFunctions.length);
-      console.log('Mitarbeiter:', employees.length);
-      console.log('Akten:', akten.length);
-      console.log('Soldatengespräche:', soldatenGespräche.length);
-      console.log('Ankündigungen:', ankundigungen.length);
+    function checkMainPassword() {
+      const password = document.getElementById('mainPasswordInput').value;
+      const errorElement = document.getElementById('mainPasswordError');
       
-      // Test-Query
-      db.collection('hrEmployees').get().then(snapshot => {
-        console.log('📊 Datenbank Mitarbeiter (alle):', snapshot.size);
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          console.log(`  - ${data.name || 'Unbekannt'} (DN: ${data.dn || '?'}), Updated: ${data.lastUpdated ? data.lastUpdated.toDate().toLocaleString() : '?'}`);
+      if (password === DEFAULT_PASSWORD) {
+        localStorage.setItem('hr_app_password', password);
+        localStorage.setItem('hr_app_password_timestamp', Date.now());
+        isAuthenticated = true;
+        
+        // Remove modal
+        const modal = document.querySelector('.settings-password-modal');
+        if (modal) modal.remove();
+        
+        initializeApp();
+      } else {
+        errorElement.style.display = 'block';
+        document.getElementById('mainPasswordInput').value = '';
+        document.getElementById('mainPasswordInput').focus();
+      }
+    }
+
+    function checkSettingsAuth() {
+      const savedTimestamp = localStorage.getItem('hr_settings_auth_timestamp');
+      const currentTime = Date.now();
+      const expireTime = PASSWORD_EXPIRE_MINUTES * 60 * 1000;
+      
+      if (settingsAuthenticated && savedTimestamp && (currentTime - parseInt(savedTimestamp) < expireTime)) {
+        return true;
+      }
+      return false;
+    }
+
+    function openSettingsPasswordModal() {
+      document.getElementById('settingsPasswordModal').classList.add('active');
+      document.getElementById('settingsPasswordInput').focus();
+    }
+
+    function closeSettingsPasswordModal() {
+      document.getElementById('settingsPasswordModal').classList.remove('active');
+      document.getElementById('settingsPasswordInput').value = '';
+      document.getElementById('settingsPasswordError').classList.remove('show');
+    }
+
+    function checkSettingsPassword() {
+      const password = document.getElementById('settingsPasswordInput').value;
+      const errorElement = document.getElementById('settingsPasswordError');
+      
+      if (password === SETTINGS_PASSWORD) {
+        settingsAuthenticated = true;
+        settingsAuthTimestamp = Date.now();
+        localStorage.setItem('hr_settings_auth_timestamp', settingsAuthTimestamp);
+        closeSettingsPasswordModal();
+        openSettingsModal();
+      } else {
+        errorElement.classList.add('show');
+        document.getElementById('settingsPasswordInput').value = '';
+        document.getElementById('settingsPasswordInput').focus();
+      }
+    }
+
+    function openSettingsWithPassword() {
+      if (checkSettingsAuth()) {
+        openSettingsModal();
+      } else {
+        openSettingsPasswordModal();
+      }
+    }
+
+    // ==================== BESPRECHUNGEN MODAL - NUR BESPRECHUNGEN ====================
+    function openBesprechungenModal() {
+      openModal('besprechungenModal');
+      loadBesprechungen();
+    }
+
+    async function loadBesprechungen() {
+      const container = document.getElementById('besprechungenList');
+      container.innerHTML = '<div class="loading"><div class="loading-spinner"></div><div>Lade Besprechungen...</div></div>';
+
+      try {
+        // NUR Besprechungen laden, keine Ankündigungen
+        const querySnapshot = await db.collection('hrAnkundigungen')
+          .where('type', '==', 'besprechung')
+          .orderBy('created', 'desc')
+          .get();
+        
+        if (querySnapshot.empty) {
+          container.innerHTML = `
+            <div class="empty-besprechungen">
+              <div class="empty-besprechungen-icon"><i class="fas fa-calendar-alt"></i></div>
+              <div class="empty-besprechungen-title">Keine Besprechungen gefunden</div>
+              <div class="empty-description">Erstellen Sie Ihre erste Besprechung in den Settings</div>
+            </div>
+          `;
+          return;
+        }
+
+        let html = '';
+        
+        querySnapshot.forEach(doc => {
+          const item = doc.data();
+          
+          const title = item.thema || 'Ohne Thema';
+          const date = item.date ? new Date(item.date).toLocaleDateString('de-DE') : '';
+          const time = item.time || '';
+          const ort = item.ort || '';
+          const content = item.content || '';
+          
+          html += `
+            <div class="besprechungen-item">
+              <div class="besprechungen-item-header">
+                <div class="besprechungen-item-title">
+                  <span>🗃️</span> ${escapeHtml(title)}
+                </div>
+                <div class="besprechungen-item-type">
+                  Besprechung
+                </div>
+              </div>
+              <div class="besprechungen-item-date">
+                <i class="fas fa-calendar"></i> ${date}
+                ${time ? ` • ${time}` : ''}
+                ${ort ? ` • ${ort}` : ''}
+              </div>
+              <div class="besprechungen-item-content">
+                ${escapeHtml(content)}
+              </div>
+            </div>
+          `;
         });
-      });
-      
-      showNotification('Status in Konsole ausgegeben', 'info');
+
+        container.innerHTML = html;
+      } catch (error) {
+        console.error('Fehler beim Laden der Besprechungen:', error);
+        container.innerHTML = `
+          <div class="empty-besprechungen">
+            <div class="empty-besprechungen-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="empty-besprechungen-title">Fehler beim Laden</div>
+            <div class="empty-description">${error.message}</div>
+          </div>
+        `;
+      }
     }
 
-    // Zum Testen in der Konsole aufrufbar machen
-    window.debugApp = debugRealtimeStatus;
-    window.refreshApp = manualRefresh;
+    function searchBesprechungen(searchTerm) {
+      const items = document.querySelectorAll('.besprechungen-item');
+      const term = searchTerm.toLowerCase().trim();
+      
+      if (!term) {
+        items.forEach(item => item.style.display = 'block');
+        return;
+      }
+      
+      items.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(term) ? 'block' : 'none';
+      });
+    }
 
-    // ==================== HAUPTFUNKTIONEN ====================
+    // ==================== APP INITIALISIERUNG ====================
     function initializeApp() {
+      if (!isAuthenticated) return;
+      
+      console.log('App wird initialisiert');
+      loadSettings();
+      setupRealtimeListeners();
+      updateUnitAndRankSelects();
+      
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('oralDate').value = today;
       document.getElementById('orgDate').value = today;
       document.getElementById('soldatenDate').value = today;
       document.getElementById('besprechungDate').value = today;
-      document.getElementById('aufstellungDate').value = today;
 
       const now = new Date();
       const hours = now.getHours().toString().padStart(2, '0');
       const minutes = now.getMinutes().toString().padStart(2, '0');
       document.getElementById('soldatenTime').value = `${hours}:${minutes}`;
       document.getElementById('besprechungTime').value = `${hours}:${minutes}`;
-      document.getElementById('aufstellungTime').value = `${hours}:${minutes}`;
 
       document.getElementById('oralTimeStart').value = '16:40';
       document.getElementById('oralTimeEnd').value = '18:00';
@@ -3451,196 +3702,275 @@ Grund:
 
       setupFormChangeListeners();
       seedTemplateBoxes();
-      setupBeobachtungEventListeners();
       setupSoldatenEventListeners();
-      setupAnkundigungEventListeners();
-    }
-
-    function setupEventListeners() {
-      document.getElementById('searchEmployees').addEventListener('input', function (e) {
-        filterEmployees(e.target.value);
-      });
-
-      document.addEventListener('keydown', function (e) {
-        if (e.ctrlKey && e.key === 'n') { e.preventDefault(); openNewEmployeeModal(); }
-        if (e.ctrlKey && e.key === 'f') { e.preventDefault(); document.getElementById('searchEmployees').focus(); }
-        if (e.ctrlKey && e.key === 'e' && currentEmployee) { e.preventDefault(); openEditEmployeeModal(); }
-        if (e.ctrlKey && e.key === 'b') { e.preventDefault(); openBeobachtungAktenModal(); }
-        if (e.ctrlKey && e.key === 's') { e.preventDefault(); openSoldatenModal(); }
-        if (e.ctrlKey && e.key === 'a') { e.preventDefault(); openAnkundigungModal(); }
-        if (e.ctrlKey && e.key === 'r') { e.preventDefault(); manualRefresh(); }
-        if (e.ctrlKey && e.key === 'd') { e.preventDefault(); debugRealtimeStatus(); }
-      });
-
-      window.addEventListener('resize', adjustSidebarHeight);
-    }
-
-    function setupFormChangeListeners() {
-      const formInputs = document.querySelectorAll('.form-input, .form-select, .form-textarea, .toggle-switch input');
-      formInputs.forEach(input => {
-        input.addEventListener('input', handleFormChange);
-        input.addEventListener('change', handleFormChange);
-      });
-    }
-
-    function setupBeobachtungEventListeners() {
-      const beobachtungInputs = document.querySelectorAll('#beobachtungName, #beobachtungDN, #beobachtungGrund');
-      beobachtungInputs.forEach(input => {
-        input.addEventListener('input', updateBeobachtungPreview);
-      });
-    }
-
-    function setupSoldatenEventListeners() {
-      const soldatenInputs = document.querySelectorAll('#soldatenName, #soldatenDN, #soldatenUnit, #soldatenRank, #soldatenDate, #soldatenTime, #soldatenNotizen, #soldatenSonstiges');
-      soldatenInputs.forEach(input => {
-        input.addEventListener('input', updateSoldatenPreview);
-      });
-    }
-
-    function setupAnkundigungEventListeners() {
-      const ankundigungInputs = document.querySelectorAll('#ankundigungTitle, #ankundigungContent');
-      ankundigungInputs.forEach(input => {
-        input.addEventListener('input', updateAnkundigungPreview);
-      });
       
-      const besprechungInputs = document.querySelectorAll('#besprechungThema, #besprechungDate, #besprechungTime, #besprechungOrt, #besprechungContent');
-      besprechungInputs.forEach(input => {
-        input.addEventListener('input', updateBesprechungPreview);
-      });
-      
-      const aufstellungInputs = document.querySelectorAll('#aufstellungTyp, #aufstellungDate, #aufstellungTime, #aufstellungOrt, #aufstellungBemerkungen');
-      aufstellungInputs.forEach(input => {
-        input.addEventListener('input', updateAufstellungPreview);
-      });
+      // Zeige Ankündigung beim Laden
+      setTimeout(showLatestAnkundigung, 1000);
     }
 
-    function handleFormChange() {
-      if (currentEmployee) {
-        saveFormData();
-        updateTemplates();
-        saveEmployeeData(true);
+    // ==================== LOGO FUNKTIONEN ====================
+    async function loadLogo() {
+      try {
+        const logoUrl = localStorage.getItem('hr_app_logo_url');
+        if (logoUrl) {
+          settings.logoUrl = logoUrl;
+          updateLogoDisplay();
+        }
+        
+        // Versuche auch aus Firebase zu laden
+        try {
+          const logoRef = storage.ref('hr/logo.jpg');
+          const url = await logoRef.getDownloadURL();
+          if (url) {
+            settings.logoUrl = url;
+            localStorage.setItem('hr_app_logo_url', url);
+            updateLogoDisplay();
+          }
+        } catch (firebaseError) {
+          console.log('Kein Logo in Firebase gefunden, verwende Default');
+        }
+      } catch (error) {
+        console.error('Fehler beim Laden des Logos:', error);
       }
     }
 
-    function adjustSidebarHeight() {
-      const sidebar = document.querySelector('.sidebar');
-      const header = document.querySelector('.app-header');
-      const windowHeight = window.innerHeight;
-      const headerHeight = header.offsetHeight;
+    function updateLogoDisplay() {
+      const logoPreview = document.getElementById('logoPreview');
+      const logoPreviewImage = document.getElementById('logoPreviewImage');
+      
+      if (settings.logoUrl) {
+        logoPreviewImage.src = settings.logoUrl;
+        logoPreview.classList.add('has-image');
+      } else {
+        logoPreview.classList.remove('has-image');
+      }
+    }
 
-      const availableHeight = windowHeight - headerHeight - 40;
-      const newHeight = Math.max(availableHeight, 500);
-      sidebar.style.height = `${newHeight}px`;
+    async function handleLogoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        showNotification('Nur Bilddateien sind erlaubt', 'error');
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        showNotification('Datei ist zu groß (max. 5MB)', 'error');
+        return;
+      }
+
+      try {
+        showNotification('Logo wird hochgeladen...', 'info');
+        
+        // Altes Logo löschen
+        try {
+          const oldLogoRef = storage.ref('hr/logo.jpg');
+          await oldLogoRef.delete();
+        } catch (error) {
+          console.log('Kein altes Logo zum Löschen gefunden');
+        }
+
+        // Neues Logo hochladen
+        const storageRef = storage.ref('hr/logo.jpg');
+        await storageRef.put(file);
+        const downloadURL = await storageRef.getDownloadURL();
+        
+        settings.logoUrl = downloadURL;
+        localStorage.setItem('hr_app_logo_url', downloadURL);
+        updateLogoDisplay();
+        
+        showNotification('Logo erfolgreich hochgeladen', 'success');
+      } catch (error) {
+        console.error('Fehler beim Hochladen des Logos:', error);
+        showNotification('Fehler beim Hochladen des Logos', 'error');
+      }
+    }
+
+    async function removeLogo() {
+      if (!confirm('Logo wirklich entfernen?')) return;
+
+      try {
+        // Logo aus Firebase löschen
+        const logoRef = storage.ref('hr/logo.jpg');
+        await logoRef.delete();
+        
+        // Logo aus LocalStorage löschen
+        localStorage.removeItem('hr_app_logo_url');
+        settings.logoUrl = '';
+        updateLogoDisplay();
+        
+        showNotification('Logo entfernt', 'success');
+      } catch (error) {
+        console.error('Fehler beim Entfernen des Logos:', error);
+        showNotification('Fehler beim Entfernen des Logos', 'error');
+      }
     }
 
     // ==================== ANKÜNDIGUNGEN FUNKTIONEN ====================
-    function openAnkundigungModal() {
-      openModal('ankundigungModal');
-      updateAnkundigungPreview();
+    function showAnkundigungBanner() {
+      showLatestAnkundigung();
     }
 
-    function closeAnkundigungModal() {
-      closeModal('ankundigungModal');
-    }
-
-    function switchAnkundigungTab(tabName) {
-      currentAnkundigungTab = tabName;
-      
-      document.querySelectorAll('.ankundigung-tab').forEach(tab => {
-        tab.classList.remove('active');
-      });
-      let tabIndex = 0;
-      if (tabName === 'new') tabIndex = 0;
-      else if (tabName === 'besprechung') tabIndex = 1;
-      else if (tabName === 'aufstellung') tabIndex = 2;
-      else if (tabName === 'list') tabIndex = 3;
-      
-      document.querySelectorAll('.ankundigung-tab')[tabIndex].classList.add('active');
-      
-      document.querySelectorAll('.ankundigung-tab-content').forEach(content => {
-        content.style.display = 'none';
-      });
-      let tabId = '';
-      if (tabName === 'new') tabId = 'ankundigungNewTab';
-      else if (tabName === 'besprechung') tabId = 'ankundigungBesprechungTab';
-      else if (tabName === 'aufstellung') tabId = 'ankundigungAufstellungTab';
-      else tabId = 'ankundigungListTab';
-      
-      document.getElementById(tabId).style.display = 'block';
-      
-      if (tabName === 'list') {
-        renderAnkundigungListe();
+    async function showLatestAnkundigung() {
+      try {
+        // Lade die neueste Ankündigung (nur vom Typ 'ankundigung')
+        const querySnapshot = await db.collection('hrAnkundigungen')
+          .where('type', '==', 'ankundigung')
+          .orderBy('created', 'desc')
+          .limit(1)
+          .get();
+        
+        if (querySnapshot.empty) {
+          console.log('Keine Ankündigungen gefunden');
+          return;
+        }
+        
+        const ankundigung = querySnapshot.docs[0].data();
+        const banner = document.getElementById('ankundigungBanner');
+        const title = document.getElementById('bannerTitle');
+        const content = document.getElementById('bannerContent');
+        const type = document.getElementById('bannerType');
+        const date = document.getElementById('bannerDate');
+        
+        // Banner-Inhalt setzen
+        title.innerHTML = `<span>${ankundigung.icon || '🪧'}</span> ${escapeHtml(ankundigung.title || 'Ankündigung')}`;
+        content.textContent = ankundigung.content || '';
+        type.textContent = 'Ankündigung';
+        date.textContent = ankundigung.createdFormatted || 'Heute';
+        
+        // Banner anzeigen
+        banner.classList.add('show');
+        
+        // Automatisch nach 10 Sekunden ausblenden
+        setTimeout(() => {
+          banner.classList.remove('show');
+        }, 10000);
+      } catch (error) {
+        console.error('Fehler beim Laden der Ankündigung:', error);
       }
     }
 
-    function updateAnkundigungPreview() {
-      const title = document.getElementById('ankundigungTitle').value;
-      const content = document.getElementById('ankundigungContent').value;
-
-      const template = `🪧 **Ankündigung**${title ? '\n\n**' + title + '**' : ''}
-
-${content || ''}`;
-
-      document.getElementById('ankundigungPreview').textContent = template;
+    function closeBanner() {
+      document.getElementById('ankundigungBanner').classList.remove('show');
     }
 
-    function updateBesprechungPreview() {
-      const thema = document.getElementById('besprechungThema').value;
-      const date = document.getElementById('besprechungDate').value;
-      const time = document.getElementById('besprechungTime').value;
-      const ort = document.getElementById('besprechungOrt').value;
-      const content = document.getElementById('besprechungContent').value;
-
-      const formattedDate = date ? new Date(date).toLocaleDateString('de-DE') : '';
+    function switchAnkundigungenTab(tabName) {
+      currentAnkundigungenTab = tabName;
       
-      const template = `🖊️ **Besprechung**
-
-Thema: ${thema || ''}
-Datum: ${formattedDate}
-Uhrzeit: ${time || ''}
-Ort: ${ort || ''}
-
-${content || ''}`;
-
-      document.getElementById('besprechungPreview').textContent = template;
-    }
-
-    function updateAufstellungPreview() {
-      const typ = document.getElementById('aufstellungTyp').value;
-      const date = document.getElementById('aufstellungDate').value;
-      const time = document.getElementById('aufstellungTime').value;
-      const ort = document.getElementById('aufstellungOrt').value;
-      const bemerkungen = document.getElementById('aufstellungBemerkungen').value;
-
-      const formattedDate = date ? new Date(date).toLocaleDateString('de-DE') : '';
+      document.querySelectorAll('.ankundigungen-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
       
-      const template = `🕛 **Aufstellung**
-
-Typ: ${typ || ''}
-Datum: ${formattedDate}
-Uhrzeit: ${time || ''}
-Ort: ${ort || ''}
-Bemerkungen: ${bemerkungen || ''}`;
-
-      document.getElementById('aufstellungPreview').textContent = template;
+      document.querySelectorAll('.ankundigungen-tab-content').forEach(content => {
+        content.style.display = 'none';
+      });
+      
+      if (tabName === 'manage') {
+        document.querySelector('.ankundigungen-tab:nth-child(1)').classList.add('active');
+        document.getElementById('ankundigungenManageTab').style.display = 'block';
+        loadAnkundigungenList();
+      } else if (tabName === 'new') {
+        document.querySelector('.ankundigungen-tab:nth-child(2)').classList.add('active');
+        document.getElementById('ankundigungenNewTab').style.display = 'block';
+      } else if (tabName === 'besprechung') {
+        document.querySelector('.ankundigungen-tab:nth-child(3)').classList.add('active');
+        document.getElementById('ankundigungenBesprechungTab').style.display = 'block';
+      }
     }
 
-    async function copyAnkundigungTemplate() {
-      const template = document.getElementById('ankundigungPreview').textContent;
-      const success = await copyToClipboard(template);
-      showNotification(success ? 'Ankündigung kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
+    async function loadAnkundigungenList() {
+      const container = document.getElementById('ankundigungenList');
+      container.innerHTML = '<div class="loading"><div class="loading-spinner"></div><div>Lade Ankündigungen...</div></div>';
+
+      try {
+        const querySnapshot = await db.collection('hrAnkundigungen')
+          .orderBy('created', 'desc')
+          .limit(50)
+          .get();
+        
+        if (querySnapshot.empty) {
+          container.innerHTML = `
+            <div class="empty-ankundigungen">
+              <div class="empty-ankundigungen-icon"><i class="fas fa-bullhorn"></i></div>
+              <div class="empty-ankundigungen-title">Keine Ankündigungen gefunden</div>
+              <div class="empty-description">Erstellen Sie Ihre erste Ankündigung</div>
+            </div>
+          `;
+          return;
+        }
+
+        let html = '';
+        
+        querySnapshot.forEach(doc => {
+          const item = doc.data();
+          const isAnkundigung = item.type === 'ankundigung';
+          const isBesprechung = item.type === 'besprechung';
+          
+          const title = isBesprechung ? (item.thema || 'Ohne Thema') : (item.title || 'Ohne Titel');
+          const date = item.createdFormatted || 'Unbekannt';
+          const content = item.content || '';
+          const typeText = isAnkundigung ? 'Ankündigung' : 'Besprechung';
+          const icon = isAnkundigung ? '🪧' : '🗃️';
+          
+          html += `
+            <div class="ankundigungen-item" style="background: rgba(255,255,255,.03); border-radius: var(--radius-md); padding: 16px; border: 1px solid rgba(255,255,255,.08); margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                <div style="font-weight: 900; color: #fff; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+                  <span>${icon}</span> ${escapeHtml(title)}
+                </div>
+                <div style="background: rgba(139,92,246,.10); color: #a78bfa; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; border: 1px solid rgba(139,92,246,.20);">
+                  ${typeText}
+                </div>
+              </div>
+              <div style="color: var(--gray); font-size: 11px; margin-bottom: 8px; display: flex; align-items: center; gap: 4px;">
+                <i class="fas fa-calendar"></i> ${date}
+                ${isBesprechung && item.date ? ` • ${new Date(item.date).toLocaleDateString('de-DE')}` : ''}
+                ${isBesprechung && item.time ? ` • ${item.time}` : ''}
+                ${isBesprechung && item.ort ? ` • ${item.ort}` : ''}
+              </div>
+              <div style="color: var(--gray-light); font-size: 13px; line-height: 1.5; margin-bottom: 12px; padding: 12px; background: rgba(0,0,0,.2); border-radius: var(--radius-sm); border-left: 2px solid #8b5cf6; max-height: 100px; overflow-y: auto;">
+                ${escapeHtml(content.length > 200 ? content.substring(0, 200) + '...' : content)}
+              </div>
+              <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                <button class="btn btn-danger" style="padding: 6px 12px; font-size: 11px;" onclick="deleteAnkundigung('${doc.id}')">
+                  <i class="fas fa-trash"></i> Löschen
+                </button>
+              </div>
+            </div>
+          `;
+        });
+
+        container.innerHTML = html;
+      } catch (error) {
+        console.error('Fehler beim Laden der Ankündigungen:', error);
+        container.innerHTML = `
+          <div class="empty-ankundigungen">
+            <div class="empty-ankundigungen-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="empty-ankundigungen-title">Fehler beim Laden</div>
+            <div class="empty-description">${error.message}</div>
+          </div>
+        `;
+      }
     }
 
-    async function copyBesprechungTemplate() {
-      const template = document.getElementById('besprechungPreview').textContent;
-      const success = await copyToClipboard(template);
-      showNotification(success ? 'Besprechung kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
-    }
+    async function deleteAnkundigung(id) {
+      if (!confirm('Ankündigung/Besprechung wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) return;
 
-    async function copyAufstellungTemplate() {
-      const template = document.getElementById('aufstellungPreview').textContent;
-      const success = await copyToClipboard(template);
-      showNotification(success ? 'Aufstellung kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
+      try {
+        await db.collection('hrAnkundigungen').doc(id).delete();
+        
+        showNotification('Ankündigung/Besprechung gelöscht', 'success');
+        loadAnkundigungenList();
+        
+        // Wenn wir im Besprechungen-Modal sind, aktualisieren wir auch dort
+        if (document.getElementById('besprechungenModal').classList.contains('active')) {
+          loadBesprechungen();
+        }
+      } catch (error) {
+        console.error('Fehler beim Löschen:', error);
+        showNotification('Fehler beim Löschen: ' + error.message, 'error');
+      }
     }
 
     async function saveAnkundigung() {
@@ -3657,12 +3987,9 @@ Bemerkungen: ${bemerkungen || ''}`;
         type: 'ankundigung',
         title: title || 'Ohne Titel',
         content,
-        date: new Date().toISOString(),
-        dateFormatted: new Date().toLocaleDateString('de-DE'),
-        template: document.getElementById('ankundigungPreview').textContent,
-        icon: '🪧',
-        created: firebase.firestore.FieldValue.serverTimestamp(),
-        syncVersion: Date.now()
+        created: new Date().toISOString(),
+        createdFormatted: new Date().toLocaleDateString('de-DE'),
+        icon: '🪧'
       };
 
       try {
@@ -3671,9 +3998,9 @@ Bemerkungen: ${bemerkungen || ''}`;
         showNotification('Ankündigung erfolgreich gespeichert', 'success');
         document.getElementById('ankundigungTitle').value = '';
         document.getElementById('ankundigungContent').value = '';
-        updateAnkundigungPreview();
-        renderAnkundigungListe();
-        switchAnkundigungTab('list');
+        
+        // Zurück zur Verwaltung
+        switchAnkundigungenTab('manage');
       } catch (error) {
         console.error('Fehler beim Speichern der Ankündigung:', error);
         showNotification('Fehler beim Speichern: ' + error.message, 'error');
@@ -3700,12 +4027,9 @@ Bemerkungen: ${bemerkungen || ''}`;
         time,
         ort: ort || '',
         content,
-        created: firebase.firestore.FieldValue.serverTimestamp(),
+        created: new Date().toISOString(),
         createdFormatted: new Date().toLocaleDateString('de-DE'),
-        dateFormatted: new Date(date).toLocaleDateString('de-DE'),
-        template: document.getElementById('besprechungPreview').textContent,
-        icon: '🖊️',
-        syncVersion: Date.now()
+        icon: '🗃️'
       };
 
       try {
@@ -3713,190 +4037,385 @@ Bemerkungen: ${bemerkungen || ''}`;
         
         showNotification('Besprechung erfolgreich gespeichert', 'success');
         document.getElementById('besprechungThema').value = '';
-        document.getElementById('besprechungDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('besprechungDate').value = '';
         document.getElementById('besprechungTime').value = '';
         document.getElementById('besprechungOrt').value = '';
         document.getElementById('besprechungContent').value = '';
-        updateBesprechungPreview();
-        renderAnkundigungListe();
-        switchAnkundigungTab('list');
+        
+        // Zurück zur Verwaltung
+        switchAnkundigungenTab('manage');
       } catch (error) {
         console.error('Fehler beim Speichern der Besprechung:', error);
         showNotification('Fehler beim Speichern: ' + error.message, 'error');
       }
     }
 
-    async function saveAufstellung() {
-      const typ = document.getElementById('aufstellungTyp').value;
-      const date = document.getElementById('aufstellungDate').value;
-      const time = document.getElementById('aufstellungTime').value;
-      const ort = document.getElementById('aufstellungOrt').value.trim();
-      const bemerkungen = document.getElementById('aufstellungBemerkungen').value.trim();
-
-      if (!typ || !date || !time || !ort) {
-        showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
+    // ==================== SETTINGS FUNKTIONEN ====================
+    function openSettingsModal() {
+      if (!checkSettingsAuth()) {
+        openSettingsPasswordModal();
         return;
       }
+      openModal('settingsModal');
+      populateSettingsUI();
+      // Standardmäßig zur Verwaltung gehen
+      switchAnkundigungenTab('manage');
+    }
 
-      const aufstellung = {
-        id: `AUF-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-        type: 'aufstellung',
-        typ,
-        date,
-        time,
-        ort,
-        bemerkungen: bemerkungen || '',
-        created: firebase.firestore.FieldValue.serverTimestamp(),
-        createdFormatted: new Date().toLocaleDateString('de-DE'),
-        dateFormatted: new Date(date).toLocaleDateString('de-DE'),
-        template: document.getElementById('aufstellungPreview').textContent,
-        icon: '🕛',
-        syncVersion: Date.now()
-      };
-
-      try {
-        await db.collection('hrAnkundigungen').doc(aufstellung.id).set(aufstellung);
-        
-        showNotification('Aufstellung erfolgreich gespeichert', 'success');
-        document.getElementById('aufstellungTyp').value = '';
-        document.getElementById('aufstellungDate').value = new Date().toISOString().split('T')[0];
-        document.getElementById('aufstellungTime').value = '';
-        document.getElementById('aufstellungOrt').value = '';
-        document.getElementById('aufstellungBemerkungen').value = '';
-        updateAufstellungPreview();
-        renderAnkundigungListe();
-        switchAnkundigungTab('list');
-      } catch (error) {
-        console.error('Fehler beim Speichern der Aufstellung:', error);
-        showNotification('Fehler beim Speichern: ' + error.message, 'error');
+    function switchSettingsTab(tabName) {
+      currentSettingsTab = tabName;
+      
+      document.querySelectorAll('.settings-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      document.querySelectorAll('.settings-tab-content').forEach(content => {
+        content.style.display = 'none';
+      });
+      
+      if (tabName === 'units') {
+        document.querySelector('.settings-tab:nth-child(1)').classList.add('active');
+        document.getElementById('unitsTab').style.display = 'block';
+      } else if (tabName === 'ranks') {
+        document.querySelector('.settings-tab:nth-child(2)').classList.add('active');
+        document.getElementById('ranksTab').style.display = 'block';
+      } else if (tabName === 'ankundigungen') {
+        document.querySelector('.settings-tab:nth-child(3)').classList.add('active');
+        document.getElementById('ankundigungenTab').style.display = 'block';
+      } else if (tabName === 'logo') {
+        document.querySelector('.settings-tab:nth-child(4)').classList.add('active');
+        document.getElementById('logoTab').style.display = 'block';
       }
     }
 
-    function renderAnkundigungListe() {
-      const container = document.getElementById('ankundigungListe');
-      const searchTerm = document.getElementById('ankundigungSearch')?.value.toLowerCase() || '';
-      
-      let filteredAnkundigungen = ankundigungen;
-      if (searchTerm) {
-        filteredAnkundigungen = ankundigungen.filter(item => 
-          (item.title && item.title.toLowerCase().includes(searchTerm)) || 
-          (item.thema && item.thema.toLowerCase().includes(searchTerm)) ||
-          (item.content && item.content.toLowerCase().includes(searchTerm)) ||
-          (item.bemerkungen && item.bemerkungen.toLowerCase().includes(searchTerm))
-        );
-      }
-      
-      if (filteredAnkundigungen.length === 0) {
-        container.innerHTML = `
-          <div class="empty-ankundigung">
-            <div class="empty-ankundigung-icon"><i class="fas fa-bullhorn"></i></div>
-            <div class="empty-ankundigung-title">${searchTerm ? 'Keine passenden Einträge gefunden' : 'Keine Einträge gefunden'}</div>
-            <div class="empty-description">${searchTerm ? 'Versuchen Sie einen anderen Suchbegriff' : 'Erstellen Sie Ihren ersten Eintrag'}</div>
-          </div>
-        `;
-        return;
-      }
+    async function loadSettings() {
+      try {
+        const doc = await db.collection('hrSettings').doc('settings').get();
+        if (doc.exists) {
+          const loadedSettings = doc.data();
+          settings = { ...settings, ...loadedSettings };
+        }
+        
+        // Standard-Units und Ränge, falls keine vorhanden
+        if (!settings.units || settings.units.length === 0) {
+          settings.units = [
+            { name: "Air Force", discordId: "1269229762400878675" },
+            { name: "S.O.C", discordId: "1339523576159666218" },
+            { name: "Infantry", discordId: "1187756956425920645" },
+            { name: "Military Police", discordId: "1289716541658497055" },
+            { name: "Navy Marine", discordId: "1097653037968920776" },
+            { name: "Navy SEALs", discordId: "1125174901989445693" }
+          ];
+        }
 
-      let html = '';
-      filteredAnkundigungen.forEach(item => {
-        const typeLabel = item.type === 'ankundigung' ? 'Ankündigung' : 
-                         item.type === 'besprechung' ? 'Besprechung' : 'Aufstellung';
-        
-        const title = item.type === 'ankundigung' ? (item.title || 'Ohne Titel') :
-                     item.type === 'besprechung' ? item.thema : `${item.typ} - ${item.ort}`;
-        
-        const date = item.type === 'ankundigung' ? item.createdFormatted : 
-                    item.dateFormatted || item.createdFormatted;
-        
-        const content = item.type === 'ankundigung' ? item.content :
-                       item.type === 'besprechung' ? item.content : item.bemerkungen;
-        
-        html += `
-          <div class="ankundigung-item">
-            <div class="ankundigung-item-header">
-              <div class="ankundigung-item-title">
-                <span>${item.icon || '📄'}</span> ${escapeHtml(title)}
-              </div>
-              <div class="ankundigung-item-type">
-                ${typeLabel}
-              </div>
-            </div>
-            <div class="ankundigung-item-date">
-              <i class="fas fa-calendar"></i> Erstellt: ${date}
-            </div>
-            <div class="ankundigung-item-content">
-              ${escapeHtml(content.length > 200 ? content.substring(0, 200) + '...' : content)}
-            </div>
-            ${item.type === 'besprechung' ? `
-            <div style="display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
-              ${item.time ? `<div style="background: rgba(139,92,246,.10); color: #a78bfa; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; border: 1px solid rgba(139,92,246,.20);">
-                <i class="fas fa-clock"></i> ${item.time}
-              </div>` : ''}
-              ${item.ort ? `<div style="background: rgba(139,92,246,.10); color: #a78bfa; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; border: 1px solid rgba(139,92,246,.20);">
-                <i class="fas fa-map-marker-alt"></i> ${item.ort}
-              </div>` : ''}
-            </div>
-            ` : ''}
-            ${item.type === 'aufstellung' ? `
-            <div style="display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
-              <div style="background: rgba(139,92,246,.10); color: #a78bfa; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; border: 1px solid rgba(139,92,246,.20);">
-                ${item.typ}
-              </div>
-              ${item.time ? `<div style="background: rgba(139,92,246,.10); color: #a78bfa; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; border: 1px solid rgba(139,92,246,.20);">
-                <i class="fas fa-clock"></i> ${item.time}
-              </div>` : ''}
-              <div style="background: rgba(139,92,246,.10); color: #a78bfa; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; border: 1px solid rgba(139,92,246,.20);">
-                <i class="fas fa-map-marker-alt"></i> ${item.ort}
-              </div>
-            </div>
-            ` : ''}
-            <div class="ankundigung-item-actions">
-              <button class="ankundigung-item-btn ankundigung-item-btn-copy" onclick="copyAnkundigungFromList('${item.id}')">
-                <i class="fas fa-copy"></i> Kopieren
-              </button>
-              <button class="ankundigung-item-btn ankundigung-item-btn-delete" onclick="deleteAnkundigung('${item.id}')">
-                <i class="fas fa-trash"></i> Löschen
-              </button>
-            </div>
-          </div>
+        if (!settings.ranks || settings.ranks.length === 0) {
+          settings.ranks = [
+            { name: "Private", discordId: "1097625924104626198" },
+            { name: "Private First Class", discordId: "1098190829295771739" },
+            { name: "Specialist", discordId: "1097625921516748830" },
+            { name: "Corporal", discordId: "1097625914763919532" },
+            { name: "Sergeant", discordId: "1097625913274933298" },
+            { name: "Staff Sergeant", discordId: "1097625912163451112" },
+            { name: "Sergeant First Class", discordId: "1348414845862674524" },
+            { name: "Master Sergeant", discordId: "1348414845862674524" },
+            { name: "Lieutenant", discordId: "1097625900125782278" },
+            { name: "Captain", discordId: "1097625898880077955" },
+            { name: "Major", discordId: "1097625896560640024" },
+            { name: "Colonel", discordId: "1097625895541428275" },
+            { name: "Major General", discordId: "1097625893880479777" },
+            { name: "General of Army", discordId: "1097625891632316436" }
+          ];
+        }
+
+        updateUnitAndRankSelects();
+        populateSettingsUI();
+      } catch (error) {
+        console.error('Fehler beim Laden der Einstellungen:', error);
+      }
+    }
+
+    function populateSettingsUI() {
+      // Units
+      const unitList = document.getElementById('unitList');
+      unitList.innerHTML = '';
+      
+      settings.units.forEach((unit, index) => {
+        const unitItem = document.createElement('div');
+        unitItem.className = 'unit-item';
+        unitItem.innerHTML = `
+          <div class="unit-name">${escapeHtml(unit.name)}</div>
+          <input type="text" class="discord-id" value="${escapeHtml(unit.discordId || '')}" 
+                 placeholder="Discord Rollen-ID" onchange="updateUnitDiscordId(${index}, this.value)">
+          <button class="btn btn-danger" onclick="removeUnit(${index})">
+            <i class="fas fa-trash"></i>
+          </button>
         `;
+        unitList.appendChild(unitItem);
       });
 
-      container.innerHTML = html;
+      // Ränge
+      const rankList = document.getElementById('rankList');
+      rankList.innerHTML = '';
+      
+      settings.ranks.forEach((rank, index) => {
+        const rankItem = document.createElement('div');
+        rankItem.className = 'rank-item';
+        rankItem.innerHTML = `
+          <div class="rank-name">${escapeHtml(rank.name)}</div>
+          <input type="text" class="discord-id" value="${escapeHtml(rank.discordId || '')}" 
+                 placeholder="Discord Rollen-ID" onchange="updateRankDiscordId(${index}, this.value)">
+          <button class="btn btn-danger" onclick="removeRank(${index})">
+            <i class="fas fa-trash"></i>
+          </button>
+        `;
+        rankList.appendChild(rankItem);
+      });
+
+      // Logo Preview
+      updateLogoDisplay();
     }
 
-    function searchAnkundigungen(searchTerm) {
-      renderAnkundigungListe();
-    }
-
-    async function copyAnkundigungFromList(itemId) {
-      const item = ankundigungen.find(i => i.id === itemId);
-      if (!item) return;
-
-      const success = await copyToClipboard(item.template);
-      showNotification(success ? `${item.type === 'ankundigung' ? 'Ankündigung' : item.type === 'besprechung' ? 'Besprechung' : 'Aufstellung'} kopiert` : 'Fehler beim Kopieren', success ? 'success' : 'error');
-    }
-
-    async function deleteAnkundigung(itemId) {
-      if (!confirm('Eintrag wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) return;
-
-      try {
-        await db.collection('hrAnkundigungen').doc(itemId).delete();
-        showNotification('Eintrag gelöscht', 'success');
-      } catch (error) {
-        console.error('Fehler beim Löschen des Eintrags:', error);
-        showNotification('Fehler beim Löschen: ' + error.message, 'error');
+    function addNewUnit() {
+      const name = prompt('Name der neuen Unit:');
+      if (name && name.trim()) {
+        settings.units.push({
+          name: name.trim(),
+          discordId: ''
+        });
+        populateSettingsUI();
+        showNotification('Unit hinzugefügt', 'success');
       }
+    }
+
+    function addNewRank() {
+      const name = prompt('Name des neuen Rangs:');
+      if (name && name.trim()) {
+        settings.ranks.push({
+          name: name.trim(),
+          discordId: ''
+        });
+        populateSettingsUI();
+        showNotification('Rang hinzugefügt', 'success');
+      }
+    }
+
+    function updateUnitDiscordId(index, discordId) {
+      if (index >= 0 && index < settings.units.length) {
+        settings.units[index].discordId = discordId;
+      }
+    }
+
+    function updateRankDiscordId(index, discordId) {
+      if (index >= 0 && index < settings.ranks.length) {
+        settings.ranks[index].discordId = discordId;
+      }
+    }
+
+    function removeUnit(index) {
+      if (confirm('Unit wirklich löschen?')) {
+        settings.units.splice(index, 1);
+        populateSettingsUI();
+        showNotification('Unit gelöscht', 'success');
+      }
+    }
+
+    function removeRank(index) {
+      if (confirm('Rang wirklich löschen?')) {
+        settings.ranks.splice(index, 1);
+        populateSettingsUI();
+        showNotification('Rang gelöscht', 'success');
+      }
+    }
+
+    async function saveSettings() {
+      try {
+        await db.collection('hrSettings').doc('settings').set(settings, { merge: true });
+        
+        updateUnitAndRankSelects();
+        closeModal('settingsModal');
+        showNotification('Einstellungen gespeichert', 'success');
+      } catch (error) {
+        console.error('Fehler beim Speichern der Einstellungen:', error);
+        showNotification('Fehler: ' + error.message, 'error');
+      }
+    }
+
+    function updateUnitAndRankSelects() {
+      // Update alle Unit Selects
+      const unitSelects = [
+        document.getElementById('unitSelect'),
+        document.getElementById('unitSelect2'),
+        document.getElementById('newEmployeeUnit'),
+        document.getElementById('editEmployeeUnit'),
+        document.getElementById('soldatenUnit'),
+        document.getElementById('akteUnit'),
+        document.getElementById('beobachtungUnit')
+      ];
+
+      unitSelects.forEach(select => {
+        if (select) {
+          const currentValue = select.value;
+          select.innerHTML = '<option value="">Unit auswählen</option>';
+          
+          if (settings.units && settings.units.length > 0) {
+            settings.units.forEach(unit => {
+              const option = document.createElement('option');
+              option.value = unit.name;
+              option.textContent = unit.name;
+              select.appendChild(option);
+            });
+          }
+          
+          select.value = currentValue;
+        }
+      });
+
+      // Update alle Rank Selects
+      const rankSelects = [
+        document.getElementById('rankSelect'),
+        document.getElementById('rankSelect2'),
+        document.getElementById('newEmployeeRank'),
+        document.getElementById('editEmployeeRank'),
+        document.getElementById('soldatenRank'),
+        document.getElementById('akteRank'),
+        document.getElementById('beobachtungRank')
+      ];
+
+      rankSelects.forEach(select => {
+        if (select) {
+          const currentValue = select.value;
+          select.innerHTML = '<option value="">Rang auswählen</option>';
+          
+          if (settings.ranks && settings.ranks.length > 0) {
+            settings.ranks.forEach(rank => {
+              const option = document.createElement('option');
+              option.value = rank.name;
+              option.textContent = rank.name;
+              select.appendChild(option);
+            });
+          }
+          
+          select.value = currentValue;
+        }
+      });
+    }
+
+    // ==================== REALTIME LISTENER SETUP ====================
+    function setupRealtimeListeners() {
+      // Listener für Mitarbeiter
+      const unsubscribeEmployees = db.collection('hrEmployees')
+        .orderBy('lastUpdated', 'desc')
+        .onSnapshot((snapshot) => {
+          employees = [];
+          let archivedCount = 0;
+          
+          snapshot.forEach(doc => {
+            const employee = { id: doc.id, ...doc.data() };
+            employees.push(employee);
+            
+            if (employee.status === 'archived') {
+              archivedCount++;
+            }
+          });
+
+          renderEmployeeList();
+          updateStats();
+          document.getElementById('totalArchived').textContent = archivedCount;
+          
+          if (currentEmployee) {
+            const updatedEmployee = employees.find(emp => emp.id === currentEmployee.id);
+            if (updatedEmployee) {
+              selectEmployee(updatedEmployee);
+            }
+          }
+          
+          setTimeout(updateInductionDisplay, 100);
+        }, (error) => {
+          console.error('Fehler beim Lauschen auf Mitarbeiter-Änderungen:', error);
+          showNotification('Fehler bei Live-Updates', 'error');
+        });
+
+      // Listener für Akten
+      const unsubscribeAkten = db.collection('hrAkten')
+        .orderBy('lastUpdated', 'desc')
+        .limit(100)
+        .onSnapshot((snapshot) => {
+          akten = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            akten.push({ 
+              id: doc.id, 
+              ...data,
+              createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE')
+            });
+          });
+          updateStats();
+        }, (error) => {
+          console.error('Fehler beim Lauschen auf Akten-Änderungen:', error);
+        });
+
+      // Listener für Soldatengespräche
+      const unsubscribeSoldaten = db.collection('hrSoldatenGespräche')
+        .orderBy('created', 'desc')
+        .limit(100)
+        .onSnapshot((snapshot) => {
+          soldatenGespräche = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            soldatenGespräche.push({ 
+              id: doc.id, 
+              ...data,
+              createdFormatted: data.createdFormatted || new Date(data.created).toLocaleDateString('de-DE'),
+              dateFormatted: data.dateFormatted || (data.date ? new Date(data.date).toLocaleDateString('de-DE') : '')
+            });
+          });
+        }, (error) => {
+          console.error('Fehler beim Lauschen auf Soldatengespräche:', error);
+        });
+
+      // Listener für Settings
+      const unsubscribeSettings = db.collection('hrSettings')
+        .doc('settings')
+        .onSnapshot((doc) => {
+          if (doc.exists) {
+            const newSettings = doc.data();
+            settings = { ...settings, ...newSettings };
+            populateSettingsUI();
+            updateUnitAndRankSelects();
+          }
+        }, (error) => {
+          console.error('Fehler beim Lauschen auf Settings:', error);
+        });
+
+      // Listener für Ankündigungen
+      const unsubscribeAnkundigungen = db.collection('hrAnkundigungen')
+        .orderBy('created', 'desc')
+        .onSnapshot((snapshot) => {
+          ankundigungen = [];
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            ankundigungen.push({ 
+              id: doc.id, 
+              ...data
+            });
+          });
+        }, (error) => {
+          console.error('Fehler beim Lauschen auf Ankündigungen:', error);
+        });
+
+      unsubscribeFunctions = [
+        unsubscribeEmployees,
+        unsubscribeAkten,
+        unsubscribeSoldaten,
+        unsubscribeSettings,
+        unsubscribeAnkundigungen
+      ];
     }
 
     // ==================== SOLDATENGESPRÄCH FUNKTIONEN ====================
     function openSoldatenModal() {
       openModal('soldatenModal');
       updateSoldatenPreview();
-    }
-
-    function closeSoldatenModal() {
-      closeModal('soldatenModal');
     }
 
     function switchSoldatenTab(tabName) {
@@ -3984,11 +4503,10 @@ Sonstiges: ${sonstiges || ''}
         time,
         notizen,
         sonstiges: sonstiges || '',
-        created: firebase.firestore.FieldValue.serverTimestamp(),
+        created: new Date().toISOString(),
         createdFormatted: new Date().toLocaleDateString('de-DE'),
         dateFormatted: new Date(date).toLocaleDateString('de-DE'),
-        template: document.getElementById('soldatenPreview').textContent,
-        syncVersion: Date.now()
+        template: document.getElementById('soldatenPreview').textContent
       };
 
       try {
@@ -4105,6 +4623,7 @@ Sonstiges: ${sonstiges || ''}
 
       try {
         await db.collection('hrSoldatenGespräche').doc(gesprächId).delete();
+        
         showNotification('Soldatengespräch gelöscht', 'success');
       } catch (error) {
         console.error('Fehler beim Löschen des Soldatengesprächs:', error);
@@ -4112,14 +4631,17 @@ Sonstiges: ${sonstiges || ''}
       }
     }
 
+    function setupSoldatenEventListeners() {
+      const soldatenInputs = document.querySelectorAll('#soldatenName, #soldatenDN, #soldatenUnit, #soldatenRank, #soldatenDate, #soldatenTime, #soldatenNotizen, #soldatenSonstiges');
+      soldatenInputs.forEach(input => {
+        input.addEventListener('input', updateSoldatenPreview);
+      });
+    }
+
     // ==================== BEOBACHTUNGS AKTEN FUNKTIONEN ====================
     function openBeobachtungAktenModal() {
       openModal('beobachtungAktenModal');
       updateBeobachtungPreview();
-    }
-
-    function closeBeobachtungAktenModal() {
-      closeModal('beobachtungAktenModal');
     }
 
     function switchBeobachtungTab(tabName) {
@@ -4192,16 +4714,16 @@ Grund: ${grund || ''}
         dn,
         unit: unit || '',
         rank: rank || '',
-        created: firebase.firestore.FieldValue.serverTimestamp(),
+        created: new Date().toISOString(),
         createdFormatted: new Date().toLocaleDateString('de-DE'),
         beobachtungen: [],
-        lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
-        syncVersion: Date.now()
+        lastUpdated: new Date().toISOString()
       };
 
       try {
         await db.collection('hrAkten').doc(akte.id).set(akte);
-        showNotification('Akte erfolgreich erstellt', 'success');
+        
+        showNotification('Akte erfolgreicht erstellt', 'success');
         document.getElementById('akteName').value = '';
         document.getElementById('akteDN').value = '';
         document.getElementById('akteUnit').value = '';
@@ -4239,11 +4761,10 @@ Grund: ${grund || ''}
           dn,
           unit: '',
           rank: '',
-          created: firebase.firestore.FieldValue.serverTimestamp(),
+          created: new Date().toISOString(),
           createdFormatted: new Date().toLocaleDateString('de-DE'),
           beobachtungen: [],
-          lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
-          syncVersion: Date.now()
+          lastUpdated: new Date().toISOString()
         };
         
         try {
@@ -4263,22 +4784,19 @@ Grund: ${grund || ''}
         grund,
         date: new Date().toISOString(),
         dateFormatted: new Date().toLocaleDateString('de-DE'),
-        template: document.getElementById('beobachtungPreview').textContent,
-        created: firebase.firestore.FieldValue.serverTimestamp()
+        template: document.getElementById('beobachtungPreview').textContent
       };
 
       try {
         if (!akte.beobachtungen) akte.beobachtungen = [];
         akte.beobachtungen.unshift(beobachtung);
-        akte.lastUpdated = firebase.firestore.FieldValue.serverTimestamp();
-        akte.syncVersion = Date.now();
+        akte.lastUpdated = new Date().toISOString();
         
         await db.collection('hrAkten').doc(akte.id).update({
           beobachtungen: akte.beobachtungen,
-          lastUpdated: akte.lastUpdated,
-          syncVersion: akte.syncVersion
+          lastUpdated: akte.lastUpdated
         });
-        
+
         showNotification('Beobachtung zur Akte hinzugefügt', 'success');
         document.getElementById('beobachtungName').value = '';
         document.getElementById('beobachtungDN').value = '';
@@ -4475,15 +4993,13 @@ Grund: ${grund || ''}
 
       try {
         akte.beobachtungen = akte.beobachtungen.filter(b => b.id !== beobachtungId);
-        akte.lastUpdated = firebase.firestore.FieldValue.serverTimestamp();
-        akte.syncVersion = Date.now();
+        akte.lastUpdated = new Date().toISOString();
         
         await db.collection('hrAkten').doc(akteId).update({
           beobachtungen: akte.beobachtungen,
-          lastUpdated: akte.lastUpdated,
-          syncVersion: akte.syncVersion
+          lastUpdated: akte.lastUpdated
         });
-        
+
         showNotification('Beobachtung gelöscht', 'success');
         closeModal('akteDetailModal');
         setTimeout(() => openAkteDetail(akteId), 100);
@@ -4499,6 +5015,7 @@ Grund: ${grund || ''}
 
       try {
         await db.collection('hrAkten').doc(akteId).delete();
+        
         showNotification('Akte gelöscht', 'success');
       } catch (error) {
         console.error('Fehler beim Löschen der Akte:', error);
@@ -4518,7 +5035,44 @@ Grund: ${grund || ''}
       updateBeobachtungPreview();
     }
 
-    // ==================== ENHANCED MITARBEITER FUNKTIONEN ====================
+    // ==================== HAUPTFUNKTIONEN ====================
+    function setupEventListeners() {
+      document.getElementById('searchEmployees').addEventListener('input', function (e) {
+        filterEmployees(e.target.value);
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.ctrlKey && e.key === 'n') { e.preventDefault(); openNewEmployeeModal(); }
+        if (e.ctrlKey && e.key === 'f') { e.preventDefault(); document.getElementById('searchEmployees').focus(); }
+        if (e.ctrlKey && e.key === 'e' && currentEmployee) { e.preventDefault(); openEditEmployeeModal(); }
+        if (e.ctrlKey && e.key === 'b') { e.preventDefault(); openBeobachtungAktenModal(); }
+        if (e.ctrlKey && e.key === 's') { e.preventDefault(); openSoldatenModal(); }
+        if (e.ctrlKey && e.key === ',') { e.preventDefault(); openSettingsWithPassword(); }
+      });
+
+      window.addEventListener('resize', adjustSidebarHeight);
+    }
+
+    function setupFormChangeListeners() {
+      const formInputs = document.querySelectorAll('.form-input, .form-select, .form-textarea, .toggle-switch input');
+      formInputs.forEach(input => {
+        input.addEventListener('input', handleFormChange);
+        input.addEventListener('change', handleFormChange);
+      });
+    }
+
+    function adjustSidebarHeight() {
+      const sidebar = document.querySelector('.sidebar');
+      const header = document.querySelector('.app-header');
+      const windowHeight = window.innerHeight;
+      const headerHeight = header.offsetHeight;
+
+      const availableHeight = windowHeight - headerHeight - 40;
+      const newHeight = Math.max(availableHeight, 500);
+      sidebar.style.height = `${newHeight}px`;
+    }
+
+    // ==================== MITARBEITER FUNKTIONEN ====================
     function renderEmployeeList() {
       const container = document.getElementById('employeeList');
       const countElement = document.getElementById('employeeCount');
@@ -4547,8 +5101,11 @@ Grund: ${grund || ''}
       countElement.textContent = filteredEmployees.length;
 
       filteredEmployees.forEach(employee => {
+        const isArchived = employee.status === 'archived';
+        const isActive = currentEmployee?.id === employee.id;
+        
         const card = document.createElement('div');
-        card.className = `employee-card ${currentEmployee?.id === employee.id ? 'active' : ''}`;
+        card.className = `employee-card ${isActive ? 'active' : ''} ${isArchived ? 'archived' : ''}`;
         card.onclick = () => selectEmployee(employee);
         card.oncontextmenu = (e) => { e.preventDefault(); showEmployeeContextMenu(e, employee); };
 
@@ -4581,19 +5138,35 @@ Grund: ${grund || ''}
     }
 
     function getEmptyStateTitle() {
-      return 'Keine Mitarbeiter';
+      if (showArchived) return 'Keine archivierten Mitarbeiter';
+      return 'Keine aktiven Mitarbeiter';
     }
 
     function getFilteredEmployees() {
+      let filtered = employees.filter(emp => {
+        if (showArchived) {
+          return emp.status === 'archived';
+        } else {
+          return !emp.status || emp.status === 'active';
+        }
+      });
+
       if (currentFilter === 'oral') {
-        return employees.filter(emp => !(emp.inductions?.oral?.completed));
+        filtered = filtered.filter(emp => !(emp.inductions?.oral?.completed));
       } else if (currentFilter === 'org') {
-        return employees.filter(emp => !(emp.inductions?.org?.completed));
+        filtered = filtered.filter(emp => !(emp.inductions?.org?.completed));
       }
-      return employees;
+      
+      return filtered;
     }
 
     function getEmptyStateDescription() {
+      if (showArchived) {
+        if (currentFilter === 'oral') return 'Keine archivierten Mitarbeiter mit ausstehender mündlicher Einweisung';
+        if (currentFilter === 'org') return 'Keine archivierten Mitarbeiter mit ausstehender organisatorischer Einweisung';
+        return 'Keine archivierten Mitarbeiter gefunden';
+      }
+      
       if (currentFilter === 'oral') return 'Keine Mitarbeiter mit ausstehender mündlicher Einweisung';
       if (currentFilter === 'org') return 'Keine Mitarbeiter mit ausstehender organisatorischer Einweisung';
       return 'Fügen Sie Ihren ersten Mitarbeiter hinzu';
@@ -4626,7 +5199,6 @@ Grund: ${grund || ''}
     }
 
     function selectEmployee(employee) {
-      console.log(`📌 Mitarbeiter ausgewählt: ${employee.name} (${employee.id})`);
       currentEmployee = employee;
 
       document.getElementById('employeeHeader').style.display = 'flex';
@@ -4641,10 +5213,9 @@ Grund: ${grund || ''}
     function loadEmployeeData() {
       if (!currentEmployee) return;
 
-      console.log(`📂 Lade Daten für Mitarbeiter: ${currentEmployee.name}`);
-
       const oralData = currentEmployee.oralData || {};
       const orgData = currentEmployee.orgData || {};
+      const isArchived = currentEmployee.status === 'archived';
 
       document.getElementById('oralDate').value = oralData.date || (new Date().toISOString().split('T')[0]);
       document.getElementById('oralTimeStart').value = oralData.timeStart || '16:40';
@@ -4670,6 +5241,25 @@ Grund: ${grund || ''}
 
       updateInductionUI('oral', oralCompleted);
       updateInductionUI('org', orgCompleted);
+
+      // Archive Status anzeigen
+      const archiveTag = document.getElementById('archiveStatusTag');
+      const archiveButton = document.getElementById('archiveButton');
+      const archiveButtonText = document.getElementById('archiveButtonText');
+      
+      if (isArchived) {
+        archiveTag.style.display = 'flex';
+        archiveButton.style.display = 'inline-flex';
+        archiveButtonText.textContent = 'Wiederherstellen';
+        document.getElementById('oralInductionToggle').disabled = true;
+        document.getElementById('orgInductionToggle').disabled = true;
+      } else {
+        archiveTag.style.display = 'none';
+        archiveButton.style.display = 'inline-flex';
+        archiveButtonText.textContent = 'Archivieren';
+        document.getElementById('oralInductionToggle').disabled = false;
+        document.getElementById('orgInductionToggle').disabled = false;
+      }
 
       checkBothInductionsCompleted();
       updateTemplates();
@@ -4736,44 +5326,32 @@ Grund: ${grund || ''}
       const rankSelectValue = document.getElementById('rankSelect').value;
       if (unitSelectValue) currentEmployee.unit = unitSelectValue;
       if (rankSelectValue) currentEmployee.rank = rankSelectValue;
-
-      currentEmployee.lastUpdated = new Date().toISOString();
     }
 
-    async function saveEmployeeData(isAutoSave = false) {
+    async function saveEmployeeData(autoSave = false) {
       if (!currentEmployee) return;
 
-      // Formular-Daten speichern
-      saveFormData();
-      
       try {
-        // Update mit serverTimestamp für konsistente Updates
-        const updateData = {
+        const dataToSave = {
           name: currentEmployee.name,
           dn: currentEmployee.dn,
-          unit: currentEmployee.unit || '',
-          rank: currentEmployee.rank || '',
+          unit: currentEmployee.unit,
+          rank: currentEmployee.rank,
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
           inductions: currentEmployee.inductions || {},
           oralData: currentEmployee.oralData || {},
           orgData: currentEmployee.orgData || {},
-          lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
-          syncVersion: Date.now() // Für Konfliktlösung
+          status: currentEmployee.status || 'active'
         };
-        
-        console.log(`💾 Speichere Mitarbeiter: ${currentEmployee.name}`, updateData);
-        
-        await db.collection('hrEmployees').doc(currentEmployee.id).set(updateData, { merge: true });
-        
-        console.log(`✅ Mitarbeiter ${currentEmployee.id} gespeichert`);
-        
-        if (!isAutoSave) {
-          showNotification('Änderungen gespeichert', 'success');
-        }
+
+        await db.collection('hrEmployees').doc(currentEmployee.id).set(dataToSave, { merge: true });
         
         return true;
       } catch (error) {
-        console.error('❌ Fehler beim Speichern:', error);
-        showNotification('Fehler beim Speichern: ' + error.message, 'error');
+        console.error('Fehler beim Speichern:', error);
+        if (!autoSave) {
+          showNotification('Fehler beim Speichern: ' + error.message, 'error');
+        }
         return false;
       }
     }
@@ -4803,6 +5381,8 @@ Grund: ${grund || ''}
         return;
       }
 
+      const oldData = { ...currentEmployee };
+      
       currentEmployee.name = name;
       currentEmployee.dn = dn;
       currentEmployee.unit = document.getElementById('editEmployeeUnit').value || '';
@@ -4830,19 +5410,17 @@ Grund: ${grund || ''}
 
       try {
         await db.collection('hrEmployees').doc(currentEmployee.id).delete();
-        showNotification('Mitarbeiter erfolgreich gelöscht', 'success');
-        
+
         closeModal('editEmployeeModal');
         currentEmployee = null;
         document.getElementById('employeeHeader').style.display = 'none';
         document.getElementById('inductionContent').style.display = 'none';
         renderEmployeeList();
         updateStats();
-        
+        showNotification('Mitarbeiter endgültig gelöscht', 'success');
       } catch (error) {
         console.error('Fehler beim Löschen:', error);
         showNotification('Fehler beim Löschen: ' + error.message, 'error');
-        return false;
       }
     }
 
@@ -4937,8 +5515,12 @@ Grund: ${grund || ''}
 
       const timeSeparator = isOral ? 'bis' : '-';
 
-      const unitDiscordId = unitDiscordIds[unit] || '';
-      const rankDiscordId = rankDiscordIds[rank] || '';
+      // Finde Discord IDs aus den Settings
+      const unitSetting = settings.units.find(u => u.name === unit);
+      const rankSetting = settings.ranks.find(r => r.name === rank);
+      
+      const unitDiscordId = unitSetting?.discordId || '';
+      const rankDiscordId = rankSetting?.discordId || '';
 
       const unitDisplay = unitDiscordId ? `<@&${unitDiscordId}>` : unit;
       const rankDisplay = rankDiscordId ? `<@&${rankDiscordId}>` : rank;
@@ -4962,8 +5544,20 @@ Sonstiges: ${notes}
     }
 
     function updateStats() {
-      document.getElementById('totalEmployees').textContent = employees.length;
-      document.getElementById('totalAkten').textContent = akten.length;
+      const totalEmployees = employees.filter(emp => !emp.status || emp.status === 'active').length;
+      const totalArchived = employees.filter(emp => emp.status === 'archived').length;
+      
+      document.getElementById('totalEmployees').textContent = totalEmployees;
+      document.getElementById('totalArchived').textContent = totalArchived;
+      
+      // Akten zählen (Beobachtungen)
+      let aktenCount = 0;
+      employees.forEach(emp => {
+        if (emp.beobachtungen && emp.beobachtungen.length > 0) {
+          aktenCount += emp.beobachtungen.length;
+        }
+      });
+      document.getElementById('totalAkten').textContent = aktenCount + akten.length;
     }
 
     function showEmployeeContextMenu(e, employee) {
@@ -4986,27 +5580,26 @@ Sonstiges: ${notes}
         box-shadow: var(--shadow-md);
       `;
 
+      const isArchived = employee.status === 'archived';
+      
       menu.innerHTML = `
         <div style="padding: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
           <div style="font-weight: 900; color: white; margin-bottom: 2px; font-size: 13px;">${escapeHtml(employee.name || '')}</div>
           <div style="font-size: 11px; color: var(--gray);">DN: ${escapeHtml(employee.dn || '')}</div>
+          ${isArchived ? '<div style="font-size: 10px; color: var(--warning); margin-top: 4px;"><i class="fas fa-archive"></i> Archiviert</div>' : ''}
         </div>
         <div style="padding: 4px 0;">
           <button onclick="selectEmployee(employees.find(x => x.id === '${employee.id}')); openEditEmployeeModal(); document.getElementById('contextMenu')?.remove();"
             style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--primary-light);font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:2px;">
             <i class="fas fa-edit"></i> Bearbeiten
           </button>
-          <button onclick="deleteEmployee('${employee.id}')"
-            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--danger);font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:2px;">
+          <button onclick="toggleArchiveEmployeeContext('${employee.id}')"
+            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:${isArchived ? 'var(--secondary)' : 'var(--warning)'};font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:2px;">
+            <i class="fas ${isArchived ? 'fa-undo' : 'fa-archive'}"></i> ${isArchived ? 'Wiederherstellen' : 'Archivieren'}
+          </button>
+          <button onclick="deleteEmployeePermanently('${employee.id}')"
+            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--danger);font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;">
             <i class="fas fa-trash"></i> Löschen
-          </button>
-          <button onclick="duplicateEmployee('${employee.id}')"
-            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--primary-light);font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:2px;">
-            <i class="fas fa-copy"></i> Duplizieren
-          </button>
-          <button onclick="exportEmployee('${employee.id}')"
-            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--secondary);font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;">
-            <i class="fas fa-download"></i> Exportieren
           </button>
         </div>
       `;
@@ -5027,68 +5620,51 @@ Sonstiges: ${notes}
       }, 100);
     }
 
-    async function deleteEmployee(employeeId) {
-      if (!confirm('Mitarbeiter wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) return;
+    async function toggleArchiveEmployeeContext(employeeId) {
+      const employee = employees.find(emp => emp.id === employeeId);
+      if (!employee) return;
+
+      const newStatus = employee.status === 'archived' ? 'active' : 'archived';
+
+      try {
+        await db.collection('hrEmployees').doc(employeeId).update({
+          status: newStatus,
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        const message = newStatus === 'archived' ? 'Mitarbeiter archiviert' : 'Mitarbeiter wiederhergestellt';
+        showNotification(message, 'success');
+        
+        document.getElementById('contextMenu')?.remove();
+      } catch (error) {
+        console.error('Fehler beim Archivieren/Wiederherstellen:', error);
+        showNotification('Fehler: ' + error.message, 'error');
+      }
+    }
+
+    async function deleteEmployeePermanently(employeeId) {
+      const employee = employees.find(emp => emp.id === employeeId);
+      if (!employee) return;
+
+      if (!confirm(`Mitarbeiter "${employee.name}" (DN ${employee.dn}) wirklich endgültig löschen?\n\nDiese Aktion kann nicht rückgängig gemacht werden!`)) {
+        return;
+      }
 
       try {
         await db.collection('hrEmployees').doc(employeeId).delete();
-        showNotification('Mitarbeiter gelöscht', 'success');
-        
-        if (currentEmployee?.id === employeeId) {
+
+        if (currentEmployee && currentEmployee.id === employeeId) {
           currentEmployee = null;
           document.getElementById('employeeHeader').style.display = 'none';
           document.getElementById('inductionContent').style.display = 'none';
         }
-
+        
+        showNotification('Mitarbeiter endgültig gelöscht', 'success');
         document.getElementById('contextMenu')?.remove();
       } catch (error) {
         console.error('Fehler beim Löschen:', error);
         showNotification('Fehler beim Löschen: ' + error.message, 'error');
       }
-    }
-
-    async function duplicateEmployee(employeeId) {
-      const employee = employees.find(emp => emp.id === employeeId);
-      if (!employee) return;
-
-      const newEmployee = {
-        ...JSON.parse(JSON.stringify(employee)),
-        id: `EMP-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-        name: `${employee.name} (Kopie)`,
-        lastUpdated: new Date().toISOString(),
-        syncVersion: Date.now()
-      };
-
-      delete newEmployee.id; // Neue ID wird von Firebase generiert
-      
-      try {
-        await db.collection('hrEmployees').add(newEmployee);
-        showNotification('Mitarbeiter dupliziert', 'success');
-        document.getElementById('contextMenu')?.remove();
-      } catch (error) {
-        console.error('Fehler beim Duplizieren:', error);
-        showNotification('Fehler beim Duplizieren: ' + error.message, 'error');
-      }
-    }
-
-    function exportEmployee(employeeId) {
-      const employee = employees.find(emp => emp.id === employeeId);
-      if (!employee) return;
-
-      const data = JSON.stringify(employee, null, 2);
-      const blob = new Blob([data], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `mitarbeiter-${(employee.name || 'unbekannt').replace(/[^a-z0-9]/gi, '_')}-${(employee.dn || '')}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      showNotification('Mitarbeiter exportiert', 'success');
-      document.getElementById('contextMenu')?.remove();
     }
 
     async function copyToClipboard(text) {
@@ -5151,33 +5727,24 @@ Sonstiges: ${notes}
         return;
       }
 
-      // Prüfe ob DN bereits existiert
-      const existingEmployee = employees.find(emp => emp.dn == dn);
-      if (existingEmployee) {
-        showNotification(`Die Dienstnummer ${dn} wird bereits von ${existingEmployee.name} verwendet`, 'warning');
-        return;
-      }
+      const employeeId = `EMP-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 
-      const employeeData = {
+      const newEmployee = {
+        id: employeeId,
         name,
         dn,
         unit: unit || '',
         rank: rank || '',
-        lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
+        lastUpdated: new Date().toISOString(),
         inductions: { oral: { completed: false }, org: { completed: false } },
         oralData: { date: '', timeStart: '16:40', timeEnd: '18:00', person: '', notes: '', unit: unit || '', rank: rank || '' },
         orgData: { date: '', timeStart: '22:10', timeEnd: '23:05', person: '', notes: '', unit: unit || '', rank: rank || '' },
-        syncVersion: Date.now()
+        status: 'active'
       };
 
       try {
-        const docRef = await db.collection('hrEmployees').add(employeeData);
-        
-        const newEmployee = {
-          id: docRef.id,
-          ...employeeData
-        };
-        
+        await db.collection('hrEmployees').doc(employeeId).set(newEmployee);
+
         closeModal('newEmployeeModal');
         selectEmployee(newEmployee);
         updateStats();
@@ -5188,9 +5755,8 @@ Sonstiges: ${notes}
         document.getElementById('newEmployeeRank').value = '';
 
         showNotification(`Mitarbeiter "${name}" erstellt`, 'success');
-        
       } catch (error) {
-        console.error('Fehler beim Erstellen des Mitarbeiters:', error);
+        console.error('Fehler beim Erstellen:', error);
         showNotification('Fehler beim Erstellen: ' + error.message, 'error');
       }
     }
@@ -5200,19 +5766,10 @@ Sonstiges: ${notes}
       const messageElement = document.getElementById('notificationMessage');
       messageElement.textContent = message;
 
-      if (type === 'success') {
-        notification.style.background = 'var(--secondary)';
-        notification.querySelector('.notification-icon').className = 'fas fa-check notification-icon';
-      } else if (type === 'error') {
-        notification.style.background = 'var(--danger)';
-        notification.querySelector('.notification-icon').className = 'fas fa-exclamation-triangle notification-icon';
-      } else if (type === 'warning') {
-        notification.style.background = 'var(--warning)';
-        notification.querySelector('.notification-icon').className = 'fas fa-exclamation-circle notification-icon';
-      } else {
-        notification.style.background = 'var(--primary)';
-        notification.querySelector('.notification-icon').className = 'fas fa-info-circle notification-icon';
-      }
+      if (type === 'success') notification.style.background = 'var(--secondary)';
+      else if (type === 'error') notification.style.background = 'var(--danger)';
+      else if (type === 'warning') notification.style.background = 'var(--warning)';
+      else notification.style.background = 'var(--primary)';
 
       notification.classList.add('show');
       setTimeout(() => notification.classList.remove('show'), 3000);
@@ -5261,6 +5818,41 @@ Sonstiges:
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+    }
+
+    // ==================== SOFT DELETE + ARCHIVIERUNG ====================
+    async function toggleArchiveEmployee() {
+      if (!currentEmployee) return;
+
+      const newStatus = currentEmployee.status === 'archived' ? 'active' : 'archived';
+
+      try {
+        await db.collection('hrEmployees').doc(currentEmployee.id).update({
+          status: newStatus,
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        const message = newStatus === 'archived' ? 'Mitarbeiter archiviert' : 'Mitarbeiter wiederhergestellt';
+        showNotification(message, 'success');
+      } catch (error) {
+        console.error('Fehler beim Archivieren/Wiederherstellen:', error);
+        showNotification('Fehler: ' + error.message, 'error');
+      }
+    }
+
+    function toggleArchiveView() {
+      showArchived = !showArchived;
+      const buttonText = document.getElementById('archiveToggleText');
+      buttonText.textContent = showArchived ? 'Aktive anzeigen' : 'Archiv anzeigen';
+      renderEmployeeList();
+    }
+
+    function handleFormChange() {
+      if (currentEmployee) {
+        saveFormData();
+        updateTemplates();
+        saveEmployeeData(true);
+      }
     }
   </script>
 </body>
