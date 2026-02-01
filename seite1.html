@@ -3262,7 +3262,41 @@
       .soldaten-item-actions,
       .beobachtung-akte-actions{flex-direction:column}
     }
-  </style>
+  
+    /* === Mobile Typography & Touch Improvements (v3) === */
+    @media (max-width: 768px){
+      body{font-size:16px}
+      .app-container{gap:14px}
+      .sidebar-title{font-size:15px}
+      .employee-item{padding:12px}
+      .employee-name{font-size:14px}
+      .employee-dn{font-size:12px}
+      .content-title{font-size:18px}
+      .content-subtitle{font-size:12px}
+      .stat-label{font-size:10px}
+      .stat-value{font-size:20px}
+
+      /* Prevent iOS zoom + improve readability */
+      .form-input,.form-select,.form-textarea,
+      .main-password-input,
+      .settings-password-input{font-size:16px}
+
+      .btn{padding:12px 14px;font-size:14px}
+      .btn i{font-size:14px}
+
+      .modal{max-width: 100%}
+    }
+    @media (max-width: 480px){
+      body{font-size:16px}
+      .main-password-content{padding:22px}
+      .main-password-title{font-size:18px}
+      .main-password-input{padding:14px 16px}
+      .btn{width:100%}
+      .employee-tags .tag{font-size:12px;padding:6px 10px}
+      .template-box{font-size:13px;line-height:1.45}
+    }
+
+</style>
 </head>
 
 <body>
@@ -4235,64 +4269,6 @@ Grund:
     let currentEditItemId = null;
     let currentEditItemType = null; // 'ankundigung' oder 'besprechung'
 
-
-// ==================== UTILITIES (Verbesserungen) ====================
-function debounce(fn, wait = 180) {
-  let t;
-  return function (...args) {
-    clearTimeout(t);
-    t = setTimeout(() => fn.apply(this, args), wait);
-  };
-}
-
-// Modal UX: ESC schließt zuletzt geöffnetes Modal + Scroll-Lock + Fokus zurück
-const __modalState = { stack: [], lastFocus: null };
-
-function openModal(modalId) {
-  const modal = document.getElementById(modalId);
-  if (!modal) return;
-
-  __modalState.lastFocus = document.activeElement;
-  modal.classList.add('active');
-  document.documentElement.style.overflow = 'hidden';
-
-  __modalState.stack.push(modalId);
-
-  // Focus first input/button if exists
-  const focusable = modal.querySelector('input, textarea, select, button, [href], [tabindex]:not([tabindex="-1"])');
-  if (focusable) setTimeout(() => focusable.focus(), 0);
-}
-
-function closeModal(modalId) {
-  const modal = document.getElementById(modalId);
-  if (!modal) return;
-
-  modal.classList.remove('active');
-
-  // Stack cleanup
-  for (let i = __modalState.stack.length - 1; i >= 0; i--) {
-    if (__modalState.stack[i] === modalId) { __modalState.stack.splice(i, 1); break; }
-  }
-
-  // Spezielles Verhalten aus deinem Script beibehalten
-  if (modalId === 'akteDetailModal') {
-    setTimeout(() => modal.remove(), 300);
-  }
-
-  if (__modalState.stack.length === 0) {
-    document.documentElement.style.overflow = '';
-    if (__modalState.lastFocus && typeof __modalState.lastFocus.focus === 'function') {
-      setTimeout(() => __modalState.lastFocus.focus(), 0);
-    }
-  }
-}
-
-document.addEventListener('keydown', function (e) {
-  if (e.key !== 'Escape') return;
-  const last = __modalState.stack[__modalState.stack.length - 1];
-  if (last) closeModal(last);
-});
-
     document.addEventListener('DOMContentLoaded', function () {
       console.log(`HR App Version ${APP_VERSION} geladen`);
       checkAuthentication();
@@ -4320,9 +4296,15 @@ document.addEventListener('keydown', function (e) {
     }
 
     function checkMainPassword() {
-      const password = document.getElementById('mainPasswordInput').value;
+      const password = (document.getElementById('mainPasswordInput').value || '').trim();
       const errorElement = document.getElementById('mainPasswordError');
-      
+
+      // Reset error state on every attempt
+      if (errorElement) {
+        errorElement.style.display = 'none';
+        errorElement.classList.remove('show');
+      }
+
       if (password === DEFAULT_PASSWORD) {
         localStorage.setItem('hr_app_password', password);
         localStorage.setItem('hr_app_password_timestamp', Date.now());
@@ -4330,13 +4312,26 @@ document.addEventListener('keydown', function (e) {
         settingsAuthenticated = true;
         settingsAuthTimestamp = Date.now();
         localStorage.setItem('hr_settings_auth_timestamp', settingsAuthTimestamp);
-        
+
         // Modal ausblenden und App anzeigen
-        document.getElementById('mainPasswordModal').style.display = 'none';
-        document.getElementById('appContainer').style.display = 'grid';
-        
+        const modal = document.getElementById('mainPasswordModal');
+        const app = document.getElementById('appContainer');
+        if (modal) modal.style.display = 'none';
+        if (app) app.style.display = 'grid';
+
         initializeApp();
       } else {
+        if (errorElement) {
+          errorElement.style.display = 'block';
+          errorElement.classList.add('show');
+        }
+        const input = document.getElementById('mainPasswordInput');
+        if (input) {
+          input.value = '';
+          input.focus();
+        }
+      }
+    } else {
         errorElement.style.display = 'block';
         document.getElementById('mainPasswordInput').value = '';
         document.getElementById('mainPasswordInput').focus();
@@ -6157,9 +6152,9 @@ Grund: ${grund || ''}
 
     // ==================== HAUPTFUNKTIONEN ====================
     function setupEventListeners() {
-      document.getElementById('searchEmployees').addEventListener('input', debounce(function (e) {
+      document.getElementById('searchEmployees').addEventListener('input', function (e) {
         filterEmployees(e.target.value);
-      }, 180));
+      });
 
       document.addEventListener('keydown', function (e) {
         if (e.ctrlKey && e.key === 'n') { e.preventDefault(); openNewEmployeeModal(); }
@@ -6814,6 +6809,18 @@ Sonstiges: ${notes}
       const success = await copyToClipboard(template);
       showNotification(success ? 'Organisatorische Einweisung kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
     }
+
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('active');
+        if (modalId === 'akteDetailModal') {
+          setTimeout(() => modal.remove(), 300);
+        }
       }
     }
 
