@@ -4235,86 +4235,51 @@ Grund:
     let currentEditItemId = null;
     let currentEditItemType = null; // 'ankundigung' oder 'besprechung'
 
-    // ==================== UTILITIES (NEU) ====================
 
-const $ = (sel, root = document) => root.querySelector(sel);
-const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
-
-function debounce(fn, wait = 200) {
+// ==================== UTILITIES (Verbesserungen) ====================
+function debounce(fn, wait = 180) {
   let t;
-  return (...args) => {
+  return function (...args) {
     clearTimeout(t);
-    t = setTimeout(() => fn(...args), wait);
+    t = setTimeout(() => fn.apply(this, args), wait);
   };
 }
 
-function safeJsonParse(value, fallback = null) {
-  try { return JSON.parse(value); } catch { return fallback; }
+// Modal UX: ESC schließt zuletzt geöffnetes Modal + Scroll-Lock + Fokus zurück
+const __modalState = { stack: [], lastFocus: null };
+
+function openModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
+
+  __modalState.lastFocus = document.activeElement;
+  modal.classList.add('active');
+  document.documentElement.style.overflow = 'hidden';
+
+  __modalState.stack.push(modalId);
+
+  // Focus first input/button if exists
+  const focusable = modal.querySelector('input, textarea, select, button, [href], [tabindex]:not([tabindex="-1"])');
+  if (focusable) setTimeout(() => focusable.focus(), 0);
 }
 
-function setBusy(isBusy, { selector = 'body', ariaLabel = 'Bitte warten…' } = {}) {
-  const el = selector === 'body' ? document.body : $(selector);
-  if (!el) return;
-  el.toggleAttribute('aria-busy', !!isBusy);
-  if (isBusy) el.setAttribute('aria-label', ariaLabel);
-  else el.removeAttribute('aria-label');
-}
+function closeModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
 
-// Toast/Notification (Queue, ARIA)
-let __toastTimer = null;
-const __toastQueue = [];
-function showNotification(message, type = 'info', timeoutMs = 3200) {
-  const notification = document.getElementById('notification');
-  const messageElement = document.getElementById('notificationMessage');
-  if (!notification || !messageElement) { console.log('[Notification]', type, message); return; }
+  modal.classList.remove('active');
 
-  __toastQueue.push({ message, type, timeoutMs });
-  if (__toastTimer) return;
-
-  const showNext = () => {
-    const item = __toastQueue.shift();
-    if (!item) { __toastTimer = null; return; }
-
-    messageElement.textContent = item.message;
-
-    notification.setAttribute('role', 'status');
-    notification.setAttribute('aria-live', 'polite');
-
-    if (item.type === 'success') notification.style.background = 'var(--secondary)';
-    else if (item.type === 'error') notification.style.background = 'var(--danger)';
-    else if (item.type === 'warning') notification.style.background = 'var(--warning)';
-    else notification.style.background = 'var(--primary)';
-
-    notification.classList.add('show');
-
-    __toastTimer = setTimeout(() => {
-      notification.classList.remove('show');
-      // Kleine Pause für Animation
-      setTimeout(() => {
-        __toastTimer = null;
-        showNext();
-      }, 180);
-    }, item.timeoutMs);
-  };
-
-  showNext();
-}
-
-async function withErrorToast(promise, friendlyMessage = 'Unerwarteter Fehler') {
-  try {
-    return await promise;
-  } catch (err) {
-    console.error(err);
-    showNotification(`${friendlyMessage}: ${err?.message || err}`, 'error', 4500);
-    throw err;
+  // Stack cleanup
+  for (let i = __modalState.stack.length - 1; i >= 0; i--) {
+    if (__modalState.stack[i] === modalId) { __modalState.stack.splice(i, 1); break; }
   }
-}
 
-// Modal UX: ESC schließen + Fokus behalten + Scroll sperren
-const __modalState = { openStack: [], lastFocus: null };
-/* openModal/closeModal wurde nach UTILITIES verschoben (ESC+Focus+ScrollLock). */
+  // Spezielles Verhalten aus deinem Script beibehalten
+  if (modalId === 'akteDetailModal') {
+    setTimeout(() => modal.remove(), 300);
+  }
 
-  if (__modalState.openStack.length === 0) {
+  if (__modalState.stack.length === 0) {
     document.documentElement.style.overflow = '';
     if (__modalState.lastFocus && typeof __modalState.lastFocus.focus === 'function') {
       setTimeout(() => __modalState.lastFocus.focus(), 0);
@@ -4322,13 +4287,11 @@ const __modalState = { openStack: [], lastFocus: null };
   }
 }
 
-// ESC schließt zuletzt geöffnetes Modal
-document.addEventListener('keydown', (e) => {
+document.addEventListener('keydown', function (e) {
   if (e.key !== 'Escape') return;
-  const last = __modalState.openStack[__modalState.openStack.length - 1];
+  const last = __modalState.stack[__modalState.stack.length - 1];
   if (last) closeModal(last);
 });
-
 
     document.addEventListener('DOMContentLoaded', function () {
       console.log(`HR App Version ${APP_VERSION} geladen`);
@@ -6194,10 +6157,9 @@ Grund: ${grund || ''}
 
     // ==================== HAUPTFUNKTIONEN ====================
     function setupEventListeners() {
-      const debouncedFilterEmployees = debounce((value) => filterEmployees(value), 180);
-      document.getElementById('searchEmployees').addEventListener('input', function (e) {
-        debouncedFilterEmployees(e.target.value);
-      });
+      document.getElementById('searchEmployees').addEventListener('input', debounce(function (e) {
+        filterEmployees(e.target.value);
+      }, 180));
 
       document.addEventListener('keydown', function (e) {
         if (e.ctrlKey && e.key === 'n') { e.preventDefault(); openNewEmployeeModal(); }
@@ -6852,18 +6814,6 @@ Sonstiges: ${notes}
       const success = await copyToClipboard(template);
       showNotification(success ? 'Organisatorische Einweisung kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
     }
-
-    function openModal(modalId) {
-      document.getElementById(modalId).classList.add('active');
-    }
-
-    function closeModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) {
-        modal.classList.remove('active');
-        if (modalId === 'akteDetailModal') {
-          setTimeout(() => modal.remove(), 300);
-        }
       }
     }
 
@@ -6916,7 +6866,19 @@ Sonstiges: ${notes}
       }
     }
 
-    /* showNotification wurde nach UTILITIES verschoben (Queue+ARIA). */
+    function showNotification(message, type = 'info') {
+      const notification = document.getElementById('notification');
+      const messageElement = document.getElementById('notificationMessage');
+      messageElement.textContent = message;
+
+      if (type === 'success') notification.style.background = 'var(--secondary)';
+      else if (type === 'error') notification.style.background = 'var(--danger)';
+      else if (type === 'warning') notification.style.background = 'var(--warning)';
+      else notification.style.background = 'var(--primary)';
+
+      notification.classList.add('show');
+      setTimeout(() => notification.classList.remove('show'), 3000);
+    }
 
     function seedTemplateBoxes() {
       document.getElementById('oralTemplateContent').textContent = `╔══════════════════╗
