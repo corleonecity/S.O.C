@@ -22,6 +22,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 
+}
   <style>
     :root{
       --primary:#4f46e5; --primary-dark:#4338ca; --primary-light:#818cf8;
@@ -3262,44 +3263,42 @@
       .soldaten-item-actions,
       .beobachtung-akte-actions{flex-direction:column}
     }
-  
-    /* === Mobile Typography & Touch Improvements (v3) === */
-    @media (max-width: 768px){
-      body{font-size:16px}
-      .app-container{gap:14px}
-      .sidebar-title{font-size:15px}
-      .employee-item{padding:12px}
-      .employee-name{font-size:14px}
-      .employee-dn{font-size:12px}
-      .content-title{font-size:18px}
-      .content-subtitle{font-size:12px}
-      .stat-label{font-size:10px}
-      .stat-value{font-size:20px}
+	/* Bessere Ladeanimation */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.9);
+  backdrop-filter: blur(8px);
+  z-index: 4000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: white;
+  font-weight: 900;
+}
 
-      /* Prevent iOS zoom + improve readability */
-      .form-input,.form-select,.form-textarea,
-      .main-password-input,
-      .settings-password-input{font-size:16px}
-
-      .btn{padding:12px 14px;font-size:14px}
-      .btn i{font-size:14px}
-
-      .modal{max-width: 100%}
-    }
-    @media (max-width: 480px){
-      body{font-size:16px}
-      .main-password-content{padding:22px}
-      .main-password-title{font-size:18px}
-      .main-password-input{padding:14px 16px}
-      .btn{width:100%}
-      .employee-tags .tag{font-size:12px;padding:6px 10px}
-      .template-box{font-size:13px;line-height:1.45}
-    }
-
-</style>
+.loading-overlay .spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255,255,255,.1);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+  </style>
 </head>
 
 <body>
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay" style="display:none;">
+    <div class="spinner"></div>
+    <div id="loadingText">Lade App...</div>
+  </div>
+  
+  <!-- Main Password Modal (am Anfang) -->
+  <div class="main-password-modal" id="mainPasswordModal">
   <!-- Main Password Modal (am Anfang) -->
   <div class="main-password-modal" id="mainPasswordModal">
     <div class="main-password-content">
@@ -4222,8 +4221,18 @@ Grund:
   <script>
     // ==================== KONFIGURATION ====================
     const APP_VERSION = '1.0.20240128';
-    const DEFAULT_PASSWORD = 'hr';
-    const SETTINGS_PASSWORD = 'soc1';
+    // SICHERHEITSVERBESSERUNG: Hash-basierte Passwörter
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Passwort-Hashes (FÜGE DEINE EIGENEN HASHES EIN)
+const DEFAULT_PASSWORD_HASH = 'HIER_DEIN_APP_PASSWORT_HASH_EINFÜGEN';
+const SETTINGS_PASSWORD_HASH = 'HIER_DEIN_SETTINGS_PASSWORT_HASH_EINFÜGEN';
     const PASSWORD_EXPIRE_MINUTES = 60;
     
     // Firebase Configuration
@@ -4237,9 +4246,54 @@ Grund:
       measurementId: "G-9SZREFTJS6"
     };
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const storage = firebase.storage();
+    // ==================== VERBESSERTE INITIALISIERUNG ====================
+let firebaseApp;
+let db;
+let storage;
+
+async function initializeFirebase() {
+  try {
+    showLoading('Initialisiere Firebase...');
+    firebaseApp = firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    storage = firebase.storage();
+    
+    // Enable offline persistence
+    await db.enablePersistence().catch(err => {
+      if (err.code === 'failed-precondition') {
+        console.warn('Mehrere Tabs offen, Offline-Persistence nur in einem Tab möglich');
+      } else if (err.code === 'unimplemented') {
+        console.warn('Browser unterstützt keine Offline-Persistence');
+      }
+    });
+    
+    hideLoading();
+    return true;
+  } catch (error) {
+    console.error('Fehler bei Firebase-Initialisierung:', error);
+    showNotification('Fehler bei Datenbankverbindung: ' + error.message, 'error');
+    hideLoading();
+    return false;
+  }
+}
+
+// ==================== LOADING FUNKTIONEN ====================
+function showLoading(message = 'Lade...') {
+  const overlay = document.getElementById('loadingOverlay');
+  const text = document.getElementById('loadingText');
+  
+  if (overlay && text) {
+    text.textContent = message;
+    overlay.style.display = 'flex';
+  }
+}
+
+function hideLoading() {
+  const overlay = document.getElementById('loadingOverlay');
+  if (overlay) {
+    overlay.style.display = 'none';
+  }
+}
 
     // App State
     let currentEmployee = null;
@@ -4269,10 +4323,22 @@ Grund:
     let currentEditItemId = null;
     let currentEditItemType = null; // 'ankundigung' oder 'besprechung'
 
-    document.addEventListener('DOMContentLoaded', function () {
-      console.log(`HR App Version ${APP_VERSION} geladen`);
-      checkAuthentication();
-    });
+    // ==================== VERBESSERTE APP INITIALISIERUNG ====================
+document.addEventListener('DOMContentLoaded', async function () {
+  console.log(`HR App Version ${APP_VERSION} geladen`);
+  
+  // Check für unterstützte Browser-Features
+  if (!window.crypto || !window.crypto.subtle) {
+    showNotification('Browser unterstützt keine sichere Passwortprüfung. Bitte aktualisieren Sie Ihren Browser.', 'error');
+    return;
+  }
+  
+  // Firebase initialisieren
+  const firebaseReady = await initializeFirebase();
+  if (!firebaseReady) return;
+  
+  checkAuthentication();
+});
 
     // ==================== AUTHENTIFIZIERUNG ====================
     function checkAuthentication() {
@@ -4296,15 +4362,9 @@ Grund:
     }
 
     function checkMainPassword() {
-      const password = (document.getElementById('mainPasswordInput').value || '').trim();
+      const password = document.getElementById('mainPasswordInput').value;
       const errorElement = document.getElementById('mainPasswordError');
-
-      // Reset error state on every attempt
-      if (errorElement) {
-        errorElement.style.display = 'none';
-        errorElement.classList.remove('show');
-      }
-
+      
       if (password === DEFAULT_PASSWORD) {
         localStorage.setItem('hr_app_password', password);
         localStorage.setItem('hr_app_password_timestamp', Date.now());
@@ -4312,26 +4372,13 @@ Grund:
         settingsAuthenticated = true;
         settingsAuthTimestamp = Date.now();
         localStorage.setItem('hr_settings_auth_timestamp', settingsAuthTimestamp);
-
+        
         // Modal ausblenden und App anzeigen
-        const modal = document.getElementById('mainPasswordModal');
-        const app = document.getElementById('appContainer');
-        if (modal) modal.style.display = 'none';
-        if (app) app.style.display = 'grid';
-
+        document.getElementById('mainPasswordModal').style.display = 'none';
+        document.getElementById('appContainer').style.display = 'grid';
+        
         initializeApp();
       } else {
-        if (errorElement) {
-          errorElement.style.display = 'block';
-          errorElement.classList.add('show');
-        }
-        const input = document.getElementById('mainPasswordInput');
-        if (input) {
-          input.value = '';
-          input.focus();
-        }
-      }
-    } else {
         errorElement.style.display = 'block';
         document.getElementById('mainPasswordInput').value = '';
         document.getElementById('mainPasswordInput').focus();
@@ -5650,1322 +5697,4 @@ Sonstiges: ${sonstiges || ''}
             <div class="empty-soldaten-icon"><i class="fas fa-comments"></i></div>
             <div class="empty-soldaten-title">${searchTerm ? 'Keine passenden Gespräche gefunden' : 'Keine Gespräche gefunden'}</div>
             <div class="empty-description">${searchTerm ? 'Versuchen Sie einen anderen Suchbegriff' : 'Erstellen Sie Ihr erstes Soldatengespräch'}</div>
-          </div>
-        `;
-        return;
-      }
-
-      let html = '';
-      filteredGespräche.forEach(gespräch => {
-        html += `
-          <div class="soldaten-item">
-            <div class="soldaten-item-header">
-              <div class="soldaten-item-name">${escapeHtml(gespräch.name)}</div>
-              <div class="soldaten-item-dn">DN ${escapeHtml(gespräch.dn)}</div>
-            </div>
-            <div class="soldaten-item-date">
-              <i class="fas fa-calendar"></i> Gespräch am: ${gespräch.dateFormatted} um ${gespräch.time || ''}
-            </div>
-            <div style="display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
-              <div style="background: rgba(245,158,11,.10); color: #fcd34d; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; border: 1px solid rgba(245,158,11,.20);">
-                ${gespräch.unit || 'Keine Unit'}
-              </div>
-              <div style="background: rgba(245,158,11,.10); color: #fcd34d; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; border: 1px solid rgba(245,158,11,.20);">
-                ${gespräch.rank || 'Kein Rang'}
-              </div>
-            </div>
-            
-            <div class="soldaten-item-notizen">
-              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
-                <i class="fas fa-sticky-note" style="color: var(--warning); font-size: 12px;"></i>
-                <span style="font-weight: 900; color: var(--warning); font-size: 12px;">Notizen:</span>
-              </div>
-              ${escapeHtml(gespräch.notizen.length > 200 ? gespräch.notizen.substring(0, 200) + '...' : gespräch.notizen)}
-            </div>
-            
-            ${gespräch.sonstiges ? `
-            <div class="soldaten-item-sonstiges">
-              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
-                <i class="fas fa-ellipsis-h" style="color: var(--warning); font-size: 12px;"></i>
-                <span style="font-weight: 900; color: var(--warning); font-size: 12px;">Sonstiges:</span>
-              </div>
-              ${escapeHtml(gespräch.sonstiges.length > 200 ? gespräch.sonstiges.substring(0, 200) + '...' : gespräch.sonstiges)}
-            </div>
-            ` : ''}
-            
-            <div class="soldaten-item-actions">
-              <button class="soldaten-item-btn soldaten-item-btn-copy" onclick="copySoldatenFromList('${gespräch.id}')">
-                <i class="fas fa-copy"></i> Kopieren
-              </button>
-              <button class="soldaten-item-btn soldaten-item-btn-delete" onclick="deleteSoldatenGespräch('${gespräch.id}')">
-                <i class="fas fa-trash"></i> Löschen
-              </button>
-            </div>
-          </div>
-        `;
-      });
-
-      container.innerHTML = html;
-    }  
-
-    function searchSoldaten(searchTerm) {
-      renderSoldatenListe();
-    }
-
-    async function copySoldatenFromList(gesprächId) {
-      const gespräch = soldatenGespräche.find(g => g.id === gesprächId);
-      if (!gespräch) return;
-
-      const success = await copyToClipboard(gespräch.template);
-      showNotification(success ? 'Soldatengespräch kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
-    }
-
-    async function deleteSoldatenGespräch(gesprächId) {
-      if (!confirm('Soldatengespräch wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) return;
-
-      try {
-        await db.collection('hrSoldatenGespräche').doc(gesprächId).delete();
-        
-        showNotification('Soldatengespräch gelöscht', 'success');
-      } catch (error) {
-        console.error('Fehler beim Löschen des Soldatengesprächs:', error);
-        showNotification('Fehler beim Löschen: ' + error.message, 'error');
-      }
-    }
-
-    function setupSoldatenEventListeners() {
-      const soldatenInputs = document.querySelectorAll('#soldatenName, #soldatenDN, #soldatenUnit, #soldatenRank, #soldatenDate, #soldatenTime, #soldatenNotizen, #soldatenSonstiges');
-      soldatenInputs.forEach(input => {
-        input.addEventListener('input', updateSoldatenPreview);
-      });
-    }
-
-    // ==================== BEOBACHTUNGS AKTEN FUNKTIONEN ====================
-    function openBeobachtungAktenModal() {
-      openModal('beobachtungAktenModal');
-      updateBeobachtungPreview();
-    }
-
-    function switchBeobachtungTab(tabName) {
-      currentBeobachtungTab = tabName;
       
-      document.querySelectorAll('.beobachtung-tab').forEach(tab => {
-        tab.classList.remove('active');
-      });
-      document.querySelectorAll('.beobachtung-tab')[tabName === 'new' ? 0 : tabName === 'list' ? 1 : 2].classList.add('active');
-      
-      document.querySelectorAll('.beobachtung-tab-content').forEach(content => {
-        content.style.display = 'none';
-      });
-      let tabId = '';
-      if (tabName === 'new') tabId = 'beobachtungNewTab';
-      else if (tabName === 'list') tabId = 'beobachtungListTab';
-      else tabId = 'beobachtungBeobachtungTab';
-      
-      document.getElementById(tabId).style.display = 'block';
-      
-      if (tabName === 'list') {
-        renderAktenListe();
-      }
-    }
-
-    function updateBeobachtungPreview() {
-      const name = document.getElementById('beobachtungName').value;
-      const dn = document.getElementById('beobachtungDN').value;
-      const grund = document.getElementById('beobachtungGrund').value;
-
-      // Find Discord IDs for unit and rank if they exist in the akten
-      const akte = akten.find(a => a.dn == dn && a.name.toLowerCase() === name.toLowerCase());
-      const unit = akte?.unit || '';
-      const rank = akte?.rank || '';
-      
-      const unitSetting = settings.units.find(u => u.name === unit);
-      const rankSetting = settings.ranks.find(r => r.name === rank);
-      
-      const unitDisplay = unitSetting?.discordId ? `<@&${unitSetting.discordId}>` : unit;
-      const rankDisplay = rankSetting?.discordId ? `<@&${rankSetting.discordId}>` : rank;
-
-      const template = `╔══════════════════╗
-/////////////////////////////////////////////////////////////////////////
-Beobachtung
-Name: ${name || ''}
-DN: ${dn || ''}
-Unit: ${unitDisplay || ''}
-Rang: ${rankDisplay || ''}
-Grund: ${grund || ''}
-/////////////////////////////////////////////////////////////////////////
-<@&1097625910242447422>
-╚══════════════════╝`;
-
-      document.getElementById('beobachtungPreview').textContent = template;
-    }
-
-    async function copyBeobachtungTemplate() {
-      const template = document.getElementById('beobachtungPreview').textContent;
-      const success = await copyToClipboard(template);
-      showNotification(success ? 'Beobachtung kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
-    }
-
-    async function createNewAkte() {
-      const name = document.getElementById('akteName').value.trim();
-      const dn = document.getElementById('akteDN').value;
-      const unit = document.getElementById('akteUnit').value;
-      const rank = document.getElementById('akteRank').value;
-
-      if (!name || !dn) {
-        showNotification('Name und Dienstnummer sind erforderlich', 'warning');
-        return;
-      }
-
-      const existingAkte = akten.find(a => a.dn == dn && a.name.toLowerCase() === name.toLowerCase());
-      if (existingAkte) {
-        showNotification('Eine Akte für diese Person existiert bereits', 'warning');
-        return;
-      }
-
-      const akte = {
-        id: `AKTE-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-        name,
-        dn,
-        unit: unit || '',
-        rank: rank || '',
-        created: new Date().toISOString(),
-        createdFormatted: new Date().toLocaleDateString('de-DE'),
-        beobachtungen: [],
-        lastUpdated: new Date().toISOString()
-      };
-
-      try {
-        await db.collection('hrAkten').doc(akte.id).set(akte);
-        
-        showNotification('Akte erfolgreich erstellt', 'success');
-        document.getElementById('akteName').value = '';
-        document.getElementById('akteDN').value = '';
-        document.getElementById('akteUnit').value = '';
-        document.getElementById('akteRank').value = '';
-        updateStats();
-        renderAktenListe();
-        switchBeobachtungTab('list');
-      } catch (error) {
-        console.error('Fehler beim Erstellen der Akte:', error);
-        showNotification('Fehler beim Erstellen: ' + error.message, 'error');
-      }
-    }
-
-    async function saveBeobachtungToAkte() {
-      const name = document.getElementById('beobachtungName').value.trim();
-      const dn = document.getElementById('beobachtungDN').value;
-      const grund = document.getElementById('beobachtungGrund').value.trim();
-
-      if (!name || !dn) {
-        showNotification('Name und Dienstnummer sind erforderlich', 'warning');
-        return;
-      }
-
-      if (!grund) {
-        showNotification('Bitte geben Sie einen Grund für die Beobachtung an', 'warning');
-        return;
-      }
-
-      let akte = akten.find(a => a.dn == dn && a.name.toLowerCase() === name.toLowerCase());
-      
-      if (!akte) {
-        const newAkte = {
-          id: `AKTE-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-          name,
-          dn,
-          unit: '',
-          rank: '',
-          created: new Date().toISOString(),
-          createdFormatted: new Date().toLocaleDateString('de-DE'),
-          beobachtungen: [],
-          lastUpdated: new Date().toISOString()
-        };
-        
-        try {
-          await db.collection('hrAkten').doc(newAkte.id).set(newAkte);
-          akte = newAkte;
-        } catch (error) {
-          console.error('Fehler beim Erstellen der Akte:', error);
-          showNotification('Fehler beim Erstellen der Akte: ' + error.message, 'error');
-          return;
-        }
-      }
-
-      const beobachtung = {
-        id: `BEO-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-        name,
-        dn,
-        grund,
-        date: new Date().toISOString(),
-        dateFormatted: new Date().toLocaleDateString('de-DE'),
-        template: document.getElementById('beobachtungPreview').textContent
-      };
-
-      try {
-        if (!akte.beobachtungen) akte.beobachtungen = [];
-        akte.beobachtungen.unshift(beobachtung);
-        akte.lastUpdated = new Date().toISOString();
-        
-        await db.collection('hrAkten').doc(akte.id).update({
-          beobachtungen: akte.beobachtungen,
-          lastUpdated: akte.lastUpdated
-        });
-
-        showNotification('Beobachtung zur Akte hinzufügt', 'success');
-        document.getElementById('beobachtungName').value = '';
-        document.getElementById('beobachtungDN').value = '';
-        document.getElementById('beobachtungGrund').value = '';
-        updateBeobachtungPreview();
-        updateStats();
-        renderAktenListe();
-      } catch (error) {
-        console.error('Fehler beim Speichern der Beobachtung:', error);
-        showNotification('Fehler beim Speichern: ' + error.message, 'error');
-      }
-    }
-
-    function renderAktenListe() {
-      const container = document.getElementById('aktenListe');
-      const searchTerm = document.getElementById('aktenSearch')?.value.toLowerCase() || '';
-      
-      let filteredAkten = akten;
-      if (searchTerm) {
-        filteredAkten = akten.filter(akte => 
-          akte.name.toLowerCase().includes(searchTerm) || 
-          akte.dn.toString().includes(searchTerm)
-        );
-      }
-      
-      if (filteredAkten.length === 0) {
-        container.innerHTML = `
-          <div class="empty-beobachtungen">
-            <div class="empty-beobachtungen-icon"><i class="fas fa-folder-open"></i></div>
-            <div class="empty-beobachtungen-title">${searchTerm ? 'Keine passenden Akten gefunden' : 'Keine Akten gefunden'}</div>
-            <div class="empty-description">${searchTerm ? 'Versuchen Sie einen anderen Suchbegriff' : 'Erstellen Sie Ihre erste Akte'}</div>
-          </div>
-        `;
-        return;
-      }
-
-      let html = '';
-      filteredAkten.forEach(akte => {
-        const beobachtungenCount = akte.beobachtungen ? akte.beobachtungen.length : 0;
-        
-        html += `
-          <div class="beobachtung-akte-item">
-            <div class="beobachtung-akte-header">
-              <div class="beobachtung-akte-name">${escapeHtml(akte.name)}</div>
-              <div class="beobachtung-akte-dn">DN ${escapeHtml(akte.dn)}</div>
-            </div>
-            <div class="beobachtung-akte-date">
-              <i class="fas fa-calendar"></i> Erstellt: ${akte.createdFormatted}
-            </div>
-            <div style="display: flex; gap: 12px; margin-bottom: 12px;">
-              <div style="background: rgba(79,70,229,.10); color: var(--primary-light); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; border: 1px solid rgba(79,70,229,.20);">
-                ${akte.unit || 'Keine Unit'}
-              </div>
-              <div style="background: rgba(16,185,129,.10); color: #86efac; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; border: 1px solid rgba(16,185,129,.20);">
-                ${akte.rank || 'Kein Rang'}
-              </div>
-            </div>
-            <div style="color: var(--gray); font-size: 11px; margin-bottom: 12px; display: flex; align-items: center; gap: 4px;">
-              <i class="fas fa-eye"></i> ${beobachtungenCount} Beobachtung${beobachtungenCount !== 1 ? 'en' : ''}
-            </div>
-        `;
-
-        if (beobachtungenCount > 0) {
-          const latestBeobachtung = akte.beobachtungen[0];
-          html += `
-            <div class="beobachtung-akte-grund">
-              <div style="font-size: 11px; color: var(--gray); margin-bottom: 4px;">
-                <i class="fas fa-calendar"></i> Letzte Beobachtung: ${latestBeobachtung.dateFormatted}
-              </div>
-              ${escapeHtml(latestBeobachtung.grund.length > 150 ? latestBeobachtung.grund.substring(0, 150) + '...' : latestBeobachtung.grund)}
-            </div>
-          `;
-        }
-
-        html += `
-            <div class="beobachtung-akte-actions">
-              <button class="beobachtung-akte-btn beobachtung-akte-btn-copy" onclick="openAkteDetail('${akte.id}')">
-                <i class="fas fa-eye"></i> Akte öffnen
-              </button>
-              <button class="beobachtung-akte-btn beobachtung-akte-btn-delete" onclick="deleteAkte('${akte.id}')">
-                <i class="fas fa-trash"></i> Löschen
-              </button>
-            </div>
-          </div>
-        `;
-      });
-
-      container.innerHTML = html;
-    }
-
-    function searchAkten(searchTerm) {
-      renderAktenListe();
-    }
-
-    function openAkteDetail(akteId) {
-      const akte = akten.find(a => a.id === akteId);
-      if (!akte) return;
-
-      let beobachtungenHtml = '';
-      if (akte.beobachtungen && akte.beobachtungen.length > 0) {
-        akte.beobachtungen.forEach(beobachtung => {
-          beobachtungenHtml += `
-            <div class="beobachtung-akte-item">
-              <div class="beobachtung-akte-date">
-                <i class="fas fa-calendar"></i> ${beobachtung.dateFormatted}
-              </div>
-              <div class="beobachtung-akte-grund">
-                ${escapeHtml(beobachtung.grund)}
-              </div>
-              <div class="beobachtung-akte-template">
-                ${escapeHtml(beobachtung.template)}
-              </div>
-              <div class="beobachtung-akte-actions">
-                <button class="beobachtung-akte-btn beobachtung-akte-btn-copy" onclick="copyBeobachtungFromAkte('${akte.id}', '${beobachtung.id}')">
-                  <i class="fas fa-copy"></i> Kopieren
-                </button>
-                <button class="beobachtung-akte-btn beobachtung-akte-btn-delete" onclick="deleteBeobachtungFromAkte('${akte.id}', '${beobachtung.id}')">
-                  <i class="fas fa-trash"></i> Löschen
-                </button>
-              </div>
-            </div>
-          `;
-        });
-      } else {
-        beobachtungenHtml = `
-          <div class="empty-beobachtungen">
-            <div class="empty-beobachtungen-icon"><i class="fas fa-eye"></i></div>
-            <div class="empty-beobachtungen-title">Keine Beobachtungen</div>
-            <div class="empty-description">Fügen Sie die erste Beobachtung hinzu</div>
-          </div>
-        `;
-      }
-
-      const modalHtml = `
-        <div class="beobachtung-akten-modal active" onclick="if(event.target===this)closeModal('akteDetailModal')">
-          <div class="beobachtung-akten-content">
-            <div class="beobachtung-akten-header">
-              <div class="beobachtung-akten-title">
-                <i class="fas fa-folder-open"></i> Akte: ${escapeHtml(akte.name)} (DN ${escapeHtml(akte.dn)})
-              </div>
-              <button class="beobachtung-akten-close" onclick="closeModal('akteDetailModal')">
-                <i class="fas fa-times"></i>
-              </button>
-            </div>
-            <div class="beobachtung-akten-body">
-              <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
-                <div style="background: rgba(79,70,229,.10); color: var(--primary-light); padding: 8px 16px; border-radius: var(--radius-md); font-size: 13px; font-weight: 900; border: 1px solid rgba(79,70,229,.20);">
-                  <i class="fas fa-building"></i> ${akte.unit || 'Keine Unit'}
-                </div>
-                <div style="background: rgba(16,185,129,.10); color: #86efac; padding: 8px 16px; border-radius: var(--radius-md); font-size: 13px; font-weight: 900; border: 1px solid rgba(16,185,129,.20);">
-                  <i class="fas fa-user-tie"></i> ${akte.rank || 'Kein Rang'}
-                </div>
-                <div style="background: rgba(245,158,11,.10); color: #fcd34d; padding: 8px 16px; border-radius: var(--radius-md); font-size: 13px; font-weight: 900; border: 1px solid rgba(245,158,11,.20);">
-                  <i class="fas fa-eye"></i> ${akte.beobachtungen ? akte.beobachtungen.length : 0} Beobachtungen
-                </div>
-              </div>
-              
-              <div class="beobachtung-akten-liste">
-                ${beobachtungenHtml}
-              </div>
-              
-              <div class="beobachtung-actions">
-                <button class="beobachtung-btn beobachtung-btn-save" onclick="addNewBeobachtungToAkte('${akte.id}')">
-                  <i class="fas fa-plus"></i> Neue Beobachtung hinzufügen
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-
-      const modalContainer = document.createElement('div');
-      modalContainer.id = 'akteDetailModal';
-      modalContainer.innerHTML = modalHtml;
-      document.body.appendChild(modalContainer);
-    }
-
-    async function copyBeobachtungFromAkte(akteId, beobachtungId) {
-      const akte = akten.find(a => a.id === akteId);
-      if (!akte || !akte.beobachtungen) return;
-
-      const beobachtung = akte.beobachtungen.find(b => b.id === beobachtungId);
-      if (!beobachtung) return;
-
-      const success = await copyToClipboard(beobachtung.template);
-      showNotification(success ? 'Beobachtung kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
-    }
-
-    async function deleteBeobachtungFromAkte(akteId, beobachtungId) {
-      if (!confirm('Beobachtung wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) return;
-
-      const akte = akten.find(a => a.id === akteId);
-      if (!akte || !akte.beobachtungen) return;
-
-      try {
-        akte.beobachtungen = akte.beobachtungen.filter(b => b.id !== beobachtungId);
-        akte.lastUpdated = new Date().toISOString();
-        
-        await db.collection('hrAkten').doc(akteId).update({
-          beobachtungen: akte.beobachtungen,
-          lastUpdated: akte.lastUpdated
-        });
-
-        showNotification('Beobachtung gelöscht', 'success');
-        closeModal('akteDetailModal');
-        setTimeout(() => openAkteDetail(akteId), 100);
-        renderAktenListe();
-      } catch (error) {
-        console.error('Fehler beim Löschen der Beobachtung:', error);
-        showNotification('Fehler beim Löschen: ' + error.message, 'error');
-      }
-    }
-
-    async function deleteAkte(akteId) {
-      if (!confirm('Akte wirklich löschen? Alle Beobachtungen werden ebenfalls gelöscht.')) return;
-
-      try {
-        await db.collection('hrAkten').doc(akteId).delete();
-        
-        showNotification('Akte gelöscht', 'success');
-      } catch (error) {
-        console.error('Fehler beim Löschen der Akte:', error);
-        showNotification('Fehler beim Löschen: ' + error.message, 'error');
-      }
-    }
-
-    function addNewBeobachtungToAkte(akteId) {
-      const akte = akten.find(a => a.id === akteId);
-      if (!akte) return;
-
-      closeModal('akteDetailModal');
-      openBeobachtungAktenModal();
-      switchBeobachtungTab('beobachtung');
-      document.getElementById('beobachtungName').value = akte.name;
-      document.getElementById('beobachtungDN').value = akte.dn;
-      updateBeobachtungPreview();
-    }
-
-    // ==================== HAUPTFUNKTIONEN ====================
-    function setupEventListeners() {
-      document.getElementById('searchEmployees').addEventListener('input', function (e) {
-        filterEmployees(e.target.value);
-      });
-
-      document.addEventListener('keydown', function (e) {
-        if (e.ctrlKey && e.key === 'n') { e.preventDefault(); openNewEmployeeModal(); }
-        if (e.ctrlKey && e.key === 'f') { e.preventDefault(); document.getElementById('searchEmployees').focus(); }
-        if (e.ctrlKey && e.key === 'e' && currentEmployee) { e.preventDefault(); openEditEmployeeModal(); }
-        if (e.ctrlKey && e.key === 'b') { e.preventDefault(); openBeobachtungAktenModal(); }
-        if (e.ctrlKey && e.key === 's') { e.preventDefault(); openSoldatenModal(); }
-        if (e.ctrlKey && e.key === ',') { e.preventDefault(); openSettingsWithPassword(); }
-      });
-
-      window.addEventListener('resize', adjustSidebarHeight);
-    }
-
-    function setupFormChangeListeners() {
-      const formInputs = document.querySelectorAll('.form-input, .form-select, .form-textarea, .toggle-switch input');
-      formInputs.forEach(input => {
-        input.addEventListener('input', handleFormChange);
-        input.addEventListener('change', handleFormChange);
-      });
-    }
-
-    function adjustSidebarHeight() {
-      const sidebar = document.querySelector('.sidebar');
-      const header = document.querySelector('.app-header');
-      const windowHeight = window.innerHeight;
-      const headerHeight = header.offsetHeight;
-
-      const availableHeight = windowHeight - headerHeight - 40;
-      const newHeight = Math.max(availableHeight, 500);
-      sidebar.style.height = `${newHeight}px`;
-    }
-
-    // ==================== MITARBEITER FUNKTIONEN ====================
-    function renderEmployeeList() {
-      const container = document.getElementById('employeeList');
-      const countElement = document.getElementById('employeeCount');
-
-      let filteredEmployees = getFilteredEmployees();
-
-      filteredEmployees.sort((a, b) => {
-        const nameA = (a.name || '').toUpperCase();
-        const nameB = (b.name || '').toUpperCase();
-        return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
-      });
-
-      if (filteredEmployees.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon"><i class="fas fa-user-plus"></i></div>
-            <div class="empty-title">${getEmptyStateTitle()}</div>
-            <div class="empty-description">${getEmptyStateDescription()}</div>
-          </div>
-        `;
-        countElement.textContent = '0';
-        return;
-      }
-
-      container.innerHTML = '';
-      countElement.textContent = filteredEmployees.length;
-
-      filteredEmployees.forEach(employee => {
-        const isArchived = employee.status === 'archived';
-        const isActive = currentEmployee?.id === employee.id;
-        
-        const card = document.createElement('div');
-        card.className = `employee-card ${isActive ? 'active' : ''} ${isArchived ? 'archived' : ''}`;
-        card.onclick = () => selectEmployee(employee);
-        card.oncontextmenu = (e) => { e.preventDefault(); showEmployeeContextMenu(e, employee); };
-
-        const oralCompleted = employee.inductions?.oral?.completed || false;
-        const orgCompleted = employee.inductions?.org?.completed || false;
-
-        card.innerHTML = `
-          <div class="employee-top-row">
-            <div class="employee-name">${escapeHtml(employee.name || '')}</div>
-            <div class="employee-dn">DN ${escapeHtml(employee.dn || '')}</div>
-          </div>
-          <div class="employee-meta">
-            <i class="fas fa-user-tie"></i> ${escapeHtml(employee.rank || 'Kein Rang')} •
-            <i class="fas fa-building"></i> ${escapeHtml(employee.unit || 'Keine Unit')}
-          </div>
-          <div class="induction-badges">
-            <div class="induction-badge badge-oral ${oralCompleted ? 'completed' : 'pending'}">
-              <i class="fas ${oralCompleted ? 'fa-check-circle' : 'fa-clock'}"></i>
-              Mündlich
-            </div>
-            <div class="induction-badge badge-org ${orgCompleted ? 'completed' : 'pending'}">
-              <i class="fas ${orgCompleted ? 'fa-check-circle' : 'fa-clock'}"></i>
-              Organisatorisch
-            </div>
-          </div>
-        `;
-
-        container.appendChild(card);
-      });
-    }
-
-    function getEmptyStateTitle() {
-      if (showArchived) return 'Keine archivierten Mitarbeiter';
-      return 'Keine aktiven Mitarbeiter';
-    }
-
-    function getFilteredEmployees() {
-      let filtered = employees.filter(emp => {
-        if (showArchived) {
-          return emp.status === 'archived';
-        } else {
-          return !emp.status || emp.status === 'active';
-        }
-      });
-
-      if (currentFilter === 'oral') {
-        filtered = filtered.filter(emp => !(emp.inductions?.oral?.completed));
-      } else if (currentFilter === 'org') {
-        filtered = filtered.filter(emp => !(emp.inductions?.org?.completed));
-      }
-      
-      return filtered;
-    }
-
-    function getEmptyStateDescription() {
-      if (showArchived) {
-        if (currentFilter === 'oral') return 'Keine archivierten Mitarbeiter mit ausstehender mündlicher Einweisung';
-        if (currentFilter === 'org') return 'Keine archivierten Mitarbeiter mit ausstehender organisatorischer Einweisung';
-        return 'Keine archivierten Mitarbeiter gefunden';
-      }
-      
-      if (currentFilter === 'oral') return 'Keine Mitarbeiter mit ausstehender mündlicher Einweisung';
-      if (currentFilter === 'org') return 'Keine Mitarbeiter mit ausstehender organisatorischer Einweisung';
-      return 'Fügen Sie Ihren ersten Mitarbeiter hinzu';
-    }
-
-    function filterEmployees(searchTerm) {
-      const cards = document.querySelectorAll('.employee-card');
-      const term = (searchTerm || '').toLowerCase().trim();
-
-      if (!term) {
-        cards.forEach(card => card.style.display = 'flex');
-        return;
-      }
-
-      cards.forEach(card => {
-        const text = card.textContent.toLowerCase();
-        card.style.display = text.includes(term) ? 'flex' : 'none';
-      });
-    }
-
-    function filterEmployeesByType(type) {
-      currentFilter = type;
-
-      document.querySelectorAll('.sidebar-filter-btn').forEach(btn => btn.classList.remove('active'));
-      if (type === 'all') document.querySelectorAll('.sidebar-filter-btn')[0].classList.add('active');
-      if (type === 'oral') document.querySelectorAll('.sidebar-filter-btn')[1].classList.add('active');
-      if (type === 'org') document.querySelectorAll('.sidebar-filter-btn')[2].classList.add('active');
-
-      renderEmployeeList();
-    }
-
-    function selectEmployee(employee) {
-      currentEmployee = employee;
-
-      document.getElementById('employeeHeader').style.display = 'flex';
-      document.getElementById('inductionContent').style.display = 'block';
-
-      updateEmployeeHeader();
-      loadEmployeeData();
-      updateInductionDisplay();
-      renderEmployeeList();
-    }
-
-    function loadEmployeeData() {
-      if (!currentEmployee) return;
-
-      const oralData = currentEmployee.oralData || {};
-      const orgData = currentEmployee.orgData || {};
-      const isArchived = currentEmployee.status === 'archived';
-
-      document.getElementById('oralDate').value = oralData.date || (new Date().toISOString().split('T')[0]);
-      document.getElementById('oralTimeStart').value = oralData.timeStart || '16:40';
-      document.getElementById('oralTimeEnd').value = oralData.timeEnd || '18:00';
-      document.getElementById('oralPerson').value = oralData.person || '';
-      document.getElementById('oralNotes').value = oralData.notes || '';
-      document.getElementById('unitSelect').value = oralData.unit || currentEmployee.unit || '';
-      document.getElementById('rankSelect').value = oralData.rank || currentEmployee.rank || '';
-
-      document.getElementById('orgDate').value = orgData.date || (new Date().toISOString().split('T')[0]);
-      document.getElementById('orgTimeStart').value = orgData.timeStart || '22:10';
-      document.getElementById('orgTimeEnd').value = orgData.timeEnd || '23:05';
-      document.getElementById('orgPerson').value = orgData.person || '';
-      document.getElementById('orgNotes').value = orgData.notes || '';
-      document.getElementById('unitSelect2').value = orgData.unit || currentEmployee.unit || '';
-      document.getElementById('rankSelect2').value = orgData.rank || currentEmployee.rank || '';
-
-      const oralCompleted = currentEmployee.inductions?.oral?.completed || false;
-      const orgCompleted = currentEmployee.inductions?.org?.completed || false;
-
-      document.getElementById('oralInductionToggle').checked = oralCompleted;
-      document.getElementById('orgInductionToggle').checked = orgCompleted;
-
-      updateInductionUI('oral', oralCompleted);
-      updateInductionUI('org', orgCompleted);
-
-      const archiveTag = document.getElementById('archiveStatusTag');
-      const archiveButton = document.getElementById('archiveButton');
-      const archiveButtonText = document.getElementById('archiveButtonText');
-      
-      if (isArchived) {
-        archiveTag.style.display = 'flex';
-        archiveButton.style.display = 'inline-flex';
-        archiveButtonText.textContent = 'Wiederherstellen';
-        document.getElementById('oralInductionToggle').disabled = true;
-        document.getElementById('orgInductionToggle').disabled = true;
-      } else {
-        archiveTag.style.display = 'none';
-        archiveButton.style.display = 'inline-flex';
-        archiveButtonText.textContent = 'Archivieren';
-        document.getElementById('oralInductionToggle').disabled = false;
-        document.getElementById('orgInductionToggle').disabled = false;
-      }
-
-      checkBothInductionsCompleted();
-      updateTemplates();
-    }
-
-    function updateInductionDisplay() {
-      if (!currentEmployee) return;
-
-      const oralCompleted = currentEmployee.inductions?.oral?.completed || false;
-      const orgCompleted = currentEmployee.inductions?.org?.completed || false;
-
-      updateInductionUI('oral', oralCompleted);
-      updateInductionUI('org', orgCompleted);
-
-      renderEmployeeList();
-    }
-
-    function updateEmployeeHeader() {
-      if (!currentEmployee) return;
-
-      document.getElementById('currentEmployeeName').textContent = currentEmployee.name || '';
-      document.getElementById('currentEmployeeDN').textContent = currentEmployee.dn || '';
-      document.getElementById('currentEmployeeUnit').textContent = currentEmployee.unit || 'Keine Unit';
-      document.getElementById('currentEmployeeRank').textContent = currentEmployee.rank || 'Kein Rang';
-    }
-
-    function updateInductionUI(type, completed) {
-      const card = document.getElementById(`${type}InductionCard`);
-      const status = document.getElementById(`${type}InductionStatus`);
-
-      if (completed) {
-        card.classList.add('completed');
-        status.textContent = 'BESTANDEN';
-      } else {
-        card.classList.remove('completed');
-        status.textContent = 'AUSSTEHEND';
-      }
-    }
-
-    function saveFormData() {
-      if (!currentEmployee) return;
-
-      currentEmployee.oralData = {
-        date: document.getElementById('oralDate').value,
-        timeStart: document.getElementById('oralTimeStart').value,
-        timeEnd: document.getElementById('oralTimeEnd').value,
-        person: document.getElementById('oralPerson').value,
-        notes: document.getElementById('oralNotes').value,
-        unit: document.getElementById('unitSelect').value,
-        rank: document.getElementById('rankSelect').value
-      };
-
-      currentEmployee.orgData = {
-        date: document.getElementById('orgDate').value,
-        timeStart: document.getElementById('orgTimeStart').value,
-        timeEnd: document.getElementById('orgTimeEnd').value,
-        person: document.getElementById('orgPerson').value,
-        notes: document.getElementById('orgNotes').value,
-        unit: document.getElementById('unitSelect2').value,
-        rank: document.getElementById('rankSelect2').value
-      };
-
-      const unitSelectValue = document.getElementById('unitSelect').value;
-      const rankSelectValue = document.getElementById('rankSelect').value;
-      if (unitSelectValue) currentEmployee.unit = unitSelectValue;
-      if (rankSelectValue) currentEmployee.rank = rankSelectValue;
-    }
-
-    async function saveEmployeeData(autoSave = false) {
-      if (!currentEmployee) return;
-
-      try {
-        const dataToSave = {
-          name: currentEmployee.name,
-          dn: currentEmployee.dn,
-          unit: currentEmployee.unit,
-          rank: currentEmployee.rank,
-          lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
-          inductions: currentEmployee.inductions || {},
-          oralData: currentEmployee.oralData || {},
-          orgData: currentEmployee.orgData || {},
-          status: currentEmployee.status || 'active'
-        };
-
-        await db.collection('hrEmployees').doc(currentEmployee.id).set(dataToSave, { merge: true });
-        
-        return true;
-      } catch (error) {
-        console.error('Fehler beim Speichern:', error);
-        if (!autoSave) {
-          showNotification('Fehler beim Speichern: ' + error.message, 'error');
-        }
-        return false;
-      }
-    }
-
-    function openEditEmployeeModal() {
-      if (!currentEmployee) {
-        showNotification('Bitte wählen Sie zuerst einen Mitarbeiter aus', 'warning');
-        return;
-      }
-
-      document.getElementById('editEmployeeName').value = currentEmployee.name || '';
-      document.getElementById('editEmployeeDN').value = currentEmployee.dn || '';
-      document.getElementById('editEmployeeUnit').value = currentEmployee.unit || '';
-      document.getElementById('editEmployeeRank').value = currentEmployee.rank || '';
-
-      openModal('editEmployeeModal');
-    }
-
-    async function saveEditedEmployee() {
-      if (!currentEmployee) return;
-
-      const name = document.getElementById('editEmployeeName').value.trim();
-      const dn = document.getElementById('editEmployeeDN').value;
-
-      if (!name || !dn) {
-        showNotification('Name und Dienstnummer sind Pflichtfelder', 'warning');
-        return;
-      }
-
-      const oldData = { ...currentEmployee };
-      
-      currentEmployee.name = name;
-      currentEmployee.dn = dn;
-      currentEmployee.unit = document.getElementById('editEmployeeUnit').value || '';
-      currentEmployee.rank = document.getElementById('editEmployeeRank').value || '';
-
-      const success = await saveEmployeeData(false);
-      if (success) {
-        closeModal('editEmployeeModal');
-        updateEmployeeHeader();
-        renderEmployeeList();
-        updateTemplates(); // WICHTIG: Vorlagen aktualisieren!
-        showNotification('Mitarbeiterdaten erfolgreich aktualisiert', 'success');
-      }
-    }
-
-    async function deleteCurrentEmployee() {
-      if (!currentEmployee) {
-        showNotification('Bitte wählen Sie zuerst einen Mitarbeiter aus', 'warning');
-        return;
-      }
-
-      if (!confirm(`Mitarbeiter "${currentEmployee.name}" (DN ${currentEmployee.dn}) wirklich löschen?\n\nDiese Aktion kann nicht rückgängig gemacht werden!`)) {
-        return;
-      }
-
-      try {
-        await db.collection('hrEmployees').doc(currentEmployee.id).delete();
-
-        closeModal('editEmployeeModal');
-        currentEmployee = null;
-        document.getElementById('employeeHeader').style.display = 'none';
-        document.getElementById('inductionContent').style.display = 'none';
-        renderEmployeeList();
-        updateStats();
-        showNotification('Mitarbeiter endgültig gelöscht', 'success');
-      } catch (error) {
-        console.error('Fehler beim Löschen:', error);
-        showNotification('Fehler beim Löschen: ' + error.message, 'error');
-      }
-    }
-
-    function toggleInduction(type, completed) {
-      if (!currentEmployee) return;
-
-      if (!currentEmployee.inductions) currentEmployee.inductions = {};
-
-      currentEmployee.inductions[type] = {
-        completed: completed,
-        date: completed ? new Date().toISOString() : null,
-        updatedBy: 'System'
-      };
-
-      updateInductionUI(type, completed);
-      updateTemplates();
-      saveEmployeeData(true);
-      checkBothInductionsCompleted();
-      renderEmployeeList();
-      updateStats();
-
-      const typeName = type === 'oral' ? 'Mündliche' : 'Organisatorische';
-      const status = completed ? 'bestanden' : 'als ausstehend markiert';
-      showNotification(`${typeName} Einweisung ${status}`, 'success');
-    }
-
-    function checkBothInductionsCompleted() {
-      if (!currentEmployee) return false;
-
-      const oralCompleted = currentEmployee.inductions?.oral?.completed || false;
-      const orgCompleted = currentEmployee.inductions?.org?.completed || false;
-
-      const nowBothCompleted = oralCompleted && orgCompleted;
-
-      if (nowBothCompleted && !bothInductionsCompleted) {
-        bothInductionsCompleted = true;
-      } else if (!nowBothCompleted) {
-        bothInductionsCompleted = false;
-      }
-
-      return nowBothCompleted;
-    }
-
-    function updateTemplates() {
-      if (!currentEmployee) {
-        seedTemplateBoxes();
-        return;
-      }
-
-      saveFormData();
-
-      const oralTemplate = generateTemplate('oral');
-      document.getElementById('oralTemplateContent').textContent = oralTemplate;
-
-      const orgTemplate = generateTemplate('org');
-      document.getElementById('orgTemplateContent').textContent = orgTemplate;
-
-      const oralCompleted = currentEmployee.inductions?.oral?.completed || false;
-      const orgCompleted = currentEmployee.inductions?.org?.completed || false;
-
-      document.getElementById('oralTemplateBadge').textContent = oralCompleted ? 'BESTANDEN' : 'AUSSTEHEND';
-      document.getElementById('orgTemplateBadge').textContent = orgCompleted ? 'BESTANDEN' : 'AUSSTEHEND';
-
-      document.getElementById('oralTemplateCard').classList.toggle('completed', oralCompleted);
-      document.getElementById('orgTemplateCard').classList.toggle('completed', orgCompleted);
-    }
-
-    function generateTemplate(type) {
-      const isOral = type === 'oral';
-      const completed = isOral
-        ? (currentEmployee.inductions?.oral?.completed || false)
-        : (currentEmployee.inductions?.org?.completed || false);
-
-      const data = isOral ? currentEmployee.oralData : currentEmployee.orgData;
-
-      const name = currentEmployee.name || '';
-      const dn = currentEmployee.dn || '';
-
-      const unit = isOral
-        ? (document.getElementById('unitSelect').value || currentEmployee.unit || '')
-        : (document.getElementById('unitSelect2').value || currentEmployee.unit || '');
-
-      const rank = isOral
-        ? (document.getElementById('rankSelect').value || currentEmployee.rank || '')
-        : (document.getElementById('rankSelect2').value || currentEmployee.rank || '');
-
-      const date = data?.date ? new Date(data.date).toLocaleDateString('de-DE') : '';
-      const timeStart = data?.timeStart || '';
-      const timeEnd = data?.timeEnd || '';
-      const person = data?.person || '';
-      const notes = data?.notes || '';
-
-      const timeSeparator = isOral ? 'bis' : '-';
-
-      const unitSetting = settings.units.find(u => u.name === unit);
-      const rankSetting = settings.ranks.find(r => r.name === rank);
-      
-      const unitDiscordId = unitSetting?.discordId || '';
-      const rankDiscordId = rankSetting?.discordId || '';
-
-      const unitDisplay = unitDiscordId ? `<@&${unitDiscordId}>` : unit;
-      const rankDisplay = rankDiscordId ? `<@&${rankDiscordId}>` : rank;
-
-      return `╔══════════════════╗
-/////////////////////////////////////////////////////////////////////////
-${isOral ? 'Mündliche Einweisung' : 'Organisatorische Einweisung'}
-
-Name: ${name}
-DN: ${dn}
-Hauptunit: ${unitDisplay}
-Rang: ${rankDisplay}
-Datum: ${date}
-Uhrzeit: ${timeStart} ${timeSeparator} ${timeEnd}
-Beteiligte: ${person}
-Sonstiges: ${notes}
-
-/////////////////////////////////////////////////////////////////////////
-<@&1097625910242447422>
-╚══════════════════╝`;
-    }
-
-    function updateStats() {
-      const totalEmployees = employees.filter(emp => !emp.status || emp.status === 'active').length;
-      const totalArchived = employees.filter(emp => emp.status === 'archived').length;
-      
-      document.getElementById('totalEmployees').textContent = totalEmployees;
-      document.getElementById('totalArchived').textContent = totalArchived;
-      
-      let aktenCount = 0;
-      employees.forEach(emp => {
-        if (emp.beobachtungen && emp.beobachtungen.length > 0) {
-          aktenCount += emp.beobachtungen.length;
-        }
-      });
-      document.getElementById('totalAkten').textContent = aktenCount + akten.length;
-    }
-
-    function showEmployeeContextMenu(e, employee) {
-      e.preventDefault();
-
-      const existingMenu = document.getElementById('contextMenu');
-      if (existingMenu) existingMenu.remove();
-
-      const menu = document.createElement('div');
-      menu.id = 'contextMenu';
-      menu.style.cssText = `
-        position: fixed;
-        background: rgba(31, 41, 55, 0.95);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 8px;
-        padding: 8px;
-        z-index: 1000;
-        min-width: 160px;
-        box-shadow: var(--shadow-md);
-      `;
-
-      const isArchived = employee.status === 'archived';
-      
-      menu.innerHTML = `
-        <div style="padding: 8px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-          <div style="font-weight: 900; color: white; margin-bottom: 2px; font-size: 13px;">${escapeHtml(employee.name || '')}</div>
-          <div style="font-size: 11px; color: var(--gray);">DN: ${escapeHtml(employee.dn || '')}</div>
-          ${isArchived ? '<div style="font-size: 10px; color: var(--warning); margin-top: 4px;"><i class="fas fa-archive"></i> Archiviert</div>' : ''}
-        </div>
-        <div style="padding: 4px 0;">
-          <button onclick="selectEmployee(employees.find(x => x.id === '${employee.id}')); openEditEmployeeModal(); document.getElementById('contextMenu')?.remove();"
-            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--primary-light);font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:2px;">
-            <i class="fas fa-edit"></i> Bearbeiten
-          </button>
-          <button onclick="toggleArchiveEmployeeContext('${employee.id}')"
-            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:${isArchived ? 'var(--secondary)' : 'var(--warning)'};font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:2px;">
-            <i class="fas ${isArchived ? 'fa-undo' : 'fa-archive'}"></i> ${isArchived ? 'Wiederherstellen' : 'Archivieren'}
-          </button>
-          <button onclick="deleteEmployeePermanently('${employee.id}')"
-            style="width:100%;text-align:left;padding:8px 10px;background:none;border:none;color:var(--danger);font-weight:900;cursor:pointer;transition:all .2s;border-radius:4px;display:flex;align-items:center;gap:6px;font-size:12px;">
-            <i class="fas fa-trash"></i> Löschen
-          </button>
-        </div>
-      `;
-
-      menu.style.left = `${Math.min(e.pageX, window.innerWidth - 180)}px`;
-      menu.style.top = `${Math.min(e.pageY, window.innerHeight - 240)}px`;
-
-      document.body.appendChild(menu);
-
-      setTimeout(() => {
-        const closeMenu = (event) => {
-          if (!menu.contains(event.target)) {
-            menu.remove();
-            document.removeEventListener('click', closeMenu);
-          }
-        };
-        document.addEventListener('click', closeMenu);
-      }, 100);
-    }
-
-    async function toggleArchiveEmployeeContext(employeeId) {
-      const employee = employees.find(emp => emp.id === employeeId);
-      if (!employee) return;
-
-      const newStatus = employee.status === 'archived' ? 'active' : 'archived';
-
-      try {
-        await db.collection('hrEmployees').doc(employeeId).update({
-          status: newStatus,
-          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        const message = newStatus === 'archived' ? 'Mitarbeiter archiviert' : 'Mitarbeiter wiederhergestellt';
-        showNotification(message, 'success');
-        
-        document.getElementById('contextMenu')?.remove();
-      } catch (error) {
-        console.error('Fehler beim Archivieren/Wiederherstellen:', error);
-        showNotification('Fehler: ' + error.message, 'error');
-      }
-    }
-
-    async function deleteEmployeePermanently(employeeId) {
-      const employee = employees.find(emp => emp.id === employeeId);
-      if (!employee) return;
-
-      if (!confirm(`Mitarbeiter "${employee.name}" (DN ${employee.dn}) wirklich endgültig löschen?\n\nDiese Aktion kann nicht rückgängig gemacht werden!`)) {
-        return;
-      }
-
-      try {
-        await db.collection('hrEmployees').doc(employeeId).delete();
-
-        if (currentEmployee && currentEmployee.id === employeeId) {
-          currentEmployee = null;
-          document.getElementById('employeeHeader').style.display = 'none';
-          document.getElementById('inductionContent').style.display = 'none';
-        }
-        
-        showNotification('Mitarbeiter endgültig gelöscht', 'success');
-        document.getElementById('contextMenu')?.remove();
-      } catch (error) {
-        console.error('Fehler beim Löschen:', error);
-        showNotification('Fehler beim Löschen: ' + error.message, 'error');
-      }
-    }
-
-    async function copyToClipboard(text) {
-      try {
-        await navigator.clipboard.writeText(text);
-        return true;
-      } catch (err) {
-        try {
-          const textArea = document.createElement('textarea');
-          textArea.value = text;
-          document.body.appendChild(textArea);
-          textArea.select();
-          document.execCommand('copy');
-          document.body.removeChild(textArea);
-          return true;
-        } catch {
-          return false;
-        }
-      }
-    }
-
-    async function copyOralTemplate() {
-      const template = document.getElementById('oralTemplateContent').textContent;
-      const success = await copyToClipboard(template);
-      showNotification(success ? 'Mündliche Einweisung kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
-    }
-
-    async function copyOrgTemplate() {
-      const template = document.getElementById('orgTemplateContent').textContent;
-      const success = await copyToClipboard(template);
-      showNotification(success ? 'Organisatorische Einweisung kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
-    }
-
-    function openModal(modalId) {
-      document.getElementById(modalId).classList.add('active');
-    }
-
-    function closeModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) {
-        modal.classList.remove('active');
-        if (modalId === 'akteDetailModal') {
-          setTimeout(() => modal.remove(), 300);
-        }
-      }
-    }
-
-    function openNewEmployeeModal() {
-      openModal('newEmployeeModal');
-    }
-
-    async function createNewEmployee() {
-      const name = document.getElementById('newEmployeeName').value.trim();
-      const dn = document.getElementById('newEmployeeDN').value;
-      const unit = document.getElementById('newEmployeeUnit').value;
-      const rank = document.getElementById('newEmployeeRank').value;
-
-      if (!name || !dn) {
-        showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
-        return;
-      }
-
-      const employeeId = `EMP-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-
-      const newEmployee = {
-        id: employeeId,
-        name,
-        dn,
-        unit: unit || '',
-        rank: rank || '',
-        lastUpdated: new Date().toISOString(),
-        inductions: { oral: { completed: false }, org: { completed: false } },
-        oralData: { date: '', timeStart: '16:40', timeEnd: '18:00', person: '', notes: '', unit: unit || '', rank: rank || '' },
-        orgData: { date: '', timeStart: '22:10', timeEnd: '23:05', person: '', notes: '', unit: unit || '', rank: rank || '' },
-        status: 'active'
-      };
-
-      try {
-        await db.collection('hrEmployees').doc(employeeId).set(newEmployee);
-
-        closeModal('newEmployeeModal');
-        selectEmployee(newEmployee);
-        updateStats();
-
-        document.getElementById('newEmployeeName').value = '';
-        document.getElementById('newEmployeeDN').value = '';
-        document.getElementById('newEmployeeUnit').value = '';
-        document.getElementById('newEmployeeRank').value = '';
-
-        showNotification(`Mitarbeiter "${name}" erstellt`, 'success');
-      } catch (error) {
-        console.error('Fehler beim Erstellen:', error);
-        showNotification('Fehler beim Erstellen: ' + error.message, 'error');
-      }
-    }
-
-    function showNotification(message, type = 'info') {
-      const notification = document.getElementById('notification');
-      const messageElement = document.getElementById('notificationMessage');
-      messageElement.textContent = message;
-
-      if (type === 'success') notification.style.background = 'var(--secondary)';
-      else if (type === 'error') notification.style.background = 'var(--danger)';
-      else if (type === 'warning') notification.style.background = 'var(--warning)';
-      else notification.style.background = 'var(--primary)';
-
-      notification.classList.add('show');
-      setTimeout(() => notification.classList.remove('show'), 3000);
-    }
-
-    function seedTemplateBoxes() {
-      document.getElementById('oralTemplateContent').textContent = `╔══════════════════╗
-/////////////////////////////////////////////////////////////////////////
-Mündliche Einweisung
-
-Name:
-DN:
-Hauptunit:
-Rang:
-Datum:
-Uhrzeit:
-Beteiligte:
-Sonstiges:
-
-/////////////////////////////////////////////////////////////////////////
-<@&1097625910242447422>
-╚══════════════════╝`;
-
-      document.getElementById('orgTemplateContent').textContent = `╔══════════════════╗
-/////////////////////////////////////////////////////////////////////////
-Organisatorische Einweisung
-
-Name:
-DN:
-Hauptunit:
-Rang:
-Datum:
-Uhrzeit:
-Beteiligte:
-Sonstiges:
-
-/////////////////////////////////////////////////////////////////////////
-<@&1097625910242447422>
-╚══════════════════╝`;
-    }
-
-    function escapeHtml(str) {
-      return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    // ==================== SOFT DELETE + ARCHIVIERUNG ====================
-    async function toggleArchiveEmployee() {
-      if (!currentEmployee) return;
-
-      const newStatus = currentEmployee.status === 'archived' ? 'active' : 'archived';
-
-      try {
-        await db.collection('hrEmployees').doc(currentEmployee.id).update({
-          status: newStatus,
-          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        const message = newStatus === 'archived' ? 'Mitarbeiter archiviert' : 'Mitarbeiter wiederhergestellt';
-        showNotification(message, 'success');
-      } catch (error) {
-        console.error('Fehler beim Archivieren/Wiederherstellen:', error);
-        showNotification('Fehler: ' + error.message, 'error');
-      }
-    }
-
-    function toggleArchiveView() {
-      showArchived = !showArchived;
-      const buttonText = document.getElementById('archiveToggleText');
-      buttonText.textContent = showArchived ? 'Aktive anzeigen' : 'Archiv anzeigen';
-      renderEmployeeList();
-    }
-
-    function handleFormChange() {
-      if (currentEmployee) {
-        saveFormData();
-        updateTemplates();
-        saveEmployeeData(true);
-      }
-    }
-  </script>
-</body>
-</html>
