@@ -1349,24 +1349,18 @@
       padding:4px 10px;
       border-radius:20px;
     }
-    .sidebar-filter-buttons{
-      display:flex;
-      gap:6px;
-      margin-bottom:16px;
-      padding: 2px;
-    }
+    .sidebar-filter-buttons{display:flex;gap:6px;margin-bottom:16px}
     .sidebar-filter-btn{
-      padding:6px 8px;
+      padding:8px 10px;
       background:rgba(255,255,255,.05);
       border:1px solid rgba(255,255,255,.08);
       border-radius:var(--radius-sm);
       color:var(--gray-light);
-      font-size:10px;font-weight:700;
+      font-size:11px;font-weight:700;
       cursor:pointer;
       transition:var(--transition);
       flex:1;
       text-align:center;
-      white-space: nowrap;
     }
     .sidebar-filter-btn:hover{background:rgba(255,255,255,.08)}
     .sidebar-filter-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
@@ -1416,7 +1410,7 @@
     .employee-list::-webkit-scrollbar-track{background:rgba(255,255,255,.05);border-radius:3px}
     .employee-list::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px}
 
-    /* Employee Cards - KORRIGIERTE BADGES */
+    /* Employee Cards */
     .employee-card{
       background:rgba(255,255,255,.03);
       border-radius:var(--radius-md);
@@ -1483,31 +1477,25 @@
     .employee-meta i{font-size:10px;opacity:.6}
 
     .induction-badges{
-      display:flex;
-      gap:4px;
-      flex-wrap:wrap;
+      display:flex;gap:6px;flex-wrap:wrap;
       margin-top:0;
       padding-top:2px;
     }
     .induction-badge{
-      font-size:9px;
-      padding:3px 6px;
-      border-radius:10px;
+      font-size:10px;
+      padding:3px 8px;
+      border-radius:12px;
       font-weight:700;
-      display:flex;
-      align-items:center;
-      gap:3px;
+      display:flex;align-items:center;gap:4px;
       white-space:nowrap;
       transition:var(--transition);
       border:1px solid transparent;
-      height: 20px;
     }
     .induction-badge:hover{transform:translateY(-1px)}
     .badge-oral.pending{background:rgba(239,68,68,.10);color:#fca5a5;border-color:rgba(239,68,68,.20)}
     .badge-oral.completed{background:rgba(16,185,129,.10);color:#86efac;border-color:rgba(16,185,129,.20)}
     .badge-org.pending{background:rgba(245,158,11,.10);color:#fcd34d;border-color:rgba(245,158,11,.20)}
     .badge-org.completed{background:rgba(16,185,129,.10);color:#86efac;border-color:rgba(16,185,129,.20)}
-    .induction-badge i{font-size:9px;}
 
     .quick-actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:auto}
     .quick-action-btn{
@@ -4363,8 +4351,6 @@ Grund:
       try {
         const querySnapshot = await db.collection('hrAnkundigungen')
           .where('type', '==', 'ankundigung')
-          .orderBy('created', 'desc')
-          .limit(50)
           .get();
         
         if (querySnapshot.empty) {
@@ -4380,9 +4366,18 @@ Grund:
 
         let html = '';
         let hasItems = false;
+        let items = [];
         
         querySnapshot.forEach(doc => {
           const item = doc.data();
+          items.push({ ...item, id: doc.id });
+        });
+        
+        items.sort((a, b) => {
+          return new Date(b.created || 0) - new Date(a.created || 0);
+        });
+        
+        items.forEach(item => {
           hasItems = true;
           
           const title = item.title || 'Ohne Titel';
@@ -4460,8 +4455,6 @@ Grund:
       try {
         const querySnapshot = await db.collection('hrAnkundigungen')
           .where('type', '==', 'besprechung')
-          .orderBy('created', 'desc')
-          .limit(50)
           .get();
         
         if (querySnapshot.empty) {
@@ -4477,9 +4470,18 @@ Grund:
 
         let html = '';
         let hasItems = false;
+        let items = [];
         
         querySnapshot.forEach(doc => {
           const item = doc.data();
+          items.push({ ...item, id: doc.id });
+        });
+        
+        items.sort((a, b) => {
+          return new Date(b.created || 0) - new Date(a.created || 0);
+        });
+        
+        items.forEach(item => {
           hasItems = true;
           
           const title = item.thema || 'Ohne Thema';
@@ -4586,8 +4588,6 @@ Grund:
       try {
         const querySnapshot = await db.collection('hrAnkundigungen')
           .where('type', '==', 'ankundigung')
-          .orderBy('created', 'desc')
-          .limit(1)
           .get();
         
         if (querySnapshot.empty) {
@@ -4595,8 +4595,19 @@ Grund:
           return;
         }
         
-        const doc = querySnapshot.docs[0];
-        const ankundigung = doc.data();
+        let latestAnkundigung = null;
+        let latestDate = 0;
+        
+        querySnapshot.forEach(doc => {
+          const ankundigung = doc.data();
+          const date = new Date(ankundigung.created || 0).getTime();
+          if (date > latestDate) {
+            latestDate = date;
+            latestAnkundigung = ankundigung;
+          }
+        });
+        
+        if (!latestAnkundigung) return;
         
         const banner = document.getElementById('ankundigungBanner');
         const title = document.getElementById('bannerTitle');
@@ -4604,10 +4615,10 @@ Grund:
         const type = document.getElementById('bannerType');
         const date = document.getElementById('bannerDate');
         
-        title.innerHTML = `<span>${ankundigung.icon || '🪧'}</span> ${escapeHtml(ankundigung.title || 'Ankündigung')}`;
-        content.textContent = ankundigung.content || '';
+        title.innerHTML = `<span>${latestAnkundigung.icon || '🪧'}</span> ${escapeHtml(latestAnkundigung.title || 'Ankündigung')}`;
+        content.textContent = latestAnkundigung.content || '';
         type.textContent = 'Ankündigung';
-        date.textContent = ankundigung.createdFormatted || new Date(ankundigung.created || Date.now()).toLocaleDateString('de-DE');
+        date.textContent = latestAnkundigung.createdFormatted || new Date(latestDate).toLocaleDateString('de-DE');
         
         banner.classList.add('show');
         
@@ -4666,8 +4677,6 @@ Grund:
       try {
         const querySnapshot = await db.collection('hrAnkundigungen')
           .where('type', '==', 'ankundigung')
-          .orderBy('created', 'desc')
-          .limit(50)
           .get();
         
         if (querySnapshot.empty) {
@@ -4681,13 +4690,22 @@ Grund:
         }
 
         let html = '';
+        let items = [];
         
         querySnapshot.forEach(doc => {
           const item = doc.data();
+          items.push({ ...item, id: doc.id });
+        });
+        
+        items.sort((a, b) => {
+          return new Date(b.created || 0) - new Date(a.created || 0);
+        });
+        
+        items.forEach(item => {
           const date = item.createdFormatted || new Date(item.created || Date.now()).toLocaleDateString('de-DE');
           
           html += `
-            <div class="manage-item" data-id="${doc.id}">
+            <div class="manage-item" data-id="${item.id}">
               <div class="manage-item-header">
                 <div class="manage-item-title">
                   <span>${item.icon || '🪧'}</span> ${escapeHtml(item.title || 'Ohne Titel')}
@@ -4703,10 +4721,10 @@ Grund:
                 ${escapeHtml(item.content || '')}
               </div>
               <div class="manage-item-actions">
-                <button class="manage-item-btn manage-item-btn-edit" onclick="editAnkundigung('${doc.id}')">
+                <button class="manage-item-btn manage-item-btn-edit" onclick="editAnkundigung('${item.id}')">
                   <i class="fas fa-edit"></i> Bearbeiten
                 </button>
-                <button class="manage-item-btn manage-item-btn-delete" onclick="deleteAnkundigung('${doc.id}')">
+                <button class="manage-item-btn manage-item-btn-delete" onclick="deleteAnkundigung('${item.id}')">
                   <i class="fas fa-trash"></i> Löschen
                 </button>
               </div>
@@ -4733,8 +4751,6 @@ Grund:
       try {
         const querySnapshot = await db.collection('hrAnkundigungen')
           .where('type', '==', 'besprechung')
-          .orderBy('created', 'desc')
-          .limit(50)
           .get();
         
         if (querySnapshot.empty) {
@@ -4748,13 +4764,22 @@ Grund:
         }
 
         let html = '';
+        let items = [];
         
         querySnapshot.forEach(doc => {
           const item = doc.data();
+          items.push({ ...item, id: doc.id });
+        });
+        
+        items.sort((a, b) => {
+          return new Date(b.created || 0) - new Date(a.created || 0);
+        });
+        
+        items.forEach(item => {
           const date = item.date ? new Date(item.date).toLocaleDateString('de-DE') : new Date(item.created || Date.now()).toLocaleDateString('de-DE');
           
           html += `
-            <div class="manage-item" data-id="${doc.id}">
+            <div class="manage-item" data-id="${item.id}">
               <div class="manage-item-header">
                 <div class="manage-item-title">
                   <span>${item.icon || '🗃️'}</span> ${escapeHtml(item.thema || 'Ohne Thema')}
@@ -4772,10 +4797,10 @@ Grund:
                 ${escapeHtml(item.content || '')}
               </div>
               <div class="manage-item-actions">
-                <button class="manage-item-btn manage-item-btn-edit" onclick="editBesprechung('${doc.id}')">
+                <button class="manage-item-btn manage-item-btn-edit" onclick="editBesprechung('${item.id}')">
                   <i class="fas fa-edit"></i> Bearbeiten
                 </button>
-                <button class="manage-item-btn manage-item-btn-delete" onclick="deleteBesprechung('${doc.id}')">
+                <button class="manage-item-btn manage-item-btn-delete" onclick="deleteBesprechung('${item.id}')">
                   <i class="fas fa-trash"></i> Löschen
                 </button>
               </div>
@@ -5025,6 +5050,7 @@ Grund:
       }
 
       const ankundigung = {
+        id: `ANK-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
         type: 'ankundigung',
         title: title || 'Ohne Titel',
         content: content,
@@ -5034,7 +5060,7 @@ Grund:
       };
 
       try {
-        await db.collection('hrAnkundigungen').add(ankundigung);
+        await db.collection('hrAnkundigungen').doc(ankundigung.id).set(ankundigung);
         
         showNotification('Ankündigung erfolgreich gespeichert', 'success');
         document.getElementById('ankundigungTitle').value = '';
@@ -5060,6 +5086,7 @@ Grund:
       }
 
       const besprechung = {
+        id: `BES-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
         type: 'besprechung',
         thema,
         date,
@@ -5072,7 +5099,7 @@ Grund:
       };
 
       try {
-        await db.collection('hrAnkundigungen').add(besprechung);
+        await db.collection('hrAnkundigungen').doc(besprechung.id).set(besprechung);
         
         showNotification('Besprechung erfolgreich gespeichert', 'success');
         document.getElementById('besprechungThema').value = '';
@@ -5520,6 +5547,7 @@ Sonstiges: ${sonstiges || ''}
       }
 
       const gespräch = {
+        id: `SOLDATEN-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
         name,
         dn,
         unit: unit || '',
@@ -5535,7 +5563,7 @@ Sonstiges: ${sonstiges || ''}
       };
 
       try {
-        await db.collection('hrSoldatenGespräche').add(gespräch);
+        await db.collection('hrSoldatenGespräche').doc(gespräch.id).set(gespräch);
         
         showNotification('Soldatengespräch erfolgreich gespeichert', 'success');
         document.getElementById('soldatenName').value = '';
@@ -5747,6 +5775,7 @@ Grund: ${grund || ''}
       }
 
       const akte = {
+        id: `AKTE-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
         name,
         dn,
         unit: unit || '',
@@ -5758,7 +5787,7 @@ Grund: ${grund || ''}
       };
 
       try {
-        await db.collection('hrAkten').add(akte);
+        await db.collection('hrAkten').doc(akte.id).set(akte);
         
         showNotification('Akte erfolgreich erstellt', 'success');
         document.getElementById('akteName').value = '';
@@ -5793,6 +5822,7 @@ Grund: ${grund || ''}
       
       if (!akte) {
         const newAkte = {
+          id: `AKTE-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
           name,
           dn,
           unit: '',
@@ -5804,9 +5834,7 @@ Grund: ${grund || ''}
         };
         
         try {
-          const docRef = await db.collection('hrAkten').add(newAkte);
-          newAkte.id = docRef.id;
-          akten.push(newAkte);
+          await db.collection('hrAkten').doc(newAkte.id).set(newAkte);
           akte = newAkte;
         } catch (error) {
           console.error('Fehler beim Erstellen der Akte:', error);
@@ -5816,6 +5844,7 @@ Grund: ${grund || ''}
       }
 
       const beobachtung = {
+        id: `BEO-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
         name,
         dn,
         grund,
@@ -6029,11 +6058,7 @@ Grund: ${grund || ''}
       if (!akte || !akte.beobachtungen) return;
 
       try {
-        // Finde den Index der Beobachtung
-        const beobachtungIndex = akte.beobachtungen.findIndex(b => b.id === beobachtungId);
-        if (beobachtungIndex === -1) return;
-        
-        akte.beobachtungen.splice(beobachtungIndex, 1);
+        akte.beobachtungen = akte.beobachtungen.filter(b => b.id !== beobachtungId);
         akte.lastUpdated = new Date().toISOString();
         
         await db.collection('hrAkten').doc(akteId).update({
