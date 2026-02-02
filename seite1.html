@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
@@ -658,17 +658,17 @@
 
     .sidebar-filter-buttons {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       margin-bottom: 20px;
     }
 
     .sidebar-filter-btn {
-      padding: 10px 16px;
+      padding: 8px 12px;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: var(--radius-md);
       color: var(--gray-light);
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       cursor: pointer;
       transition: var(--transition);
@@ -861,12 +861,12 @@
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      margin-top: 4px;
+      margin-top: 8px;
     }
 
     .induction-badge {
-      font-size: 11px;
-      padding: 6px 12px;
+      font-size: 12px;
+      padding: 8px 14px;
       border-radius: var(--radius-full);
       font-weight: 800;
       display: flex;
@@ -874,8 +874,10 @@
       gap: 6px;
       white-space: nowrap;
       transition: var(--transition);
-      border: 1px solid transparent;
+      border: 2px solid transparent;
       letter-spacing: 0.3px;
+      min-width: 120px;
+      justify-content: center;
     }
 
     .induction-badge:hover {
@@ -883,27 +885,27 @@
     }
 
     .badge-oral.pending {
-      background: rgba(239, 68, 68, 0.1);
+      background: rgba(239, 68, 68, 0.2);
       color: #fca5a5;
-      border-color: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.3);
     }
 
     .badge-oral.completed {
-      background: rgba(16, 185, 129, 0.1);
+      background: rgba(16, 185, 129, 0.2);
       color: #86efac;
-      border-color: rgba(16, 185, 129, 0.2);
+      border-color: rgba(16, 185, 129, 0.3);
     }
 
     .badge-org.pending {
-      background: rgba(245, 158, 11, 0.1);
+      background: rgba(245, 158, 11, 0.2);
       color: #fcd34d;
-      border-color: rgba(245, 158, 11, 0.2);
+      border-color: rgba(245, 158, 11, 0.3);
     }
 
     .badge-org.completed {
-      background: rgba(16, 185, 129, 0.1);
+      background: rgba(16, 185, 129, 0.2);
       color: #86efac;
-      border-color: rgba(16, 185, 129, 0.2);
+      border-color: rgba(16, 185, 129, 0.3);
     }
 
     .quick-actions {
@@ -1682,6 +1684,369 @@
       overflow: hidden;
     }
 
+    /* Ankündigungen/Besprechungen Modal Styles */
+    .ankundigungen-header,
+    .besprechungen-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      gap: 16px;
+    }
+
+    .ankundigungen-title,
+    .besprechungen-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .ankundigungen-close,
+    .besprechungen-close {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--gray);
+      font-size: 20px;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+    }
+
+    .ankundigungen-close:hover,
+    .besprechungen-close:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+      transform: rotate(90deg);
+    }
+
+    .ankundigungen-body,
+    .besprechungen-body {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ankundigungen-search-container,
+    .besprechungen-search-container {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .ankundigungen-search-icon,
+    .besprechungen-search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+      font-size: 16px;
+    }
+
+    .ankundigungen-search-input,
+    .besprechungen-search-input {
+      width: 100%;
+      padding: 14px 20px 14px 48px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      color: #fff;
+      font-size: 14px;
+      transition: var(--transition);
+    }
+
+    .ankundigungen-search-input:focus,
+    .besprechungen-search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+    }
+
+    .ankundigungen-list-container,
+    .besprechungen-list-container {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .ankundigungen-list,
+    .besprechungen-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .ankundigungen-item,
+    .besprechungen-item {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      transition: var(--transition);
+    }
+
+    .ankundigungen-item:hover,
+    .besprechungen-item:hover {
+      border-color: rgba(255, 255, 255, 0.12);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .ankundigungen-item-header,
+    .besprechungen-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 16px;
+    }
+
+    .ankundigungen-item-title,
+    .besprechungen-item-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .ankundigungen-item-type,
+    .besprechungen-item-type {
+      font-size: 11px;
+      font-weight: 900;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      background: rgba(139, 92, 246, 0.15);
+      color: #a78bfa;
+      white-space: nowrap;
+      letter-spacing: 0.5px;
+    }
+
+    .ankundigungen-item-date,
+    .besprechungen-item-date {
+      font-size: 12px;
+      color: var(--gray);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ankundigungen-item-content,
+    .besprechungen-item-content {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--gray-light);
+      white-space: pre-line;
+    }
+
+    /* Settings Modal Styles */
+    .settings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      gap: 16px;
+    }
+
+    .settings-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .settings-close {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--gray);
+      font-size: 20px;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-md);
+    }
+
+    .settings-close:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+      transform: rotate(90deg);
+    }
+
+    .settings-body {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .settings-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    .settings-tab {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      color: var(--gray);
+      font-weight: 900;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 13px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: 0.3px;
+    }
+
+    .settings-tab:hover {
+      color: var(--primary-light);
+    }
+
+    .settings-tab.active {
+      color: var(--primary);
+    }
+
+    .settings-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-primary);
+      border-radius: 3px 3px 0 0;
+    }
+
+    .settings-section {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-title-settings {
+      font-size: 16px;
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .unit-list,
+    .rank-list {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 16px;
+    }
+
+    .unit-item,
+    .rank-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: var(--radius-md);
+      margin-bottom: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .unit-name,
+    .rank-name {
+      flex: 1;
+      font-weight: 800;
+      color: var(--gray-light);
+      min-width: 150px;
+    }
+
+    .discord-id {
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      color: #fff;
+      font-size: 12px;
+      width: 200px;
+    }
+
+    .add-btn {
+      padding: 12px 20px;
+      background: var(--gradient-primary);
+      border: none;
+      border-radius: var(--radius-md);
+      color: #fff;
+      font-weight: 800;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .add-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .settings-input {
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      color: #fff;
+      font-size: 14px;
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    .settings-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+    }
+
+    .settings-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
     /* Tabs */
     .settings-tabs,
     .soldaten-tabs,
@@ -1698,14 +2063,14 @@
     .soldaten-tab,
     .beobachtung-tab,
     .ankundigungen-tab {
-      padding: 16px 28px;
+      padding: 12px 20px;
       background: none;
       border: none;
       color: var(--gray);
       font-weight: 900;
       cursor: pointer;
       transition: var(--transition);
-      font-size: 14px;
+      font-size: 13px;
       position: relative;
       display: flex;
       align-items: center;
@@ -1739,6 +2104,20 @@
       height: 3px;
       background: var(--gradient-primary);
       border-radius: 3px 3px 0 0;
+    }
+
+    /* Context Menu */
+    #contextMenu {
+      position: fixed;
+      z-index: 10000;
+      animation: slideUp 0.2s ease;
+    }
+
+    /* Shake Animation */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
     }
 
     /* Responsive Design */
@@ -1818,6 +2197,21 @@
         height: 56px;
         font-size: 20px;
       }
+      
+      .unit-item,
+      .rank-item {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .unit-name,
+      .rank-name {
+        min-width: auto;
+      }
+      
+      .discord-id {
+        width: 100%;
+      }
     }
 
     @media (max-width: 480px) {
@@ -1874,7 +2268,13 @@
       .beobachtung-tab,
       .ankundigungen-tab {
         text-align: left;
-        padding: 14px 20px;
+        padding: 10px 16px;
+      }
+      
+      .induction-badge {
+        min-width: 100px;
+        padding: 6px 12px;
+        font-size: 11px;
       }
     }
   </style>
@@ -1927,11 +2327,11 @@
   <!-- Edit Ankündigung/Besprechung Modal -->
   <div class="edit-item-modal" id="editItemModal">
     <div class="edit-item-content">
-      <div class="edit-item-header">
-        <div class="edit-item-title" id="editItemTitle">
+      <div class="modal-header">
+        <div class="modal-title" id="editItemTitle">
           <i class="fas fa-edit"></i> Bearbeiten
         </div>
-        <button class="edit-item-close" onclick="closeEditItemModal()">
+        <button class="modal-close" onclick="closeEditItemModal()">
           <i class="fas fa-times"></i>
         </button>
       </div>
@@ -1940,7 +2340,7 @@
         <!-- Form wird dynamisch eingefügt -->
       </div>
       
-      <div class="edit-item-actions">
+      <div class="settings-actions">
         <button class="btn btn-secondary" onclick="closeEditItemModal()">
           <i class="fas fa-times"></i> Abbrechen
         </button>
@@ -2326,9 +2726,6 @@
     </div>
   </div>
 
-  <!-- Die anderen Modals (Settings, Ankündigungen, Besprechungen, Soldaten, Beobachtungs-Akten) 
-       werden im JavaScript dynamisch generiert für bessere Performance -->
-
   <script>
     // ==================== KONFIGURATION ====================
     const APP_VERSION = '1.0.20240128';
@@ -2371,7 +2768,10 @@
       console.log(`HR App Version ${APP_VERSION} geladen`);
       
       try {
-        firebase.initializeApp(firebaseConfig);
+        // Firebase initialisieren
+        if (!firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+        }
         window.db = firebase.firestore();
         window.storage = firebase.storage();
         
@@ -2490,14 +2890,15 @@
 
     async function createAndShowModal(type, title, icon, contentType) {
       const modalId = `${type}Modal`;
-      const modal = document.getElementById(modalId);
+      let modal = document.getElementById(modalId);
       
       if (modal) {
         modal.classList.add('active');
-        loadModalContent(type, contentType);
+        await loadModalContent(type, contentType);
         return;
       }
 
+      // Modal erstellen
       const modalHTML = `
         <div class="${type}-modal" id="${modalId}">
           <div class="${type}-content">
@@ -2532,9 +2933,11 @@
       `;
 
       document.body.insertAdjacentHTML('beforeend', modalHTML);
-      setTimeout(() => {
-        document.getElementById(modalId).classList.add('active');
-        loadModalContent(type, contentType);
+      
+      setTimeout(async () => {
+        modal = document.getElementById(modalId);
+        modal.classList.add('active');
+        await loadModalContent(type, contentType);
       }, 10);
     }
 
@@ -2631,7 +3034,7 @@
       
       // Setze heutiges Datum
       const today = new Date().toISOString().split('T')[0];
-      ['oralDate', 'orgDate', 'soldatenDate', 'besprechungDate'].forEach(id => {
+      ['oralDate', 'orgDate'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = today;
       });
@@ -2639,10 +3042,6 @@
       // Setze aktuelle Uhrzeit
       const now = new Date();
       const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-      ['soldatenTime', 'besprechungTime'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = timeString;
-      });
       
       setupFormChangeListeners();
       seedTemplateBoxes();
@@ -2738,9 +3137,23 @@
     }
 
     function updateUnitAndRankSelects() {
-      const unitSelects = document.querySelectorAll('select[id$="Unit"]');
-      const rankSelects = document.querySelectorAll('select[id$="Rank"]');
+      // Alle Unit-Selects
+      const unitSelects = [
+        document.getElementById('unitSelect'),
+        document.getElementById('unitSelect2'),
+        document.getElementById('newEmployeeUnit'),
+        document.getElementById('editEmployeeUnit')
+      ];
       
+      // Alle Rank-Selects
+      const rankSelects = [
+        document.getElementById('rankSelect'),
+        document.getElementById('rankSelect2'),
+        document.getElementById('newEmployeeRank'),
+        document.getElementById('editEmployeeRank')
+      ];
+      
+      // Units befüllen
       unitSelects.forEach(select => {
         if (select) {
           const currentValue = select.value;
@@ -2753,10 +3166,13 @@
             select.appendChild(option);
           });
           
-          select.value = currentValue;
+          if (currentValue) {
+            select.value = currentValue;
+          }
         }
       });
       
+      // Ränge befüllen
       rankSelects.forEach(select => {
         if (select) {
           const currentValue = select.value;
@@ -2769,7 +3185,9 @@
             select.appendChild(option);
           });
           
-          select.value = currentValue;
+          if (currentValue) {
+            select.value = currentValue;
+          }
         }
       });
     }
@@ -2822,7 +3240,15 @@
           console.error('Fehler bei Settings-Updates:', error);
         });
 
-      unsubscribeFunctions = [unsubscribeEmployees, unsubscribeSettings];
+      // Beobachtungen Listener (für Statistik)
+      const unsubscribeBeobachtungen = db.collection('hrBeobachtungen')
+        .onSnapshot((snapshot) => {
+          document.getElementById('totalAkten').textContent = snapshot.size;
+        }, (error) => {
+          console.error('Fehler bei Beobachtungen-Updates:', error);
+        });
+
+      unsubscribeFunctions = [unsubscribeEmployees, unsubscribeSettings, unsubscribeBeobachtungen];
     }
 
     // ==================== HAUPTFUNKTIONEN ====================
@@ -2866,6 +3292,13 @@
 
       // Window Resize
       window.addEventListener('resize', adjustSidebarHeight);
+      
+      // Form Changes
+      const formElements = document.querySelectorAll('.form-input, .form-select, .form-textarea');
+      formElements.forEach(element => {
+        element.addEventListener('change', handleFormChange);
+        element.addEventListener('input', handleFormChange);
+      });
     }
 
     function setupFormChangeListeners() {
@@ -3326,9 +3759,6 @@ Sonstiges: ${notes}
       
       document.getElementById('totalEmployees').textContent = totalEmployees;
       document.getElementById('totalArchived').textContent = totalArchived;
-      
-      // Für Beobachtungen müssen Sie Ihre eigene Logik implementieren
-      document.getElementById('totalAkten').textContent = '0';
     }
 
     // ==================== MODAL FUNKTIONEN ====================
@@ -3348,7 +3778,9 @@ Sonstiges: ${notes}
 
     function openNewEmployeeModal() {
       openModal('newEmployeeModal');
-      document.getElementById('newEmployeeName').focus();
+      setTimeout(() => {
+        document.getElementById('newEmployeeName').focus();
+      }, 100);
     }
 
     async function createNewEmployee() {
@@ -3370,10 +3802,26 @@ Sonstiges: ${notes}
         dn,
         unit: unit || '',
         rank: rank || '',
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
         inductions: { oral: { completed: false }, org: { completed: false } },
-        oralData: { date: '', timeStart: '16:40', timeEnd: '18:00', person: '', notes: '', unit: unit || '', rank: rank || '' },
-        orgData: { date: '', timeStart: '22:10', timeEnd: '23:05', person: '', notes: '', unit: unit || '', rank: rank || '' },
+        oralData: { 
+          date: '', 
+          timeStart: '16:40', 
+          timeEnd: '18:00', 
+          person: '', 
+          notes: '', 
+          unit: unit || '', 
+          rank: rank || '' 
+        },
+        orgData: { 
+          date: '', 
+          timeStart: '22:10', 
+          timeEnd: '23:05', 
+          person: '', 
+          notes: '', 
+          unit: unit || '', 
+          rank: rank || '' 
+        },
         status: 'active'
       };
 
@@ -3647,17 +4095,18 @@ Sonstiges:
       }
     }
 
-    // ==================== SETTINGS MODAL (Vereinfacht) ====================
+    // ==================== SETTINGS MODAL ====================
     function openSettingsModal() {
       createAndShowSettingsModal();
     }
 
     async function createAndShowSettingsModal() {
       const modalId = 'settingsModal';
-      const modal = document.getElementById(modalId);
+      let modal = document.getElementById(modalId);
       
       if (modal) {
         modal.classList.add('active');
+        switchSettingsTab('units');
         return;
       }
 
@@ -3705,7 +4154,8 @@ Sonstiges:
 
       document.body.insertAdjacentHTML('beforeend', modalHTML);
       setTimeout(() => {
-        document.getElementById(modalId).classList.add('active');
+        modal = document.getElementById(modalId);
+        modal.classList.add('active');
         switchSettingsTab('units');
       }, 10);
     }
@@ -3714,7 +4164,9 @@ Sonstiges:
       const tabs = document.querySelectorAll('.settings-tab');
       tabs.forEach(tab => tab.classList.remove('active'));
       
-      const activeTab = document.querySelector(`.settings-tab[onclick*="${tabName}"]`);
+      const activeTab = Array.from(tabs).find(tab => 
+        tab.getAttribute('onclick')?.includes(tabName)
+      );
       if (activeTab) activeTab.classList.add('active');
       
       loadSettingsTabContent(tabName);
@@ -3725,9 +4177,9 @@ Sonstiges:
       
       if (tabName === 'units') {
         container.innerHTML = `
-          <div class="settings-section" style="flex: 1; overflow: hidden; display: flex; flex-direction: column;">
+          <div class="settings-section">
             <h3 class="section-title-settings"><i class="fas fa-building"></i> Unit-Liste bearbeiten</h3>
-            <div class="unit-list" id="unitList" style="flex: 1; overflow-y: auto; margin-bottom: 16px;">
+            <div class="unit-list" id="unitList">
               ${settings.units.map((unit, index) => `
                 <div class="unit-item">
                   <div class="unit-name">${escapeHtml(unit.name)}</div>
@@ -3746,9 +4198,9 @@ Sonstiges:
         `;
       } else if (tabName === 'ranks') {
         container.innerHTML = `
-          <div class="settings-section" style="flex: 1; overflow: hidden; display: flex; flex-direction: column;">
+          <div class="settings-section">
             <h3 class="section-title-settings"><i class="fas fa-user-tie"></i> Rang-Liste bearbeiten</h3>
-            <div class="rank-list" id="rankList" style="flex: 1; overflow-y: auto; margin-bottom: 16px;">
+            <div class="rank-list" id="rankList">
               ${settings.ranks.map((rank, index) => `
                 <div class="rank-item">
                   <div class="rank-name">${escapeHtml(rank.name)}</div>
@@ -3766,10 +4218,14 @@ Sonstiges:
           </div>
         `;
       } else if (tabName === 'ankundigungen') {
+        const today = new Date().toISOString().split('T')[0];
+        const now = new Date();
+        const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+        
         container.innerHTML = `
-          <div class="settings-section" style="flex: 1; overflow: hidden; display: flex; flex-direction: column;">
+          <div class="settings-section">
             <h3 class="section-title-settings"><i class="fas fa-bullhorn"></i> Ankündigungen & Besprechungen</h3>
-            <div style="display: flex; flex-direction: column; gap: 24px; flex: 1;">
+            <div style="display: flex; flex-direction: column; gap: 24px;">
               <div>
                 <h4 style="color: var(--gray-light); font-size: 14px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
                   <i class="fas fa-plus"></i> Neue Ankündigung erstellen
@@ -3790,8 +4246,8 @@ Sonstiges:
                 <div style="display: flex; flex-direction: column; gap: 12px;">
                   <input type="text" class="settings-input" id="newBesprechungThema" placeholder="Thema der Besprechung">
                   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <input type="date" class="settings-input" id="newBesprechungDate">
-                    <input type="time" class="settings-input" id="newBesprechungTime">
+                    <input type="date" class="settings-input" id="newBesprechungDate" value="${today}">
+                    <input type="time" class="settings-input" id="newBesprechungTime" value="${timeString}">
                   </div>
                   <input type="text" class="settings-input" id="newBesprechungOrt" placeholder="Ort der Besprechung">
                   <textarea class="settings-input" id="newBesprechungContent" placeholder="Inhalt der Besprechung..." rows="4"></textarea>
@@ -3943,27 +4399,16 @@ Sonstiges:
       }
     }
 
-    // ==================== SOLDATEN & BEOBACHTUNGS MODALS (Vereinfacht) ====================
+    // ==================== SOLDATEN & BEOBACHTUNGS MODALS ====================
     function openSoldatenModal() {
-      showNotification('Soldatengespräch-Funktion wird geladen...', 'info');
+      showNotification('Soldatengespräch-Funktion in Entwicklung', 'info');
       // Hier würde die vollständige Soldaten-Modal-Logik implementiert werden
     }
 
     function openBeobachtungAktenModal() {
-      showNotification('Beobachtungs-Akten-Funktion wird geladen...', 'info');
+      showNotification('Beobachtungs-Akten-Funktion in Entwicklung', 'info');
       // Hier würde die vollständige Beobachtungs-Akten-Logik implementiert werden
     }
-
-    // Fügen Sie einen Shake-Animation Keyframe hinzu
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-        20%, 40%, 60%, 80% { transform: translateX(5px); }
-      }
-    `;
-    document.head.appendChild(style);
 
     // Initialisiere die App nach DOM Laden
     setTimeout(() => {
