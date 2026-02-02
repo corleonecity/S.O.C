@@ -857,11 +857,34 @@
       opacity: 0.7;
     }
 
+    /* Fix für Badges - nebeneinander */
+    .induction-badges-wrapper {
+      display: flex;
+      gap: 8px;
+      flex-wrap: nowrap;
+      align-items: center;
+      margin-top: 4px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .induction-badges-wrapper::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .induction-badges-wrapper::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .induction-badges-wrapper::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+    }
+
     .induction-badges {
       display: flex;
       gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 4px;
+      flex-wrap: nowrap;
     }
 
     .induction-badge {
@@ -869,13 +892,14 @@
       padding: 6px 12px;
       border-radius: var(--radius-full);
       font-weight: 800;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
       white-space: nowrap;
       transition: var(--transition);
       border: 1px solid transparent;
       letter-spacing: 0.3px;
+      flex-shrink: 0;
     }
 
     .induction-badge:hover {
@@ -1083,6 +1107,7 @@
       margin-bottom: 32px;
     }
 
+    /* Fix für Einweisung Cards */
     .induction-card {
       background: rgba(255, 255, 255, 0.03);
       border-radius: var(--radius-lg);
@@ -1091,6 +1116,9 @@
       transition: var(--transition);
       position: relative;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 580px;
     }
 
     .induction-card::before {
@@ -1116,9 +1144,10 @@
     .induction-card-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       margin-bottom: 24px;
       gap: 16px;
+      flex-shrink: 0;
     }
 
     .induction-title {
@@ -1128,6 +1157,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
+      line-height: 1.4;
     }
 
     .induction-icon {
@@ -1141,6 +1171,7 @@
       font-size: 20px;
       color: #fff;
       box-shadow: var(--shadow-md);
+      flex-shrink: 0;
     }
 
     .induction-card.completed .induction-icon {
@@ -1148,7 +1179,7 @@
     }
 
     .induction-status {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 900;
       padding: 8px 16px;
       border-radius: var(--radius-full);
@@ -1156,6 +1187,8 @@
       color: var(--gray);
       white-space: nowrap;
       letter-spacing: 0.5px;
+      flex-shrink: 0;
+      text-transform: uppercase;
     }
 
     .induction-card.completed .induction-status {
@@ -1163,11 +1196,39 @@
       color: var(--secondary);
     }
 
-    /* Forms */
+    /* Forms - FIXED Layout */
+    .induction-toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      flex-shrink: 0;
+    }
+
+    .induction-toggle-label {
+      font-weight: 800;
+      color: var(--gray);
+      font-size: 13px;
+      flex: 1;
+    }
+
+    .induction-form-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
     .oral-form-grid,
     .org-form-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(2, 1fr);
       gap: 16px;
       margin-bottom: 8px;
     }
@@ -1184,6 +1245,9 @@
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .form-input,
@@ -1197,6 +1261,8 @@
       font-size: 14px;
       transition: var(--transition);
       width: 100%;
+      min-height: 44px;
+      box-sizing: border-box;
     }
 
     .form-input::placeholder,
@@ -1261,6 +1327,7 @@
       display: inline-block;
       width: 60px;
       height: 32px;
+      flex-shrink: 0;
     }
 
     .toggle-switch input {
@@ -2047,6 +2114,176 @@
       flex-shrink: 0;
     }
 
+    /* Soldaten & Beobachtung Items */
+    .soldaten-item,
+    .beobachtung-item {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 16px;
+    }
+
+    .soldaten-item-header,
+    .beobachtung-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .soldaten-item-title,
+    .beobachtung-item-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .soldaten-item-date,
+    .beobachtung-item-date {
+      font-size: 12px;
+      color: var(--gray);
+    }
+
+    .soldaten-item-body,
+    .beobachtung-item-body {
+      margin-bottom: 16px;
+    }
+
+    .soldaten-item-line,
+    .beobachtung-item-line {
+      margin-bottom: 8px;
+      font-size: 13px;
+      color: var(--gray-light);
+    }
+
+    .soldaten-item-actions,
+    .beobachtung-item-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    /* Beobachtungs-Akten Styles */
+    .beobachtung-akte-item {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 16px;
+    }
+
+    .beobachtung-akte-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .beobachtung-akte-name {
+      font-size: 16px;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .beobachtung-akte-dn {
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--primary-light);
+      background: rgba(99, 102, 241, 0.1);
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+    }
+
+    .beobachtung-akte-date {
+      font-size: 12px;
+      color: var(--gray);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .beobachtung-akte-grund {
+      font-size: 13px;
+      color: var(--gray-light);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .beobachtung-akte-template {
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 12px;
+      color: var(--gray);
+      background: rgba(0, 0, 0, 0.2);
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 12px;
+      white-space: pre-wrap;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .beobachtung-akte-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .beobachtung-akte-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-weight: 800;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .beobachtung-akte-btn-copy {
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--primary-light);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+
+    .beobachtung-akte-btn-copy:hover {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: var(--primary);
+    }
+
+    .beobachtung-akte-btn-delete {
+      background: rgba(239, 68, 68, 0.1);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .beobachtung-akte-btn-delete:hover {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: var(--danger);
+    }
+
+    .empty-beobachtungen {
+      text-align: center;
+      padding: 60px 40px;
+      color: var(--gray);
+    }
+
+    .empty-beobachtungen-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+      opacity: 0.2;
+    }
+
+    .empty-beobachtungen-title {
+      font-size: 18px;
+      font-weight: 900;
+      margin-bottom: 12px;
+      color: var(--gray-light);
+    }
+
     /* Responsive Design */
     @media (max-width: 1200px) {
       .app-container {
@@ -2458,46 +2695,48 @@
               <div class="induction-status" id="oralInductionStatus">AUSSTEHEND</div>
             </div>
 
-            <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
-              <label style="font-weight:800;color:var(--gray);font-size:13px;">Bestanden:</label>
+            <div class="induction-toggle-container">
+              <label class="induction-toggle-label">Bestanden:</label>
               <label class="toggle-switch">
                 <input type="checkbox" id="oralInductionToggle" onchange="toggleInduction('oral', this.checked)">
                 <span class="toggle-slider"></span>
               </label>
             </div>
 
-            <div class="oral-form-grid">
-              <div class="form-group">
-                <label class="form-label">Datum</label>
-                <input type="date" class="form-input" id="oralDate">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Uhrzeit</label>
-                <div class="time-container">
-                  <input type="time" class="form-input" id="oralTimeStart">
-                  <div class="time-separator">bis</div>
-                  <input type="time" class="form-input" id="oralTimeEnd">
+            <div class="induction-form-container">
+              <div class="oral-form-grid">
+                <div class="form-group">
+                  <label class="form-label"><i class="fas fa-calendar"></i> Datum</label>
+                  <input type="date" class="form-input" id="oralDate">
                 </div>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Beteiligte Person</label>
-                <input type="text" class="form-input" id="oralPerson" placeholder="Name der beteiligten Person">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Unit</label>
-                <select class="form-select" id="unitSelect">
-                  <option value="">Unit auswählen</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Rang</label>
-                <select class="form-select" id="rankSelect">
-                  <option value="">Rang auswählen</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Sonstige Bemerkungen</label>
-                <textarea class="form-textarea" id="oralNotes" placeholder="Weitere Informationen..." rows="3"></textarea>
+                <div class="form-group">
+                  <label class="form-label"><i class="fas fa-clock"></i> Uhrzeit</label>
+                  <div class="time-container">
+                    <input type="time" class="form-input" id="oralTimeStart">
+                    <div class="time-separator">bis</div>
+                    <input type="time" class="form-input" id="oralTimeEnd">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label"><i class="fas fa-user"></i> Beteiligte Person</label>
+                  <input type="text" class="form-input" id="oralPerson" placeholder="Name der beteiligten Person">
+                </div>
+                <div class="form-group">
+                  <label class="form-label"><i class="fas fa-building"></i> Unit</label>
+                  <select class="form-select" id="unitSelect">
+                    <option value="">Unit auswählen</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label"><i class="fas fa-user-tie"></i> Rang</label>
+                  <select class="form-select" id="rankSelect">
+                    <option value="">Rang auswählen</option>
+                  </select>
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                  <label class="form-label"><i class="fas fa-sticky-note"></i> Sonstige Bemerkungen</label>
+                  <textarea class="form-textarea" id="oralNotes" placeholder="Weitere Informationen..." rows="3"></textarea>
+                </div>
               </div>
             </div>
           </div>
@@ -2511,46 +2750,48 @@
               <div class="induction-status" id="orgInductionStatus">AUSSTEHEND</div>
             </div>
 
-            <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
-              <label style="font-weight:800;color:var(--gray);font-size:13px;">Bestanden:</label>
+            <div class="induction-toggle-container">
+              <label class="induction-toggle-label">Bestanden:</label>
               <label class="toggle-switch">
                 <input type="checkbox" id="orgInductionToggle" onchange="toggleInduction('org', this.checked)">
                 <span class="toggle-slider"></span>
               </label>
             </div>
 
-            <div class="org-form-grid">
-              <div class="form-group">
-                <label class="form-label">Datum</label>
-                <input type="date" class="form-input" id="orgDate">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Uhrzeit</label>
-                <div class="time-container">
-                  <input type="time" class="form-input" id="orgTimeStart">
-                  <div class="time-separator">bis</div>
-                  <input type="time" class="form-input" id="orgTimeEnd">
+            <div class="induction-form-container">
+              <div class="org-form-grid">
+                <div class="form-group">
+                  <label class="form-label"><i class="fas fa-calendar"></i> Datum</label>
+                  <input type="date" class="form-input" id="orgDate">
                 </div>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Beteiligte Person</label>
-                <input type="text" class="form-input" id="orgPerson" placeholder="Name der beteiligten Person">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Unit</label>
-                <select class="form-select" id="unitSelect2">
-                  <option value="">Unit auswählen</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Rang</label>
-                <select class="form-select" id="rankSelect2">
-                  <option value="">Rang auswählen</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Sonstige Bemerkungen</label>
-                <textarea class="form-textarea" id="orgNotes" placeholder="Weitere Informationen..." rows="3"></textarea>
+                <div class="form-group">
+                  <label class="form-label"><i class="fas fa-clock"></i> Uhrzeit</label>
+                  <div class="time-container">
+                    <input type="time" class="form-input" id="orgTimeStart">
+                    <div class="time-separator">bis</div>
+                    <input type="time" class="form-input" id="orgTimeEnd">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label"><i class="fas fa-user"></i> Beteiligte Person</label>
+                  <input type="text" class="form-input" id="orgPerson" placeholder="Name der beteiligten Person">
+                </div>
+                <div class="form-group">
+                  <label class="form-label"><i class="fas fa-building"></i> Unit</label>
+                  <select class="form-select" id="unitSelect2">
+                    <option value="">Unit auswählen</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label"><i class="fas fa-user-tie"></i> Rang</label>
+                  <select class="form-select" id="rankSelect2">
+                    <option value="">Rang auswählen</option>
+                  </select>
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                  <label class="form-label"><i class="fas fa-sticky-note"></i> Sonstige Bemerkungen</label>
+                  <textarea class="form-textarea" id="orgNotes" placeholder="Weitere Informationen..." rows="3"></textarea>
+                </div>
               </div>
             </div>
           </div>
@@ -2684,7 +2925,11 @@
     </div>
   </div>
 
-  <!-- Die anderen Modals werden dynamisch generiert -->
+  <!-- Soldaten Modal (dynamisch erstellt) -->
+  <!-- Beobachtung Akten Modal (dynamisch erstellt) -->
+  <!-- Settings Modal (dynamisch erstellt) -->
+  <!-- Ankündigungen Modal (dynamisch erstellt) -->
+  <!-- Besprechungen Modal (dynamisch erstellt) -->
 
   <script>
     // ==================== KONFIGURATION ====================
@@ -2715,6 +2960,9 @@
     let currentFilter = 'all';
     let isAuthenticated = false;
     let settingsAuthenticated = false;
+    let akten = [];
+    let currentBeobachtungTab = 'new';
+    let currentSoldatenTab = 'new';
     
     // Unsubscribe-Funktionen für Listener
     let unsubscribeFunctions = [];
@@ -2898,12 +3146,25 @@
       const container = document.getElementById(`${type}List`);
       
       try {
+        // Query für Firestore Index Fehler fixen
         const querySnapshot = await db.collection('hrAnkundigungen')
           .where('type', '==', contentType)
-          .orderBy('created', 'desc')
           .get();
         
-        if (querySnapshot.empty) {
+        // Client-seitig sortieren um Index-Fehler zu vermeiden
+        const items = [];
+        querySnapshot.forEach(doc => {
+          items.push({ id: doc.id, ...doc.data() });
+        });
+        
+        // Sortieren nach created field
+        items.sort((a, b) => {
+          const dateA = a.created ? new Date(a.created).getTime() : 0;
+          const dateB = b.created ? new Date(b.created).getTime() : 0;
+          return dateB - dateA; // Neueste zuerst
+        });
+        
+        if (items.length === 0) {
           container.innerHTML = `
             <div class="empty-state">
               <div class="empty-icon"><i class="${contentType === 'ankundigung' ? 'fas fa-bullhorn' : 'fas fa-calendar-alt'}"></i></div>
@@ -2915,8 +3176,7 @@
         }
 
         let html = '';
-        querySnapshot.forEach(doc => {
-          const item = doc.data();
+        items.forEach(item => {
           const isBesprechung = contentType === 'besprechung';
           
           html += `
@@ -2933,12 +3193,20 @@
               <div class="${type}-item-date">
                 <i class="fas fa-calendar"></i> 
                 ${isBesprechung && item.date ? new Date(item.date).toLocaleDateString('de-DE') : 
-                  item.createdFormatted || new Date(item.created || Date.now()).toLocaleDateString('de-DE')}
+                  item.createdFormatted || (item.created ? new Date(item.created).toLocaleDateString('de-DE') : 'Unbekannt')}
                 ${isBesprechung && item.time ? ` • ${item.time}` : ''}
                 ${isBesprechung && item.ort ? ` • ${item.ort}` : ''}
               </div>
               <div class="${type}-item-content">
                 ${escapeHtml(item.content || '')}
+              </div>
+              <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px;">
+                <button class="btn btn-secondary" style="padding: 8px 12px; font-size: 12px;" onclick="editItem('${item.id}', '${contentType}')">
+                  <i class="fas fa-edit"></i> Bearbeiten
+                </button>
+                <button class="btn btn-danger" style="padding: 8px 12px; font-size: 12px;" onclick="deleteItem('${item.id}', '${contentType}')">
+                  <i class="fas fa-trash"></i> Löschen
+                </button>
               </div>
             </div>
           `;
@@ -2947,14 +3215,33 @@
         container.innerHTML = html;
       } catch (error) {
         console.error(`Fehler beim Laden der ${type}:`, error);
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon"><i class="fas fa-exclamation-triangle"></i></div>
-            <div class="empty-title">Fehler beim Laden</div>
-            <div class="empty-description">${error.message}</div>
-          </div>
-        `;
+        
+        // Spezifische Fehlerbehandlung für Index-Fehler
+        if (error.message && error.message.includes('index')) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon"><i class="fas fa-exclamation-triangle"></i></div>
+              <div class="empty-title">Firestore Index benötigt</div>
+              <div class="empty-description">Bitte erstellen Sie einen Composite Index in der Firebase Console für die Query: hrAnkundigungen, type, created</div>
+              <button class="btn btn-primary" onclick="retryLoadModalContent('${type}', '${contentType}')" style="margin-top: 16px;">
+                <i class="fas fa-redo"></i> Erneut versuchen
+              </button>
+            </div>
+          `;
+        } else {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon"><i class="fas fa-exclamation-triangle"></i></div>
+              <div class="empty-title">Fehler beim Laden</div>
+              <div class="empty-description">${error.message}</div>
+            </div>
+          `;
+        }
       }
+    }
+
+    async function retryLoadModalContent(type, contentType) {
+      await loadModalContent(type, contentType);
     }
 
     function searchAnkundigungen(searchTerm) {
@@ -2973,6 +3260,160 @@
         const text = item.textContent.toLowerCase();
         item.style.display = !term || text.includes(term) ? 'block' : 'none';
       });
+    }
+
+    async function editItem(itemId, contentType) {
+      try {
+        const doc = await db.collection('hrAnkundigungen').doc(itemId).get();
+        if (doc.exists) {
+          const item = doc.data();
+          currentEditItemId = itemId;
+          currentEditItemType = contentType;
+          
+          const isBesprechung = contentType === 'besprechung';
+          const title = isBesprechung ? 'Besprechung bearbeiten' : 'Ankündigung bearbeiten';
+          
+          document.getElementById('editItemTitle').innerHTML = `<i class="fas fa-edit"></i> ${title}`;
+          
+          let formHtml = '';
+          if (isBesprechung) {
+            formHtml = `
+              <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div class="form-group">
+                  <label class="form-label">Thema *</label>
+                  <input type="text" class="form-input" id="editItemThema" value="${escapeHtml(item.thema || '')}" placeholder="Thema der Besprechung">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                  <div class="form-group">
+                    <label class="form-label">Datum *</label>
+                    <input type="date" class="form-input" id="editItemDate" value="${item.date || ''}">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Uhrzeit *</label>
+                    <input type="time" class="form-input" id="editItemTime" value="${item.time || ''}">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Ort</label>
+                  <input type="text" class="form-input" id="editItemOrt" value="${escapeHtml(item.ort || '')}" placeholder="Ort der Besprechung">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Inhalt *</label>
+                  <textarea class="form-textarea" id="editItemContent" placeholder="Inhalt der Besprechung..." rows="6">${escapeHtml(item.content || '')}</textarea>
+                </div>
+              </div>
+            `;
+          } else {
+            formHtml = `
+              <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div class="form-group">
+                  <label class="form-label">Titel</label>
+                  <input type="text" class="form-input" id="editItemTitleInput" value="${escapeHtml(item.title || '')}" placeholder="Titel der Ankündigung">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Inhalt *</label>
+                  <textarea class="form-textarea" id="editItemContent" placeholder="Inhalt der Ankündigung..." rows="8">${escapeHtml(item.content || '')}</textarea>
+                </div>
+              </div>
+            `;
+          }
+          
+          document.getElementById('editItemBody').innerHTML = formHtml;
+          openModal('editItemModal');
+        }
+      } catch (error) {
+        console.error('Fehler beim Laden des Items:', error);
+        showNotification('Fehler: ' + error.message, 'error');
+      }
+    }
+
+    async function saveEditedItem() {
+      if (!currentEditItemId || !currentEditItemType) return;
+      
+      const isBesprechung = currentEditItemType === 'besprechung';
+      
+      if (isBesprechung) {
+        const thema = document.getElementById('editItemThema').value.trim();
+        const date = document.getElementById('editItemDate').value;
+        const time = document.getElementById('editItemTime').value;
+        const ort = document.getElementById('editItemOrt').value.trim();
+        const content = document.getElementById('editItemContent').value.trim();
+        
+        if (!thema || !date || !time || !content) {
+          showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
+          return;
+        }
+        
+        const updateData = {
+          thema,
+          date,
+          time,
+          ort,
+          content,
+          lastUpdated: new Date().toISOString()
+        };
+        
+        try {
+          await db.collection('hrAnkundigungen').doc(currentEditItemId).update(updateData);
+          showNotification('Besprechung aktualisiert', 'success');
+          closeEditItemModal();
+          
+          // Aktualisiere die entsprechende Liste
+          if (currentEditItemType === 'besprechung') {
+            loadModalContent('besprechungen', 'besprechung');
+          } else {
+            loadModalContent('ankundigungen', 'ankundigung');
+          }
+        } catch (error) {
+          console.error('Fehler beim Speichern:', error);
+          showNotification('Fehler: ' + error.message, 'error');
+        }
+      } else {
+        const title = document.getElementById('editItemTitleInput').value.trim();
+        const content = document.getElementById('editItemContent').value.trim();
+        
+        if (!content) {
+          showNotification('Bitte geben Sie den Inhalt der Ankündigung ein', 'warning');
+          return;
+        }
+        
+        const updateData = {
+          title: title || 'Ohne Titel',
+          content,
+          lastUpdated: new Date().toISOString()
+        };
+        
+        try {
+          await db.collection('hrAnkundigungen').doc(currentEditItemId).update(updateData);
+          showNotification('Ankündigung aktualisiert', 'success');
+          closeEditItemModal();
+          loadModalContent('ankundigungen', 'ankundigung');
+        } catch (error) {
+          console.error('Fehler beim Speichern:', error);
+          showNotification('Fehler: ' + error.message, 'error');
+        }
+      }
+    }
+
+    async function deleteItem(itemId, contentType) {
+      if (!confirm(`${contentType === 'besprechung' ? 'Besprechung' : 'Ankündigung'} wirklich löschen?`)) {
+        return;
+      }
+      
+      try {
+        await db.collection('hrAnkundigungen').doc(itemId).delete();
+        showNotification('Gelöscht', 'success');
+        
+        // Aktualisiere die entsprechende Liste
+        if (contentType === 'besprechung') {
+          loadModalContent('besprechungen', 'besprechung');
+        } else {
+          loadModalContent('ankundigungen', 'ankundigung');
+        }
+      } catch (error) {
+        console.error('Fehler beim Löschen:', error);
+        showNotification('Fehler: ' + error.message, 'error');
+      }
     }
 
     // ==================== APP INITIALISIERUNG ====================
@@ -3004,14 +3445,23 @@
       try {
         const querySnapshot = await db.collection('hrAnkundigungen')
           .where('type', '==', 'ankundigung')
-          .orderBy('created', 'desc')
-          .limit(1)
           .get();
         
         if (querySnapshot.empty) return;
         
-        const doc = querySnapshot.docs[0];
-        const ankundigung = doc.data();
+        // Client-seitig sortieren
+        const ankundigungen = [];
+        querySnapshot.forEach(doc => {
+          ankundigungen.push({ id: doc.id, ...doc.data() });
+        });
+        
+        ankundigungen.sort((a, b) => {
+          const dateA = a.created ? new Date(a.created).getTime() : 0;
+          const dateB = b.created ? new Date(b.created).getTime() : 0;
+          return dateB - dateA;
+        });
+        
+        const ankundigung = ankundigungen[0];
         
         const banner = document.getElementById('ankundigungBanner');
         const title = document.getElementById('bannerTitle');
@@ -3022,7 +3472,7 @@
         title.innerHTML = `<span>${ankundigung.icon || '🪧'}</span> ${escapeHtml(ankundigung.title || 'Ankündigung')}`;
         content.textContent = ankundigung.content || '';
         type.textContent = 'Ankündigung';
-        date.textContent = ankundigung.createdFormatted || new Date(ankundigung.created).toLocaleDateString('de-DE');
+        date.textContent = ankundigung.createdFormatted || (ankundigung.created ? new Date(ankundigung.created).toLocaleDateString('de-DE') : 'Unbekannt');
         
         banner.classList.add('show');
         
@@ -3281,14 +3731,16 @@
             <i class="fas fa-user-tie"></i> ${escapeHtml(employee.rank || 'Kein Rang')} •
             <i class="fas fa-building"></i> ${escapeHtml(employee.unit || 'Keine Unit')}
           </div>
-          <div class="induction-badges">
-            <div class="induction-badge badge-oral ${oralCompleted ? 'completed' : 'pending'}">
-              <i class="fas ${oralCompleted ? 'fa-check-circle' : 'fa-clock'}"></i>
-              Mündlich
-            </div>
-            <div class="induction-badge badge-org ${orgCompleted ? 'completed' : 'pending'}">
-              <i class="fas ${orgCompleted ? 'fa-check-circle' : 'fa-clock'}"></i>
-              Organisatorisch
+          <div class="induction-badges-wrapper">
+            <div class="induction-badges">
+              <div class="induction-badge badge-oral ${oralCompleted ? 'completed' : 'pending'}">
+                <i class="fas ${oralCompleted ? 'fa-check-circle' : 'fa-clock'}"></i>
+                Mündlich
+              </div>
+              <div class="induction-badge badge-org ${orgCompleted ? 'completed' : 'pending'}">
+                <i class="fas ${orgCompleted ? 'fa-check-circle' : 'fa-clock'}"></i>
+                Organisatorisch
+              </div>
             </div>
           </div>
         `;
@@ -3676,7 +4128,7 @@ Sonstiges: ${notes}
       document.getElementById('totalArchived').textContent = totalArchived;
       
       // Für Beobachtungen müssen Sie Ihre eigene Logik implementieren
-      document.getElementById('totalAkten').textContent = '0';
+      document.getElementById('totalAkten').textContent = akten.length || '0';
     }
 
     // ==================== MODAL FUNKTIONEN ====================
@@ -3692,6 +4144,12 @@ Sonstiges: ${notes}
       if (modal) {
         modal.classList.remove('active');
       }
+    }
+
+    function closeEditItemModal() {
+      closeModal('editItemModal');
+      currentEditItemId = null;
+      currentEditItemType = null;
     }
 
     function openNewEmployeeModal() {
@@ -3828,6 +4286,10 @@ Sonstiges:
           return false;
         }
       }
+    }
+
+    function copyTextToClipboard(text) {
+      return copyToClipboard(text);
     }
 
     async function copyOralTemplate() {
@@ -4032,6 +4494,9 @@ Sonstiges:
                 <button class="settings-tab" onclick="switchSettingsTab('ankundigungen')">
                   <i class="fas fa-bullhorn"></i> Ankündigungen
                 </button>
+                <button class="settings-tab" onclick="switchSettingsTab('besprechungen')">
+                  <i class="fas fa-calendar-alt"></i> Besprechungen
+                </button>
               </div>
               
               <div id="settingsTabContent" style="flex: 1; overflow: hidden; display: flex; flex-direction: column;">
@@ -4116,7 +4581,7 @@ Sonstiges:
       } else if (tabName === 'ankundigungen') {
         container.innerHTML = `
           <div class="settings-section" style="flex: 1; overflow: hidden; display: flex; flex-direction: column;">
-            <h3 class="section-title-settings"><i class="fas fa-bullhorn"></i> Ankündigungen & Besprechungen</h3>
+            <h3 class="section-title-settings"><i class="fas fa-bullhorn"></i> Ankündigungen</h3>
             <div style="display: flex; flex-direction: column; gap: 24px; flex: 1;">
               <div>
                 <h4 style="color: var(--gray-light); font-size: 14px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
@@ -4133,6 +4598,22 @@ Sonstiges:
               
               <div>
                 <h4 style="color: var(--gray-light); font-size: 14px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                  <i class="fas fa-list"></i> Vorhandene Ankündigungen
+                </h4>
+                <button class="btn btn-secondary" onclick="openAnkundigungenModal()">
+                  <i class="fas fa-external-link-alt"></i> Ankündigungen öffnen
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (tabName === 'besprechungen') {
+        container.innerHTML = `
+          <div class="settings-section" style="flex: 1; overflow: hidden; display: flex; flex-direction: column;">
+            <h3 class="section-title-settings"><i class="fas fa-calendar-alt"></i> Besprechungen</h3>
+            <div style="display: flex; flex-direction: column; gap: 24px; flex: 1;">
+              <div>
+                <h4 style="color: var(--gray-light); font-size: 14px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
                   <i class="fas fa-plus"></i> Neue Besprechung erstellen
                 </h4>
                 <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -4147,6 +4628,15 @@ Sonstiges:
                     <i class="fas fa-save"></i> Besprechung speichern
                   </button>
                 </div>
+              </div>
+              
+              <div>
+                <h4 style="color: var(--gray-light); font-size: 14px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                  <i class="fas fa-list"></i> Vorhandene Besprechungen
+                </h4>
+                <button class="btn btn-secondary" onclick="openBesprechungenModal()">
+                  <i class="fas fa-external-link-alt"></i> Besprechungen öffnen
+                </button>
               </div>
             </div>
           </div>
@@ -4291,20 +4781,649 @@ Sonstiges:
       }
     }
 
-    // ==================== SOLDATEN & BEOBACHTUNGS MODALS ====================
+    // ==================== SOLDATEN MODAL ====================
     function openSoldatenModal() {
-      createAndShowSoldatenModal();
+      openModal('soldatenModal');
+      updateSoldatenPreview();
     }
 
-    async function createAndShowSoldatenModal() {
-      const modalId = 'soldatenModal';
+    function switchSoldatenTab(tabName) {
+      currentSoldatenTab = tabName;
       
-      // Entferne vorhandenes Modal falls existiert
-      const existingModal = document.getElementById(modalId);
-      if (existingModal) {
-        existingModal.remove();
+      document.querySelectorAll('.soldaten-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.soldaten-tab')[tabName === 'new' ? 0 : 1].classList.add('active');
+      
+      document.querySelectorAll('.soldaten-tab-content').forEach(content => {
+        content.style.display = 'none';
+      });
+      
+      if (tabName === 'new') {
+        document.getElementById('soldatenNewTab').style.display = 'block';
+        updateSoldatenPreview();
+      } else {
+        document.getElementById('soldatenListTab').style.display = 'block';
+        loadSoldatenGespräche();
+      }
+    }
+
+    function updateSoldatenPreview() {
+      const name = document.getElementById('soldatenName').value;
+      const dn = document.getElementById('soldatenDN').value;
+      const unit = document.getElementById('soldatenUnit').value;
+      const rank = document.getElementById('soldatenRank').value;
+      const date = document.getElementById('soldatenDate').value;
+      const time = document.getElementById('soldatenTime').value;
+      const notizen = document.getElementById('soldatenNotizen').value;
+      const sonstiges = document.getElementById('soldatenSonstiges').value;
+
+      const formattedDate = date ? new Date(date).toLocaleDateString('de-DE') : '';
+      
+      // Find Discord IDs for unit and rank
+      const unitSetting = settings.units.find(u => u.name === unit);
+      const rankSetting = settings.ranks.find(r => r.name === rank);
+      
+      const unitDisplay = unitSetting?.discordId ? `<@&${unitSetting.discordId}>` : unit;
+      const rankDisplay = rankSetting?.discordId ? `<@&${rankSetting.discordId}>` : rank;
+      
+      const template = `╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+Soldatengespräch
+
+Name: ${name || ''}
+DN: ${dn || ''}
+Hauptunit: ${unitDisplay || ''}
+Rang: ${rankDisplay || ''}
+Datum: ${formattedDate}
+Uhrzeit: ${time || ''}
+Notizen: ${notizen || ''}
+Sonstiges: ${sonstiges || ''}
+
+/////////////////////////////////////////////////////////////////////////
+<@&1097625910242447422>
+╚══════════════════`;
+
+      document.getElementById('soldatenPreview').textContent = template;
+    }
+
+    async function copySoldatenTemplate() {
+      const template = document.getElementById('soldatenPreview').textContent;
+      const success = await copyToClipboard(template);
+      showNotification(success ? 'Soldatengespräch kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
+    }
+
+    async function saveSoldatenGespräch() {
+      const name = document.getElementById('soldatenName').value.trim();
+      const dn = document.getElementById('soldatenDN').value;
+      const unit = document.getElementById('soldatenUnit').value;
+      const rank = document.getElementById('soldatenRank').value;
+      const date = document.getElementById('soldatenDate').value;
+      const time = document.getElementById('soldatenTime').value;
+      const notizen = document.getElementById('soldatenNotizen').value.trim();
+      const sonstiges = document.getElementById('soldatenSonstiges').value.trim();
+
+      if (!name || !dn || !date || !time || !notizen) {
+        showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
+        return;
       }
 
+      const gespräch = {
+        id: `SOLDATEN-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+        name,
+        dn,
+        unit: unit || '',
+        rank: rank || '',
+        date,
+        time,
+        notizen,
+        sonstiges: sonstiges || '',
+        created: new Date().toISOString(),
+        createdFormatted: new Date().toLocaleDateString('de-DE'),
+        dateFormatted: new Date(date).toLocaleDateString('de-DE'),
+        template: document.getElementById('soldatenPreview').textContent
+      };
+
+      try {
+        await db.collection('hrSoldatenGespräche').doc(gespräch.id).set(gespräch);
+        
+        showNotification('Soldatengespräch erfolgreich gespeichert', 'success');
+        document.getElementById('soldatenName').value = '';
+        document.getElementById('soldatenDN').value = '';
+        document.getElementById('soldatenUnit').value = '';
+        document.getElementById('soldatenRank').value = '';
+        document.getElementById('soldatenNotizen').value = '';
+        document.getElementById('soldatenSonstiges').value = '';
+        
+        updateSoldatenPreview();
+        switchSoldatenTab('list');
+      } catch (error) {
+        console.error('Fehler beim Speichern:', error);
+        showNotification('Fehler: ' + error.message, 'error');
+      }
+    }
+
+    async function loadSoldatenGespräche() {
+      const container = document.getElementById('soldatenListContainer');
+      container.innerHTML = '<div class="loading"><div class="loading-spinner"></div>Lade Gespräche...</div>';
+      
+      try {
+        const snapshot = await db.collection('hrSoldatenGespräche')
+          .orderBy('created', 'desc')
+          .get();
+        
+        if (snapshot.empty) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon"><i class="fas fa-comments"></i></div>
+              <div class="empty-title">Keine Soldatengespräche</div>
+              <div class="empty-description">Es wurden noch keine Gespräche gespeichert.</div>
+            </div>
+          `;
+          return;
+        }
+
+        let html = '';
+        snapshot.forEach(doc => {
+          const g = doc.data();
+          html += `
+            <div class="soldaten-item">
+              <div class="soldaten-item-header">
+                <div class="soldaten-item-title">${escapeHtml(g.name || '')} (DN ${escapeHtml(g.dn || '')})</div>
+                <div class="soldaten-item-date">${escapeHtml(g.dateFormatted || '')} • ${escapeHtml(g.time || '')}</div>
+              </div>
+              <div class="soldaten-item-body">
+                <div class="soldaten-item-line"><b>Unit:</b> ${escapeHtml(g.unit || '')}</div>
+                <div class="soldaten-item-line"><b>Rang:</b> ${escapeHtml(g.rank || '')}</div>
+                <div class="soldaten-item-line"><b>Notizen:</b> ${escapeHtml(g.notizen || '')}</div>
+                ${g.sonstiges ? `<div class="soldaten-item-line"><b>Sonstiges:</b> ${escapeHtml(g.sonstiges || '')}</div>` : ''}
+              </div>
+              <div class="soldaten-item-actions">
+                <button class="btn btn-secondary" onclick="copyTextToClipboard('${escapeHtml(g.template || '').replace(/'/g, "\\'")}')">
+                  <i class="fas fa-copy"></i> Kopieren
+                </button>
+                <button class="btn btn-danger" onclick="deleteSoldatenGespräch('${doc.id}')">
+                  <i class="fas fa-trash"></i> Löschen
+                </button>
+              </div>
+            </div>
+          `;
+        });
+
+        container.innerHTML = html;
+      } catch (error) {
+        console.error('Fehler beim Laden:', error);
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="empty-title">Fehler beim Laden</div>
+            <div class="empty-description">${error.message}</div>
+          </div>
+        `;
+      }
+    }
+
+    async function deleteSoldatenGespräch(id) {
+      if (!confirm('Soldatengespräch wirklich löschen?')) return;
+      
+      try {
+        await db.collection('hrSoldatenGespräche').doc(id).delete();
+        showNotification('Gelöscht', 'success');
+        loadSoldatenGespräche();
+      } catch (error) {
+        console.error('Fehler beim Löschen:', error);
+        showNotification('Fehler: ' + error.message, 'error');
+      }
+    }
+
+    // ==================== BEOBACHTUNGSSYSTEM / BEOBACHTUNGS-AKTEN ====================
+    function openBeobachtungAktenModal() {
+      openModal('beobachtungAktenModal');
+      updateBeobachtungPreview();
+    }
+
+    function switchBeobachtungTab(tabName) {
+      currentBeobachtungTab = tabName;
+      
+      document.querySelectorAll('.beobachtung-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.beobachtung-tab')[tabName === 'new' ? 0 : 1].classList.add('active');
+      
+      document.querySelectorAll('.beobachtung-tab-content').forEach(content => {
+        content.style.display = 'none';
+      });
+      
+      if (tabName === 'new') {
+        document.getElementById('beobachtungNewTab').style.display = 'block';
+        updateBeobachtungPreview();
+      } else {
+        document.getElementById('beobachtungListTab').style.display = 'block';
+        loadAkten();
+      }
+    }
+
+    function updateBeobachtungPreview() {
+      const name = document.getElementById('beobachtungName').value;
+      const dn = document.getElementById('beobachtungDN').value;
+      const unit = document.getElementById('beobachtungUnit').value;
+      const rank = document.getElementById('beobachtungRank').value;
+      const grund = document.getElementById('beobachtungGrund').value;
+
+      // Find Discord IDs for unit and rank
+      const unitSetting = settings.units.find(u => u.name === unit);
+      const rankSetting = settings.ranks.find(r => r.name === rank);
+      
+      const unitDisplay = unitSetting?.discordId ? `<@&${unitSetting.discordId}>` : unit;
+      const rankDisplay = rankSetting?.discordId ? `<@&${rankSetting.discordId}>` : rank;
+
+      const template = `╔══════════════════╗
+/////////////////////////////////////////////////////////////////////////
+Beobachtung
+Name: ${name || ''}
+DN: ${dn || ''}
+Unit: ${unitDisplay || ''}
+Rang: ${rankDisplay || ''}
+Grund: ${grund || ''}
+/////////////////////////////////////////////////////////////////////////
+<@&1097625910242447422>
+╚══════════════════╝`;
+
+      document.getElementById('beobachtungPreview').textContent = template;
+    }
+
+    async function copyBeobachtungTemplate() {
+      const template = document.getElementById('beobachtungPreview').textContent;
+      const success = await copyToClipboard(template);
+      showNotification(success ? 'Beobachtung kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
+    }
+
+    async function createNewAkte() {
+      const name = document.getElementById('akteName').value.trim();
+      const dn = document.getElementById('akteDN').value;
+      const unit = document.getElementById('akteUnit').value;
+      const rank = document.getElementById('akteRank').value;
+
+      if (!name || !dn) {
+        showNotification('Name und Dienstnummer sind erforderlich', 'warning');
+        return;
+      }
+
+      const existingAkte = akten.find(a => a.dn == dn && a.name.toLowerCase() === name.toLowerCase());
+      if (existingAkte) {
+        showNotification('Eine Akte für diese Person existiert bereits', 'warning');
+        return;
+      }
+
+      const akte = {
+        id: `AKTE-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+        name,
+        dn,
+        unit: unit || '',
+        rank: rank || '',
+        created: new Date().toISOString(),
+        createdFormatted: new Date().toLocaleDateString('de-DE'),
+        beobachtungen: [],
+        lastUpdated: new Date().toISOString()
+      };
+
+      try {
+        await db.collection('hrAkten').doc(akte.id).set(akte);
+        
+        showNotification('Akte erfolgreich erstellt', 'success');
+        document.getElementById('akteName').value = '';
+        document.getElementById('akteDN').value = '';
+        document.getElementById('akteUnit').value = '';
+        document.getElementById('akteRank').value = '';
+        updateStats();
+        renderAktenListe();
+        switchBeobachtungTab('list');
+      } catch (error) {
+        console.error('Fehler beim Erstellen der Akte:', error);
+        showNotification('Fehler beim Erstellen: ' + error.message, 'error');
+      }
+    }
+
+    async function saveBeobachtungToAkte() {
+      const name = document.getElementById('beobachtungName').value.trim();
+      const dn = document.getElementById('beobachtungDN').value;
+      const grund = document.getElementById('beobachtungGrund').value.trim();
+
+      if (!name || !dn) {
+        showNotification('Name und Dienstnummer sind erforderlich', 'warning');
+        return;
+      }
+
+      if (!grund) {
+        showNotification('Bitte geben Sie einen Grund für die Beobachtung an', 'warning');
+        return;
+      }
+
+      let akte = akten.find(a => a.dn == dn && a.name.toLowerCase() === name.toLowerCase());
+      
+      if (!akte) {
+        const newAkte = {
+          id: `AKTE-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+          name,
+          dn,
+          unit: '',
+          rank: '',
+          created: new Date().toISOString(),
+          createdFormatted: new Date().toLocaleDateString('de-DE'),
+          beobachtungen: [],
+          lastUpdated: new Date().toISOString()
+        };
+        
+        try {
+          await db.collection('hrAkten').doc(newAkte.id).set(newAkte);
+          akten.push(newAkte);
+          akte = newAkte;
+        } catch (error) {
+          console.error('Fehler beim Erstellen der Akte:', error);
+          showNotification('Fehler beim Erstellen der Akte: ' + error.message, 'error');
+          return;
+        }
+      }
+
+      const beobachtung = {
+        id: `BEO-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+        grund,
+        template: document.getElementById('beobachtungPreview').textContent,
+        created: new Date().toISOString(),
+        createdFormatted: new Date().toLocaleDateString('de-DE'),
+        dateFormatted: new Date().toLocaleDateString('de-DE'),
+        lastUpdated: new Date().toISOString()
+      };
+
+      try {
+        const akteRef = db.collection('hrAkten').doc(akte.id);
+        const akteDoc = await akteRef.get();
+        
+        if (akteDoc.exists) {
+          const akteData = akteDoc.data();
+          const beobachtungen = akteData.beobachtungen || [];
+          beobachtungen.unshift(beobachtung);
+          
+          await akteRef.update({
+            beobachtungen,
+            lastUpdated: new Date().toISOString()
+          });
+          
+          // Update local data
+          const localAkte = akten.find(a => a.id === akte.id);
+          if (localAkte) {
+            localAkte.beobachtungen = beobachtungen;
+            localAkte.lastUpdated = new Date().toISOString();
+          }
+          
+          showNotification('Beobachtung gespeichert', 'success');
+          document.getElementById('beobachtungName').value = '';
+          document.getElementById('beobachtungDN').value = '';
+          document.getElementById('beobachtungUnit').value = '';
+          document.getElementById('beobachtungRank').value = '';
+          document.getElementById('beobachtungGrund').value = '';
+          
+          updateBeobachtungPreview();
+          renderAktenListe();
+          switchBeobachtungTab('list');
+        }
+      } catch (error) {
+        console.error('Fehler beim Speichern:', error);
+        showNotification('Fehler beim Speichern: ' + error.message, 'error');
+      }
+    }
+
+    async function loadAkten() {
+      try {
+        const snapshot = await db.collection('hrAkten')
+          .orderBy('lastUpdated', 'desc')
+          .get();
+        
+        akten = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          akten.push({
+            ...data,
+            id: doc.id
+          });
+        });
+        
+        renderAktenListe();
+        updateStats();
+      } catch (error) {
+        console.error('Fehler beim Laden der Akten:', error);
+        showNotification('Fehler beim Laden der Akten: ' + error.message, 'error');
+      }
+    }
+
+    function renderAktenListe() {
+      const container = document.getElementById('aktenListe');
+      const searchTerm = document.getElementById('aktenSearch')?.value.toLowerCase() || '';
+      
+      let filteredAkten = akten;
+      if (searchTerm) {
+        filteredAkten = akten.filter(akte => 
+          akte.name.toLowerCase().includes(searchTerm) || 
+          akte.dn.toString().includes(searchTerm)
+        );
+      }
+      
+      if (filteredAkten.length === 0) {
+        container.innerHTML = `
+          <div class="empty-beobachtungen">
+            <div class="empty-beobachtungen-icon"><i class="fas fa-folder-open"></i></div>
+            <div class="empty-beobachtungen-title">${searchTerm ? 'Keine passenden Akten gefunden' : 'Keine Akten gefunden'}</div>
+            <div class="empty-description">${searchTerm ? 'Versuchen Sie einen anderen Suchbegriff' : 'Erstellen Sie Ihre erste Akte'}</div>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      filteredAkten.forEach(akte => {
+        const beobachtungenCount = akte.beobachtungen ? akte.beobachtungen.length : 0;
+        
+        html += `
+          <div class="beobachtung-akte-item">
+            <div class="beobachtung-akte-header">
+              <div class="beobachtung-akte-name">${escapeHtml(akte.name)}</div>
+              <div class="beobachtung-akte-dn">DN ${escapeHtml(akte.dn)}</div>
+            </div>
+            <div class="beobachtung-akte-date">
+              <i class="fas fa-calendar"></i> Erstellt: ${akte.createdFormatted}
+            </div>
+            <div style="display: flex; gap: 12px; margin-bottom: 12px;">
+              <div style="background: rgba(79,70,229,10); color: var(--primary-light); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; border: 1px solid rgba(79,70,229,20);">
+                ${akte.unit || 'Keine Unit'}
+              </div>
+              <div style="background: rgba(16,185,129,10); color: #86efac; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; border: 1px solid rgba(16,185,129,20);">
+                ${akte.rank || 'Kein Rang'}
+              </div>
+            </div>
+            <div style="color: var(--gray); font-size: 11px; margin-bottom: 12px; display: flex; align-items: center; gap: 4px;">
+              <i class="fas fa-eye"></i> ${beobachtungenCount} Beobachtung${beobachtungenCount !== 1 ? 'en' : ''}
+            </div>
+        `;
+        
+        if (beobachtungenCount > 0) {
+          const latestBeobachtung = akte.beobachtungen[0];
+          html += `
+            <div class="beobachtung-akte-grund">
+              <div style="font-size: 11px; color: var(--gray); margin-bottom: 4px;">
+                <i class="fas fa-calendar"></i> Letzte Beobachtung: ${latestBeobachtung.dateFormatted}
+              </div>
+              ${escapeHtml(latestBeobachtung.grund.length > 150 ? latestBeobachtung.grund.substring(0, 150) + '...' : latestBeobachtung.grund)}
+            </div>
+          `;
+        }
+
+        html += `
+            <div class="beobachtung-akte-actions">
+              <button class="beobachtung-akte-btn beobachtung-akte-btn-copy" onclick="openAkteDetail('${akte.id}')">
+                <i class="fas fa-eye"></i> Akte öffnen
+              </button>
+              <button class="beobachtung-akte-btn beobachtung-akte-btn-delete" onclick="deleteAkte('${akte.id}')">
+                <i class="fas fa-trash"></i> Löschen
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function searchAkten(searchTerm) {
+      renderAktenListe();
+    }
+
+    function openAkteDetail(akteId) {
+      const akte = akten.find(a => a.id === akteId);
+      if (!akte) return;
+
+      let beobachtungenHtml = '';
+      if (akte.beobachtungen && akte.beobachtungen.length > 0) {
+        akte.beobachtungen.forEach(beobachtung => {
+          beobachtungenHtml += `
+            <div class="beobachtung-akte-item">
+              <div class="beobachtung-akte-date">
+                <i class="fas fa-calendar"></i> ${beobachtung.dateFormatted}
+              </div>
+              <div class="beobachtung-akte-grund">
+                ${escapeHtml(beobachtung.grund)}
+              </div>
+              <div class="beobachtung-akte-template">
+                ${escapeHtml(beobachtung.template)}
+              </div>
+              <div class="beobachtung-akte-actions">
+                <button class="beobachtung-akte-btn beobachtung-akte-btn-copy" onclick="copyBeobachtungFromAkte('${akte.id}', '${beobachtung.id}')">
+                  <i class="fas fa-copy"></i> Kopieren
+                </button>
+                <button class="beobachtung-akte-btn beobachtung-akte-btn-delete" onclick="deleteBeobachtungFromAkte('${akte.id}', '${beobachtung.id}')">
+                  <i class="fas fa-trash"></i> Löschen
+                </button>
+              </div>
+            </div>
+          `;
+        });
+      } else {
+        beobachtungenHtml = `
+          <div class="empty-beobachtungen">
+            <div class="empty-beobachtungen-icon"><i class="fas fa-eye"></i></div>
+            <div class="empty-beobachtungen-title">Keine Beobachtungen</div>
+            <div class="empty-description">Fügen Sie die erste Beobachtung hinzu</div>
+          </div>
+        `;
+      }
+
+      const modalHtml = `
+        <div class="beobachtung-akten-modal active" onclick="if(event.target === this) closeModal('akteDetailModal')">
+          <div class="beobachtung-akten-content" onclick="event.stopPropagation()">
+            <div class="beobachtung-akten-header">
+              <div class="beobachtung-akten-title">
+                <i class="fas fa-folder-open"></i> Akte: ${escapeHtml(akte.name)} (DN ${escapeHtml(akte.dn)})
+              </div>
+              <button class="beobachtung-akten-close" onclick="closeModal('akteDetailModal')">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="beobachtung-akten-body">
+              <div style="display:flex;gap:12px;margin-bottom:16px;">
+                <button class="btn btn-secondary" onclick="copyAkteAllTemplates('${akte.id}')">
+                  <i class="fas fa-copy"></i> Alle Templates kopieren
+                </button>
+              </div>
+              <div style="overflow:auto;max-height:60vh;padding-right:8px;">
+                ${beobachtungenHtml}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      const existing = document.getElementById('akteDetailModal');
+      if (existing) existing.remove();
+
+      const wrapper = document.createElement('div');
+      wrapper.id = 'akteDetailModal';
+      wrapper.innerHTML = modalHtml;
+      document.body.appendChild(wrapper);
+    }
+
+    async function copyAkteAllTemplates(akteId) {
+      const akte = akten.find(a => a.id === akteId);
+      if (!akte || !akte.beobachtungen) return;
+
+      const all = akte.beobachtungen.map(b => b.template).join('\n\n');
+      const success = await copyToClipboard(all);
+      showNotification(success ? 'Alle Templates kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
+    }
+
+    async function copyBeobachtungFromAkte(akteId, beobachtungId) {
+      const akte = akten.find(a => a.id === akteId);
+      if (!akte) return;
+
+      const b = (akte.beobachtungen || []).find(x => x.id === beobachtungId);
+      if (!b) return;
+
+      const success = await copyToClipboard(b.template || '');
+      showNotification(success ? 'Beobachtung kopiert' : 'Fehler beim Kopieren', success ? 'success' : 'error');
+    }
+
+    async function deleteBeobachtungFromAkte(akteId, beobachtungId) {
+      if (!confirm('Beobachtung wirklich löschen?')) return;
+
+      try {
+        const akteRef = db.collection('hrAkten').doc(akteId);
+        const akteDoc = await akteRef.get();
+
+        if (akteDoc.exists) {
+          const akteData = akteDoc.data();
+          const beobachtungen = (akteData.beobachtungen || []).filter(b => b.id !== beobachtungId);
+
+          await akteRef.update({
+            beobachtungen,
+            lastUpdated: new Date().toISOString()
+          });
+
+          const localAkte = akten.find(a => a.id === akteId);
+          if (localAkte) {
+            localAkte.beobachtungen = beobachtungen;
+            localAkte.lastUpdated = new Date().toISOString();
+          }
+
+          showNotification('Beobachtung gelöscht', 'success');
+          renderAktenListe();
+          openAkteDetail(akteId);
+        }
+      } catch (error) {
+        console.error('Fehler beim Löschen:', error);
+        showNotification('Fehler: ' + error.message, 'error');
+      }
+    }
+
+    async function deleteAkte(akteId) {
+      if (!confirm('Akte wirklich löschen?')) return;
+
+      try {
+        await db.collection('hrAkten').doc(akteId).delete();
+        akten = akten.filter(a => a.id !== akteId);
+        showNotification('Akte gelöscht', 'success');
+        renderAktenListe();
+        updateStats();
+      } catch (error) {
+        console.error('Fehler beim Löschen der Akte:', error);
+        showNotification('Fehler: ' + error.message, 'error');
+      }
+    }
+
+    // ==================== MODALS ERSTELLEN BEI BEDARF ====================
+    function createSoldatenModal() {
+      const modalId = 'soldatenModal';
+      
+      const existingModal = document.getElementById(modalId);
+      if (existingModal) return;
+      
       const modalHTML = `
         <div class="soldaten-modal" id="${modalId}">
           <div class="soldaten-content">
@@ -4319,283 +5438,102 @@ Sonstiges:
             
             <div class="soldaten-body">
               <div class="soldaten-tabs">
-                <button class="soldaten-tab active" onclick="switchSoldatenTab('erstellen')">
+                <button class="soldaten-tab ${currentSoldatenTab === 'new' ? 'active' : ''}" onclick="switchSoldatenTab('new')">
                   <i class="fas fa-plus"></i> Neues Gespräch
                 </button>
-                <button class="soldaten-tab" onclick="switchSoldatenTab('liste')">
-                  <i class="fas fa-list"></i> Alle Gespräche
+                <button class="soldaten-tab ${currentSoldatenTab === 'list' ? 'active' : ''}" onclick="switchSoldatenTab('list')">
+                  <i class="fas fa-list"></i> Gesprächsliste
                 </button>
               </div>
               
-              <div id="soldatenTabContent" style="flex: 1; overflow: hidden; display: flex; flex-direction: column;">
-                <div class="loading">
-                  <div class="loading-spinner"></div>
-                  <div>Lade Soldatengespräche...</div>
+              <div id="soldatenNewTab" class="soldaten-tab-content" style="${currentSoldatenTab === 'new' ? 'display:block;' : 'display:none;'} flex: 1; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="display: flex; flex-direction: column; gap: 16px; flex: 1; overflow: auto; padding: 8px;">
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                      <label class="form-label">Name *</label>
+                      <input type="text" class="form-input" id="soldatenName" placeholder="Vollständiger Name" oninput="updateSoldatenPreview()">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">DN *</label>
+                      <input type="number" class="form-input" id="soldatenDN" placeholder="Dienstnummer" oninput="updateSoldatenPreview()">
+                    </div>
+                  </div>
+                  
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                      <label class="form-label">Unit</label>
+                      <select class="form-select" id="soldatenUnit" onchange="updateSoldatenPreview()">
+                        <option value="">Unit auswählen</option>
+                        ${settings.units.map(unit => `<option value="${escapeHtml(unit.name)}">${escapeHtml(unit.name)}</option>`).join('')}
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Rang</label>
+                      <select class="form-select" id="soldatenRank" onchange="updateSoldatenPreview()">
+                        <option value="">Rang auswählen</option>
+                        ${settings.ranks.map(rank => `<option value="${escapeHtml(rank.name)}">${escapeHtml(rank.name)}</option>`).join('')}
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                      <label class="form-label">Datum *</label>
+                      <input type="date" class="form-input" id="soldatenDate" onchange="updateSoldatenPreview()" value="${new Date().toISOString().split('T')[0]}">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Uhrzeit *</label>
+                      <input type="time" class="form-input" id="soldatenTime" onchange="updateSoldatenPreview()" value="${new Date().getHours().toString().padStart(2, '0')}:${new Date().getMinutes().toString().padStart(2, '0')}">
+                    </div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label class="form-label">Notizen *</label>
+                    <textarea class="form-textarea" id="soldatenNotizen" placeholder="Inhalt des Gesprächs..." rows="4" oninput="updateSoldatenPreview()"></textarea>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label class="form-label">Sonstiges</label>
+                    <textarea class="form-textarea" id="soldatenSonstiges" placeholder="Weitere Informationen..." rows="2" oninput="updateSoldatenPreview()"></textarea>
+                  </div>
+                  
+                  <div>
+                    <h4 style="color: var(--gray-light); font-size: 14px; margin-bottom: 8px;">Preview:</h4>
+                    <div style="background: rgba(0, 0, 0, 0.3); padding: 16px; border-radius: var(--radius-md); border-left: 4px solid var(--warning);">
+                      <pre style="margin: 0; font-family: 'Consolas', monospace; font-size: 12px; color: var(--gray-light); white-space: pre-wrap;" id="soldatenPreview"></pre>
+                    </div>
+                  </div>
+                  
+                  <div style="display: flex; gap: 12px; margin-top: auto;">
+                    <button class="btn btn-secondary" onclick="copySoldatenTemplate()">
+                      <i class="fas fa-copy"></i> Template kopieren
+                    </button>
+                    <button class="btn btn-primary" onclick="saveSoldatenGespräch()" style="margin-left: auto;">
+                      <i class="fas fa-save"></i> Gespräch speichern
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <div id="soldatenListTab" class="soldaten-tab-content" style="${currentSoldatenTab === 'list' ? 'display:block;' : 'display:none;'} flex: 1; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="padding: 8px; flex: 1; overflow: auto;">
+                  <div id="soldatenListContainer"></div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       `;
-
+      
       document.body.insertAdjacentHTML('beforeend', modalHTML);
-      setTimeout(() => {
-        document.getElementById(modalId).classList.add('active');
-        switchSoldatenTab('erstellen');
-      }, 10);
     }
 
-    function switchSoldatenTab(tabName) {
-      const tabs = document.querySelectorAll('.soldaten-tab');
-      tabs.forEach(tab => tab.classList.remove('active'));
-      
-      const activeTab = document.querySelector(`.soldaten-tab[onclick*="${tabName}"]`);
-      if (activeTab) activeTab.classList.add('active');
-      
-      loadSoldatenTabContent(tabName);
-    }
-
-    function loadSoldatenTabContent(tabName) {
-      const container = document.getElementById('soldatenTabContent');
-      
-      if (tabName === 'erstellen') {
-        container.innerHTML = `
-          <div class="settings-section" style="flex: 1; overflow: hidden; display: flex; flex-direction: column;">
-            <h3 class="section-title-settings"><i class="fas fa-plus"></i> Neues Soldatengespräch</h3>
-            <div style="display: flex; flex-direction: column; gap: 16px; flex: 1;">
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                <div class="form-group">
-                  <label class="form-label">Datum *</label>
-                  <input type="date" class="settings-input" id="soldatenDate" value="${new Date().toISOString().split('T')[0]}">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Uhrzeit *</label>
-                  <input type="time" class="settings-input" id="soldatenTime" value="${new Date().getHours().toString().padStart(2, '0')}:${new Date().getMinutes().toString().padStart(2, '0')}">
-                </div>
-              </div>
-              
-              <div class="form-group">
-                <label class="form-label">Mitarbeiter *</label>
-                <select class="settings-input" id="soldatenEmployee">
-                  <option value="">Mitarbeiter auswählen</option>
-                  ${employees.filter(emp => !emp.status || emp.status === 'active').map(emp => `
-                    <option value="${emp.id}">${escapeHtml(emp.name || '')} (DN ${escapeHtml(emp.dn || '')})</option>
-                  `).join('')}
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label class="form-label">Thema *</label>
-                <input type="text" class="settings-input" id="soldatenThema" placeholder="Thema des Gesprächs">
-              </div>
-              
-              <div class="form-group">
-                <label class="form-label">Gesprächsinhalt *</label>
-                <textarea class="settings-input" id="soldatenContent" placeholder="Inhalt des Gesprächs..." rows="8"></textarea>
-              </div>
-              
-              <div class="form-group">
-                <label class="form-label">Ergebnisse / Maßnahmen</label>
-                <textarea class="settings-input" id="soldatenErgebnisse" placeholder="Ergebnisse und vereinbarte Maßnahmen..." rows="4"></textarea>
-              </div>
-              
-              <button class="btn btn-primary" onclick="createNewSoldatengespraech()" style="align-self: flex-start;">
-                <i class="fas fa-save"></i> Gespräch speichern
-              </button>
-            </div>
-          </div>
-        `;
-      } else if (tabName === 'liste') {
-        loadSoldatenListe();
-      }
-    }
-
-    async function loadSoldatenListe() {
-      const container = document.getElementById('soldatenTabContent');
-      
-      try {
-        const querySnapshot = await db.collection('hrSoldatengespräche')
-          .orderBy('date', 'desc')
-          .get();
-        
-        if (querySnapshot.empty) {
-          container.innerHTML = `
-            <div class="empty-state">
-              <div class="empty-icon"><i class="fas fa-comments"></i></div>
-              <div class="empty-title">Keine Soldatengespräche</div>
-              <div class="empty-description">Erstellen Sie Ihr erstes Soldatengespräch</div>
-            </div>
-          `;
-          return;
-        }
-
-        let html = '<div style="display: flex; flex-direction: column; gap: 16px; flex: 1;">';
-        
-        querySnapshot.forEach(doc => {
-          const gesprach = doc.data();
-          const employee = employees.find(emp => emp.id === gesprach.employeeId);
-          
-          html += `
-            <div class="soldaten-item" style="background: rgba(255, 255, 255, 0.03); border-radius: var(--radius-lg); padding: 20px; border: 2px solid rgba(255, 255, 255, 0.08);">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <div style="font-size: 16px; font-weight: 900; color: #fff;">
-                  <i class="fas fa-user"></i> ${employee ? escapeHtml(employee.name || '') : 'Unbekannter Mitarbeiter'} (${employee ? escapeHtml(employee.dn || '') : 'N/A'})
-                </div>
-                <div style="font-size: 12px; color: var(--gray);">
-                  ${gesprach.date ? new Date(gesprach.date).toLocaleDateString('de-DE') : 'Unbekannt'} • ${gesprach.time || ''}
-                </div>
-              </div>
-              
-              <div style="margin-bottom: 12px;">
-                <div style="font-size: 14px; font-weight: 800; color: var(--primary-light); margin-bottom: 4px;">
-                  Thema: ${escapeHtml(gesprach.thema || '')}
-                </div>
-                <div style="font-size: 13px; color: var(--gray-light); line-height: 1.6;">
-                  ${escapeHtml(gesprach.content || '').substring(0, 200)}${gesprach.content && gesprach.content.length > 200 ? '...' : ''}
-                </div>
-              </div>
-              
-              ${gesprach.ergebnisse ? `
-                <div style="margin-bottom: 12px;">
-                  <div style="font-size: 12px; font-weight: 800; color: var(--secondary); margin-bottom: 4px;">Ergebnisse:</div>
-                  <div style="font-size: 13px; color: var(--gray); line-height: 1.6;">
-                    ${escapeHtml(gesprach.ergebnisse || '').substring(0, 150)}${gesprach.ergebnisse && gesprach.ergebnisse.length > 150 ? '...' : ''}
-                  </div>
-                </div>
-              ` : ''}
-              
-              <div style="display: flex; justify-content: flex-end; gap: 8px;">
-                <button class="btn btn-secondary" style="padding: 8px 12px; font-size: 12px;" onclick="viewSoldatengespraech('${doc.id}')">
-                  <i class="fas fa-eye"></i> Ansehen
-                </button>
-                <button class="btn btn-danger" style="padding: 8px 12px; font-size: 12px;" onclick="deleteSoldatengespraech('${doc.id}')">
-                  <i class="fas fa-trash"></i> Löschen
-                </button>
-              </div>
-            </div>
-          `;
-        });
-        
-        html += '</div>';
-        container.innerHTML = html;
-      } catch (error) {
-        console.error('Fehler beim Laden der Soldatengespräche:', error);
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon"><i class="fas fa-exclamation-triangle"></i></div>
-            <div class="empty-title">Fehler beim Laden</div>
-            <div class="empty-description">${error.message}</div>
-          </div>
-        `;
-      }
-    }
-
-    async function createNewSoldatengespraech() {
-      const date = document.getElementById('soldatenDate').value;
-      const time = document.getElementById('soldatenTime').value;
-      const employeeId = document.getElementById('soldatenEmployee').value;
-      const thema = document.getElementById('soldatenThema').value.trim();
-      const content = document.getElementById('soldatenContent').value.trim();
-      const ergebnisse = document.getElementById('soldatenErgebnisse').value.trim();
-
-      if (!date || !time || !employeeId || !thema || !content) {
-        showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
-        return;
-      }
-
-      const gesprach = {
-        id: `SOL-${Date.now()}`,
-        date,
-        time,
-        employeeId,
-        thema,
-        content,
-        ergebnisse: ergebnisse || '',
-        created: new Date().toISOString(),
-        createdBy: 'System'
-      };
-
-      try {
-        await db.collection('hrSoldatengespräche').doc(gesprach.id).set(gesprach);
-        
-        showNotification('Soldatengespräch erfolgreich gespeichert', 'success');
-        
-        // Reset Form
-        document.getElementById('soldatenDate').value = new Date().toISOString().split('T')[0];
-        const now = new Date();
-        document.getElementById('soldatenTime').value = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-        document.getElementById('soldatenThema').value = '';
-        document.getElementById('soldatenContent').value = '';
-        document.getElementById('soldatenErgebnisse').value = '';
-        
-        // Zur Liste wechseln
-        switchSoldatenTab('liste');
-      } catch (error) {
-        console.error('Fehler beim Speichern des Soldatengesprächs:', error);
-        showNotification('Fehler beim Speichern: ' + error.message, 'error');
-      }
-    }
-
-    async function viewSoldatengespraech(gesprachId) {
-      try {
-        const doc = await db.collection('hrSoldatengespräche').doc(gesprachId).get();
-        if (doc.exists) {
-          const gesprach = doc.data();
-          const employee = employees.find(emp => emp.id === gesprach.employeeId);
-          
-          alert(`
-Soldatengespräch - Details:
-
-Mitarbeiter: ${employee ? employee.name : 'Unbekannt'} (DN: ${employee ? employee.dn : 'N/A'})
-Datum: ${gesprach.date ? new Date(gesprach.date).toLocaleDateString('de-DE') : 'Unbekannt'}
-Uhrzeit: ${gesprach.time || 'Unbekannt'}
-
-Thema: ${gesprach.thema || ''}
-
-Gesprächsinhalt:
-${gesprach.content || ''}
-
-${gesprach.ergebnisse ? `
-Ergebnisse / Maßnahmen:
-${gesprach.ergebnisse}
-` : ''}
-          `);
-        }
-      } catch (error) {
-        console.error('Fehler beim Anzeigen des Gesprächs:', error);
-        showNotification('Fehler: ' + error.message, 'error');
-      }
-    }
-
-    async function deleteSoldatengespraech(gesprachId) {
-      if (!confirm('Soldatengespräch wirklich löschen?\n\nDiese Aktion kann nicht rückgängig gemacht werden!')) {
-        return;
-      }
-
-      try {
-        await db.collection('hrSoldatengespräche').doc(gesprachId).delete();
-        showNotification('Soldatengespräch gelöscht', 'success');
-        loadSoldatenListe();
-      } catch (error) {
-        console.error('Fehler beim Löschen des Gesprächs:', error);
-        showNotification('Fehler beim Löschen: ' + error.message, 'error');
-      }
-    }
-
-    // ==================== BEOBACHTUNGS-AKTEN MODAL ====================
-    function openBeobachtungAktenModal() {
-      createAndShowBeobachtungAktenModal();
-    }
-
-    async function createAndShowBeobachtungAktenModal() {
+    function createBeobachtungAktenModal() {
       const modalId = 'beobachtungAktenModal';
       
-      // Entferne vorhandenes Modal falls existiert
       const existingModal = document.getElementById(modalId);
-      if (existingModal) {
-        existingModal.remove();
-      }
-
+      if (existingModal) return;
+      
       const modalHTML = `
         <div class="beobachtung-akten-modal" id="${modalId}">
           <div class="beobachtung-akten-content">
@@ -4610,290 +5548,135 @@ ${gesprach.ergebnisse}
             
             <div class="beobachtung-akten-body">
               <div class="beobachtung-tabs">
-                <button class="beobachtung-tab active" onclick="switchBeobachtungTab('erstellen')">
+                <button class="beobachtung-tab ${currentBeobachtungTab === 'new' ? 'active' : ''}" onclick="switchBeobachtungTab('new')">
                   <i class="fas fa-plus"></i> Neue Beobachtung
                 </button>
-                <button class="beobachtung-tab" onclick="switchBeobachtungTab('liste')">
-                  <i class="fas fa-list"></i> Alle Beobachtungen
+                <button class="beobachtung-tab ${currentBeobachtungTab === 'list' ? 'active' : ''}" onclick="switchBeobachtungTab('list')">
+                  <i class="fas fa-list"></i> Aktenliste
                 </button>
               </div>
               
-              <div id="beobachtungTabContent" style="flex: 1; overflow: hidden; display: flex; flex-direction: column;">
-                <div class="loading">
-                  <div class="loading-spinner"></div>
-                  <div>Lade Beobachtungs-Akten...</div>
+              <div id="beobachtungNewTab" class="beobachtung-tab-content" style="${currentBeobachtungTab === 'new' ? 'display:block;' : 'display:none;'} flex: 1; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="display: flex; flex-direction: column; gap: 16px; flex: 1; overflow: auto; padding: 8px;">
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                      <label class="form-label">Neue Akte erstellen</label>
+                      <input type="text" class="form-input" id="akteName" placeholder="Name">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">DN</label>
+                      <input type="number" class="form-input" id="akteDN" placeholder="Dienstnummer">
+                    </div>
+                  </div>
+                  
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                      <label class="form-label">Unit</label>
+                      <select class="form-select" id="akteUnit">
+                        <option value="">Unit auswählen</option>
+                        ${settings.units.map(unit => `<option value="${escapeHtml(unit.name)}">${escapeHtml(unit.name)}</option>`).join('')}
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Rang</label>
+                      <select class="form-select" id="akteRank">
+                        <option value="">Rang auswählen</option>
+                        ${settings.ranks.map(rank => `<option value="${escapeHtml(rank.name)}">${escapeHtml(rank.name)}</option>`).join('')}
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <button class="btn btn-primary" onclick="createNewAkte()" style="align-self: flex-start;">
+                    <i class="fas fa-plus"></i> Neue Akte erstellen
+                  </button>
+                  
+                  <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 16px 0;">
+                  
+                  <h4 style="color: var(--gray-light); font-size: 14px; margin-bottom: 12px;">Beobachtung zu bestehender Akte hinzufügen</h4>
+                  
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                      <label class="form-label">Name *</label>
+                      <input type="text" class="form-input" id="beobachtungName" placeholder="Vollständiger Name" oninput="updateBeobachtungPreview()">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">DN *</label>
+                      <input type="number" class="form-input" id="beobachtungDN" placeholder="Dienstnummer" oninput="updateBeobachtungPreview()">
+                    </div>
+                  </div>
+                  
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                      <label class="form-label">Unit</label>
+                      <select class="form-select" id="beobachtungUnit" onchange="updateBeobachtungPreview()">
+                        <option value="">Unit auswählen</option>
+                        ${settings.units.map(unit => `<option value="${escapeHtml(unit.name)}">${escapeHtml(unit.name)}</option>`).join('')}
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Rang</label>
+                      <select class="form-select" id="beobachtungRank" onchange="updateBeobachtungPreview()">
+                        <option value="">Rang auswählen</option>
+                        ${settings.ranks.map(rank => `<option value="${escapeHtml(rank.name)}">${escapeHtml(rank.name)}</option>`).join('')}
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label class="form-label">Grund der Beobachtung *</label>
+                    <textarea class="form-textarea" id="beobachtungGrund" placeholder="Beschreibung der Beobachtung..." rows="4" oninput="updateBeobachtungPreview()"></textarea>
+                  </div>
+                  
+                  <div>
+                    <h4 style="color: var(--gray-light); font-size: 14px; margin-bottom: 8px;">Preview:</h4>
+                    <div style="background: rgba(0, 0, 0, 0.3); padding: 16px; border-radius: var(--radius-md); border-left: 4px solid var(--info);">
+                      <pre style="margin: 0; font-family: 'Consolas', monospace; font-size: 12px; color: var(--gray-light); white-space: pre-wrap;" id="beobachtungPreview"></pre>
+                    </div>
+                  </div>
+                  
+                  <div style="display: flex; gap: 12px; margin-top: auto;">
+                    <button class="btn btn-secondary" onclick="copyBeobachtungTemplate()">
+                      <i class="fas fa-copy"></i> Template kopieren
+                    </button>
+                    <button class="btn btn-primary" onclick="saveBeobachtungToAkte()" style="margin-left: auto;">
+                      <i class="fas fa-save"></i> Beobachtung speichern
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <div id="beobachtungListTab" class="beobachtung-tab-content" style="${currentBeobachtungTab === 'list' ? 'display:block;' : 'display:none;'} flex: 1; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" id="aktenSearch" placeholder="Nach Namen oder DN suchen..." oninput="searchAkten(this.value)">
+                  </div>
+                </div>
+                <div style="padding: 8px; flex: 1; overflow: auto;">
+                  <div id="aktenListe"></div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       `;
-
+      
       document.body.insertAdjacentHTML('beforeend', modalHTML);
-      setTimeout(() => {
-        document.getElementById(modalId).classList.add('active');
-        switchBeobachtungTab('erstellen');
-      }, 10);
     }
 
-    function switchBeobachtungTab(tabName) {
-      const tabs = document.querySelectorAll('.beobachtung-tab');
-      tabs.forEach(tab => tab.classList.remove('active'));
-      
-      const activeTab = document.querySelector(`.beobachtung-tab[onclick*="${tabName}"]`);
-      if (activeTab) activeTab.classList.add('active');
-      
-      loadBeobachtungTabContent(tabName);
-    }
+    // Override openSoldatenModal und openBeobachtungAktenModal
+    const originalOpenSoldatenModal = openSoldatenModal;
+    const originalOpenBeobachtungAktenModal = openBeobachtungAktenModal;
 
-    function loadBeobachtungTabContent(tabName) {
-      const container = document.getElementById('beobachtungTabContent');
-      
-      if (tabName === 'erstellen') {
-        container.innerHTML = `
-          <div class="settings-section" style="flex: 1; overflow: hidden; display: flex; flex-direction: column;">
-            <h3 class="section-title-settings"><i class="fas fa-plus"></i> Neue Beobachtung erfassen</h3>
-            <div style="display: flex; flex-direction: column; gap: 16px; flex: 1;">
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                <div class="form-group">
-                  <label class="form-label">Datum *</label>
-                  <input type="date" class="settings-input" id="beobachtungDate" value="${new Date().toISOString().split('T')[0]}">
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Uhrzeit *</label>
-                  <input type="time" class="settings-input" id="beobachtungTime" value="${new Date().getHours().toString().padStart(2, '0')}:${new Date().getMinutes().toString().padStart(2, '0')}">
-                </div>
-              </div>
-              
-              <div class="form-group">
-                <label class="form-label">Mitarbeiter *</label>
-                <select class="settings-input" id="beobachtungEmployee">
-                  <option value="">Mitarbeiter auswählen</option>
-                  ${employees.filter(emp => !emp.status || emp.status === 'active').map(emp => `
-                    <option value="${emp.id}">${escapeHtml(emp.name || '')} (DN ${escapeHtml(emp.dn || '')})</option>
-                  `).join('')}
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label class="form-label">Art der Beobachtung *</label>
-                <select class="settings-input" id="beobachtungArt">
-                  <option value="">Art auswählen</option>
-                  <option value="positiv">Positiv</option>
-                  <option value="negativ">Negativ</option>
-                  <option value="neutral">Neutral</option>
-                </select>
-              </div>
-              
-              <div class="form-group">
-                <label class="form-label">Beschreibung *</label>
-                <textarea class="settings-input" id="beobachtungBeschreibung" placeholder="Beschreibung der Beobachtung..." rows="6"></textarea>
-              </div>
-              
-              <div class="form-group">
-                <label class="form-label">Maßnahmen / Konsequenzen</label>
-                <textarea class="settings-input" id="beobachtungMassnahmen" placeholder="Ergriffene Maßnahmen oder Konsequenzen..." rows="4"></textarea>
-              </div>
-              
-              <button class="btn btn-primary" onclick="createNewBeobachtung()" style="align-self: flex-start;">
-                <i class="fas fa-save"></i> Beobachtung speichern
-              </button>
-            </div>
-          </div>
-        `;
-      } else if (tabName === 'liste') {
-        loadBeobachtungenListe();
-      }
-    }
+    openSoldatenModal = function() {
+      createSoldatenModal();
+      originalOpenSoldatenModal();
+    };
 
-    async function loadBeobachtungenListe() {
-      const container = document.getElementById('beobachtungTabContent');
-      
-      try {
-        const querySnapshot = await db.collection('hrBeobachtungen')
-          .orderBy('date', 'desc')
-          .get();
-        
-        if (querySnapshot.empty) {
-          container.innerHTML = `
-            <div class="empty-state">
-              <div class="empty-icon"><i class="fas fa-folder-open"></i></div>
-              <div class="empty-title">Keine Beobachtungen</div>
-              <div class="empty-description">Erstellen Sie Ihre erste Beobachtung</div>
-            </div>
-          `;
-          return;
-        }
-
-        let html = '<div style="display: flex; flex-direction: column; gap: 16px; flex: 1;">';
-        
-        querySnapshot.forEach(doc => {
-          const beobachtung = doc.data();
-          const employee = employees.find(emp => emp.id === beobachtung.employeeId);
-          const artColor = beobachtung.art === 'positiv' ? 'var(--secondary)' : 
-                          beobachtung.art === 'negativ' ? 'var(--danger)' : 'var(--warning)';
-          const artText = beobachtung.art === 'positiv' ? 'Positiv' : 
-                         beobachtung.art === 'negativ' ? 'Negativ' : 'Neutral';
-          
-          html += `
-            <div class="beobachtung-item" style="background: rgba(255, 255, 255, 0.03); border-radius: var(--radius-lg); padding: 20px; border: 2px solid rgba(255, 255, 255, 0.08);">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <div style="font-size: 16px; font-weight: 900; color: #fff;">
-                  <i class="fas fa-user"></i> ${employee ? escapeHtml(employee.name || '') : 'Unbekannter Mitarbeiter'} (${employee ? escapeHtml(employee.dn || '') : 'N/A'})
-                </div>
-                <div style="display: flex; align-items: center; gap: 12px;">
-                  <div style="font-size: 11px; font-weight: 900; padding: 6px 12px; border-radius: var(--radius-full); background: ${artColor}; color: white;">
-                    ${artText}
-                  </div>
-                  <div style="font-size: 12px; color: var(--gray);">
-                    ${beobachtung.date ? new Date(beobachtung.date).toLocaleDateString('de-DE') : 'Unbekannt'} • ${beobachtung.time || ''}
-                  </div>
-                </div>
-              </div>
-              
-              <div style="margin-bottom: 12px;">
-                <div style="font-size: 13px; color: var(--gray-light); line-height: 1.6;">
-                  ${escapeHtml(beobachtung.beschreibung || '').substring(0, 200)}${beobachtung.beschreibung && beobachtung.beschreibung.length > 200 ? '...' : ''}
-                </div>
-              </div>
-              
-              ${beobachtung.massnahmen ? `
-                <div style="margin-bottom: 12px;">
-                  <div style="font-size: 12px; font-weight: 800; color: var(--warning); margin-bottom: 4px;">Maßnahmen:</div>
-                  <div style="font-size: 13px; color: var(--gray); line-height: 1.6;">
-                    ${escapeHtml(beobachtung.massnahmen || '').substring(0, 150)}${beobachtung.massnahmen && beobachtung.massnahmen.length > 150 ? '...' : ''}
-                  </div>
-                </div>
-              ` : ''}
-              
-              <div style="display: flex; justify-content: flex-end; gap: 8px;">
-                <button class="btn btn-secondary" style="padding: 8px 12px; font-size: 12px;" onclick="viewBeobachtung('${doc.id}')">
-                  <i class="fas fa-eye"></i> Ansehen
-                </button>
-                <button class="btn btn-danger" style="padding: 8px 12px; font-size: 12px;" onclick="deleteBeobachtung('${doc.id}')">
-                  <i class="fas fa-trash"></i> Löschen
-                </button>
-              </div>
-            </div>
-          `;
-        });
-        
-        html += '</div>';
-        container.innerHTML = html;
-      } catch (error) {
-        console.error('Fehler beim Laden der Beobachtungen:', error);
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon"><i class="fas fa-exclamation-triangle"></i></div>
-            <div class="empty-title">Fehler beim Laden</div>
-            <div class="empty-description">${error.message}</div>
-          </div>
-        `;
-      }
-    }
-
-    async function createNewBeobachtung() {
-      const date = document.getElementById('beobachtungDate').value;
-      const time = document.getElementById('beobachtungTime').value;
-      const employeeId = document.getElementById('beobachtungEmployee').value;
-      const art = document.getElementById('beobachtungArt').value;
-      const beschreibung = document.getElementById('beobachtungBeschreibung').value.trim();
-      const massnahmen = document.getElementById('beobachtungMassnahmen').value.trim();
-
-      if (!date || !time || !employeeId || !art || !beschreibung) {
-        showNotification('Bitte füllen Sie alle Pflichtfelder aus (*)', 'warning');
-        return;
-      }
-
-      const beobachtung = {
-        id: `BEO-${Date.now()}`,
-        date,
-        time,
-        employeeId,
-        art,
-        beschreibung,
-        massnahmen: massnahmen || '',
-        created: new Date().toISOString(),
-        createdBy: 'System'
-      };
-
-      try {
-        await db.collection('hrBeobachtungen').doc(beobachtung.id).set(beobachtung);
-        
-        showNotification('Beobachtung erfolgreich gespeichert', 'success');
-        
-        // Reset Form
-        document.getElementById('beobachtungDate').value = new Date().toISOString().split('T')[0];
-        const now = new Date();
-        document.getElementById('beobachtungTime').value = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-        document.getElementById('beobachtungArt').value = '';
-        document.getElementById('beobachtungBeschreibung').value = '';
-        document.getElementById('beobachtungMassnahmen').value = '';
-        
-        // Zur Liste wechseln
-        switchBeobachtungTab('liste');
-      } catch (error) {
-        console.error('Fehler beim Speichern der Beobachtung:', error);
-        showNotification('Fehler beim Speichern: ' + error.message, 'error');
-      }
-    }
-
-    async function viewBeobachtung(beobachtungId) {
-      try {
-        const doc = await db.collection('hrBeobachtungen').doc(beobachtungId).get();
-        if (doc.exists) {
-          const beobachtung = doc.data();
-          const employee = employees.find(emp => emp.id === beobachtung.employeeId);
-          const artText = beobachtung.art === 'positiv' ? 'Positiv' : 
-                         beobachtung.art === 'negativ' ? 'Negativ' : 'Neutral';
-          
-          alert(`
-Beobachtungs-Akte - Details:
-
-Mitarbeiter: ${employee ? employee.name : 'Unbekannt'} (DN: ${employee ? employee.dn : 'N/A'})
-Datum: ${beobachtung.date ? new Date(beobachtung.date).toLocaleDateString('de-DE') : 'Unbekannt'}
-Uhrzeit: ${beobachtung.time || 'Unbekannt'}
-Art: ${artText}
-
-Beschreibung:
-${beobachtung.beschreibung || ''}
-
-${beobachtung.massnahmen ? `
-Maßnahmen / Konsequenzen:
-${beobachtung.massnahmen}
-` : ''}
-          `);
-        }
-      } catch (error) {
-        console.error('Fehler beim Anzeigen der Beobachtung:', error);
-        showNotification('Fehler: ' + error.message, 'error');
-      }
-    }
-
-    async function deleteBeobachtung(beobachtungId) {
-      if (!confirm('Beobachtung wirklich löschen?\n\nDiese Aktion kann nicht rückgängig gemacht werden!')) {
-        return;
-      }
-
-      try {
-        await db.collection('hrBeobachtungen').doc(beobachtungId).delete();
-        showNotification('Beobachtung gelöscht', 'success');
-        loadBeobachtungenListe();
-      } catch (error) {
-        console.error('Fehler beim Löschen der Beobachtung:', error);
-        showNotification('Fehler beim Löschen: ' + error.message, 'error');
-      }
-    }
-
-    // ==================== EDIT ITEM MODAL FUNKTIONEN ====================
-    function closeEditItemModal() {
-      closeModal('editItemModal');
-    }
-
-    function saveEditedItem() {
-      // Implementierung für das Speichern bearbeiteter Items
-      showNotification('Funktion wird implementiert', 'info');
-    }
+    openBeobachtungAktenModal = function() {
+      createBeobachtungAktenModal();
+      originalOpenBeobachtungAktenModal();
+    };
 
     // Initialisiere die App nach DOM Laden
     setTimeout(() => {
