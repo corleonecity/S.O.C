@@ -369,7 +369,7 @@
             color: var(--gray-light);
         }
         
-        .patient-status {
+        .patient-report-count {
             display: inline-flex;
             align-items: center;
             gap: 5px;
@@ -379,11 +379,9 @@
             font-weight: 500;
             width: fit-content;
             margin-top: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--gray-light);
         }
-        
-        .status-pending { background: rgba(245, 124, 0, 0.2); color: var(--warning); }
-        .status-active { background: rgba(46, 125, 50, 0.2); color: var(--success); }
-        .status-critical { background: rgba(211, 47, 47, 0.2); color: var(--secondary); }
         
         .new-patient-btn {
             width: 100%;
@@ -452,6 +450,48 @@
         .action-buttons {
             display: flex;
             gap: 10px;
+            align-items: center;
+        }
+        
+        .report-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .report-selector select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 8px 12px;
+            color: white;
+            font-size: 13px;
+            cursor: pointer;
+            outline: none;
+        }
+        
+        .report-selector select option {
+            background: var(--dark-card);
+            color: white;
+        }
+        
+        .btn-icon {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: var(--radius-sm);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .btn-icon:hover {
+            background: var(--primary);
+            transform: scale(1.05);
         }
         
         /* Tabs */
@@ -489,22 +529,6 @@
         .tab.active {
             color: white;
             border-bottom-color: var(--primary);
-        }
-        
-        .tab-badge {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            background: var(--secondary);
-            color: white;
-            font-size: 9px;
-            padding: 1px 5px;
-            border-radius: 8px;
-            min-width: 16px;
-            height: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         
         /* Tab Content */
@@ -656,7 +680,6 @@
             background: rgba(255, 255, 255, 0.03);
         }
         
-        /* Compact Inputs for Vital Table */
         .vital-table input.form-input {
             width: 85px;
             padding: 6px 8px;
@@ -715,44 +738,6 @@
             box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.2);
         }
         
-        /* Analysis Panel */
-        .analysis-panel {
-            background: linear-gradient(135deg, rgba(13, 27, 62, 0.5) 0%, rgba(26, 35, 126, 0.3) 100%);
-            border-radius: var(--radius-lg);
-            padding: 22px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .analysis-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-            margin-top: 16px;
-        }
-        
-        .analysis-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: var(--radius-md);
-            padding: 18px;
-            text-align: center;
-        }
-        
-        .analysis-value {
-            font-size: 28px;
-            font-weight: 800;
-            margin-bottom: 6px;
-            background: linear-gradient(135deg, #fff 0%, var(--gray-light) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .analysis-label {
-            font-size: 13px;
-            color: var(--gray-light);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
         /* ===== MODALS ===== */
         .modal {
             display: none;
@@ -784,7 +769,7 @@
             border-radius: var(--radius-xl);
             padding: 32px;
             width: 100%;
-            max-width: 550px;
+            max-width: 450px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: var(--shadow-lg);
             animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -801,104 +786,32 @@
             }
         }
         
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 1400px) {
-            .app-container {
-                grid-template-columns: 260px 1fr;
-                gap: 16px;
-            }
+        /* ===== MODAL SPECIFIC STYLES ===== */
+        .modal-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: #000000 !important;
+            font-size: 13px;
+            transition: var(--transition);
+            margin-bottom: 14px;
         }
         
-        @media (max-width: 1200px) {
-            .app-container {
-                grid-template-columns: 1fr;
-            }
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.2);
+            background: rgba(255, 255, 255, 0.08);
         }
         
-        @media (max-width: 768px) {
-            .app-container {
-                padding: 12px;
-                gap: 12px;
-            }
-            
-            .app-header {
-                padding: 16px 20px;
-                margin-bottom: 12px;
-            }
-            
-            .header-content {
-                flex-direction: column;
-                gap: 16px;
-                align-items: flex-start;
-            }
-            
-            .header-stats {
-                width: 100%;
-                justify-content: space-between;
-                gap: 12px;
-            }
-            
-            .stat-item {
-                padding: 8px 14px;
-            }
-            
-            .stat-value {
-                font-size: 18px;
-            }
-            
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .content-header {
-                flex-direction: column;
-                gap: 14px;
-                align-items: flex-start;
-                padding: 16px 20px;
-            }
-            
-            .action-buttons {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .vital-table {
-                display: block;
-                overflow-x: auto;
-            }
-            
-            .tabs-container {
-                padding: 0 16px;
-            }
-            
-            .tab-content {
-                padding: 20px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .tabs {
-                overflow-x: auto;
-                padding-bottom: 6px;
-            }
-            
-            .tab {
-                padding: 10px 14px;
-                font-size: 12px;
-            }
-            
-            .section {
-                padding: 16px;
-            }
-            
-            .btn {
-                font-size: 13px;
-            }
-            
-            .patient-meta {
-                flex-wrap: wrap;
-                gap: 12px;
-            }
+        .modal-label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--gray-light);
+            font-weight: 500;
+            font-size: 13px;
         }
         
         /* ===== UTILITIES ===== */
@@ -997,83 +910,103 @@
             opacity: 0.3;
         }
         
-        /* ===== ANIMATIONS ===== */
-        .pulse {
-            animation: pulse 2s infinite;
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1400px) {
+            .app-container {
+                grid-template-columns: 260px 1fr;
+                gap: 16px;
+            }
         }
         
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        @media (max-width: 1200px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
         }
         
-        .float {
-            animation: float 6s ease-in-out infinite;
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 12px;
+                gap: 12px;
+            }
+            
+            .app-header {
+                padding: 16px 20px;
+                margin-bottom: 12px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+            
+            .header-stats {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            .stat-item {
+                padding: 8px 14px;
+            }
+            
+            .stat-value {
+                font-size: 18px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .content-header {
+                flex-direction: column;
+                gap: 14px;
+                align-items: flex-start;
+                padding: 16px 20px;
+            }
+            
+            .action-buttons {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            
+            .vital-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .tabs-container {
+                padding: 0 16px;
+            }
+            
+            .tab-content {
+                padding: 20px;
+            }
         }
         
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-16px); }
-        }
-        
-        /* ===== MODAL SPECIFIC STYLES ===== */
-        .modal-input {
-            width: 100%;
-            padding: 12px 14px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            color: #000000 !important;
-            font-size: 13px;
-            transition: var(--transition);
-            margin-bottom: 14px;
-        }
-        
-        .modal-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.2);
-            background: rgba(255, 255, 255, 0.08);
-        }
-        
-        .modal-select {
-            width: 100%;
-            padding: 12px 14px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            color: #000000 !important;
-            font-size: 13px;
-            transition: var(--transition);
-            margin-bottom: 14px;
-        }
-        
-        .modal-select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.2);
-            background: rgba(255, 255, 255, 0.08);
-        }
-        
-        .modal-label {
-            display: block;
-            margin-bottom: 6px;
-            color: var(--gray-light);
-            font-weight: 500;
-            font-size: 13px;
-        }
-        
-        .modal-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-        
-        .dual-select-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+        @media (max-width: 480px) {
+            .tabs {
+                overflow-x: auto;
+                padding-bottom: 6px;
+            }
+            
+            .tab {
+                padding: 10px 14px;
+                font-size: 12px;
+            }
+            
+            .section {
+                padding: 16px;
+            }
+            
+            .btn {
+                font-size: 13px;
+            }
+            
+            .patient-meta {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
         }
     </style>
 </head>
@@ -1102,14 +1035,6 @@
                     <div class="stat-item">
                         <div class="stat-value" id="totalPatients">0</div>
                         <div class="stat-label">Gesamt</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="activeAssessments">0</div>
-                        <div class="stat-label">Aktiv</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="criticalCases">0</div>
-                        <div class="stat-label">Kritisch</div>
                     </div>
                 </div>
             </div>
@@ -1154,20 +1079,24 @@
                             <span id="currentPatientId">-</span>
                         </div>
                         <div class="meta-item">
-                            <i class="fas fa-users"></i>
-                            <span id="currentPatientUnit">-</span>
-                        </div>
-                        <div class="meta-item">
                             <i class="fas fa-calendar"></i>
                             <span id="currentPatientDate">-</span>
                         </div>
                         <div class="meta-item">
                             <i class="fas fa-user-md"></i>
-                            <span id="currentExaminer">Dr. Müller</span>
+                            <span id="currentExaminer">-</span>
                         </div>
                     </div>
                 </div>
                 <div class="action-buttons">
+                    <div class="report-selector">
+                        <select id="reportSelector" onchange="switchReport()">
+                            <option value="">Bericht auswählen...</option>
+                        </select>
+                        <button class="btn-icon" onclick="createNewReport()" title="Neuen Bericht erstellen">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
                     <button class="btn btn-secondary" onclick="saveAssessment()">
                         <i class="fas fa-save"></i> Speichern
                     </button>
@@ -1201,7 +1130,7 @@
                 </div>
             </div>
             
-            <!-- Tab Contents -->
+            <!-- Tab Contents (same as before - abbreviated for brevity) -->
             <div class="tab-content">
                 <!-- Section 1 Tab -->
                 <div id="section1Tab" class="tab-pane active">
@@ -1223,7 +1152,7 @@
                             
                             <div class="form-group">
                                 <label class="form-label">Rang / Einheit:</label>
-                                <input type="text" class="form-input" id="patientRankUnit" placeholder=>
+                                <input type="text" class="form-input" id="patientRankUnit" placeholder="z.B. Sergeant / Infanterie">
                             </div>
                             
                             <div class="form-group">
@@ -1890,62 +1819,23 @@
         </main>
     </div>
     
-    <!-- Modals -->
+    <!-- New Patient Modal (Simplified) -->
     <div id="newPatientModal" class="modal" onclick="if(event.target===this)closeModal('newPatientModal')">
         <div class="modal-content">
             <h2 style="color: white; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 18px;">
                 <i class="fas fa-user-plus"></i>
-                Neue Soldaten Eintrag
+                Neue Soldatenakte
             </h2>
             
             <div class="modal-grid">
                 <div>
                     <label class="modal-label">Name des Soldaten:</label>
-                    <input type="text" class="modal-input" id="newPatientName" placeholder="" style="color: #000000 !important;">
-                </div>
-                
-                <div class="dual-select-container">
-                    <div>
-                        <label class="modal-label">Rang:</label>
-                        <select class="modal-select" id="newPatientRank" style="color: #000000 !important;">
-                            <option value="">Rang auswählen</option>
-                            <option value="Private">Private</option>
-                            <option value="Private First Class">Private First Class</option>
-                            <option value="Specialist">Specialist</option>
-                            <option value="Corporal">Corporal</option>
-                            <option value="Sergeant">Sergeant</option>
-                            <option value="Staff Sergeant">Staff Sergeant</option>
-                            <option value="Sergeant First Class">Sergeant First Class</option>
-                            <option value="Master Sergeant">Master Sergeant</option>
-                            <option value="Sergeant Major">Sergeant Major</option>
-                            <option value="Lieutenant">Lieutenant</option>
-                            <option value="Captain">Captain</option>
-                            <option value="Major">Major</option>
-                            <option value="Colonel">Colonel</option>
-                            <option value="Major General">Major General</option>
-                            <option value="Lieutenant General">Lieutenant General</option>
-                            <option value="Vice General of Army">Vice General of Army</option>
-                            <option value="General of Army">General of Army</option>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label class="modal-label">Unit:</label>
-                        <select class="modal-select" id="newPatientUnit" style="color: #000000 !important;">
-                            <option value="">Unit auswählen</option>
-                            <option value="Infantry">Infantry</option>
-                            <option value="Military Police">Military Polic</option>
-                            <option value="Navy Marine">Navy Marine</option>
-                            <option value="Navy SEAL">Navy SEALs</option>
-                            <option value="Air Force">Air Force</option>
-                            <option value="S.O.C">S.O.C</option>
-                        </select>
-                    </div>
+                    <input type="text" class="modal-input" id="newPatientName" placeholder="Vorname Nachname" style="color: #000000 !important;">
                 </div>
                 
                 <div>
                     <label class="modal-label">Prüfer:</label>
-                    <input type="text" class="modal-input" id="newPatientExaminer" placeholder="" style="color: #000000 !important;">
+                    <input type="text" class="modal-input" id="newPatientExaminer" placeholder="Name des Untersuchers" style="color: #000000 !important;">
                 </div>
             </div>
             
@@ -1955,127 +1845,6 @@
                 </button>
                 <button class="btn btn-primary" onclick="createPatient()">
                     <i class="fas fa-plus-circle"></i> Akte erstellen
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Export Modal -->
-    <div id="exportModal" class="modal" onclick="if(event.target===this)closeModal('exportModal')">
-        <div class="modal-content">
-            <h2 style="color: white; margin-bottom: 20px; font-size: 18px;">
-                <i class="fas fa-file-export"></i>
-                Bewertung exportieren
-            </h2>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 6px; color: var(--gray-light); font-size: 13px;">Format</label>
-                <div style="display: flex; gap: 10px; margin-bottom: 16px;">
-                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px;">
-                        <input type="radio" name="exportFormat" value="pdf" checked>
-                        <span>PDF Dokument</span>
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px;">
-                        <input type="radio" name="exportFormat" value="word">
-                        <span>Word Dokument</span>
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px;">
-                        <input type="radio" name="exportFormat" value="json">
-                        <span>JSON Daten</span>
-                    </label>
-                </div>
-                
-                <label style="display: block; margin-bottom: 6px; color: var(--gray-light); font-size: 13px;">Abschnitte einbeziehen</label>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px;">
-                    <label style="display: flex; align-items: center; gap: 6px; font-size: 13px;">
-                        <input type="checkbox" checked>
-                        <span>Abschnitt 1 - Informationen</span>
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 6px; font-size: 13px;">
-                        <input type="checkbox" checked>
-                        <span>Abschnitt 2 - Psychologie</span>
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 6px; font-size: 13px;">
-                        <input type="checkbox" checked>
-                        <span>Abschnitt 3 - Medizinisch</span>
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 6px; font-size: 13px;">
-                        <input type="checkbox" checked>
-                        <span>Abschnitt 4 - Fitness</span>
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 6px; font-size: 13px;">
-                        <input type="checkbox" checked>
-                        <span>Abschnitt 5 - Situativ</span>
-                    </label>
-                </div>
-            </div>
-            
-            <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                <button class="btn btn-secondary" onclick="closeModal('exportModal')">
-                    Abbrechen
-                </button>
-                <button class="btn btn-primary" onclick="exportAssessment()">
-                    <i class="fas fa-download"></i> Exportieren
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Stats Modal -->
-    <div id="statsModal" class="modal" onclick="if(event.target===this)closeModal('statsModal')">
-        <div class="modal-content">
-            <h2 style="color: white; margin-bottom: 20px; font-size: 18px;">
-                <i class="fas fa-chart-bar"></i>
-                Statistik Übersicht
-            </h2>
-            
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;">
-                <div style="background: rgba(255, 255, 255, 0.05); padding: 16px; border-radius: var(--radius-md); text-align: center;">
-                    <div style="font-size: 28px; font-weight: 800; color: var(--primary);" id="statsTotal">0</div>
-                    <div style="font-size: 13px; color: var(--gray-light);">Gesamtbewertungen</div>
-                </div>
-                <div style="background: rgba(255, 255, 255, 0.05); padding: 16px; border-radius: var(--radius-md); text-align: center;">
-                    <div style="font-size: 28px; font-weight: 800; color: var(--success);" id="statsOperational">0%</div>
-                    <div style="font-size: 13px; color: var(--gray-light);">Einsatzbereitschaft</div>
-                </div>
-                <div style="background: rgba(255, 255, 255, 0.05); padding: 16px; border-radius: var(--radius-md); text-align: center;">
-                    <div style="font-size: 28px; font-weight: 800; color: var(--warning);" id="statsPending">0</div>
-                    <div style="font-size: 13px; color: var(--gray-light);">Ausstehende Prüfungen</div>
-                </div>
-            </div>
-            
-            <div style="background: rgba(255, 255, 255, 0.05); padding: 16px; border-radius: var(--radius-md); margin-bottom: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-                    <div style="color: white; font-weight: 600; font-size: 14px;">Empfehlungsverteilung</div>
-                    <div style="font-size: 13px; color: var(--gray-light);">Letzte 30 Tage</div>
-                </div>
-                <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;">
-                    <div style="text-align: center;">
-                        <div style="height: 50px; background: var(--success); border-radius: var(--radius-sm); margin-bottom: 6px;"></div>
-                        <div style="font-size: 11px; color: var(--gray-light);">Voll einsatzfähig</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="height: 35px; background: var(--warning); border-radius: var(--radius-sm); margin-bottom: 6px;"></div>
-                        <div style="font-size: 11px; color: var(--gray-light);">Eingeschränkt</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="height: 25px; background: var(--secondary); border-radius: var(--radius-sm); margin-bottom: 6px;"></div>
-                        <div style="font-size: 11px; color: var(--gray-light);">Nicht einsatzfähig</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="height: 15px; background: var(--info); border-radius: var(--radius-sm); margin-bottom: 6px;"></div>
-                        <div style="font-size: 11px; color: var(--gray-light);">Weitere Prüfung</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="height: 8px; background: var(--primary); border-radius: var(--radius-sm); margin-bottom: 6px;"></div>
-                        <div style="font-size: 11px; color: var(--gray-light);">Therapie</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div style="display: flex; justify-content: flex-end;">
-                <button class="btn btn-secondary" onclick="closeModal('statsModal')">
-                    Schließen
                 </button>
             </div>
         </div>
@@ -2106,8 +1875,9 @@
             email: "dr.mueller@us.army.mil"
         };
         
-        let currentPatient = null;
-        let patients = [];
+        let patients = []; // Liste aller Patienten (Soldaten)
+        let currentPatient = null; // Der aktuell ausgewählte Patient
+        let currentReportId = null; // ID des aktuell geladenen Berichts
         let autoSaveTimer = null;
 
         // ===== INITIALISIERUNG =====
@@ -2146,37 +1916,17 @@
         function setupEventListeners() {
             // Auto-Save bei Eingabe
             document.addEventListener('input', debounce(function(e) {
-                if (currentPatient) {
+                if (currentPatient && currentReportId) {
                     autoSave();
                 }
             }, 1500));
             
             // Auto-Save bei Änderung
             document.addEventListener('change', debounce(function(e) {
-                if (currentPatient) {
+                if (currentPatient && currentReportId) {
                     autoSave();
                 }
             }, 1000));
-            
-            // Tastaturkürzel
-            document.addEventListener('keydown', function(e) {
-                if (e.ctrlKey || e.metaKey) {
-                    switch(e.key) {
-                        case 's':
-                            e.preventDefault();
-                            saveAssessment();
-                            break;
-                        case 'n':
-                            e.preventDefault();
-                            openNewPatientModal();
-                            break;
-                        case 'p':
-                            e.preventDefault();
-                            generateReport();
-                            break;
-                    }
-                }
-            });
         }
 
         function setupVitalInputs() {
@@ -2212,7 +1962,7 @@
         // ===== FIREBASE FUNKTIONEN =====
         async function loadPatientsFromFirebase() {
             try {
-                const snapshot = await db.collection('patients').orderBy('lastUpdated', 'desc').get();
+                const snapshot = await db.collection('patients').orderBy('createdAt', 'desc').get();
                 patients = [];
                 
                 snapshot.forEach(doc => {
@@ -2234,21 +1984,7 @@
 
         async function savePatientToFirebase(patient) {
             try {
-                await db.collection('patients').doc(patient.id).set({
-                    firstName: patient.firstName,
-                    lastName: patient.lastName,
-                    fullName: patient.fullName,
-                    rank: patient.rank,
-                    unit: patient.unit,
-                    status: patient.status,
-                    examiner: patient.examiner,
-                    date: patient.date,
-                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
-                    vitals: patient.vitals || {},
-                    formData: patient.formData || {},
-                    answers: patient.answers || {},
-                    summary: patient.summary || {}
-                });
+                await db.collection('patients').doc(patient.id).set(patient);
                 return true;
             } catch (error) {
                 console.error('Fehler beim Speichern des Patienten:', error);
@@ -2289,10 +2025,7 @@
                 card.className = `patient-card ${currentPatient?.id === patient.id ? 'active' : ''}`;
                 card.onclick = () => selectPatient(patient);
                 
-                const statusClass = patient.status === 'active' ? 'status-active' : 
-                                  patient.status === 'pending' ? 'status-pending' : 'status-critical';
-                const statusText = patient.status === 'active' ? 'Aktiv' : 
-                                 patient.status === 'pending' ? 'Ausstehend' : 'Kritisch';
+                const reportCount = patient.reports ? patient.reports.length : 0;
                 
                 card.innerHTML = `
                     <div class="patient-header">
@@ -2300,12 +2033,12 @@
                         <div class="patient-id">${patient.id}</div>
                     </div>
                     <div class="patient-details">
-                        <div>${patient.rank} • ${patient.unit}</div>
-                        <div>Untersucht von ${patient.examiner}</div>
+                        <div>Erstellt am: ${new Date(patient.createdAt).toLocaleDateString('de-DE')}</div>
+                        <div>Letzte Untersuchung: ${patient.lastReportDate ? new Date(patient.lastReportDate).toLocaleDateString('de-DE') : '-'}</div>
                     </div>
-                    <div class="patient-status ${statusClass}">
-                        <i class="fas fa-circle" style="font-size: 7px;"></i>
-                        ${statusText}
+                    <div class="patient-report-count">
+                        <i class="fas fa-file-medical"></i>
+                        ${reportCount} Bericht${reportCount !== 1 ? 'e' : ''}
                     </div>
                 `;
                 
@@ -2349,76 +2082,221 @@
             
             // UI aktualisieren
             document.getElementById('patientHeader').style.display = 'flex';
-            document.getElementById('currentPatientName').textContent = `${patient.fullName} (${patient.rank})`;
+            document.getElementById('currentPatientName').textContent = patient.fullName;
             document.getElementById('currentPatientId').textContent = patient.id;
-            document.getElementById('currentPatientUnit').textContent = patient.unit;
-            document.getElementById('currentPatientDate').textContent = new Date(patient.date).toLocaleDateString('de-DE');
-            document.getElementById('currentExaminer').textContent = patient.examiner;
+            document.getElementById('currentPatientDate').textContent = new Date(patient.createdAt).toLocaleDateString('de-DE');
+            
+            // Prüfer aus dem letzten Bericht oder Benutzer anzeigen
+            if (patient.reports && patient.reports.length > 0) {
+                const lastReport = patient.reports[patient.reports.length - 1];
+                document.getElementById('currentExaminer').textContent = lastReport.examiner || currentUser.name;
+            } else {
+                document.getElementById('currentExaminer').textContent = currentUser.name;
+            }
             
             // Patientenkarten aktualisieren
             document.querySelectorAll('.patient-card').forEach(card => {
                 card.classList.remove('active');
             });
+            event.currentTarget.classList.add('active');
             
-            // Patientendaten laden
-            loadPatientData();
+            // Berichte-Dropdown aktualisieren
+            updateReportSelector();
+            
+            // Wenn Berichte vorhanden, ersten laden
+            if (patient.reports && patient.reports.length > 0) {
+                loadReport(patient.reports[patient.reports.length - 1].id);
+            } else {
+                // Sonst leeres Formular anzeigen
+                clearForm();
+            }
         }
 
-        function loadPatientData() {
-            if (!currentPatient) return;
+        function updateReportSelector() {
+            const selector = document.getElementById('reportSelector');
+            selector.innerHTML = '';
+            
+            if (!currentPatient || !currentPatient.reports || currentPatient.reports.length === 0) {
+                selector.innerHTML = '<option value="">Keine Berichte vorhanden</option>';
+                return;
+            }
+            
+            // Berichte chronologisch sortieren (neueste zuerst)
+            const sortedReports = [...currentPatient.reports].sort((a, b) => 
+                new Date(b.date) - new Date(a.date)
+            );
+            
+            sortedReports.forEach(report => {
+                const option = document.createElement('option');
+                option.value = report.id;
+                option.textContent = `${new Date(report.date).toLocaleDateString('de-DE')} - ${report.examiner}`;
+                selector.appendChild(option);
+            });
+            
+            // Aktuellen Bericht auswählen, falls vorhanden
+            if (currentReportId) {
+                selector.value = currentReportId;
+            } else {
+                selector.value = sortedReports[0].id;
+                currentReportId = sortedReports[0].id;
+            }
+        }
+
+        function loadReport(reportId) {
+            if (!currentPatient || !currentPatient.reports) return;
+            
+            const report = currentPatient.reports.find(r => r.id === reportId);
+            if (!report) return;
+            
+            currentReportId = reportId;
             
             // Formulardaten laden
-            if (currentPatient.formData) {
-                const fd = currentPatient.formData;
-                
-                document.getElementById('patientName').value = fd.name || '';
-                document.getElementById('patientRankUnit').value = fd.rankUnit || '';
-                document.getElementById('examinationDate').value = fd.date || '';
-                document.getElementById('examinerName').value = fd.examiner || '';
-                document.getElementById('generalImpression').value = fd.generalImpression || '';
-                document.getElementById('lastMeal').value = fd.lastMeal || '';
-                document.getElementById('allergies').value = fd.allergies || '';
-                document.getElementById('injuries').value = fd.injuries || '';
-                document.getElementById('otherFindings').value = fd.otherFindings || '';
-                
-                // Checkboxen
-                if (fd.fitness) {
-                    document.querySelectorAll('input[name="fitness"]').forEach(cb => {
-                        cb.checked = fd.fitness.includes(cb.value);
-                    });
-                }
-                
-                if (fd.mobility) {
-                    document.querySelectorAll('input[name="mobility"]').forEach(cb => {
-                        cb.checked = fd.mobility.includes(cb.value);
-                    });
-                }
+            document.getElementById('patientName').value = report.formData?.name || currentPatient.fullName || '';
+            document.getElementById('patientRankUnit').value = report.formData?.rankUnit || '';
+            document.getElementById('examinationDate').value = report.date.split('T')[0] || new Date().toISOString().split('T')[0];
+            document.getElementById('examinerName').value = report.examiner || currentUser.name;
+            document.getElementById('generalImpression').value = report.formData?.generalImpression || '';
+            document.getElementById('lastMeal').value = report.formData?.lastMeal || '';
+            document.getElementById('allergies').value = report.formData?.allergies || '';
+            document.getElementById('injuries').value = report.formData?.injuries || '';
+            document.getElementById('otherFindings').value = report.formData?.otherFindings || '';
+            
+            // Checkboxen
+            document.querySelectorAll('input[name="fitness"]').forEach(cb => {
+                cb.checked = report.formData?.fitness?.includes(cb.value) || false;
+            });
+            
+            document.querySelectorAll('input[name="mobility"]').forEach(cb => {
+                cb.checked = report.formData?.mobility?.includes(cb.value) || false;
+            });
+            
+            // Vitalparameter
+            if (report.vitals) {
+                document.getElementById('vitalPulse').value = report.vitals.pulse || '';
+                document.getElementById('vitalBpHigh').value = report.vitals.bpHigh || '';
+                document.getElementById('vitalBpLow').value = report.vitals.bpLow || '';
+                document.getElementById('vitalTemp').value = report.vitals.temperature || '';
+                document.getElementById('vitalRespiration').value = report.vitals.respiration || '';
+                document.getElementById('vitalOxygen').value = report.vitals.oxygen || '';
+                document.getElementById('vitalHeight').value = report.vitals.height || '';
+                document.getElementById('vitalWeight').value = report.vitals.weight || '';
             }
             
-            // Vitalparameter laden
-            if (currentPatient.vitals) {
-                const v = currentPatient.vitals;
-                
-                document.getElementById('vitalPulse').value = v.pulse || '';
-                document.getElementById('vitalBpHigh').value = v.bpHigh || '';
-                document.getElementById('vitalBpLow').value = v.bpLow || '';
-                document.getElementById('vitalTemp').value = v.temperature || '';
-                document.getElementById('vitalRespiration').value = v.respiration || '';
-                document.getElementById('vitalOxygen').value = v.oxygen || '';
-                document.getElementById('vitalHeight').value = v.height || '';
-                document.getElementById('vitalWeight').value = v.weight || '';
-                
-                // Status-Badges aktualisieren
-                updateAllVitalStatuses();
-                calculateBMI();
-            }
-            
-            // Antworten laden
-            if (currentPatient.answers) {
-                Object.keys(currentPatient.answers).forEach(key => {
-                    const input = document.querySelector(`[data-question="${key}"]`);
-                    if (input) input.value = currentPatient.answers[key];
+            // Antworten
+            if (report.answers) {
+                document.querySelectorAll('.question-input').forEach(input => {
+                    const question = input.getAttribute('data-question');
+                    if (question && report.answers[question]) {
+                        input.value = report.answers[question];
+                    } else {
+                        input.value = '';
+                    }
                 });
+            }
+            
+            // Vital-Status aktualisieren
+            updateAllVitalStatuses();
+            calculateBMI();
+        }
+
+        function clearForm() {
+            // Formular leeren
+            document.getElementById('patientName').value = currentPatient?.fullName || '';
+            document.getElementById('patientRankUnit').value = '';
+            document.getElementById('examinationDate').valueAsDate = new Date();
+            document.getElementById('examinerName').value = currentUser.name;
+            document.getElementById('generalImpression').value = '';
+            document.getElementById('lastMeal').value = '';
+            document.getElementById('allergies').value = '';
+            document.getElementById('injuries').value = '';
+            document.getElementById('otherFindings').value = '';
+            
+            document.querySelectorAll('input[name="fitness"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('input[name="mobility"]').forEach(cb => cb.checked = false);
+            
+            document.getElementById('vitalPulse').value = '';
+            document.getElementById('vitalBpHigh').value = '';
+            document.getElementById('vitalBpLow').value = '';
+            document.getElementById('vitalTemp').value = '';
+            document.getElementById('vitalRespiration').value = '';
+            document.getElementById('vitalOxygen').value = '';
+            document.getElementById('vitalHeight').value = '';
+            document.getElementById('vitalWeight').value = '';
+            
+            document.querySelectorAll('.question-input').forEach(input => input.value = '');
+            
+            updateAllVitalStatuses();
+            calculateBMI();
+            
+            currentReportId = null;
+        }
+
+        function switchReport() {
+            const selector = document.getElementById('reportSelector');
+            const reportId = selector.value;
+            
+            if (reportId) {
+                loadReport(reportId);
+            }
+        }
+
+        async function createNewReport() {
+            if (!currentPatient) {
+                alert('Bitte wählen Sie zuerst einen Patienten aus');
+                return;
+            }
+            
+            const reportId = `RPT-${new Date().getTime()}`;
+            const today = new Date().toISOString();
+            
+            const newReport = {
+                id: reportId,
+                date: today,
+                examiner: currentUser.name,
+                formData: {
+                    name: currentPatient.fullName,
+                    rankUnit: '',
+                    date: today.split('T')[0],
+                    examiner: currentUser.name,
+                    generalImpression: '',
+                    fitness: [],
+                    lastMeal: '',
+                    allergies: '',
+                    injuries: '',
+                    mobility: [],
+                    otherFindings: ''
+                },
+                vitals: {
+                    pulse: null,
+                    bpHigh: null,
+                    bpLow: null,
+                    temperature: null,
+                    respiration: null,
+                    oxygen: null,
+                    height: null,
+                    weight: null,
+                    bmi: null
+                },
+                answers: {}
+            };
+            
+            if (!currentPatient.reports) {
+                currentPatient.reports = [];
+            }
+            
+            currentPatient.reports.push(newReport);
+            currentPatient.lastReportDate = today;
+            currentReportId = reportId;
+            
+            // In Firebase speichern
+            const success = await savePatientToFirebase(currentPatient);
+            
+            if (success) {
+                updateReportSelector();
+                loadReport(reportId);
+                renderPatientList(); // Aktualisiert die Anzeige der Berichtanzahl
+            } else {
+                alert('Fehler beim Erstellen des Berichts');
             }
         }
 
@@ -2434,43 +2312,22 @@
 
         async function createPatient() {
             const fullName = document.getElementById('newPatientName').value.trim();
-            const rank = document.getElementById('newPatientRank').value;
-            const unit = document.getElementById('newPatientUnit').value;
             const examiner = document.getElementById('newPatientExaminer').value.trim();
             
-            if (!fullName || !rank || !unit) {
-                alert('Bitte füllen Sie alle erforderlichen Felder aus');
+            if (!fullName) {
+                alert('Bitte geben Sie den Namen des Soldaten ein');
                 return;
             }
             
-            // Namen in Vor- und Nachnamen aufteilen
-            const nameParts = fullName.split(' ');
-            const firstName = nameParts[0] || '';
-            const lastName = nameParts.slice(1).join(' ') || '';
-            
-            const patientId = `PT-${new Date().getFullYear()}-${String(patients.length + 1).padStart(3, '0')}`;
-            const today = new Date().toISOString().split('T')[0];
+            const patientId = `PAT-${new Date().getFullYear()}-${String(patients.length + 1).padStart(3, '0')}`;
+            const today = new Date().toISOString();
             
             const newPatient = {
                 id: patientId,
-                firstName: firstName,
-                lastName: lastName,
                 fullName: fullName,
-                rank: rank,
-                unit: unit,
-                status: 'pending',
-                examiner: examiner || currentUser.name,
-                date: new Date().toISOString(),
-                lastUpdated: new Date().toISOString(),
-                vitals: {},
-                formData: {
-                    name: fullName,
-                    rankUnit: `${rank} / ${unit}`,
-                    date: today,
-                    examiner: examiner || currentUser.name
-                },
-                answers: {},
-                summary: {}
+                createdAt: today,
+                lastReportDate: null,
+                reports: []
             };
             
             // In Firebase speichern
@@ -2485,9 +2342,7 @@
                 
                 // Formular leeren
                 document.getElementById('newPatientName').value = '';
-                document.getElementById('newPatientRank').value = '';
-                document.getElementById('newPatientUnit').value = '';
-                document.getElementById('newPatientExaminer').value = '';
+                document.getElementById('newPatientExaminer').value = currentUser.name;
                 
             } else {
                 alert('Fehler beim Erstellen des Patienten. Bitte versuchen Sie es erneut.');
@@ -2613,12 +2468,6 @@
             if (statusElement) {
                 statusElement.textContent = statusText;
                 statusElement.className = 'badge ' + badgeClass;
-                
-                // Puls-Animation für Änderungen hinzufügen
-                if (value) {
-                    statusElement.classList.add('pulse');
-                    setTimeout(() => statusElement.classList.remove('pulse'), 1000);
-                }
             }
         }
 
@@ -2629,7 +2478,7 @@
         }
 
         function calculateBMI() {
-            const height = parseFloat(document.getElementById('vitalHeight').value) / 100; // cm zu m
+            const height = parseFloat(document.getElementById('vitalHeight').value) / 100;
             const weight = parseFloat(document.getElementById('vitalWeight').value);
             const statusElement = document.getElementById('bmiStatus');
             
@@ -2661,33 +2510,24 @@
 
         // ===== TAB VERWALTUNG =====
         function switchTab(tabName) {
-            // Alle Tabs ausblenden
             document.querySelectorAll('.tab-pane').forEach(tab => {
                 tab.style.display = 'none';
             });
             
-            // Active Klasse von allen Tabs entfernen
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            // Ausgewählten Tab anzeigen
             document.getElementById(`${tabName}Tab`).style.display = 'block';
-            
-            // Active Klasse zum ausgewählten Tab hinzufügen
             document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
         }
 
         // ===== SPEICHERN & EXPORT =====
         function autoSave() {
-            if (!currentPatient) return;
-            
-            // Existierenden Timer löschen
             if (autoSaveTimer) {
                 clearTimeout(autoSaveTimer);
             }
             
-            // Neuen Timer setzen
             autoSaveTimer = setTimeout(() => {
                 saveAssessment(true);
             }, 2000);
@@ -2728,7 +2568,6 @@
                 weight: parseFloat(document.getElementById('vitalWeight').value) || null
             };
             
-            // BMI berechnen
             if (vitals.height && vitals.weight && vitals.height > 0) {
                 const heightInM = vitals.height / 100;
                 vitals.bmi = vitals.weight / (heightInM * heightInM);
@@ -2745,24 +2584,37 @@
                 }
             });
             
-            // Patientendaten aktualisieren
-            currentPatient.formData = formData;
-            currentPatient.vitals = vitals;
-            currentPatient.answers = answers;
-            currentPatient.lastUpdated = new Date().toISOString();
-            
-            // Namen in Formulardaten aktualisieren, wenn Patientname geändert wurde
-            if (formData.name && formData.name !== currentPatient.fullName) {
-                const nameParts = formData.name.split(' ');
-                if (nameParts.length >= 2) {
-                    currentPatient.firstName = nameParts[0];
-                    currentPatient.lastName = nameParts.slice(1).join(' ');
-                    currentPatient.fullName = formData.name;
-                }
+            // Bericht finden oder erstellen
+            let report;
+            if (currentReportId && currentPatient.reports) {
+                report = currentPatient.reports.find(r => r.id === currentReportId);
             }
             
-            // Status basierend auf Vitalparametern aktualisieren
-            updatePatientStatus();
+            if (!report) {
+                // Neuen Bericht erstellen, falls keiner existiert
+                currentReportId = `RPT-${new Date().getTime()}`;
+                report = {
+                    id: currentReportId,
+                    date: new Date().toISOString(),
+                    examiner: formData.examiner || currentUser.name,
+                    formData: formData,
+                    vitals: vitals,
+                    answers: answers
+                };
+                
+                if (!currentPatient.reports) {
+                    currentPatient.reports = [];
+                }
+                currentPatient.reports.push(report);
+            } else {
+                // Bestehenden Bericht aktualisieren
+                report.formData = formData;
+                report.vitals = vitals;
+                report.answers = answers;
+                report.date = new Date().toISOString();
+            }
+            
+            currentPatient.lastReportDate = new Date().toISOString();
             
             // In Firebase speichern
             const success = await savePatientToFirebase(currentPatient);
@@ -2772,69 +2624,34 @@
                 const saveBtn = document.querySelector('.btn-secondary');
                 const originalHTML = saveBtn.innerHTML;
                 
-                if (isAutoSave) {
-                    saveBtn.innerHTML = '<i class="fas fa-check"></i> Auto-gespeichert';
-                    saveBtn.style.background = 'var(--success)';
-                    
-                    setTimeout(() => {
-                        saveBtn.innerHTML = originalHTML;
-                        saveBtn.style.background = '';
-                    }, 2000);
-                } else {
-                    saveBtn.innerHTML = '<i class="fas fa-check"></i> Gespeichert';
-                    saveBtn.style.background = 'var(--success)';
-                    
-                    setTimeout(() => {
-                        saveBtn.innerHTML = originalHTML;
-                        saveBtn.style.background = '';
-                    }, 3000);
-                }
+                saveBtn.innerHTML = '<i class="fas fa-check"></i> Gespeichert';
+                saveBtn.style.background = 'var(--success)';
                 
-                // Patientenliste aktualisieren
+                setTimeout(() => {
+                    saveBtn.innerHTML = originalHTML;
+                    saveBtn.style.background = '';
+                }, 2000);
+                
+                updateReportSelector();
                 renderPatientList();
-            } else {
-                if (!isAutoSave) {
-                    alert('Fehler beim Speichern der Daten. Bitte überprüfen Sie Ihre Verbindung.');
-                }
-            }
-        }
-
-        function updatePatientStatus() {
-            if (!currentPatient || !currentPatient.vitals) return;
-            
-            const v = currentPatient.vitals;
-            let abnormalCount = 0;
-            
-            // Jeden Vitalparameter überprüfen
-            if (v.pulse && (v.pulse < 60 || v.pulse > 100)) abnormalCount++;
-            if (v.bpHigh && v.bpLow && (v.bpHigh < 110 || v.bpHigh > 140 || v.bpLow < 60 || v.bpLow > 90)) abnormalCount++;
-            if (v.temperature && (v.temperature < 36.1 || v.temperature > 37.5)) abnormalCount++;
-            if (v.respiration && (v.respiration < 12 || v.respiration > 20)) abnormalCount++;
-            if (v.oxygen && v.oxygen < 95) abnormalCount++;
-            if (v.bmi && (v.bmi < 18.5 || v.bmi > 25)) abnormalCount++;
-            
-            // Status aktualisieren
-            if (abnormalCount >= 3) {
-                currentPatient.status = 'critical';
-            } else if (abnormalCount >= 1) {
-                currentPatient.status = 'pending';
-            } else {
-                currentPatient.status = 'active';
+                
+            } else if (!isAutoSave) {
+                alert('Fehler beim Speichern der Daten');
             }
         }
 
         function generateReport() {
-            if (!currentPatient) {
-                alert('Bitte wählen Sie zuerst einen Patienten aus');
+            if (!currentPatient || !currentReportId) {
+                alert('Bitte wählen Sie zuerst einen Patienten und Bericht aus');
                 return;
             }
             
+            const report = currentPatient.reports.find(r => r.id === currentReportId);
+            if (!report) return;
+            
             alert('Berichterstellung gestartet. PDF wird in Kürze heruntergeladen.');
             
-            // Berichterstellung simulieren
             setTimeout(() => {
-                // In einer echten App würde dies ein richtiges PDF generieren
-                // Für jetzt erstellen wir einen einfachen HTML-Bericht
                 const reportContent = `
                     <!DOCTYPE html>
                     <html>
@@ -2849,10 +2666,6 @@
                             .vital-table { border-collapse: collapse; width: 100%; margin: 20px 0; }
                             .vital-table th, .vital-table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
                             .vital-table th { background-color: #f5f7fa; }
-                            .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
-                            .badge-success { background-color: #d4edda; color: #155724; }
-                            .badge-warning { background-color: #fff3cd; color: #856404; }
-                            .badge-danger { background-color: #f8d7da; color: #721c24; }
                         </style>
                     </head>
                     <body>
@@ -2861,29 +2674,25 @@
                         
                         <div class="section">
                             <h2>Abschnitt 1 – Informationen</h2>
-                            <p><strong>Name des Soldaten:</strong> ${currentPatient.formData?.name || '-'}</p>
-                            <p><strong>Rang / Einheit:</strong> ${currentPatient.formData?.rankUnit || '-'}</p>
-                            <p><strong>Datum:</strong> ${currentPatient.formData?.date || '-'}</p>
-                            <p><strong>Prüfer:</strong> ${currentPatient.formData?.examiner || '-'}</p>
-                            <p><strong>Allgemeiner Eindruck:</strong> ${currentPatient.formData?.generalImpression || '-'}</p>
+                            <p><strong>Name des Soldaten:</strong> ${report.formData?.name || '-'}</p>
+                            <p><strong>Rang / Einheit:</strong> ${report.formData?.rankUnit || '-'}</p>
+                            <p><strong>Datum:</strong> ${report.formData?.date || '-'}</p>
+                            <p><strong>Prüfer:</strong> ${report.formData?.examiner || '-'}</p>
+                            <p><strong>Allgemeiner Eindruck:</strong> ${report.formData?.generalImpression || '-'}</p>
                         </div>
                         
                         <div class="section">
                             <h2>Vitalparameter</h2>
                             <table class="vital-table">
-                                <tr><th>Parameter</th><th>Wert</th><th>Status</th></tr>
-                                <tr><td>Puls (bpm)</td><td>${currentPatient.vitals?.pulse || '-'}</td><td>-</td></tr>
-                                <tr><td>Blutdruck (mmHg)</td><td>${currentPatient.vitals?.bpHigh && currentPatient.vitals?.bpLow ? currentPatient.vitals.bpHigh + '/' + currentPatient.vitals.bpLow : '-'}</td><td>-</td></tr>
-                                <tr><td>Körpertemperatur (°C)</td><td>${currentPatient.vitals?.temperature || '-'}</td><td>-</td></tr>
+                                <tr><th>Parameter</th><th>Wert</th></tr>
+                                <tr><td>Puls (bpm)</td><td>${report.vitals?.pulse || '-'}</td></tr>
+                                <tr><td>Blutdruck (mmHg)</td><td>${report.vitals?.bpHigh && report.vitals?.bpLow ? report.vitals.bpHigh + '/' + report.vitals.bpLow : '-'}</td></tr>
+                                <tr><td>Körpertemperatur (°C)</td><td>${report.vitals?.temperature || '-'}</td></tr>
+                                <tr><td>Atemfrequenz</td><td>${report.vitals?.respiration || '-'}</td></tr>
+                                <tr><td>Sauerstoffsättigung (%)</td><td>${report.vitals?.oxygen || '-'}</td></tr>
+                                <tr><td>Größe (cm)</td><td>${report.vitals?.height || '-'}</td></tr>
+                                <tr><td>Gewicht (kg)</td><td>${report.vitals?.weight || '-'}</td></tr>
                             </table>
-                        </div>
-                        
-                        <div class="section">
-                            <h2>Zusammenfassung</h2>
-                            <p>Diese Bewertung wurde am ${new Date(currentPatient.lastUpdated).toLocaleDateString('de-DE')} durchgeführt.</p>
-                            <p><strong>Status:</strong> ${currentPatient.status === 'active' ? 'Voll einsatzfähig' : 
-                                                         currentPatient.status === 'pending' ? 'Weitere Prüfung erforderlich' : 
-                                                         'Kritisch - nicht einsatzfähig'}</p>
                         </div>
                         
                         <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd;">
@@ -2904,156 +2713,123 @@
             }, 1000);
         }
 
-        function exportAssessment() {
-            openModal('exportModal');
-        }
-
         async function deleteAssessment() {
-            if (!currentPatient) return;
+            if (!currentPatient || !currentReportId) return;
             
-            if (confirm(`Sind Sie sicher, dass Sie die Bewertung für ${currentPatient.fullName} löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.`)) {
-                const patientName = currentPatient.fullName;
-                const patientId = currentPatient.id;
+            if (confirm('Sind Sie sicher, dass Sie diesen Bericht löschen möchten?')) {
+                const reportIndex = currentPatient.reports.findIndex(r => r.id === currentReportId);
                 
-                // Aus Firebase löschen
-                const success = await deletePatientFromFirebase(patientId);
-                
-                if (success) {
-                    patients = patients.filter(p => p.id !== patientId);
-                    currentPatient = null;
+                if (reportIndex !== -1) {
+                    currentPatient.reports.splice(reportIndex, 1);
                     
-                    document.getElementById('patientHeader').style.display = 'none';
-                    renderPatientList();
-                } else {
-                    alert('Fehler beim Löschen des Patienten. Bitte versuchen Sie es erneut.');
+                    if (currentPatient.reports.length === 0) {
+                        currentPatient.lastReportDate = null;
+                        currentReportId = null;
+                        clearForm();
+                    } else {
+                        // Lade den letzten verbleibenden Bericht
+                        const lastReport = currentPatient.reports[currentPatient.reports.length - 1];
+                        currentReportId = lastReport.id;
+                        loadReport(lastReport.id);
+                    }
+                    
+                    const success = await savePatientToFirebase(currentPatient);
+                    
+                    if (success) {
+                        updateReportSelector();
+                        renderPatientList();
+                    } else {
+                        alert('Fehler beim Löschen des Berichts');
+                    }
                 }
             }
         }
 
         // ===== STATISTIKEN =====
         function updateStats() {
-            const total = patients.length;
-            const active = patients.filter(p => p.status === 'active').length;
-            const critical = patients.filter(p => p.status === 'critical').length;
-            
-            document.getElementById('totalPatients').textContent = total;
-            document.getElementById('activeAssessments').textContent = active;
-            document.getElementById('criticalCases').textContent = critical;
-        }
-
-        function updateStatsModal() {
-            const total = patients.length;
-            const active = patients.filter(p => p.status === 'active').length;
-            const pending = patients.filter(p => p.status === 'pending').length;
-            const operationalRate = total > 0 ? Math.round((active / total) * 100) : 0;
-            
-            document.getElementById('statsTotal').textContent = total;
-            document.getElementById('statsOperational').textContent = operationalRate + '%';
-            document.getElementById('statsPending').textContent = pending;
-        }
-
-        // ===== HELFERFUNKTIONEN =====
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-        }
-
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('de-DE', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
+            document.getElementById('totalPatients').textContent = patients.length;
         }
 
         // ===== MOCK-DATEN (Fallback) =====
         function loadMockPatients() {
+            const today = new Date().toISOString();
+            
             patients = [
                 {
-                    id: "PT-2024-001",
-                    firstName: "Johann",
-                    lastName: "Kaiser",
+                    id: "PAT-2024-001",
                     fullName: "Johann Kaiser",
-                    rank: "Sergeant",
-                    unit: "Infanterie",
-                    status: "active",
-                    examiner: "Dr. Müller",
-                    date: "2024-01-15",
-                    vitals: {
-                        pulse: 72,
-                        bpHigh: 120,
-                        bpLow: 80,
-                        temperature: 36.8,
-                        respiration: 16,
-                        oxygen: 98,
-                        height: 182,
-                        weight: 78,
-                        bmi: 23.5
-                    },
-                    formData: {
-                        name: "Johann Kaiser",
-                        rankUnit: "Sergeant / Infanterie",
-                        date: "2024-01-15",
-                        examiner: "Dr. Müller"
-                    }
+                    createdAt: "2024-01-15T10:00:00.000Z",
+                    lastReportDate: "2024-01-15T10:30:00.000Z",
+                    reports: [
+                        {
+                            id: "RPT-1705311000000",
+                            date: "2024-01-15T10:30:00.000Z",
+                            examiner: "Dr. Müller",
+                            formData: {
+                                name: "Johann Kaiser",
+                                rankUnit: "Sergeant / Infanterie",
+                                date: "2024-01-15",
+                                examiner: "Dr. Müller",
+                                generalImpression: "Guter Allgemeinzustand",
+                                fitness: ["athletic"],
+                                lastMeal: "2",
+                                allergies: "Keine bekannt",
+                                injuries: "Alte Narbe am linken Arm",
+                                mobility: ["normal"],
+                                otherFindings: "Keine besonderen Auffälligkeiten"
+                            },
+                            vitals: {
+                                pulse: 72,
+                                bpHigh: 120,
+                                bpLow: 80,
+                                temperature: 36.8,
+                                respiration: 16,
+                                oxygen: 98,
+                                height: 182,
+                                weight: 78,
+                                bmi: 23.5
+                            },
+                            answers: {}
+                        }
+                    ]
                 },
                 {
-                    id: "PT-2024-002",
-                    firstName: "Sarah",
-                    lastName: "Müller",
+                    id: "PAT-2024-002",
                     fullName: "Sarah Müller",
-                    rank: "Corporal",
-                    unit: "Militärpolizei",
-                    status: "pending",
-                    examiner: "Dr. Schmidt",
-                    date: "2024-01-16",
-                    vitals: {
-                        pulse: 88,
-                        bpHigh: 130,
-                        bpLow: 85,
-                        temperature: 37.2,
-                        respiration: 18,
-                        oxygen: 96,
-                        height: 168,
-                        weight: 65,
-                        bmi: 23.0
-                    },
-                    formData: {
-                        name: "Sarah Müller",
-                        rankUnit: "Corporal / Militärpolizei",
-                        date: "2024-01-16",
-                        examiner: "Dr. Schmidt"
-                    }
-                },
-                {
-                    id: "PT-2024-003",
-                    firstName: "Michael",
-                    lastName: "Rodriguez",
-                    fullName: "Michael Rodriguez",
-                    rank: "Private First Class",
-                    unit: "Marineinfanterie",
-                    status: "critical",
-                    examiner: "Dr. Müller",
-                    date: "2024-01-14",
-                    vitals: {
-                        pulse: 110,
-                        bpHigh: 145,
-                        bpLow: 95,
-                        temperature: 37.8,
-                        respiration: 22,
-                        oxygen: 92,
-                        height: 175,
-                        weight: 85,
-                        bmi: 27.8
-                    },
-                    formData: {
-                        name: "Michael Rodriguez",
-                        rankUnit: "Private First Class / Marineinfanterie",
-                        date: "2024-01-14",
-                        examiner: "Dr. Müller"
-                    }
+                    createdAt: "2024-01-16T09:00:00.000Z",
+                    lastReportDate: "2024-01-16T09:45:00.000Z",
+                    reports: [
+                        {
+                            id: "RPT-1705398300000",
+                            date: "2024-01-16T09:45:00.000Z",
+                            examiner: "Dr. Schmidt",
+                            formData: {
+                                name: "Sarah Müller",
+                                rankUnit: "Corporal / Militärpolizei",
+                                date: "2024-01-16",
+                                examiner: "Dr. Schmidt",
+                                generalImpression: "Normal",
+                                fitness: ["average"],
+                                lastMeal: "3",
+                                allergies: "Penicillin",
+                                injuries: "Keine",
+                                mobility: ["normal"],
+                                otherFindings: "Leichte Ermüdungserscheinungen"
+                            },
+                            vitals: {
+                                pulse: 88,
+                                bpHigh: 130,
+                                bpLow: 85,
+                                temperature: 37.2,
+                                respiration: 18,
+                                oxygen: 96,
+                                height: 168,
+                                weight: 65,
+                                bmi: 23.0
+                            },
+                            answers: {}
+                        }
+                    ]
                 }
             ];
             
@@ -3061,8 +2837,7 @@
             updateStats();
         }
 
-        // ===== INITIALE DARSTELLUNG =====
-        // Statistiken beim Laden aktualisieren
+        // ===== INITIALISIERUNG =====
         setTimeout(() => {
             updateStats();
         }, 1000);
