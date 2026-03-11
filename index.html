@@ -769,7 +769,7 @@
             border-radius: var(--radius-xl);
             padding: 32px;
             width: 100%;
-            max-width: 450px;
+            max-width: 400px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: var(--shadow-lg);
             animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -790,7 +790,7 @@
         .modal-input {
             width: 100%;
             padding: 12px 14px;
-            background: rgba(255, 255, 255, 0.05);
+            background: white;
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
             color: #000000 !important;
@@ -803,7 +803,6 @@
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.2);
-            background: rgba(255, 255, 255, 0.08);
         }
         
         .modal-label {
@@ -1819,7 +1818,7 @@
         </main>
     </div>
     
-    <!-- New Patient Modal (Simplified) -->
+    <!-- New Patient Modal (Simplified - only name) -->
     <div id="newPatientModal" class="modal" onclick="if(event.target===this)closeModal('newPatientModal')">
         <div class="modal-content">
             <h2 style="color: white; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 18px;">
@@ -1831,11 +1830,6 @@
                 <div>
                     <label class="modal-label">Name des Soldaten:</label>
                     <input type="text" class="modal-input" id="newPatientName" placeholder="Vorname Nachname" style="color: #000000 !important;">
-                </div>
-                
-                <div>
-                    <label class="modal-label">Prüfer:</label>
-                    <input type="text" class="modal-input" id="newPatientExaminer" placeholder="Name des Untersuchers" style="color: #000000 !important;">
                 </div>
             </div>
             
@@ -1875,10 +1869,9 @@
             email: "dr.mueller@us.army.mil"
         };
         
-        let patients = []; // Liste aller Patienten (Soldaten)
-        let currentPatient = null; // Der aktuell ausgewählte Patient
-        let currentReportId = null; // ID des aktuell geladenen Berichts
-        let autoSaveTimer = null;
+        let patients = [];
+        let currentPatient = null;
+        let currentReportId = null;
 
         // ===== INITIALISIERUNG =====
         document.addEventListener('DOMContentLoaded', function() {
@@ -1914,23 +1907,10 @@
         }
 
         function setupEventListeners() {
-            // Auto-Save bei Eingabe
-            document.addEventListener('input', debounce(function(e) {
-                if (currentPatient && currentReportId) {
-                    autoSave();
-                }
-            }, 1500));
-            
-            // Auto-Save bei Änderung
-            document.addEventListener('change', debounce(function(e) {
-                if (currentPatient && currentReportId) {
-                    autoSave();
-                }
-            }, 1000));
+            // Keine Auto-Save-Listener mehr
         }
 
         function setupVitalInputs() {
-            // Vitalparameter-Input-Listener einrichten
             const vitalInputs = [
                 'vitalPulse', 'vitalBpHigh', 'vitalBpLow', 'vitalTemp',
                 'vitalRespiration', 'vitalOxygen', 'vitalHeight', 'vitalWeight'
@@ -1945,18 +1925,6 @@
                     });
                 }
             });
-        }
-
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
         }
 
         // ===== FIREBASE FUNKTIONEN =====
@@ -1977,7 +1945,6 @@
                 
             } catch (error) {
                 console.error('Fehler beim Laden der Patienten:', error);
-                // Fallback zu Mock-Daten wenn Firebase fehlschlägt
                 loadMockPatients();
             }
         }
@@ -2054,9 +2021,7 @@
             const term = searchTerm.toLowerCase();
             
             if (patients.length === 0) {
-                if (emptyState) {
-                    emptyState.style.display = 'block';
-                }
+                if (emptyState) emptyState.style.display = 'block';
                 return;
             }
             
@@ -2080,13 +2045,11 @@
         function selectPatient(patient) {
             currentPatient = patient;
             
-            // UI aktualisieren
             document.getElementById('patientHeader').style.display = 'flex';
             document.getElementById('currentPatientName').textContent = patient.fullName;
             document.getElementById('currentPatientId').textContent = patient.id;
             document.getElementById('currentPatientDate').textContent = new Date(patient.createdAt).toLocaleDateString('de-DE');
             
-            // Prüfer aus dem letzten Bericht oder Benutzer anzeigen
             if (patient.reports && patient.reports.length > 0) {
                 const lastReport = patient.reports[patient.reports.length - 1];
                 document.getElementById('currentExaminer').textContent = lastReport.examiner || currentUser.name;
@@ -2094,20 +2057,16 @@
                 document.getElementById('currentExaminer').textContent = currentUser.name;
             }
             
-            // Patientenkarten aktualisieren
             document.querySelectorAll('.patient-card').forEach(card => {
                 card.classList.remove('active');
             });
             event.currentTarget.classList.add('active');
             
-            // Berichte-Dropdown aktualisieren
             updateReportSelector();
             
-            // Wenn Berichte vorhanden, ersten laden
             if (patient.reports && patient.reports.length > 0) {
                 loadReport(patient.reports[patient.reports.length - 1].id);
             } else {
-                // Sonst leeres Formular anzeigen
                 clearForm();
             }
         }
@@ -2121,7 +2080,6 @@
                 return;
             }
             
-            // Berichte chronologisch sortieren (neueste zuerst)
             const sortedReports = [...currentPatient.reports].sort((a, b) => 
                 new Date(b.date) - new Date(a.date)
             );
@@ -2133,7 +2091,6 @@
                 selector.appendChild(option);
             });
             
-            // Aktuellen Bericht auswählen, falls vorhanden
             if (currentReportId) {
                 selector.value = currentReportId;
             } else {
@@ -2150,7 +2107,6 @@
             
             currentReportId = reportId;
             
-            // Formulardaten laden
             document.getElementById('patientName').value = report.formData?.name || currentPatient.fullName || '';
             document.getElementById('patientRankUnit').value = report.formData?.rankUnit || '';
             document.getElementById('examinationDate').value = report.date.split('T')[0] || new Date().toISOString().split('T')[0];
@@ -2161,7 +2117,6 @@
             document.getElementById('injuries').value = report.formData?.injuries || '';
             document.getElementById('otherFindings').value = report.formData?.otherFindings || '';
             
-            // Checkboxen
             document.querySelectorAll('input[name="fitness"]').forEach(cb => {
                 cb.checked = report.formData?.fitness?.includes(cb.value) || false;
             });
@@ -2170,7 +2125,6 @@
                 cb.checked = report.formData?.mobility?.includes(cb.value) || false;
             });
             
-            // Vitalparameter
             if (report.vitals) {
                 document.getElementById('vitalPulse').value = report.vitals.pulse || '';
                 document.getElementById('vitalBpHigh').value = report.vitals.bpHigh || '';
@@ -2182,7 +2136,6 @@
                 document.getElementById('vitalWeight').value = report.vitals.weight || '';
             }
             
-            // Antworten
             if (report.answers) {
                 document.querySelectorAll('.question-input').forEach(input => {
                     const question = input.getAttribute('data-question');
@@ -2194,13 +2147,11 @@
                 });
             }
             
-            // Vital-Status aktualisieren
             updateAllVitalStatuses();
             calculateBMI();
         }
 
         function clearForm() {
-            // Formular leeren
             document.getElementById('patientName').value = currentPatient?.fullName || '';
             document.getElementById('patientRankUnit').value = '';
             document.getElementById('examinationDate').valueAsDate = new Date();
@@ -2288,13 +2239,12 @@
             currentPatient.lastReportDate = today;
             currentReportId = reportId;
             
-            // In Firebase speichern
             const success = await savePatientToFirebase(currentPatient);
             
             if (success) {
                 updateReportSelector();
                 loadReport(reportId);
-                renderPatientList(); // Aktualisiert die Anzeige der Berichtanzahl
+                renderPatientList();
             } else {
                 alert('Fehler beim Erstellen des Berichts');
             }
@@ -2303,7 +2253,6 @@
         // ===== MODAL FUNKTIONEN =====
         function openNewPatientModal() {
             document.getElementById('newPatientModal').classList.add('active');
-            document.getElementById('newPatientExaminer').value = currentUser.name;
         }
 
         function closeModal(modalId) {
@@ -2312,7 +2261,6 @@
 
         async function createPatient() {
             const fullName = document.getElementById('newPatientName').value.trim();
-            const examiner = document.getElementById('newPatientExaminer').value.trim();
             
             if (!fullName) {
                 alert('Bitte geben Sie den Namen des Soldaten ein');
@@ -2330,7 +2278,6 @@
                 reports: []
             };
             
-            // In Firebase speichern
             const success = await savePatientToFirebase(newPatient);
             
             if (success) {
@@ -2340,9 +2287,7 @@
                 renderPatientList();
                 selectPatient(newPatient);
                 
-                // Formular leeren
                 document.getElementById('newPatientName').value = '';
-                document.getElementById('newPatientExaminer').value = currentUser.name;
                 
             } else {
                 alert('Fehler beim Erstellen des Patienten. Bitte versuchen Sie es erneut.');
@@ -2523,25 +2468,12 @@
         }
 
         // ===== SPEICHERN & EXPORT =====
-        function autoSave() {
-            if (autoSaveTimer) {
-                clearTimeout(autoSaveTimer);
-            }
-            
-            autoSaveTimer = setTimeout(() => {
-                saveAssessment(true);
-            }, 2000);
-        }
-
-        async function saveAssessment(isAutoSave = false) {
+        async function saveAssessment() {
             if (!currentPatient) {
-                if (!isAutoSave) {
-                    alert('Bitte wählen Sie zuerst einen Patienten aus');
-                }
+                alert('Bitte wählen Sie zuerst einen Patienten aus');
                 return;
             }
             
-            // Formulardaten sammeln
             const formData = {
                 name: document.getElementById('patientName').value.trim(),
                 rankUnit: document.getElementById('patientRankUnit').value.trim(),
@@ -2556,7 +2488,6 @@
                 otherFindings: document.getElementById('otherFindings').value.trim()
             };
             
-            // Vitalparameter sammeln
             const vitals = {
                 pulse: parseInt(document.getElementById('vitalPulse').value) || null,
                 bpHigh: parseInt(document.getElementById('vitalBpHigh').value) || null,
@@ -2575,7 +2506,6 @@
                 vitals.bmi = null;
             }
             
-            // Antworten sammeln
             const answers = {};
             document.querySelectorAll('.question-input').forEach(input => {
                 const question = input.getAttribute('data-question');
@@ -2584,14 +2514,12 @@
                 }
             });
             
-            // Bericht finden oder erstellen
             let report;
             if (currentReportId && currentPatient.reports) {
                 report = currentPatient.reports.find(r => r.id === currentReportId);
             }
             
             if (!report) {
-                // Neuen Bericht erstellen, falls keiner existiert
                 currentReportId = `RPT-${new Date().getTime()}`;
                 report = {
                     id: currentReportId,
@@ -2607,7 +2535,6 @@
                 }
                 currentPatient.reports.push(report);
             } else {
-                // Bestehenden Bericht aktualisieren
                 report.formData = formData;
                 report.vitals = vitals;
                 report.answers = answers;
@@ -2616,11 +2543,9 @@
             
             currentPatient.lastReportDate = new Date().toISOString();
             
-            // In Firebase speichern
             const success = await savePatientToFirebase(currentPatient);
             
             if (success) {
-                // UI aktualisieren
                 const saveBtn = document.querySelector('.btn-secondary');
                 const originalHTML = saveBtn.innerHTML;
                 
@@ -2635,7 +2560,7 @@
                 updateReportSelector();
                 renderPatientList();
                 
-            } else if (!isAutoSave) {
+            } else {
                 alert('Fehler beim Speichern der Daten');
             }
         }
@@ -2727,7 +2652,6 @@
                         currentReportId = null;
                         clearForm();
                     } else {
-                        // Lade den letzten verbleibenden Bericht
                         const lastReport = currentPatient.reports[currentPatient.reports.length - 1];
                         currentReportId = lastReport.id;
                         loadReport(lastReport.id);
@@ -2836,11 +2760,6 @@
             renderPatientList();
             updateStats();
         }
-
-        // ===== INITIALISIERUNG =====
-        setTimeout(() => {
-            updateStats();
-        }, 1000);
     </script>
 </body>
 </html>
