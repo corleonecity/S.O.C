@@ -29,13 +29,27 @@
             
             --bg-main: #0f172a;
             --bg-card: #1e293b;
+            --bg-sidebar: #1e293b;
+            --bg-header: #1e293b;
             --bg-input: #334155;
             --text-primary: #f8fafc;
             --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --text-light: #64748b;
             
+            --border-light: #334155;
+            --border-medium: #475569;
+            
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
             --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+            
             --radius-xl: 24px;
             --radius-lg: 18px;
+            --radius-md: 14px;
+            --radius-sm: 10px;
+            
+            --transition: all 0.2s ease;
         }
         
         * {
@@ -49,6 +63,19 @@
             background: var(--bg-main);
             color: var(--text-primary);
             min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        /* ===== BACKGROUND ===== */
+        .background-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 10% 20%, rgba(88, 101, 242, 0.1) 0%, transparent 30%),
+                        radial-gradient(circle at 90% 80%, rgba(237, 66, 69, 0.1) 0%, transparent 30%);
         }
         
         /* ===== LOGIN SCREEN ===== */
@@ -58,7 +85,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #0f172a 0%, #1e1e2f 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1a1a2e 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -157,11 +184,10 @@
             color: var(--text-secondary);
         }
         
-        /* ===== MAIN APP (versteckt bis Login) ===== */
+        /* ===== MAIN APP (KOMPLETT WIEDERHERGESTELLT) ===== */
         .main-app {
             opacity: 0;
             transition: opacity 0.5s ease;
-            min-height: 100vh;
         }
         
         .main-app.visible {
@@ -172,7 +198,7 @@
             background: var(--bg-card);
             border-radius: var(--radius-lg);
             padding: 15px 25px;
-            margin-bottom: 20px;
+            margin: 20px 20px 0;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -195,6 +221,13 @@
             justify-content: center;
             font-weight: bold;
             font-size: 18px;
+        }
+        
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
         }
         
         .user-details {
@@ -232,7 +265,7 @@
             color: white;
         }
         
-        /* Restliches CSS von vorher... */
+        /* ===== VOLLSTÄNDIGES APP-LAYOUT ===== */
         .app-container {
             max-width: 1800px;
             margin: 0 auto;
@@ -240,15 +273,18 @@
             display: grid;
             grid-template-columns: 320px 1fr;
             gap: 20px;
+            min-height: 100vh;
         }
         
+        /* ===== HEADER ===== */
         .app-header {
             grid-column: 1 / -1;
-            background: var(--bg-card);
+            background: var(--bg-header);
             border-radius: var(--radius-xl);
             padding: 16px 28px;
             margin-bottom: 10px;
-            border: 1px solid #334155;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-medium);
         }
         
         .header-content {
@@ -266,33 +302,45 @@
         .logo {
             width: 50px;
             height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .logo img {
             width: 100%;
             height: 100%;
             object-fit: contain;
+            filter: brightness(1.2);
         }
         
         .brand-text h1 {
             font-size: 22px;
             font-weight: 700;
             color: var(--text-primary);
+            margin-bottom: 4px;
+            letter-spacing: -0.3px;
         }
         
         .brand-text .subtitle {
             font-size: 12px;
-            color: #94a3b8;
+            color: var(--text-muted);
             font-family: 'Roboto Mono', monospace;
         }
         
-        .header-stats .stat-item {
+        .header-stats {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .stat-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 8px 20px;
             background: var(--bg-input);
-            border-radius: 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-medium);
         }
         
         .stat-value {
@@ -301,12 +349,21 @@
             color: var(--primary);
         }
         
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
         /* ===== SIDEBAR ===== */
         .sidebar {
-            background: var(--bg-card);
+            background: var(--bg-sidebar);
             border-radius: var(--radius-xl);
             padding: 24px 20px;
-            border: 1px solid #334155;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-medium);
+            height: fit-content;
             position: sticky;
             top: 20px;
         }
@@ -314,9 +371,18 @@
         .section-title {
             font-size: 13px;
             font-weight: 600;
-            color: #94a3b8;
+            color: var(--text-muted);
             margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .section-title i {
+            color: var(--primary);
+            font-size: 14px;
         }
         
         .search-container {
@@ -328,9 +394,22 @@
             width: 100%;
             padding: 14px 16px 14px 46px;
             background: var(--bg-input);
-            border: 1px solid #334155;
-            border-radius: 14px;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
             color: var(--text-primary);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #3b4a63;
+            box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.2);
+        }
+        
+        .search-input::placeholder {
+            color: var(--text-light);
         }
         
         .search-icon {
@@ -338,7 +417,8 @@
             left: 16px;
             top: 50%;
             transform: translateY(-50%);
-            color: #64748b;
+            color: var(--text-light);
+            font-size: 14px;
         }
         
         .patient-cards {
@@ -347,24 +427,95 @@
             gap: 10px;
             max-height: 520px;
             overflow-y: auto;
+            padding-right: 8px;
+        }
+        
+        .patient-cards::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        .patient-cards::-webkit-scrollbar-track {
+            background: var(--border-light);
+            border-radius: 10px;
+        }
+        
+        .patient-cards::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
         }
         
         .patient-card {
             background: var(--bg-input);
-            border-radius: 18px;
+            border-radius: var(--radius-lg);
             padding: 16px;
+            border: 1px solid transparent;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: var(--transition);
+            position: relative;
         }
         
         .patient-card:hover {
             background: #3b4a63;
+            border-color: var(--primary);
             transform: translateX(3px);
+            box-shadow: var(--shadow-sm);
         }
         
         .patient-card.active {
             background: #1e3a8a;
-            border: 1px solid var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .patient-card.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10%;
+            bottom: 10%;
+            width: 4px;
+            background: var(--primary);
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .patient-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+        
+        .patient-name {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-primary);
+        }
+        
+        .patient-id {
+            font-family: 'Roboto Mono', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+            background: #1e293b;
+            padding: 4px 8px;
+            border-radius: 20px;
+            border: 1px solid var(--border-medium);
+        }
+        
+        .patient-details {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        
+        .patient-report-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            background: #1e293b;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-medium);
         }
         
         .new-patient-btn {
@@ -373,31 +524,72 @@
             background: var(--primary);
             color: white;
             border: none;
-            border-radius: 14px;
+            border-radius: var(--radius-md);
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            transition: var(--transition);
             margin-top: 20px;
+            font-size: 14px;
+        }
+        
+        .new-patient-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
         }
         
         /* ===== MAIN CONTENT ===== */
         .main-content {
             background: var(--bg-card);
             border-radius: var(--radius-xl);
-            border: 1px solid #334155;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-medium);
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
         
         .content-header {
             padding: 20px 28px;
             background: #2d3a4f;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid var(--border-medium);
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        
+        .patient-info h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+        
+        .patient-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .meta-item i {
+            color: var(--primary);
+            font-size: 12px;
+        }
+        
+        .meta-item span {
+            color: var(--text-secondary);
+            font-weight: 500;
         }
         
         .action-buttons {
@@ -406,78 +598,157 @@
             align-items: center;
         }
         
-        .report-selector select {
-            background: var(--bg-input);
-            border: 1px solid #334155;
-            border-radius: 14px;
-            padding: 10px 14px;
-            color: var(--text-primary);
-            min-width: 200px;
-        }
-        
-        .btn {
-            padding: 12px 22px;
-            border: none;
-            border-radius: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
+        .report-selector {
+            display: flex;
             align-items: center;
             gap: 8px;
         }
         
-        .btn-primary {
+        .report-selector select {
+            background: var(--bg-input);
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-md);
+            padding: 10px 14px;
+            color: var(--text-primary);
+            font-size: 13px;
+            cursor: pointer;
+            outline: none;
+            min-width: 200px;
+        }
+        
+        .report-selector select:focus {
+            border-color: var(--primary);
+        }
+        
+        .report-selector select option {
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+        
+        .btn-icon {
+            background: var(--bg-input);
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-sm);
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .btn-icon:hover {
             background: var(--primary);
             color: white;
+            border-color: var(--primary);
         }
         
-        .btn-secondary {
-            background: var(--bg-input);
-            color: var(--text-primary);
-            border: 1px solid #334155;
-        }
-        
-        .btn-danger {
-            background: var(--secondary);
-            color: white;
-        }
-        
+        /* Tabs */
         .tabs-container {
             padding: 0 28px;
             background: #2d3a4f;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid var(--border-medium);
         }
         
         .tabs {
             display: flex;
             gap: 4px;
+            overflow-x: auto;
+        }
+        
+        .tabs::-webkit-scrollbar {
+            display: none;
         }
         
         .tab {
             padding: 16px 24px;
             background: transparent;
             border: none;
-            color: #94a3b8;
+            color: var(--text-muted);
+            font-weight: 500;
             cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition);
             border-bottom: 3px solid transparent;
+            font-size: 14px;
+        }
+        
+        .tab:hover {
+            color: var(--text-primary);
+            background: #3b4a63;
         }
         
         .tab.active {
             color: var(--primary);
             border-bottom-color: var(--primary);
+            font-weight: 600;
+            background: linear-gradient(0deg, rgba(88, 101, 242, 0.1), transparent);
         }
         
         .tab-content {
+            flex: 1;
             padding: 28px;
             max-height: calc(100vh - 250px);
             overflow-y: auto;
+            background: var(--bg-card);
         }
         
+        .tab-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .tab-content::-webkit-scrollbar-track {
+            background: var(--border-light);
+        }
+        
+        .tab-content::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        
+        /* Sections */
         .section {
             background: #2d3a4f;
-            border-radius: 18px;
+            border-radius: var(--radius-lg);
             padding: 24px;
             margin-bottom: 24px;
+            border: 1px solid var(--border-medium);
+        }
+        
+        .section:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .section-title-main {
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-primary);
+        }
+        
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: #1e3a8a;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--primary);
+            border: 1px solid var(--primary);
         }
         
         .form-grid {
@@ -486,25 +757,112 @@
             gap: 20px;
         }
         
-        .form-input, .question-input {
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 13px;
+            letter-spacing: 0.3px;
+        }
+        
+        .form-input {
             padding: 12px 16px;
             background: var(--bg-input);
-            border: 1px solid #334155;
-            border-radius: 14px;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
             color: var(--text-primary);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #3b4a63;
+            box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.2);
+        }
+        
+        .form-input::placeholder {
+            color: var(--text-light);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px 16px;
+            background: var(--bg-input);
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            font-size: 13px;
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+        }
+        
+        .checkbox-label:hover {
+            background: #3b4a63;
+            border-color: var(--primary);
+            color: var(--text-primary);
+        }
+        
+        .checkbox-label input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
         }
         
         .vital-table {
             width: 100%;
             border-collapse: collapse;
+            margin: 16px 0;
             background: #1e293b;
-            border-radius: 14px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
         }
         
         .vital-table th {
             background: #1e3a8a;
             padding: 16px;
             text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-medium);
+        }
+        
+        .vital-table td {
+            padding: 14px;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .vital-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .vital-table tr:hover td {
+            background: #2d3a4f;
+        }
+        
+        .vital-table input.form-input {
+            width: 90px;
+            padding: 8px 10px;
+            font-size: 13px;
+            background: #1e293b;
+            color: var(--text-primary);
         }
         
         .questions-grid {
@@ -515,21 +873,117 @@
         
         .question-card {
             background: #1e293b;
-            border-radius: 14px;
+            border-radius: var(--radius-md);
             padding: 20px;
+            border: 1px solid var(--border-light);
+            transition: var(--transition);
+        }
+        
+        .question-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .question-text {
+            font-weight: 500;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+        
+        .question-input {
+            width: 100%;
+            padding: 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 14px;
+            resize: vertical;
+            min-height: 90px;
+            transition: var(--transition);
+        }
+        
+        .question-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #3b4a63;
+            box-shadow: 0 0 0 3px rgba(88, 101, 242, 0.2);
         }
         
         .badge {
             display: inline-flex;
+            align-items: center;
+            gap: 4px;
             padding: 6px 14px;
             border-radius: 30px;
             font-size: 12px;
+            font-weight: 500;
         }
         
         .badge-success { background: #064e3b; color: #34d399; border: 1px solid #10b981; }
         .badge-warning { background: #7b341e; color: #fbbf24; border: 1px solid #f59e0b; }
         .badge-danger { background: #7f1d1d; color: #f87171; border: 1px solid #ef4444; }
         .badge-info { background: #1e3a8a; color: #93c5fd; border: 1px solid #3b82f6; }
+        
+        .btn {
+            padding: 12px 22px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            transition: var(--transition);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-input);
+            color: var(--text-primary);
+            border: 1px solid var(--border-medium);
+        }
+        
+        .btn-secondary:hover {
+            background: #3b4a63;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: var(--secondary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+        
+        .empty-state i {
+            font-size: 50px;
+            margin-bottom: 20px;
+            color: var(--text-light);
+        }
         
         .modal {
             display: none;
@@ -539,9 +993,11 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1500;
             align-items: center;
             justify-content: center;
-            z-index: 1500;
+            padding: 20px;
         }
         
         .modal.active {
@@ -554,16 +1010,33 @@
             padding: 35px;
             max-width: 420px;
             width: 100%;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-medium);
         }
         
         .modal-input {
             width: 100%;
-            padding: 14px;
+            padding: 14px 16px;
             background: var(--bg-input);
-            border: 1px solid #334155;
-            border-radius: 14px;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
             color: var(--text-primary);
+            font-size: 14px;
             margin-bottom: 20px;
+        }
+        
+        .modal-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #3b4a63;
+        }
+        
+        .modal-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 13px;
         }
         
         @media (max-width: 768px) {
@@ -574,6 +1047,9 @@
     </style>
 </head>
 <body>
+    <!-- Background Effects -->
+    <div class="background-effects"></div>
+    
     <!-- LOGIN SCREEN -->
     <div id="loginScreen" class="login-screen">
         <div class="login-container">
@@ -598,8 +1074,8 @@
     <!-- MAIN APP -->
     <div id="mainApp" class="main-app">
         <!-- User Info Bar -->
-        <div class="app-container" style="padding-bottom: 0;">
-            <div class="user-info-bar" style="grid-column: 1/-1;">
+        <div style="max-width: 1800px; margin: 0 auto; padding: 20px 20px 0;">
+            <div class="user-info-bar">
                 <div class="user-info">
                     <div class="user-avatar" id="userAvatar">?</div>
                     <div class="user-details">
@@ -613,7 +1089,7 @@
             </div>
         </div>
 
-        <!-- Original App Container -->
+        <!-- HIER KOMMT DEINE VOLLSTÄNDIGE MEDIZINISCHE APP -->
         <div class="app-container">
             <!-- Header -->
             <header class="app-header">
@@ -690,34 +1166,265 @@
                     </div>
                 </div>
                 
-                <!-- Tab Contents (hier den gesamten Inhalt aus deiner vorherigen Version einfügen) -->
-                <div class="tab-content" id="tabContent">
-                    <!-- Section 1 - Platzhalter, bitte den vollständigen Inhalt aus deiner vorherigen HTML einfügen -->
+                <!-- Tab Contents -->
+                <div class="tab-content">
+                    <!-- Section 1 -->
                     <div id="section1Tab" class="tab-pane active">
-                        <p>Abschnitt 1 Inhalt - Hier kommt der komplette Inhalt aus deiner vorherigen HTML</p>
+                        <!-- DEIN KOMPLETTER ABSCHNITT 1 INHALT -->
+                        <div class="section">
+                            <div class="section-header">
+                                <div class="section-title-main">
+                                    <div class="section-icon"><i class="fas fa-info-circle"></i></div>
+                                    Abschnitt 1 – Informationen
+                                </div>
+                            </div>
+                            
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Name des Soldaten:</label>
+                                    <input type="text" class="form-input" id="patientName" placeholder="Vorname Nachname">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Rang / Einheit:</label>
+                                    <input type="text" class="form-input" id="patientRankUnit" placeholder="z.B. Sergeant / Infanterie">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Datum:</label>
+                                    <input type="date" class="form-input" id="examinationDate">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Prüfer:</label>
+                                    <input type="text" class="form-input" id="examinerName" placeholder="Name des Untersuchers">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group" style="margin-top: 20px;">
+                                <label class="form-label">Allgemeiner Eindruck:</label>
+                                <textarea class="question-input" id="generalImpression" placeholder="Allgemeiner Eindruck des Soldaten..."></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- Vital Parameters -->
+                        <div class="section">
+                            <div class="section-header">
+                                <div class="section-title-main">
+                                    <div class="section-icon"><i class="fas fa-heartbeat"></i></div>
+                                    Vitalparameter
+                                </div>
+                            </div>
+                            
+                            <table class="vital-table">
+                                <thead>
+                                    <tr><th>Parameter</th><th>Wert</th><th>Status</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Puls (bpm)</td>
+                                        <td><input type="number" class="form-input" id="vitalPulse" style="width:85px;"></td>
+                                        <td><span class="badge" id="pulseStatus">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Blutdruck (mmHg)</td>
+                                        <td><div style="display:flex;gap:4px;">
+                                            <input type="number" class="form-input" id="vitalBpHigh" style="width:85px;">
+                                            <span style="align-self:center;">/</span>
+                                            <input type="number" class="form-input" id="vitalBpLow" style="width:85px;">
+                                        </div></td>
+                                        <td><span class="badge" id="bpStatus">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Körpertemperatur (°C)</td>
+                                        <td><input type="number" class="form-input" id="vitalTemp" step="0.1" style="width:85px;"></td>
+                                        <td><span class="badge" id="tempStatus">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Atemfrequenz</td>
+                                        <td><input type="number" class="form-input" id="vitalRespiration" style="width:85px;"></td>
+                                        <td><span class="badge" id="respStatus">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sauerstoffsättigung (%)</td>
+                                        <td><input type="number" class="form-input" id="vitalOxygen" style="width:85px;"></td>
+                                        <td><span class="badge" id="oxygenStatus">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Größe (cm)</td>
+                                        <td><input type="number" class="form-input" id="vitalHeight" style="width:85px;"></td>
+                                        <td>-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Gewicht (kg)</td>
+                                        <td><input type="number" class="form-input" id="vitalWeight" style="width:85px;"></td>
+                                        <td><span class="badge" id="bmiStatus">-</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <div class="form-group" style="margin-top:20px;">
+                                <label class="form-label">Fitness-Eindruck:</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label"><input type="checkbox" name="fitness" value="athletic"> Sportlich</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="fitness" value="average"> Durchschnittlich</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="fitness" value="weak"> Schwach</label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-grid" style="margin-top:20px;">
+                                <div class="form-group">
+                                    <label class="form-label">Letzte Mahlzeit (Stunden):</label>
+                                    <input type="number" class="form-input" id="lastMeal">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Allergien / Medikamente:</label>
+                                    <textarea class="form-input" id="allergies" style="min-height:50px;"></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="form-grid" style="margin-top:20px;">
+                                <div class="form-group">
+                                    <label class="form-label">Aktuelle Verletzungen / Narben:</label>
+                                    <textarea class="form-input" id="injuries" style="min-height:50px;"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Mobilität:</label>
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-label"><input type="checkbox" name="mobility" value="normal"> Normal</label>
+                                        <label class="checkbox-label"><input type="checkbox" name="mobility" value="limited"> Eingeschränkt</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group" style="margin-top:20px;">
+                                <label class="form-label">Andere Befunde:</label>
+                                <textarea class="question-input" id="otherFindings" placeholder="Zusätzliche Beobachtungen..."></textarea>
+                            </div>
+                        </div>
                     </div>
-                    <div id="section2Tab" class="tab-pane" style="display:none;">Abschnitt 2</div>
-                    <div id="section3Tab" class="tab-pane" style="display:none;">Abschnitt 3</div>
-                    <div id="section4Tab" class="tab-pane" style="display:none;">Abschnitt 4</div>
-                    <div id="section5Tab" class="tab-pane" style="display:none;">Abschnitt 5</div>
+                    
+                    <!-- Section 2 -->
+                    <div id="section2Tab" class="tab-pane" style="display:none;">
+                        <div class="section">
+                            <div class="section-header">
+                                <div class="section-title-main">
+                                    <div class="section-icon"><i class="fas fa-brain"></i></div>
+                                    Abschnitt 2 – Psychologische & Motivationsfragen
+                                </div>
+                                <div class="badge badge-info">Nicht für Bewerbungen</div>
+                            </div>
+                            
+                            <div class="questions-grid">
+                                <div class="question-card">
+                                    <div class="question-text">Wie würden Sie Ihre wichtigsten Charaktereigenschaften beschreiben?</div>
+                                    <textarea class="question-input" data-question="psych_1"></textarea>
+                                </div>
+                                <div class="question-card">
+                                    <div class="question-text">Gab es in Ihrem Leben Ereignisse, die Sie nachhaltig geprägt haben?</div>
+                                    <textarea class="question-input" data-question="psych_2"></textarea>
+                                </div>
+                                <div class="question-card">
+                                    <div class="question-text">Welche Ziele verfolgen Sie langfristig in Ihrem Leben?</div>
+                                    <textarea class="question-input" data-question="psych_3"></textarea>
+                                </div>
+                                <!-- Weitere psychologische Fragen hier... -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Section 3 -->
+                    <div id="section3Tab" class="tab-pane" style="display:none;">
+                        <div class="section">
+                            <div class="section-header">
+                                <div class="section-title-main">
+                                    <div class="section-icon"><i class="fas fa-file-medical"></i></div>
+                                    Abschnitt 3 – Medizinische Bewertung
+                                </div>
+                            </div>
+                            
+                            <div class="questions-grid">
+                                <div class="question-card">
+                                    <div class="question-text">Nehmen Sie regelmäßig Medikamente ein?</div>
+                                    <textarea class="question-input" data-question="med1"></textarea>
+                                </div>
+                                <div class="question-card">
+                                    <div class="question-text">Haben Sie in letzter Zeit Gewichtsab-/Zunahme bemerkt?</div>
+                                    <textarea class="question-input" data-question="med2"></textarea>
+                                </div>
+                                <!-- Weitere medizinische Fragen hier... -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Section 4 -->
+                    <div id="section4Tab" class="tab-pane" style="display:none;">
+                        <div class="section">
+                            <div class="section-header">
+                                <div class="section-title-main">
+                                    <div class="section-icon"><i class="fas fa-running"></i></div>
+                                    Abschnitt 4 – Fitnesstest
+                                </div>
+                            </div>
+                            
+                            <div class="questions-grid">
+                                <div class="question-card">
+                                    <div class="question-text">1. 15x Push-Ups (Ergebnis)</div>
+                                    <select class="question-input" data-question="fit1">
+                                        <option value="">Ergebnis auswählen</option>
+                                        <option value="excellent">Ausgezeichnet (15)</option>
+                                        <option value="good">Gut (10-14)</option>
+                                        <option value="average">Durchschnittlich (5-9)</option>
+                                        <option value="poor">Schwach (1-4)</option>
+                                        <option value="failed">Durchgefallen (0)</option>
+                                    </select>
+                                </div>
+                                <div class="question-card">
+                                    <div class="question-text">2. 10x Sit-Ups (Ergebnis)</div>
+                                    <select class="question-input" data-question="fit2">
+                                        <option value="">Ergebnis auswählen</option>
+                                        <option value="excellent">Ausgezeichnet (10)</option>
+                                        <option value="good">Gut (7-9)</option>
+                                        <option value="average">Durchschnittlich (4-6)</option>
+                                        <option value="poor">Schwach (1-3)</option>
+                                        <option value="failed">Durchgefallen (0)</option>
+                                    </select>
+                                </div>
+                                <!-- Weitere Fitness-Fragen hier... -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Section 5 -->
+                    <div id="section5Tab" class="tab-pane" style="display:none;">
+                        <div class="section">
+                            <div class="section-header">
+                                <div class="section-title-main">
+                                    <div class="section-icon"><i class="fas fa-comments"></i></div>
+                                    Abschnitt 5 – Situative Fragen
+                                </div>
+                                <div class="badge badge-info">Nicht für Bewerbungen</div>
+                            </div>
+                            
+                            <div class="questions-grid">
+                                <div class="question-card">
+                                    <div class="question-text">1. Waren Sie mit den letzten Einsätzen zufrieden?</div>
+                                    <textarea class="question-input" data-question="sit1" style="min-height:90px;"></textarea>
+                                </div>
+                                <div class="question-card">
+                                    <div class="question-text">2. Gibt es bestimmte Situationen im Dienst, die Sie besonders stören?</div>
+                                    <textarea class="question-input" data-question="sit2" style="min-height:90px;"></textarea>
+                                </div>
+                                <div class="question-card">
+                                    <div class="question-text">3. Selbstreflektion des Einsatzes/der normalen Unitarbeit.</div>
+                                    <textarea class="question-input" data-question="sit3" style="min-height:120px;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </main>
         </div>
     </div>
 
-    <!-- Delete Modal -->
-    <div id="deleteModal" class="modal">
-        <div class="modal-content">
-            <h3 style="margin-bottom:20px;">Bericht löschen?</h3>
-            <p style="margin-bottom:25px;">Diese Aktion kann nicht rückgängig gemacht werden.</p>
-            <div style="display:flex; gap:10px; justify-content:flex-end;">
-                <button class="btn btn-secondary" onclick="closeDeleteModal()">Abbrechen</button>
-                <button class="btn btn-danger" onclick="confirmDelete()">Löschen</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- New Patient Modal -->
+    <!-- Modals -->
     <div id="newPatientModal" class="modal">
         <div class="modal-content">
             <h3 style="margin-bottom:20px;">Neue Soldatenakte</h3>
@@ -730,18 +1437,27 @@
         </div>
     </div>
 
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom:20px;">Bericht löschen?</h3>
+            <p style="margin-bottom:25px;">Diese Aktion kann nicht rückgängig gemacht werden.</p>
+            <div style="display:flex; gap:10px; justify-content:flex-end;">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">Abbrechen</button>
+                <button class="btn btn-danger" onclick="confirmDelete()">Löschen</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Auto-Save Indicator -->
-    <div id="autoSaveIndicator" style="position:fixed; bottom:20px; right:20px; background:#1e293b; padding:10px 20px; border-radius:40px; border:1px solid #5865F2; display:none;">
-        <span id="autoSaveText">Autospeichern...</span>
+    <div id="autoSaveIndicator" style="position:fixed; bottom:20px; right:20px; background:#1e293b; padding:12px 24px; border-radius:40px; border:1px solid #5865F2; display:none; z-index:1000;">
+        <span id="autoSaveText">Autospeichern in 10s...</span>
     </div>
 
     <script>
         // ===== DISCORD LOGIN =====
         const DISCORD_CLIENT_ID = '1432942180770644079';
-        const DISCORD_CLIENT_SECRET = 'XbWptapjEM4fz8WMC5BHWciBeqGmVhul';
-        const DISCORD_BOT_TOKEN = 'MTQzMjk0MjE4MDc3MDY0NDA3OQ.Gji8cE.Yf2fyn64hhhyUEkXb-nRdZXMia0AzNs62cqupU';
         
-        // Erlaubte User-IDs (GENAU wie von dir angegeben)
+        // Erlaubte User-IDs (GENAU NACH DEINER LISTE)
         const ALLOWED_USERS = [
             '706946131459964930', // Lisa La Rosa Morales
             '325642637954646016', // Sergio La Rosa Morales
@@ -752,7 +1468,7 @@
             '1189349976862634045' // Renyu Navarro
         ];
 
-        // Prüfe beim Laden der Seite, ob bereits ein Login existiert
+        // Prüfe beim Laden, ob bereits eingeloggt
         document.addEventListener('DOMContentLoaded', function() {
             const savedUser = localStorage.getItem('discord_user');
             if (savedUser) {
@@ -768,16 +1484,18 @@
                 }
             }
             
-            // Rest der Initialisierung (Firebase etc.)
+            // App initialisieren
             initApp();
         });
 
         function loginWithDiscord() {
-            // Discord OAuth2 Login
+            // Für Google Sites: Popup-Fenster für Discord Login
             const redirectUri = window.location.href.split('#')[0].split('?')[0];
+            
+            // Discord OAuth2 URL
             const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=identify`;
             
-            // Für Google Sites: Wir öffnen ein Popup
+            // Popup öffnen
             const width = 500;
             const height = 600;
             const left = window.screenX + (window.outerWidth - width) / 2;
@@ -786,7 +1504,7 @@
             const popup = window.open(discordAuthUrl, 'Discord Login', 
                 `width=${width},height=${height},left=${left},top=${top}`);
             
-            // Warte auf die Antwort
+            // Popup überwachen
             const checkPopup = setInterval(() => {
                 try {
                     if (popup.closed) {
@@ -794,7 +1512,6 @@
                         return;
                     }
                     
-                    // Versuche den Hash aus der Popup-URL zu lesen
                     if (popup.location.hash) {
                         const hash = popup.location.hash.substr(1);
                         const params = new URLSearchParams(hash);
@@ -807,7 +1524,7 @@
                         }
                     }
                 } catch (e) {
-                    // Cross-Origin Error ignorieren
+                    // Cross-Origin Fehler ignorieren
                 }
             }, 500);
         }
@@ -822,7 +1539,6 @@
                 
                 const user = await response.json();
                 
-                // Prüfe ob der User erlaubt ist
                 if (ALLOWED_USERS.includes(user.id)) {
                     loginSuccess(user);
                 } else {
@@ -830,29 +1546,24 @@
                         '❌ Du bist nicht berechtigt, auf diese Seite zuzugreifen.';
                 }
             } catch (error) {
-                console.error('Fehler beim Laden der User-Info:', error);
                 document.getElementById('loginError').textContent = 
-                    '❌ Fehler bei der Authentifizierung. Bitte versuche es erneut.';
+                    '❌ Fehler bei der Authentifizierung.';
             }
         }
 
         function loginSuccess(user) {
-            // Speichere User im localStorage
             localStorage.setItem('discord_user', JSON.stringify(user));
             
-            // Zeige User-Info an
             document.getElementById('userName').textContent = user.global_name || user.username;
             document.getElementById('userId').textContent = user.id;
             
-            // Avatar initialisieren
             const avatarEl = document.getElementById('userAvatar');
             if (user.avatar) {
-                avatarEl.innerHTML = `<img src="https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png" style="width:100%; height:100%; border-radius:50%;">`;
+                avatarEl.innerHTML = `<img src="https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png">`;
             } else {
                 avatarEl.textContent = (user.global_name || user.username).charAt(0).toUpperCase();
             }
             
-            // Login-Screen ausblenden, Main-App einblenden
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.add('visible');
         }
@@ -881,14 +1592,19 @@
         let currentPatient = null;
         let currentReportId = null;
         let autoSaveCountdown = 10;
+        let autoSaveInterval = null;
         let isSaving = false;
 
         function initApp() {
             initTabs();
             document.getElementById('searchPatients').addEventListener('input', e => filterPatients(e.target.value));
             document.getElementById('examinationDate').valueAsDate = new Date();
+            initVitalInputs();
             loadPatients();
             startAutoSave();
+            
+            document.addEventListener('input', () => { if (currentPatient && currentReportId) resetAutoSave(); });
+            document.addEventListener('change', () => { if (currentPatient && currentReportId) resetAutoSave(); });
         }
 
         function initTabs() {
@@ -902,25 +1618,50 @@
             });
         }
 
+        function initVitalInputs() {
+            ['vitalPulse','vitalBpHigh','vitalBpLow','vitalTemp','vitalRespiration','vitalOxygen','vitalHeight','vitalWeight'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('input', function() { updateVitalStatus(id); calculateBMI(); });
+            });
+        }
+
         // ===== AUTO-SAVE =====
         function startAutoSave() {
-            setInterval(() => {
+            autoSaveInterval = setInterval(() => {
                 if (!currentPatient || !currentReportId) {
                     document.getElementById('autoSaveIndicator').style.display = 'none';
                     return;
                 }
                 document.getElementById('autoSaveIndicator').style.display = 'flex';
                 autoSaveCountdown--;
+                updateAutoSaveIndicator();
                 if (autoSaveCountdown <= 0) triggerAutoSave();
             }, 1000);
+        }
+
+        function resetAutoSave() { autoSaveCountdown = 10; updateAutoSaveIndicator(); }
+
+        function updateAutoSaveIndicator() {
+            const ind = document.getElementById('autoSaveIndicator');
+            const txt = document.getElementById('autoSaveText');
+            if (!currentPatient || !currentReportId) { ind.style.display = 'none'; return; }
+            ind.style.display = 'flex';
+            if (isSaving) {
+                txt.textContent = 'Speichern...';
+            } else {
+                txt.textContent = `Autospeichern in ${autoSaveCountdown}s...`;
+            }
         }
 
         async function triggerAutoSave() {
             if (!currentPatient || !currentReportId || isSaving) return;
             isSaving = true;
+            updateAutoSaveIndicator();
             await saveAssessment(true);
             isSaving = false;
             autoSaveCountdown = 10;
+            document.getElementById('autoSaveText').textContent = 'Gespeichert!';
+            setTimeout(() => { if (!isSaving) updateAutoSaveIndicator(); }, 2000);
         }
 
         // ===== FIREBASE FUNCTIONS =====
@@ -929,25 +1670,19 @@
                 const snap = await db.collection('patients').orderBy('createdAt', 'desc').get();
                 patients = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                 renderPatientList();
-            } catch (e) { 
-                console.error('Fehler', e); 
-                loadMockPatients(); 
-            }
+                updateStats();
+            } catch (e) { console.error('Fehler', e); loadMockPatients(); }
         }
 
         async function savePatient(p) {
-            try { 
-                await db.collection('patients').doc(p.id).set(p); 
-                return true; 
-            } catch (e) { 
-                return false; 
-            }
+            try { await db.collection('patients').doc(p.id).set(p); return true; } 
+            catch (e) { console.error(e); return false; }
         }
 
         function renderPatientList() {
             const container = document.getElementById('patientCards');
             if (!patients.length) {
-                container.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Keine Soldaten</p></div>';
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Keine Soldaten gefunden</p></div>';
                 return;
             }
             container.innerHTML = '';
@@ -962,6 +1697,9 @@
                     </div>
                     <div class="patient-details">
                         Erstellt: ${new Date(p.createdAt).toLocaleDateString()}
+                    </div>
+                    <div class="patient-report-count">
+                        <i class="fas fa-file-medical"></i> ${p.reports?.length || 0} Bericht(e)
                     </div>
                 `;
                 container.appendChild(card);
@@ -979,11 +1717,13 @@
             document.getElementById('patientHeader').style.display = 'flex';
             document.getElementById('currentPatientName').textContent = p.fullName;
             document.getElementById('currentPatientId').textContent = p.id;
+            document.getElementById('currentPatientDate').textContent = new Date(p.createdAt).toLocaleDateString();
             document.querySelectorAll('.patient-card').forEach(c => c.classList.remove('active'));
             if (card) card.classList.add('active');
             updateReportSelector();
             if (p.reports?.length) loadReport(p.reports[p.reports.length-1].id);
             else clearForm();
+            resetAutoSave();
         }
 
         function updateReportSelector() {
@@ -993,10 +1733,11 @@
                 sel.innerHTML = '<option value="">Keine Berichte</option>';
                 return;
             }
-            currentPatient.reports.forEach(r => {
+            [...currentPatient.reports].sort((a,b)=>new Date(b.date)-new Date(a.date)).forEach(r => {
                 const opt = document.createElement('option');
                 opt.value = r.id;
-                opt.textContent = `${new Date(r.date).toLocaleDateString()} - ${r.examiner || 'Unbekannt'}`;
+                const d = r.formData?.date ? new Date(r.formData.date) : new Date(r.date);
+                opt.textContent = `${d.toLocaleDateString()} - ${r.examiner || 'Unbekannt'}`;
                 sel.appendChild(opt);
             });
             if (currentReportId) sel.value = currentReportId;
@@ -1005,16 +1746,18 @@
         async function createNewReport() {
             if (!currentPatient) { alert('Bitte Patient wählen'); return; }
             const newId = `RPT-${Date.now()}`;
+            const today = new Date().toISOString();
             const newReport = {
-                id: newId,
-                date: new Date().toISOString(),
-                examiner: '',
-                formData: { name: currentPatient.fullName },
+                id: newId, date: today, examiner: '',
+                formData: { name: currentPatient.fullName, rankUnit: '', date: '', examiner: '',
+                    generalImpression: '', fitness: [], lastMeal: '', allergies: '', injuries: '', mobility: [], otherFindings: '' },
+                vitals: { pulse: null, bpHigh: null, bpLow: null, temperature: null,
+                    respiration: null, oxygen: null, height: null, weight: null, bmi: null },
                 answers: {}
             };
             if (!currentPatient.reports) currentPatient.reports = [];
             currentPatient.reports.push(newReport);
-            currentPatient.lastReportDate = new Date().toISOString();
+            currentPatient.lastReportDate = today;
             currentReportId = newId;
             if (await savePatient(currentPatient)) {
                 updateReportSelector();
@@ -1028,15 +1771,69 @@
             if (!r) return;
             currentReportId = id;
             document.getElementById('currentExaminerDisplay').textContent = r.examiner || '-';
-            // Hier alle Felder laden (aus vorheriger Version)
+            
+            document.getElementById('patientName').value = r.formData?.name || currentPatient.fullName;
+            document.getElementById('patientRankUnit').value = r.formData?.rankUnit || '';
+            document.getElementById('examinationDate').value = r.formData?.date || '';
+            document.getElementById('examinerName').value = r.examiner || '';
+            document.getElementById('generalImpression').value = r.formData?.generalImpression || '';
+            document.getElementById('lastMeal').value = r.formData?.lastMeal || '';
+            document.getElementById('allergies').value = r.formData?.allergies || '';
+            document.getElementById('injuries').value = r.formData?.injuries || '';
+            document.getElementById('otherFindings').value = r.formData?.otherFindings || '';
+            
+            document.querySelectorAll('input[name="fitness"]').forEach(cb => cb.checked = r.formData?.fitness?.includes(cb.value) || false);
+            document.querySelectorAll('input[name="mobility"]').forEach(cb => cb.checked = r.formData?.mobility?.includes(cb.value) || false);
+            
+            if (r.vitals) {
+                document.getElementById('vitalPulse').value = r.vitals.pulse || '';
+                document.getElementById('vitalBpHigh').value = r.vitals.bpHigh || '';
+                document.getElementById('vitalBpLow').value = r.vitals.bpLow || '';
+                document.getElementById('vitalTemp').value = r.vitals.temperature || '';
+                document.getElementById('vitalRespiration').value = r.vitals.respiration || '';
+                document.getElementById('vitalOxygen').value = r.vitals.oxygen || '';
+                document.getElementById('vitalHeight').value = r.vitals.height || '';
+                document.getElementById('vitalWeight').value = r.vitals.weight || '';
+            }
+            
+            document.querySelectorAll('.question-input').forEach(input => {
+                const q = input.getAttribute('data-question');
+                if (q) input.value = (r.answers && r.answers[q] !== undefined) ? r.answers[q] : '';
+            });
+            
+            updateAllVitalStatuses();
+            calculateBMI();
+            resetAutoSave();
         }
 
         function clearForm() {
             document.getElementById('currentExaminerDisplay').textContent = '-';
             document.getElementById('patientName').value = currentPatient?.fullName || '';
+            document.getElementById('patientRankUnit').value = '';
             document.getElementById('examinationDate').value = '';
             document.getElementById('examinerName').value = '';
+            document.getElementById('generalImpression').value = '';
+            document.getElementById('lastMeal').value = '';
+            document.getElementById('allergies').value = '';
+            document.getElementById('injuries').value = '';
+            document.getElementById('otherFindings').value = '';
+            
+            document.querySelectorAll('input[name="fitness"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('input[name="mobility"]').forEach(cb => cb.checked = false);
+            
+            document.getElementById('vitalPulse').value = '';
+            document.getElementById('vitalBpHigh').value = '';
+            document.getElementById('vitalBpLow').value = '';
+            document.getElementById('vitalTemp').value = '';
+            document.getElementById('vitalRespiration').value = '';
+            document.getElementById('vitalOxygen').value = '';
+            document.getElementById('vitalHeight').value = '';
+            document.getElementById('vitalWeight').value = '';
+            
             document.querySelectorAll('.question-input').forEach(i => i.value = '');
+            
+            updateAllVitalStatuses();
+            calculateBMI();
             currentReportId = null;
         }
 
@@ -1047,17 +1844,65 @@
 
         async function saveAssessment(isAuto = false) {
             if (!currentPatient) return;
-            // Hier die Speicherlogik aus vorheriger Version
-            if (!isAuto) alert('Gespeichert');
+            const examiner = document.getElementById('examinerName').value || '';
+            const formData = {
+                name: document.getElementById('patientName').value.trim() || currentPatient.fullName,
+                rankUnit: document.getElementById('patientRankUnit').value.trim(),
+                date: document.getElementById('examinationDate').value,
+                examiner: examiner,
+                generalImpression: document.getElementById('generalImpression').value.trim(),
+                fitness: Array.from(document.querySelectorAll('input[name="fitness"]:checked')).map(cb => cb.value),
+                lastMeal: document.getElementById('lastMeal').value,
+                allergies: document.getElementById('allergies').value.trim(),
+                injuries: document.getElementById('injuries').value.trim(),
+                mobility: Array.from(document.querySelectorAll('input[name="mobility"]:checked')).map(cb => cb.value),
+                otherFindings: document.getElementById('otherFindings').value.trim()
+            };
+            const vitals = {
+                pulse: parseInt(document.getElementById('vitalPulse').value) || null,
+                bpHigh: parseInt(document.getElementById('vitalBpHigh').value) || null,
+                bpLow: parseInt(document.getElementById('vitalBpLow').value) || null,
+                temperature: parseFloat(document.getElementById('vitalTemp').value) || null,
+                respiration: parseInt(document.getElementById('vitalRespiration').value) || null,
+                oxygen: parseInt(document.getElementById('vitalOxygen').value) || null,
+                height: parseFloat(document.getElementById('vitalHeight').value) || null,
+                weight: parseFloat(document.getElementById('vitalWeight').value) || null
+            };
+            if (vitals.height && vitals.weight) vitals.bmi = vitals.weight / ((vitals.height/100) ** 2);
+            
+            const answers = {};
+            document.querySelectorAll('.question-input').forEach(input => {
+                const q = input.getAttribute('data-question');
+                if (q) answers[q] = input.value.trim();
+            });
+            
+            let report = currentPatient.reports?.find(r => r.id === currentReportId);
+            if (!report) {
+                currentReportId = `RPT-${Date.now()}`;
+                report = { id: currentReportId, date: new Date().toISOString(), examiner, formData, vitals, answers };
+                if (!currentPatient.reports) currentPatient.reports = [];
+                currentPatient.reports.push(report);
+            } else {
+                report.date = new Date().toISOString();
+                report.examiner = examiner;
+                report.formData = formData;
+                report.vitals = vitals;
+                report.answers = answers;
+            }
+            currentPatient.lastReportDate = new Date().toISOString();
+            const success = await savePatient(currentPatient);
+            if (success) {
+                document.getElementById('currentExaminerDisplay').textContent = examiner || '-';
+                if (!isAuto) alert('Gespeichert');
+                updateReportSelector();
+                renderPatientList();
+            }
         }
 
-        function openDeleteModal() {
-            document.getElementById('deleteModal').classList.add('active');
-        }
-
-        function closeDeleteModal() {
-            document.getElementById('deleteModal').classList.remove('active');
-        }
+        function openDeleteModal() { document.getElementById('deleteModal').classList.add('active'); }
+        function closeDeleteModal() { document.getElementById('deleteModal').classList.remove('active'); }
+        function openNewPatientModal() { document.getElementById('newPatientModal').classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
         async function confirmDelete() {
             closeDeleteModal();
@@ -1065,26 +1910,20 @@
             const idx = currentPatient.reports.findIndex(r => r.id === currentReportId);
             if (idx !== -1) {
                 currentPatient.reports.splice(idx, 1);
+                if (!currentPatient.reports.length) {
+                    currentPatient.lastReportDate = null;
+                    currentReportId = null;
+                    clearForm();
+                } else {
+                    const last = currentPatient.reports[currentPatient.reports.length-1];
+                    currentReportId = last.id;
+                    loadReport(last.id);
+                }
                 if (await savePatient(currentPatient)) {
-                    if (!currentPatient.reports.length) {
-                        currentReportId = null;
-                        clearForm();
-                    } else {
-                        currentReportId = currentPatient.reports[currentPatient.reports.length-1].id;
-                        loadReport(currentReportId);
-                    }
                     updateReportSelector();
                     renderPatientList();
                 }
             }
-        }
-
-        function openNewPatientModal() { 
-            document.getElementById('newPatientModal').classList.add('active'); 
-        }
-
-        function closeModal(id) { 
-            document.getElementById(id).classList.remove('active'); 
         }
 
         async function createPatient() {
@@ -1094,6 +1933,7 @@
                 id: `PAT-${Date.now()}`,
                 fullName: name,
                 createdAt: new Date().toISOString(),
+                lastReportDate: null,
                 reports: []
             };
             if (await savePatient(newPat)) {
@@ -1104,13 +1944,58 @@
             }
         }
 
-        function generateReport() {
-            alert('Bericht wird generiert...');
+        function generateReport() { alert('Bericht wird generiert'); }
+        function updateStats() { document.getElementById('totalPatients').textContent = patients.length; }
+
+        function updateVitalStatus(id) {
+            const get = i => document.getElementById(i);
+            const set = (el, cls, txt) => { if (el) { el.className = 'badge ' + cls; el.textContent = txt; } };
+            
+            if (id === 'vitalPulse') {
+                const v = parseInt(get('vitalPulse').value);
+                set(get('pulseStatus'), v ? (v>=60&&v<=100 ? 'badge-success' : v<60 ? 'badge-warning' : 'badge-danger') : '', v ? (v>=60&&v<=100 ? 'Normal' : v<60 ? 'Niedrig' : 'Hoch') : '-');
+            }
+            if (id === 'vitalBpHigh' || id === 'vitalBpLow') {
+                const h = parseInt(get('vitalBpHigh').value), l = parseInt(get('vitalBpLow').value);
+                set(get('bpStatus'), h&&l ? (h>=110&&h<=140&&l>=60&&l<=90 ? 'badge-success' : (h<110||l<60) ? 'badge-warning' : 'badge-danger') : '', h&&l ? (h>=110&&h<=140&&l>=60&&l<=90 ? 'Normal' : (h<110||l<60) ? 'Niedrig' : 'Hoch') : '-');
+            }
+            if (id === 'vitalTemp') {
+                const v = parseFloat(get('vitalTemp').value);
+                set(get('tempStatus'), v ? (v>=36.1&&v<=37.5 ? 'badge-success' : v<36 ? 'badge-warning' : 'badge-danger') : '', v ? (v>=36.1&&v<=37.5 ? 'Normal' : v<36 ? 'Niedrig' : 'Fieber') : '-');
+            }
+            if (id === 'vitalRespiration') {
+                const v = parseInt(get('vitalRespiration').value);
+                set(get('respStatus'), v ? (v>=12&&v<=20 ? 'badge-success' : v<12 ? 'badge-warning' : 'badge-danger') : '', v ? (v>=12&&v<=20 ? 'Normal' : v<12 ? 'Niedrig' : 'Hoch') : '-');
+            }
+            if (id === 'vitalOxygen') {
+                const v = parseInt(get('vitalOxygen').value);
+                set(get('oxygenStatus'), v ? (v>=95 ? 'badge-success' : v>=90 ? 'badge-warning' : 'badge-danger') : '', v ? (v>=95 ? 'Normal' : v>=90 ? 'Niedrig' : 'Kritisch') : '-');
+            }
+        }
+
+        function updateAllVitalStatuses() {
+            ['vitalPulse','vitalBpHigh','vitalTemp','vitalRespiration','vitalOxygen'].forEach(id => updateVitalStatus(id));
+        }
+
+        function calculateBMI() {
+            const h = parseFloat(document.getElementById('vitalHeight').value)/100;
+            const w = parseFloat(document.getElementById('vitalWeight').value);
+            const s = document.getElementById('bmiStatus');
+            if (h && w && h>0) {
+                const bmi = w/(h*h);
+                let txt, cls;
+                if (bmi < 18.5) { txt = 'Untergewichtig'; cls = 'badge-warning'; }
+                else if (bmi <= 24.9) { txt = 'Normal'; cls = 'badge-success'; }
+                else if (bmi <= 29.9) { txt = 'Übergewichtig'; cls = 'badge-warning'; }
+                else { txt = 'Adipös'; cls = 'badge-danger'; }
+                s.textContent = txt; s.className = 'badge ' + cls;
+            } else { s.textContent = '-'; s.className = 'badge'; }
         }
 
         function loadMockPatients() {
             patients = [{ id: 'PAT-001', fullName: 'Johann Kaiser', createdAt: new Date().toISOString(), reports: [] }];
             renderPatientList();
+            updateStats();
         }
     </script>
 </body>
