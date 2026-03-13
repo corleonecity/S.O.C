@@ -9,12 +9,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500&family=Gentle+Calligraphy&display=swap" rel="stylesheet">
     
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     
     <style>
         /* ===== VARIABLES ===== */
@@ -24,13 +23,10 @@
             --primary-light: #534bae;
             --secondary: #d32f2f;
             --secondary-dark: #b71c1c;
-            --secondary-light: #ff6659;
             --success: #2e7d32;
             --warning: #f57c00;
             --info: #0288d1;
             --dark: #121212;
-            --dark-card: #1e1e1e;
-            --dark-surface: #2d2d2d;
             --light: #f5f7fa;
             --gray: #64748b;
             --gray-light: #e2e8f0;
@@ -38,15 +34,12 @@
             
             --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.3);
             --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.2);
-            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.1);
             
             --radius-xl: 20px;
             --radius-lg: 16px;
             --radius-md: 12px;
-            --radius-sm: 8px;
             
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-fast: all 0.15s ease;
+            --transition: all 0.3s ease;
         }
         
         /* ===== RESET & BASE ===== */
@@ -56,21 +49,15 @@
             box-sizing: border-box;
         }
         
-        html {
-            scroll-behavior: smooth;
-            font-size: 16px;
-        }
-        
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, var(--dark) 0%, #0f172a 100%);
-            color: var(--light);
-            line-height: 1.6;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #121212 0%, #0f172a 100%);
+            color: white;
             min-height: 100vh;
             overflow-x: hidden;
         }
         
-        /* ===== BACKGROUND EFFECTS ===== */
+        /* ===== BACKGROUND ===== */
         .background-effects {
             position: fixed;
             top: 0;
@@ -78,31 +65,154 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            overflow: hidden;
-        }
-        
-        .gradient-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
             background: 
                 radial-gradient(circle at 20% 80%, rgba(26, 35, 126, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(211, 47, 47, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(2, 136, 209, 0.08) 0%, transparent 50%);
+                radial-gradient(circle at 80% 20%, rgba(211, 47, 47, 0.1) 0%, transparent 50%);
         }
         
-        .grid-pattern {
-            position: absolute;
+        /* ===== CUSTOM DELETE MODAL ===== */
+        .delete-modal {
+            display: none;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .delete-modal.active {
+            display: flex;
+        }
+        
+        .delete-modal-content {
+            background: linear-gradient(135deg, #1e1e1e 0%, #0d1b3e 100%);
+            border-radius: var(--radius-xl);
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease;
+        }
+        
+        .delete-modal-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(211, 47, 47, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 30px;
+            color: var(--secondary);
+        }
+        
+        .delete-modal h3 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+        
+        .delete-modal p {
+            text-align: center;
+            color: var(--gray-light);
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        
+        .delete-modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .delete-modal-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+        }
+        
+        .delete-modal-btn.cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid var(--border);
+        }
+        
+        .delete-modal-btn.delete {
+            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+            color: white;
+        }
+        
+        .delete-modal-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* ===== AUTO-SAVE INDICATOR ===== */
+        .auto-save-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--primary);
+            border-radius: 30px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-size: 13px;
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .auto-save-indicator.saving {
+            border-color: var(--warning);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .auto-save-indicator.saved {
+            border-color: var(--success);
+        }
+        
+        .auto-save-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
         
         /* ===== LAYOUT ===== */
@@ -124,10 +234,9 @@
             border-radius: var(--radius-xl);
             padding: 20px 28px;
             margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
             box-shadow: var(--shadow-lg);
             position: relative;
-            overflow: hidden;
         }
         
         .app-header::before {
@@ -137,16 +246,7 @@
             left: 0;
             right: 0;
             height: 2px;
-            background: linear-gradient(90deg, 
-                var(--primary) 0%, 
-                var(--secondary) 50%, 
-                var(--info) 100%);
-            animation: shimmer 3s infinite linear;
-        }
-        
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
+            background: linear-gradient(90deg, #1a237e 0%, #d32f2f 50%, #0288d1 100%);
         }
         
         .header-content {
@@ -164,25 +264,18 @@
         .logo {
             width: 56px;
             height: 56px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            background: linear-gradient(135deg, #1a237e 0%, #534bae 100%);
             border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
-            color: white;
-            box-shadow: 0 6px 24px rgba(26, 35, 126, 0.4);
-            transition: var(--transition);
-        }
-        
-        .logo:hover {
-            transform: rotate(10deg) scale(1.05);
         }
         
         .brand-text h1 {
             font-size: 22px;
             font-weight: 800;
-            background: linear-gradient(135deg, #fff 0%, var(--gray-light) 100%);
+            background: linear-gradient(135deg, #fff 0%, #e2e8f0 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 4px;
@@ -213,14 +306,12 @@
         .stat-value {
             font-size: 20px;
             font-weight: 700;
-            color: white;
         }
         
         .stat-label {
             font-size: 11px;
             color: var(--gray-light);
             text-transform: uppercase;
-            letter-spacing: 0.3px;
         }
         
         /* ===== SIDEBAR ===== */
@@ -245,7 +336,6 @@
             align-items: center;
             gap: 8px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
         
         .search-container {
@@ -261,13 +351,11 @@
             border-radius: var(--radius-md);
             color: white;
             font-size: 13px;
-            transition: var(--transition);
         }
         
         .search-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.2);
         }
         
         .search-icon {
@@ -278,7 +366,6 @@
             color: var(--gray);
         }
         
-        /* Patient Cards */
         .patient-cards {
             display: flex;
             flex-direction: column;
@@ -294,7 +381,6 @@
         
         .patient-cards::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 3px;
         }
         
         .patient-cards::-webkit-scrollbar-thumb {
@@ -310,7 +396,6 @@
             cursor: pointer;
             transition: var(--transition);
             position: relative;
-            overflow: hidden;
         }
         
         .patient-card::before {
@@ -321,13 +406,11 @@
             bottom: 0;
             width: 3px;
             background: var(--primary);
-            transition: var(--transition);
         }
         
         .patient-card:hover {
             background: rgba(255, 255, 255, 0.08);
             transform: translateX(3px);
-            border-color: var(--border);
         }
         
         .patient-card.active {
@@ -349,7 +432,6 @@
         .patient-name {
             font-weight: 600;
             font-size: 14px;
-            color: white;
         }
         
         .patient-id {
@@ -362,9 +444,6 @@
         }
         
         .patient-details {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
             font-size: 12px;
             color: var(--gray-light);
         }
@@ -376,17 +455,14 @@
             font-size: 11px;
             padding: 3px 10px;
             border-radius: 10px;
-            font-weight: 500;
-            width: fit-content;
-            margin-top: 8px;
             background: rgba(255, 255, 255, 0.1);
-            color: var(--gray-light);
+            margin-top: 8px;
         }
         
         .new-patient-btn {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: linear-gradient(135deg, #1a237e 0%, #0d1b3e 100%);
             color: white;
             border: none;
             border-radius: var(--radius-md);
@@ -396,9 +472,7 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            transition: var(--transition);
             margin-top: 14px;
-            font-size: 13px;
         }
         
         .new-patient-btn:hover {
@@ -412,7 +486,6 @@
             backdrop-filter: blur(20px);
             border-radius: var(--radius-xl);
             border: 1px solid var(--border);
-            box-shadow: var(--shadow-md);
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -430,7 +503,6 @@
         .patient-info h2 {
             font-size: 20px;
             font-weight: 700;
-            color: white;
             margin-bottom: 4px;
         }
         
@@ -445,6 +517,11 @@
             display: flex;
             align-items: center;
             gap: 5px;
+        }
+        
+        .meta-item span {
+            color: white;
+            font-weight: 500;
         }
         
         .action-buttons {
@@ -471,7 +548,7 @@
         }
         
         .report-selector select option {
-            background: var(--dark-card);
+            background: #1e1e1e;
             color: white;
         }
         
@@ -486,12 +563,10 @@
             justify-content: center;
             color: white;
             cursor: pointer;
-            transition: var(--transition);
         }
         
         .btn-icon:hover {
             background: var(--primary);
-            transform: scale(1.05);
         }
         
         /* Tabs */
@@ -515,9 +590,7 @@
             font-weight: 500;
             cursor: pointer;
             white-space: nowrap;
-            transition: var(--transition);
             border-bottom: 3px solid transparent;
-            position: relative;
             font-size: 13px;
         }
         
@@ -531,11 +604,10 @@
             border-bottom-color: var(--primary);
         }
         
-        /* Tab Content */
         .tab-content {
             flex: 1;
-            overflow-y: auto;
             padding: 24px;
+            min-height: 600px;
         }
         
         /* Sections */
@@ -545,12 +617,6 @@
             padding: 20px;
             margin-bottom: 20px;
             border: 1px solid var(--border);
-            transition: var(--transition);
-        }
-        
-        .section:hover {
-            background: rgba(255, 255, 255, 0.04);
-            border-color: rgba(255, 255, 255, 0.15);
         }
         
         .section-header {
@@ -563,7 +629,6 @@
         .section-title-main {
             font-size: 18px;
             font-weight: 600;
-            color: white;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -572,16 +637,13 @@
         .section-icon {
             width: 36px;
             height: 36px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            background: linear-gradient(135deg, #1a237e 0%, #534bae 100%);
             border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
-            color: white;
         }
         
-        /* Form Styles */
         .form-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -607,20 +669,17 @@
             border-radius: var(--radius-md);
             color: white;
             font-size: 13px;
-            transition: var(--transition);
         }
         
         .form-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.2);
         }
         
         .checkbox-group {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-top: 6px;
         }
         
         .checkbox-label {
@@ -631,12 +690,7 @@
             padding: 4px 10px;
             background: rgba(255, 255, 255, 0.03);
             border-radius: var(--radius-sm);
-            transition: var(--transition);
             font-size: 13px;
-        }
-        
-        .checkbox-label:hover {
-            background: rgba(255, 255, 255, 0.05);
         }
         
         .checkbox-label input[type="checkbox"] {
@@ -645,14 +699,12 @@
             accent-color: var(--primary);
         }
         
-        /* Vital Parameters Table */
         .vital-table {
             width: 100%;
             border-collapse: collapse;
             margin: 16px 0;
             background: rgba(255, 255, 255, 0.02);
             border-radius: var(--radius-md);
-            overflow: hidden;
         }
         
         .vital-table th {
@@ -660,7 +712,6 @@
             padding: 14px;
             text-align: left;
             font-weight: 600;
-            color: white;
             border-bottom: 1px solid var(--border);
             font-size: 14px;
         }
@@ -676,21 +727,11 @@
             border-bottom: none;
         }
         
-        .vital-table tr:hover {
-            background: rgba(255, 255, 255, 0.03);
-        }
-        
         .vital-table input.form-input {
             width: 85px;
             padding: 6px 8px;
-            font-size: 13px;
         }
         
-        .vital-table td div[style*="display: flex"] {
-            gap: 4px;
-        }
-        
-        /* Questions Grid */
         .questions-grid {
             display: flex;
             flex-direction: column;
@@ -702,20 +743,11 @@
             border-radius: var(--radius-md);
             padding: 16px;
             border: 1px solid var(--border);
-            transition: var(--transition);
-        }
-        
-        .question-card:hover {
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-sm);
         }
         
         .question-text {
             font-weight: 500;
             margin-bottom: 12px;
-            color: white;
-            line-height: 1.5;
             font-size: 14px;
         }
         
@@ -729,134 +761,11 @@
             font-size: 13px;
             resize: vertical;
             min-height: 70px;
-            transition: var(--transition);
         }
         
         .question-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.2);
-        }
-        
-        /* ===== MODALS ===== */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .modal.active {
-            display: flex;
-        }
-        
-        .modal-content {
-            background: linear-gradient(135deg, rgba(30, 30, 30, 0.95) 0%, rgba(13, 27, 62, 0.95) 100%);
-            border-radius: var(--radius-xl);
-            padding: 32px;
-            width: 100%;
-            max-width: 400px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: var(--shadow-lg);
-            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-        
-        /* ===== MODAL SPECIFIC STYLES ===== */
-        .modal-input {
-            width: 100%;
-            padding: 12px 14px;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            color: #000000 !important;
-            font-size: 13px;
-            transition: var(--transition);
-            margin-bottom: 14px;
-        }
-        
-        .modal-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.2);
-        }
-        
-        .modal-label {
-            display: block;
-            margin-bottom: 6px;
-            color: var(--gray-light);
-            font-weight: 500;
-            font-size: 13px;
-        }
-        
-        /* ===== UTILITIES ===== */
-        .btn {
-            padding: 10px 18px;
-            border: none;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            font-size: 13px;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(26, 35, 126, 0.3);
-        }
-        
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
-            border: 1px solid var(--border);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
-            color: white;
-        }
-        
-        .btn-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(211, 47, 47, 0.3);
         }
         
         .badge {
@@ -869,32 +778,42 @@
             font-weight: 500;
         }
         
-        .badge-success { background: rgba(46, 125, 50, 0.2); color: var(--success); }
-        .badge-warning { background: rgba(245, 124, 0, 0.2); color: var(--warning); }
-        .badge-danger { background: rgba(211, 47, 47, 0.2); color: var(--secondary); }
-        .badge-info { background: rgba(2, 136, 209, 0.2); color: var(--info); }
+        .badge-success { background: rgba(46, 125, 50, 0.2); color: #2e7d32; }
+        .badge-warning { background: rgba(245, 124, 0, 0.2); color: #f57c00; }
+        .badge-danger { background: rgba(211, 47, 47, 0.2); color: #d32f2f; }
+        .badge-info { background: rgba(2, 136, 209, 0.2); color: #0288d1; }
         
-        .loading {
-            display: flex;
-            flex-direction: column;
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 40px;
-            color: var(--gray);
+            gap: 6px;
+            font-size: 13px;
         }
         
-        .loading-spinner {
-            width: 36px;
-            height: 36px;
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 14px;
+        .btn-primary {
+            background: linear-gradient(135deg, #1a237e 0%, #0d1b3e 100%);
+            color: white;
         }
         
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            border: 1px solid var(--border);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
         }
         
         .empty-state {
@@ -903,35 +822,83 @@
             color: var(--gray);
         }
         
-        .empty-state i {
-            font-size: 40px;
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1e1e1e 0%, #0d1b3e 100%);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            max-width: 400px;
+            width: 100%;
+            border: 1px solid var(--border);
+        }
+        
+        .modal-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: #000 !important;
+            font-size: 13px;
             margin-bottom: 14px;
-            opacity: 0.3;
         }
         
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 1400px) {
-            .app-container {
-                grid-template-columns: 260px 1fr;
-                gap: 16px;
-            }
+        .modal-label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--gray-light);
+            font-weight: 500;
+            font-size: 13px;
         }
         
-        @media (max-width: 1200px) {
-            .app-container {
-                grid-template-columns: 1fr;
-            }
+        /* Report Styles */
+        .signature-container {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid #1a237e;
+        }
+        
+        .signature-line {
+            font-weight: 600;
+            color: #1a237e;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .signature-name {
+            font-family: 'Gentle Calligraphy', cursive;
+            font-size: 24px;
+            color: #1a237e;
+            margin-bottom: 10px;
+        }
+        
+        .signature-date {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #333;
         }
         
         @media (max-width: 768px) {
             .app-container {
-                padding: 12px;
-                gap: 12px;
-            }
-            
-            .app-header {
-                padding: 16px 20px;
-                margin-bottom: 12px;
+                grid-template-columns: 1fr;
             }
             
             .header-content {
@@ -945,23 +912,10 @@
                 justify-content: flex-start;
             }
             
-            .stat-item {
-                padding: 8px 14px;
-            }
-            
-            .stat-value {
-                font-size: 18px;
-            }
-            
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            
             .content-header {
                 flex-direction: column;
                 gap: 14px;
                 align-items: flex-start;
-                padding: 16px 20px;
             }
             
             .action-buttons {
@@ -969,51 +923,35 @@
                 flex-wrap: wrap;
             }
             
-            .vital-table {
-                display: block;
-                overflow-x: auto;
-            }
-            
-            .tabs-container {
-                padding: 0 16px;
-            }
-            
             .tab-content {
                 padding: 20px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .tabs {
-                overflow-x: auto;
-                padding-bottom: 6px;
-            }
-            
-            .tab {
-                padding: 10px 14px;
-                font-size: 12px;
-            }
-            
-            .section {
-                padding: 16px;
-            }
-            
-            .btn {
-                font-size: 13px;
-            }
-            
-            .patient-meta {
-                flex-wrap: wrap;
-                gap: 12px;
             }
         }
     </style>
 </head>
 <body>
     <!-- Background Effects -->
-    <div class="background-effects">
-        <div class="gradient-overlay"></div>
-        <div class="grid-pattern"></div>
+    <div class="background-effects"></div>
+    
+    <!-- Custom Delete Modal -->
+    <div id="deleteModal" class="delete-modal">
+        <div class="delete-modal-content">
+            <div class="delete-modal-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3>Bericht löschen?</h3>
+            <p>Möchten Sie diesen Bericht wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.</p>
+            <div class="delete-modal-buttons">
+                <button class="delete-modal-btn cancel" onclick="closeDeleteModal()">Abbrechen</button>
+                <button class="delete-modal-btn delete" onclick="confirmDelete()">Löschen</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Auto-Save Indicator -->
+    <div id="autoSaveIndicator" class="auto-save-indicator">
+        <div class="auto-save-spinner"></div>
+        <span id="autoSaveText">Autospeichern in 10s...</span>
     </div>
     
     <!-- Main App Container -->
@@ -1039,11 +977,10 @@
             </div>
         </header>
         
-        <!-- Left Sidebar -->
+        <!-- Sidebar -->
         <aside class="sidebar">
             <h3 class="section-title">
-                <i class="fas fa-archive"></i>
-                Soldatenarchiv
+                <i class="fas fa-archive"></i> Soldatenarchiv
             </h3>
             
             <div class="search-container">
@@ -1052,7 +989,6 @@
             </div>
             
             <div class="patient-cards" id="patientCards">
-                <!-- Patient cards will be loaded here -->
                 <div class="empty-state" id="emptyPatientList">
                     <i class="fas fa-users"></i>
                     <p>Keine Soldaten gefunden</p>
@@ -1061,8 +997,7 @@
             </div>
             
             <button class="new-patient-btn" onclick="openNewPatientModal()">
-                <i class="fas fa-plus-circle"></i>
-                Neue Akte
+                <i class="fas fa-plus-circle"></i> Neue Akte
             </button>
         </aside>
         
@@ -1083,7 +1018,7 @@
                         </div>
                         <div class="meta-item">
                             <i class="fas fa-user-md"></i>
-                            <span id="currentExaminer">-</span>
+                            <span id="currentExaminerDisplay">-</span>
                         </div>
                     </div>
                 </div>
@@ -1102,7 +1037,7 @@
                     <button class="btn btn-primary" onclick="generateReport()">
                         <i class="fas fa-file-pdf"></i> Bericht
                     </button>
-                    <button class="btn btn-danger" onclick="deleteAssessment()">
+                    <button class="btn btn-danger" onclick="openDeleteModal()">
                         <i class="fas fa-trash"></i> Löschen
                     </button>
                 </div>
@@ -1111,34 +1046,22 @@
             <!-- Tabs -->
             <div class="tabs-container">
                 <div class="tabs">
-                    <button class="tab active" data-tab="section1">
-                        <i class="fas fa-info-circle"></i> Abschnitt 1
-                    </button>
-                    <button class="tab" data-tab="section2">
-                        <i class="fas fa-brain"></i> Abschnitt 2
-                    </button>
-                    <button class="tab" data-tab="section3">
-                        <i class="fas fa-file-medical"></i> Abschnitt 3
-                    </button>
-                    <button class="tab" data-tab="section4">
-                        <i class="fas fa-running"></i> Abschnitt 4
-                    </button>
-                    <button class="tab" data-tab="section5">
-                        <i class="fas fa-comments"></i> Abschnitt 5
-                    </button>
+                    <button class="tab active" data-tab="section1">Abschnitt 1</button>
+                    <button class="tab" data-tab="section2">Abschnitt 2</button>
+                    <button class="tab" data-tab="section3">Abschnitt 3</button>
+                    <button class="tab" data-tab="section4">Abschnitt 4</button>
+                    <button class="tab" data-tab="section5">Abschnitt 5</button>
                 </div>
             </div>
             
-            <!-- Tab Contents (same as before - abbreviated for brevity) -->
+            <!-- Tab Contents -->
             <div class="tab-content">
-                <!-- Section 1 Tab -->
+                <!-- Section 1 -->
                 <div id="section1Tab" class="tab-pane active">
                     <div class="section">
                         <div class="section-header">
                             <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-info-circle"></i>
-                                </div>
+                                <div class="section-icon"><i class="fas fa-info-circle"></i></div>
                                 Abschnitt 1 – Informationen
                             </div>
                         </div>
@@ -1148,17 +1071,14 @@
                                 <label class="form-label">Name des Soldaten:</label>
                                 <input type="text" class="form-input" id="patientName" placeholder="Vorname Nachname">
                             </div>
-                            
                             <div class="form-group">
                                 <label class="form-label">Rang / Einheit:</label>
                                 <input type="text" class="form-input" id="patientRankUnit" placeholder="z.B. Sergeant / Infanterie">
                             </div>
-                            
                             <div class="form-group">
                                 <label class="form-label">Datum:</label>
                                 <input type="date" class="form-input" id="examinationDate">
                             </div>
-                            
                             <div class="form-group">
                                 <label class="form-label">Prüfer:</label>
                                 <input type="text" class="form-input" id="examinerName" placeholder="Name des Untersuchers">
@@ -1175,641 +1095,297 @@
                     <div class="section">
                         <div class="section-header">
                             <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-heartbeat"></i>
-                                </div>
+                                <div class="section-icon"><i class="fas fa-heartbeat"></i></div>
                                 Vitalparameter
                             </div>
                         </div>
                         
                         <table class="vital-table">
                             <thead>
-                                <tr>
-                                    <th>Parameter</th>
-                                    <th>Wert</th>
-                                    <th>Status</th>
-                                </tr>
+                                <tr><th>Parameter</th><th>Wert</th><th>Status</th></tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>Puls (bpm)</td>
-                                    <td><input type="number" class="form-input" id="vitalPulse" placeholder="60-100" style="width: 85px;" min="40" max="200"></td>
+                                    <td><input type="number" class="form-input" id="vitalPulse" style="width:85px;"></td>
                                     <td><span class="badge" id="pulseStatus">-</span></td>
                                 </tr>
                                 <tr>
                                     <td>Blutdruck (mmHg)</td>
-                                    <td>
-                                        <div style="display: flex; gap: 4px;">
-                                            <input type="number" class="form-input" id="vitalBpHigh" placeholder="Systolisch" style="width: 85px;">
-                                            <span style="color: var(--gray); align-self: center;">/</span>
-                                            <input type="number" class="form-input" id="vitalBpLow" placeholder="Diastolisch" style="width: 85px;">
-                                        </div>
-                                    </td>
+                                    <td><div style="display:flex;gap:4px;">
+                                        <input type="number" class="form-input" id="vitalBpHigh" style="width:85px;">
+                                        <span style="align-self:center;">/</span>
+                                        <input type="number" class="form-input" id="vitalBpLow" style="width:85px;">
+                                    </div></td>
                                     <td><span class="badge" id="bpStatus">-</span></td>
                                 </tr>
                                 <tr>
                                     <td>Körpertemperatur (°C)</td>
-                                    <td><input type="number" class="form-input" id="vitalTemp" placeholder="36.1-37.5" step="0.1" style="width: 85px;"></td>
+                                    <td><input type="number" class="form-input" id="vitalTemp" step="0.1" style="width:85px;"></td>
                                     <td><span class="badge" id="tempStatus">-</span></td>
                                 </tr>
                                 <tr>
-                                    <td>Atemfrequenz (Atemzüge/min)</td>
-                                    <td><input type="number" class="form-input" id="vitalRespiration" placeholder="12-20" style="width: 85px;"></td>
+                                    <td>Atemfrequenz</td>
+                                    <td><input type="number" class="form-input" id="vitalRespiration" style="width:85px;"></td>
                                     <td><span class="badge" id="respStatus">-</span></td>
                                 </tr>
                                 <tr>
-                                    <td>Sauerstoffsättigung (SpO2 %)</td>
-                                    <td><input type="number" class="form-input" id="vitalOxygen" placeholder="95-100" style="width: 85px;"></td>
+                                    <td>Sauerstoffsättigung (%)</td>
+                                    <td><input type="number" class="form-input" id="vitalOxygen" style="width:85px;"></td>
                                     <td><span class="badge" id="oxygenStatus">-</span></td>
                                 </tr>
                                 <tr>
                                     <td>Größe (cm)</td>
-                                    <td><input type="number" class="form-input" id="vitalHeight" placeholder="Größe in cm" style="width: 85px;"></td>
+                                    <td><input type="number" class="form-input" id="vitalHeight" style="width:85px;"></td>
                                     <td>-</td>
                                 </tr>
                                 <tr>
                                     <td>Gewicht (kg)</td>
-                                    <td><input type="number" class="form-input" id="vitalWeight" placeholder="Gewicht in kg" style="width: 85px;"></td>
+                                    <td><input type="number" class="form-input" id="vitalWeight" style="width:85px;"></td>
                                     <td><span class="badge" id="bmiStatus">-</span></td>
                                 </tr>
                             </tbody>
                         </table>
                         
-                        <div class="form-group" style="margin-top: 20px;">
+                        <div class="form-group" style="margin-top:20px;">
                             <label class="form-label">Fitness-Eindruck:</label>
                             <div class="checkbox-group">
-                                <label class="checkbox-label">
-                                    <input type="checkbox" name="fitness" value="athletic">
-                                    Sportlich
-                                </label>
-                                <label class="checkbox-label">
-                                    <input type="checkbox" name="fitness" value="average">
-                                    Durchschnittlich
-                                </label>
-                                <label class="checkbox-label">
-                                    <input type="checkbox" name="fitness" value="weak">
-                                    Schwach
-                                </label>
+                                <label class="checkbox-label"><input type="checkbox" name="fitness" value="athletic"> Sportlich</label>
+                                <label class="checkbox-label"><input type="checkbox" name="fitness" value="average"> Durchschnittlich</label>
+                                <label class="checkbox-label"><input type="checkbox" name="fitness" value="weak"> Schwach</label>
                             </div>
                         </div>
                         
-                        <div class="form-grid" style="margin-top: 20px;">
+                        <div class="form-grid" style="margin-top:20px;">
                             <div class="form-group">
-                                <label class="form-label">Letzte Mahlzeit (Stunden her):</label>
-                                <input type="number" class="form-input" id="lastMeal" placeholder="Stunden seit letzter Mahlzeit">
+                                <label class="form-label">Letzte Mahlzeit (Stunden):</label>
+                                <input type="number" class="form-input" id="lastMeal">
                             </div>
-                            
                             <div class="form-group">
                                 <label class="form-label">Allergien / Medikamente:</label>
-                                <textarea class="form-input" id="allergies" placeholder="Allergien oder regelmäßige Medikamente" style="min-height: 50px;"></textarea>
+                                <textarea class="form-input" id="allergies" style="min-height:50px;"></textarea>
                             </div>
                         </div>
                         
-                        <div class="form-grid" style="margin-top: 20px;">
+                        <div class="form-grid" style="margin-top:20px;">
                             <div class="form-group">
                                 <label class="form-label">Aktuelle Verletzungen / Narben:</label>
-                                <textarea class="form-input" id="injuries" placeholder="Aktuelle Verletzungen oder Narben" style="min-height: 50px;"></textarea>
+                                <textarea class="form-input" id="injuries" style="min-height:50px;"></textarea>
                             </div>
-                            
                             <div class="form-group">
                                 <label class="form-label">Mobilität:</label>
                                 <div class="checkbox-group">
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="mobility" value="normal">
-                                        Normal
-                                    </label>
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="mobility" value="limited">
-                                        Eingeschränkt
-                                    </label>
+                                    <label class="checkbox-label"><input type="checkbox" name="mobility" value="normal"> Normal</label>
+                                    <label class="checkbox-label"><input type="checkbox" name="mobility" value="limited"> Eingeschränkt</label>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="form-group" style="margin-top: 20px;">
+                        <div class="form-group" style="margin-top:20px;">
                             <label class="form-label">Andere Befunde:</label>
-                            <textarea class="question-input" id="otherFindings" placeholder="Zusätzliche Beobachtungen oder Befunde..."></textarea>
+                            <textarea class="question-input" id="otherFindings" placeholder="Zusätzliche Beobachtungen..."></textarea>
                         </div>
-                    </div>
-                    
-                    <!-- Parameters Table -->
-                    <div class="section">
-                        <div class="section-header">
-                            <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-table"></i>
-                                </div>
-                                Parameter Übersicht
-                            </div>
-                        </div>
-                        
-                        <table class="vital-table">
-                            <thead>
-                                <tr>
-                                    <th>Parameter</th>
-                                    <th>Normalbereich (Richtlinie)</th>
-                                    <th>Abnormalitäten / Notizen</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Puls</td>
-                                    <td>60–100 bpm</td>
-                                    <td>Unter 60: "Rekrut wirkt ruhig oder erschöpft"<br>Über 100: "Stress, Angst oder Überanstrengung"</td>
-                                </tr>
-                                <tr>
-                                    <td>Blutdruck</td>
-                                    <td>110–140 / 60–90 mmHg</td>
-                                    <td>Niedrig: Schwäche, Schwindel<br>Hoch: Stress oder Angst</td>
-                                </tr>
-                                <tr>
-                                    <td>Körpertemperatur</td>
-                                    <td>36.1–37.5 °C</td>
-                                    <td>Unter 36: "Kälte, Erschöpfung"<br>Über 37.5: "Leichte Erkrankung, Fieber"</td>
-                                </tr>
-                                <tr>
-                                    <td>Atemfrequenz</td>
-                                    <td>12–20 Atemzüge/min</td>
-                                    <td>Unter 12: Ruhig<br>Über 20: Aufregung</td>
-                                </tr>
-                                <tr>
-                                    <td>Sauerstoffsättigung</td>
-                                    <td>95–100%</td>
-                                    <td>Unter 95%: Lungen- oder Atemwegserkrankungen</td>
-                                </tr>
-                                <tr>
-                                    <td>Größe</td>
-                                    <td>keine Norm</td>
-                                    <td>nur zur Dokumentation</td>
-                                </tr>
-                                <tr>
-                                    <td>Gewicht</td>
-                                    <td>keine Norm</td>
-                                    <td>nur zur Dokumentation</td>
-                                </tr>
-                                <tr>
-                                    <td>Fitnesindruck</td>
-                                    <td>Beispiele:<br>180 cm, 65 kg → Dünn<br>175 cm, 70 kg → Normal<br>185 cm, 95 kg → Übergewichtig</td>
-                                    <td>Dünn / Untergewichtig: BMI < 18.5<br>Normal / Durchschnittlich: BMI 18.5–24.9<br>Übergewichtig / Kräftig gebaut: BMI ≥ 25</td>
-                                </tr>
-                                <tr>
-                                    <td>Letzte Mahlzeit</td>
-                                    <td>0–6 Stunden</td>
-                                    <td>Längere Fastenzeit → kann Stress oder Müdigkeitsgefühl erhöhen</td>
-                                </tr>
-                                <tr>
-                                    <td>Allergien / Medikamente</td>
-                                    <td>keine Norm</td>
-                                    <td>auf Allergien achten, die den Dienst beeinträchtigen</td>
-                                </tr>
-                            </tbody>
-                        </table>
                     </div>
                 </div>
                 
-                <!-- Section 2 Tab -->
-                <div id="section2Tab" class="tab-pane" style="display: none;">
+                <!-- Section 2 (Psychologische Fragen) -->
+                <div id="section2Tab" class="tab-pane" style="display:none;">
                     <div class="section">
                         <div class="section-header">
                             <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-brain"></i>
-                                </div>
+                                <div class="section-icon"><i class="fas fa-brain"></i></div>
                                 Abschnitt 2 – Psychologische & Motivationsfragen
                             </div>
-                            <div class="badge badge-info" style="font-size: 11px;">
-                                Nicht für Bewerbungen
-                            </div>
+                            <div class="badge badge-info">Nicht für Bewerbungen</div>
                         </div>
                         
-                        <div class="question-card" style="margin-bottom: 20px; background: rgba(26, 35, 126, 0.1); border-left: 3px solid var(--primary);">
-                            <div class="question-text" style="color: white; font-style: italic; font-size: 13px;">
-                                Die folgenden Fragen dienen zur Einschätzung der Motivation, Teamfähigkeit und psychologischen Stabilität des Soldaten.<br>
-                                <strong>Hinweis:</strong> Nicht alle Fragen müssen beantwortet werden.
+                        <div class="questions-grid">
+                            <div class="question-card">
+                                <div class="question-text">Wie würden Sie Ihre wichtigsten Charaktereigenschaften beschreiben?</div>
+                                <textarea class="question-input" data-question="psych_1"></textarea>
                             </div>
-                        </div>
-                        
-                        <!-- 1. Persönlichkeit & Hintergrund -->
-                        <div class="section" style="border-left: 3px solid var(--primary);">
-                            <div class="section-header">
-                                <div class="section-title-main" style="font-size: 16px;">
-                                    1. Persönlichkeit & Hintergrund
-                                </div>
+                            <div class="question-card">
+                                <div class="question-text">Gab es in Ihrem Leben Ereignisse, die Sie nachhaltig geprägt haben?</div>
+                                <textarea class="question-input" data-question="psych_2"></textarea>
                             </div>
-                            <div class="questions-grid">
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Wie würden Sie Ihre wichtigsten Charaktereigenschaften beschreiben?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="1.1"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                       Gab es in Ihrem Leben Ereignisse, die Sie nachhaltig geprägt haben?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="1.2"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Welche Ziele verfolgen Sie langfristig in Ihrem Leben?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="1.3"></textarea>
-                                </div>
+                            <div class="question-card">
+                                <div class="question-text">Welche Ziele verfolgen Sie langfristig in Ihrem Leben?</div>
+                                <textarea class="question-input" data-question="psych_3"></textarea>
                             </div>
-                        </div>
-                        
-                        <!-- 2. Emotionale Stabilität -->
-                        <div class="section" style="border-left: 3px solid var(--info); margin-top: 20px;">
-                            <div class="section-header">
-                                <div class="section-title-main" style="font-size: 16px;">
-                                    2. Emotionale Stabilität
-                                </div>
+                            <div class="question-card">
+                                <div class="question-text">Wie reagieren Sie, wenn Sie plötzlich unter starken Druck geraten?</div>
+                                <textarea class="question-input" data-question="psych_4"></textarea>
                             </div>
-                            <div class="questions-grid">
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Wie reagieren Sie, wenn Sie plötzlich unter starken Druck geraten?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="2.1"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Haben Sie Schwierigkeiten, wieder zur Ruhe zu kommen, wenn Sie gestresst sind?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="2.2"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Haben Sie Albträume oder Schlafstörungen?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="2.3"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Können Sie starke negative Gefühle bewusst kontrollieren?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="2.4"></textarea>
-                                </div>
+                            <div class="question-card">
+                                <div class="question-text">Haben Sie Schwierigkeiten, wieder zur Ruhe zu kommen, wenn Sie gestresst sind?</div>
+                                <textarea class="question-input" data-question="psych_5"></textarea>
                             </div>
-                        </div>
-                        
-                        <!-- 3. Aggression Control -->
-                        <div class="section" style="border-left: 3px solid var(--warning); margin-top: 20px;">
-                            <div class="section-header">
-                                <div class="section-title-main" style="font-size: 16px;">
-                                    3. Aggressionskontrolle
-                                </div>
+                            <div class="question-card">
+                                <div class="question-text">Haben Sie Albträume oder Schlafstörungen?</div>
+                                <textarea class="question-input" data-question="psych_6"></textarea>
                             </div>
-                            <div class="questions-grid">
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Wie gehen Sie mit Situationen um, in denen Sie wütend werden?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="3.1"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Haben Sie schon einmal die Kontrolle über Ihr Verhalten verloren?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="3.2"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Können Sie in Konflikten ruhig bleiben, selbst wenn Sie provoziert werden?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="3.3"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Was war die schwierigste Situation, in der Sie Ihre Aggressionen beherrschen mussten?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="3.4"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Wie reagieren Sie auf Respektlosigkeit oder Beleidigungen?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="3.5"></textarea>
-                                </div>
+                            <div class="question-card">
+                                <div class="question-text">Wie gehen Sie mit Situationen um, in denen Sie wütend werden?</div>
+                                <textarea class="question-input" data-question="psych_7"></textarea>
                             </div>
-                        </div>
-                        
-                        <!-- 4. Teamwork & Discipline -->
-                        <div class="section" style="border-left: 3px solid var(--success); margin-top: 20px;">
-                            <div class="section-header">
-                                <div class="section-title-main" style="font-size: 16px;">
-                                    4. Teamarbeit & Disziplin
-                                </div>
+                            <div class="question-card">
+                                <div class="question-text">Haben Sie schon einmal die Kontrolle über Ihr Verhalten verloren?</div>
+                                <textarea class="question-input" data-question="psych_8"></textarea>
                             </div>
-                            <div class="questions-grid">
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Welche Rolle übernehmen Sie üblicherweise in einem Team?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="4.1"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Können Sie Entscheidungen akzeptieren, auch wenn Sie anderer Meinung sind?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="4.2"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Haben Sie Probleme mit Autoritätspersonen?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="4.3"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Wie würden Sie Ihr Verantwortungsbewusstsein beschreiben?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="4.4"></textarea>
-                                </div>
+                            <div class="question-card">
+                                <div class="question-text">Können Sie in Konflikten ruhig bleiben, selbst wenn Sie provoziert werden?</div>
+                                <textarea class="question-input" data-question="psych_9"></textarea>
                             </div>
-                        </div>
-                        
-                        <!-- 5. Morality & Decision Making -->
-                        <div class="section" style="border-left: 3px solid var(--secondary); margin-top: 20px;">
-                            <div class="section-header">
-                                <div class="section-title-main" style="font-size: 16px;">
-                                    5. Moral & Entscheidungsfindung
-                                </div>
+                            <div class="question-card">
+                                <div class="question-text">Welche Rolle übernehmen Sie üblicherweise in einem Team?</div>
+                                <textarea class="question-input" data-question="psych_10"></textarea>
                             </div>
-                            <div class="questions-grid">
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Wo ziehen Sie Ihre persönlichen moralischen Grenzen im Einsatz?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="5.1"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Können Sie harte Entscheidungen treffen, wenn die Situation es erfordert?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="5.2"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Wie gehen Sie mit Schuldgefühlen nach schwierigen Entscheidungen um?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="5.3"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                       Was ist für Sie wichtiger: der Auftrag oder das Gewissen?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="5.4"></textarea>
-                                </div>
+                            <div class="question-card">
+                                <div class="question-text">Können Sie Entscheidungen akzeptieren, auch wenn Sie anderer Meinung sind?</div>
+                                <textarea class="question-input" data-question="psych_11"></textarea>
                             </div>
-                        </div>
-                        
-                        <!-- 6. Mental Health -->
-                        <div class="section" style="border-left: 3px solid var(--primary-light); margin-top: 20px;">
-                            <div class="section-header">
-                                <div class="section-title-main" style="font-size: 16px;">
-                                    6. Psychische Gesundheit
-                                </div>
+                            <div class="question-card">
+                                <div class="question-text">Haben Sie Probleme mit Autoritätspersonen?</div>
+                                <textarea class="question-input" data-question="psych_12"></textarea>
                             </div>
-                            <div class="questions-grid">
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Haben Sie jemals psychologische Hilfe in Anspruch genommen?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="6.1"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Haben Sie in letzter Zeit Veränderungen in Ihrer Stimmung oder Ihrem Denken bemerkt?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="6.2"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Leiden Sie unter Angst, Panik oder depressiven Phasen?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="6.3"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Konsumieren Sie Substanzen zur Stressbewältigung?
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="6.4"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Haben / hatten Sie negative Gedanken anderen oder Ihnen selbst gegenüber? 
-                                    </div>
-                                    <textarea class="question-input" data-section="psych" data-question="6.5"></textarea>
-                                </div>
+                            <div class="question-card">
+                                <div class="question-text">Haben Sie jemals psychologische Hilfe in Anspruch genommen?</div>
+                                <textarea class="question-input" data-question="psych_13"></textarea>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">Leiden Sie unter Angst, Panik oder depressiven Phasen?</div>
+                                <textarea class="question-input" data-question="psych_14"></textarea>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">Konsumieren Sie Substanzen zur Stressbewältigung?</div>
+                                <textarea class="question-input" data-question="psych_15"></textarea>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Section 3 Tab -->
-                <div id="section3Tab" class="tab-pane" style="display: none;">
+                <!-- Section 3 (Medizinische Bewertung) -->
+                <div id="section3Tab" class="tab-pane" style="display:none;">
                     <div class="section">
                         <div class="section-header">
                             <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-file-medical"></i>
-                                </div>
+                                <div class="section-icon"><i class="fas fa-file-medical"></i></div>
                                 Abschnitt 3 – Medizinische Bewertung
                             </div>
                         </div>
                         
-                        <!-- 1. General Health Condition -->
-                        <div class="section" style="border-left: 3px solid var(--primary);">
-                            <div class="section-header">
-                                <div class="section-title-main" style="font-size: 16px;">
-                                    1. Allgemeiner Gesundheitszustand
-                                </div>
+                        <div class="questions-grid">
+                            <div class="question-card">
+                                <div class="question-text">Nehmen Sie regelmäßig Medikamente ein?</div>
+                                <textarea class="question-input" data-question="med1"></textarea>
                             </div>
-                            <div class="questions-grid">
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Nehmen Sie regelmäßig Medikamente ein?
-                                    </div>
-                                    <textarea class="question-input" data-section="med" data-question="med1"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Haben Sie in letzter Zeit Gewichtsab-/Zunahme bemerkt?
-                                    </div>
-                                    <textarea class="question-input" data-section="med" data-question="med2"></textarea>
-                                </div>
+                            <div class="question-card">
+                                <div class="question-text">Haben Sie in letzter Zeit Gewichtsab-/Zunahme bemerkt?</div>
+                                <textarea class="question-input" data-question="med2"></textarea>
                             </div>
-                        </div>
-                        
-                        <!-- 2. Injury History -->
-                        <div class="section" style="border-left: 3px solid var(--warning); margin-top: 20px;">
-                            <div class="section-header">
-                                <div class="section-title-main" style="font-size: 16px;">
-                                    2. Verletzungshistorie
-                                </div>
+                            <div class="question-card">
+                                <div class="question-text">Haben Sie in der Vergangenheit Knochenbrüche, Operationen oder schwere Verletzungen erlitten?</div>
+                                <textarea class="question-input" data-question="med3"></textarea>
                             </div>
-                            <div class="questions-grid">
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Haben Sie in der Vergangenheit Knochenbrüche, Operationen oder schwere Verletzungen erlitten?
-                                    </div>
-                                    <textarea class="question-input" data-section="med" data-question="med3"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Wurden Sie jemals ohnmächtig oder haben Sie Bewusstseinsverluste erlebt?
-                                    </div>
-                                    <textarea class="question-input" data-section="med" data-question="med4"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Haben Sie Probleme mit dem Gleichgewicht, Schwindel oder Koordinationsstörungen?
-                                    </div>
-                                    <textarea class="question-input" data-section="med" data-question="med5"></textarea>
-                                </div>
+                            <div class="question-card">
+                                <div class="question-text">Wurden Sie jemals ohnmächtig oder haben Sie Bewusstseinsverluste erlebt?</div>
+                                <textarea class="question-input" data-question="med4"></textarea>
                             </div>
-                        </div>
-                        
-                        <!-- 3. Substances & Dependencies -->
-                        <div class="section" style="border-left: 3px solid var(--secondary); margin-top: 20px;">
-                            <div class="section-header">
-                                <div class="section-title-main" style="font-size: 16px;">
-                                    3. Substanzen & Abhängigkeiten
-                                </div>
+                            <div class="question-card">
+                                <div class="question-text">Haben Sie Probleme mit dem Gleichgewicht, Schwindel oder Koordinationsstörungen?</div>
+                                <textarea class="question-input" data-question="med5"></textarea>
                             </div>
-                            <div class="questions-grid">
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Konsumieren Sie Alkohol oder andere psychoaktive Stoffe?
-                                    </div>
-                                    <textarea class="question-input" data-section="med" data-question="med6"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Wurden Sie jemals wegen Drogen- oder Alkoholmissbrauchs behandelt?
-                                    </div>
-                                    <textarea class="question-input" data-section="med" data-question="med7"></textarea>
-                                </div>
-                                <div class="question-card">
-                                    <div class="question-text">
-                                        Gibt es in Ihrer Familie bekannte Suchterkrankungen?
-                                    </div>
-                                    <textarea class="question-input" data-section="med" data-question="med8"></textarea>
-                                </div>
+                            <div class="question-card">
+                                <div class="question-text">Konsumieren Sie Alkohol oder andere psychoaktive Stoffe?</div>
+                                <textarea class="question-input" data-question="med6"></textarea>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">Wurden Sie jemals wegen Drogen- oder Alkoholmissbrauchs behandelt?</div>
+                                <textarea class="question-input" data-question="med7"></textarea>
+                            </div>
+                            <div class="question-card">
+                                <div class="question-text">Gibt es in Ihrer Familie bekannte Suchterkrankungen?</div>
+                                <textarea class="question-input" data-question="med8"></textarea>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Section 4 Tab -->
-                <div id="section4Tab" class="tab-pane" style="display: none;">
+                <!-- Section 4 (Fitnesstest) -->
+                <div id="section4Tab" class="tab-pane" style="display:none;">
                     <div class="section">
                         <div class="section-header">
                             <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-running"></i>
-                                </div>
-                                Abschnitt 4 – Fitnesstest (auf Sportplatz durchführen)
+                                <div class="section-icon"><i class="fas fa-running"></i></div>
+                                Abschnitt 4 – Fitnesstest
                             </div>
                         </div>
                         
                         <div class="questions-grid">
                             <div class="question-card">
-                                <div class="question-text">
-                                    1. 15x Push-Ups (Ergebnis)
-                                </div>
-                                <select class="question-input" style="height: auto;" data-section="fitness" data-question="fit1">
+                                <div class="question-text">1. 15x Push-Ups (Ergebnis)</div>
+                                <select class="question-input" data-question="fit1">
                                     <option value="">Ergebnis auswählen</option>
-                                    <option value="excellent">Ausgezeichnet (15 geschafft)</option>
-                                    <option value="good">Gut (10-14 geschafft)</option>
-                                    <option value="average">Durchschnittlich (5-9 geschafft)</option>
-                                    <option value="poor">Schwach (1-4 geschafft)</option>
-                                    <option value="failed">Durchgefallen (0 geschafft)</option>
+                                    <option value="excellent">Ausgezeichnet (15)</option>
+                                    <option value="good">Gut (10-14)</option>
+                                    <option value="average">Durchschnittlich (5-9)</option>
+                                    <option value="poor">Schwach (1-4)</option>
+                                    <option value="failed">Durchgefallen (0)</option>
                                 </select>
                             </div>
                             <div class="question-card">
-                                <div class="question-text">
-                                    2. 10x Sit-Ups (Ergebnis)
-                                </div>
-                                <select class="question-input" style="height: auto;" data-section="fitness" data-question="fit2">
+                                <div class="question-text">2. 10x Sit-Ups (Ergebnis)</div>
+                                <select class="question-input" data-question="fit2">
                                     <option value="">Ergebnis auswählen</option>
-                                    <option value="excellent">Ausgezeichnet (10 geschafft)</option>
-                                    <option value="good">Gut (7-9 geschafft)</option>
-                                    <option value="average">Durchschnittlich (4-6 geschafft)</option>
-                                    <option value="poor">Schwach (1-3 geschafft)</option>
-                                    <option value="failed">Durchgefallen (0 geschafft)</option>
+                                    <option value="excellent">Ausgezeichnet (10)</option>
+                                    <option value="good">Gut (7-9)</option>
+                                    <option value="average">Durchschnittlich (4-6)</option>
+                                    <option value="poor">Schwach (1-3)</option>
+                                    <option value="failed">Durchgefallen (0)</option>
                                 </select>
                             </div>
                             <div class="question-card">
-                                <div class="question-text">
-                                    3. 10x Burpee (Ergebnis)
-                                </div>
-                                <select class="question-input" style="height: auto;" data-section="fitness" data-question="fit3">
+                                <div class="question-text">3. 10x Burpee (Ergebnis)</div>
+                                <select class="question-input" data-question="fit3">
                                     <option value="">Ergebnis auswählen</option>
-                                    <option value="excellent">Ausgezeichnet (10 geschafft)</option>
-                                    <option value="good">Gut (7-9 geschafft)</option>
-                                    <option value="average">Durchschnittlich (4-6 geschafft)</option>
-                                    <option value="poor">Schwach (1-3 geschafft)</option>
-                                    <option value="failed">Durchgefallen (0 geschafft)</option>
+                                    <option value="excellent">Ausgezeichnet (10)</option>
+                                    <option value="good">Gut (7-9)</option>
+                                    <option value="average">Durchschnittlich (4-6)</option>
+                                    <option value="poor">Schwach (1-3)</option>
+                                    <option value="failed">Durchgefallen (0)</option>
                                 </select>
                             </div>
                             <div class="question-card">
-                                <div class="question-text">
-                                    4. 2 Runden rennen 
-                                </div>
-                                <input type="number" class="question-input" style="height: auto;" data-section="fitness" data-question="fit4" placeholder="z.B., 8.5">
-                            </div>
-                        </div>
-                        
-                        <div class="question-card" style="margin-top: 20px; background: rgba(13, 27, 62, 0.2);">
-                            <div class="question-text" style="color: white; font-style: italic; font-size: 13px;">
-                                <i class="fas fa-info-circle"></i> Hinweis: Dieser Test sollte unter Aufsicht eines qualifizierten Ausbilders durchgeführt werden.
-                                Die Ergebnisse dienen zur Einschätzung der körperlichen Fitness für den Dienst.
+                                <div class="question-text">4. 2 Runden rennen (Sekunden)</div>
+                                <input type="number" class="question-input" data-question="fit4" placeholder="z.B. 120">
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Section 5 Tab -->
-                <div id="section5Tab" class="tab-pane" style="display: none;">
+                <!-- Section 5 (Situative Fragen) -->
+                <div id="section5Tab" class="tab-pane" style="display:none;">
                     <div class="section">
                         <div class="section-header">
                             <div class="section-title-main">
-                                <div class="section-icon">
-                                    <i class="fas fa-comments"></i>
-                                </div>
-                                Abschnitt 5 – Situative Fragen für Einsätze
+                                <div class="section-icon"><i class="fas fa-comments"></i></div>
+                                Abschnitt 5 – Situative Fragen
                             </div>
-                            <div class="badge badge-info" style="font-size: 11px;">
-                                Nicht für Bewerbungen
-                            </div>
-                        </div>
-                        
-                        <div class="question-card" style="margin-bottom: 20px; background: rgba(26, 35, 126, 0.1); border-left: 3px solid var(--primary);">
-                            <div class="question-text" style="color: white; font-style: italic; font-size: 13px;">
-                                Diese Fragen dienen zur Selbstreflexion und Einschätzung der Zufriedenheit mit der bisherigen Dienstzeit.
-                            </div>
+                            <div class="badge badge-info">Nicht für Bewerbungen</div>
                         </div>
                         
                         <div class="questions-grid">
                             <div class="question-card">
-                                <div class="question-text">
-                                    1. Waren Sie mit den letzten Einsätzen zufrieden?
-                                </div>
-                                <textarea class="question-input" data-section="situational" data-question="sit1" style="min-height: 90px;"></textarea>
+                                <div class="question-text">1. Waren Sie mit den letzten Einsätzen zufrieden?</div>
+                                <textarea class="question-input" data-question="sit1" style="min-height:90px;"></textarea>
                             </div>
                             <div class="question-card">
-                                <div class="question-text">
-                                    2. Gibt es bestimmte Situationen im Dienst, die Sie besonders stören?
-                                </div>
-                                <textarea class="question-input" data-section="situational" data-question="sit2" style="min-height: 90px;"></textarea>
+                                <div class="question-text">2. Gibt es bestimmte Situationen im Dienst, die Sie besonders stören?</div>
+                                <textarea class="question-input" data-question="sit2" style="min-height:90px;"></textarea>
                             </div>
-                            <div class="question-card" style="grid-column: 1 / -1;">
-                                <div class="question-text">
-                                    3.  Selbstreflektion des Einsatzes/der normalen Unitarbeit.
-                                </div>
-                                <textarea class="question-input" data-section="situational" data-question="sit3" style="min-height: 120px;"></textarea>
+                            <div class="question-card">
+                                <div class="question-text">3. Selbstreflektion des Einsatzes/der normalen Unitarbeit.</div>
+                                <textarea class="question-input" data-question="sit3" style="min-height:120px;"></textarea>
                             </div>
                         </div>
                     </div>
@@ -1818,344 +1394,312 @@
         </main>
     </div>
     
-    <!-- New Patient Modal (Simplified - only name) -->
-    <div id="newPatientModal" class="modal" onclick="if(event.target===this)closeModal('newPatientModal')">
+    <!-- New Patient Modal -->
+    <div id="newPatientModal" class="modal">
         <div class="modal-content">
-            <h2 style="color: white; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 18px;">
-                <i class="fas fa-user-plus"></i>
-                Neue Soldatenakte
+            <h2 style="margin-bottom:20px; display:flex; align-items:center; gap:10px; font-size:18px;">
+                <i class="fas fa-user-plus"></i> Neue Soldatenakte
             </h2>
-            
-            <div class="modal-grid">
-                <div>
-                    <label class="modal-label">Name des Soldaten:</label>
-                    <input type="text" class="modal-input" id="newPatientName" placeholder="Vorname Nachname" style="color: #000000 !important;">
-                </div>
+            <div>
+                <label class="modal-label">Name des Soldaten:</label>
+                <input type="text" class="modal-input" id="newPatientName" placeholder="Vorname Nachname">
             </div>
-            
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px;">
-                <button class="btn btn-secondary" onclick="closeModal('newPatientModal')">
-                    Abbrechen
-                </button>
-                <button class="btn btn-primary" onclick="createPatient()">
-                    <i class="fas fa-plus-circle"></i> Akte erstellen
-                </button>
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:24px;">
+                <button class="btn btn-secondary" onclick="closeModal('newPatientModal')">Abbrechen</button>
+                <button class="btn btn-primary" onclick="createPatient()"><i class="fas fa-plus-circle"></i> Akte erstellen</button>
             </div>
         </div>
     </div>
 
     <!-- JavaScript -->
     <script>
-        // ===== FIREBASE CONFIGURATION =====
+        // ===== FIREBASE =====
         const firebaseConfig = {
             apiKey: "AIzaSyBTnsLNw68UuOd5Xa2ymMffWk4SYGDQjso",
             authDomain: "cc-shop-finanzsystem.firebaseapp.com",
             projectId: "cc-shop-finanzsystem",
             storageBucket: "cc-shop-finanzsystem.firebasestorage.app",
             messagingSenderId: "575918945925",
-            appId: "1:575918945925:web:bf9d973d5cd9fc547e5bec",
-            measurementId: "G-9SZREFTJS6"
+            appId: "1:575918945925:web:bf9d973d5cd9fc547e5bec"
         };
 
-        // Firebase initialisieren
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // ===== ANWENDUNGSZUSTAND =====
-        let currentUser = {
-            name: "Dr. Müller",
-            rank: "Major",
-            role: "Chefarzt",
-            email: "dr.mueller@us.army.mil"
-        };
-        
+        // ===== STATE =====
+        let currentUser = { name: "Dr. Müller" };
         let patients = [];
         let currentPatient = null;
         let currentReportId = null;
+        
+        // Auto-Save
+        let autoSaveCountdown = 10;
+        let autoSaveInterval = null;
+        let isSaving = false;
 
-        // ===== INITIALISIERUNG =====
+        // ===== INIT =====
         document.addEventListener('DOMContentLoaded', function() {
-            initializeApp();
-            setupEventListeners();
-            updateStats();
+            initTabs();
+            document.getElementById('searchPatients').addEventListener('input', e => filterPatients(e.target.value));
+            document.getElementById('examinationDate').valueAsDate = new Date();
+            initVitalInputs();
+            loadPatients();
+            startAutoSave();
+            
+            // Input-Listener für Autosave
+            document.addEventListener('input', () => { if (currentPatient && currentReportId) resetAutoSave(); });
+            document.addEventListener('change', () => { if (currentPatient && currentReportId) resetAutoSave(); });
         });
 
-        function initializeApp() {
-            // Aktuellen Benutzer anzeigen
-            document.getElementById('currentExaminer').textContent = currentUser.name;
-            
-            // Tabs initialisieren
+        function initTabs() {
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', function() {
-                    switchTab(this.getAttribute('data-tab'));
+                    document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.getElementById(this.getAttribute('data-tab') + 'Tab').style.display = 'block';
+                    this.classList.add('active');
                 });
             });
-            
-            // Suche initialisieren
-            document.getElementById('searchPatients').addEventListener('input', function(e) {
-                filterPatients(e.target.value);
+        }
+
+        function initVitalInputs() {
+            ['vitalPulse','vitalBpHigh','vitalBpLow','vitalTemp','vitalRespiration','vitalOxygen','vitalHeight','vitalWeight'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('input', function() { updateVitalStatus(id); calculateBMI(); });
             });
-            
-            // Datumsfeld initialisieren
-            document.getElementById('examinationDate').valueAsDate = new Date();
-            
-            // Vitalparameter-Inputs initialisieren
-            setupVitalInputs();
-            
-            // Patienten aus Firebase laden
-            loadPatientsFromFirebase();
         }
 
-        function setupEventListeners() {
-            // Keine Auto-Save-Listener mehr
-        }
-
-        function setupVitalInputs() {
-            const vitalInputs = [
-                'vitalPulse', 'vitalBpHigh', 'vitalBpLow', 'vitalTemp',
-                'vitalRespiration', 'vitalOxygen', 'vitalHeight', 'vitalWeight'
-            ];
-            
-            vitalInputs.forEach(id => {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.addEventListener('input', function() {
-                        updateVitalStatus(id);
-                        calculateBMI();
-                    });
+        // ===== AUTO-SAVE =====
+        function startAutoSave() {
+            autoSaveInterval = setInterval(() => {
+                if (!currentPatient || !currentReportId) {
+                    document.getElementById('autoSaveIndicator').style.display = 'none';
+                    return;
                 }
-            });
+                document.getElementById('autoSaveIndicator').style.display = 'flex';
+                autoSaveCountdown--;
+                updateAutoSaveIndicator();
+                if (autoSaveCountdown <= 0) triggerAutoSave();
+            }, 1000);
         }
 
-        // ===== FIREBASE FUNKTIONEN =====
-        async function loadPatientsFromFirebase() {
+        function resetAutoSave() { autoSaveCountdown = 10; updateAutoSaveIndicator(); }
+
+        function updateAutoSaveIndicator() {
+            const ind = document.getElementById('autoSaveIndicator');
+            const txt = document.getElementById('autoSaveText');
+            if (!currentPatient || !currentReportId) { ind.style.display = 'none'; return; }
+            ind.style.display = 'flex';
+            if (isSaving) {
+                ind.className = 'auto-save-indicator saving';
+                txt.textContent = 'Speichern...';
+            } else {
+                ind.className = 'auto-save-indicator';
+                txt.textContent = `Autospeichern in ${autoSaveCountdown}s...`;
+            }
+        }
+
+        async function triggerAutoSave() {
+            if (!currentPatient || !currentReportId || isSaving) return;
+            isSaving = true;
+            updateAutoSaveIndicator();
+            await saveAssessment(true);
+            isSaving = false;
+            autoSaveCountdown = 10;
+            const ind = document.getElementById('autoSaveIndicator');
+            ind.className = 'auto-save-indicator saved';
+            document.getElementById('autoSaveText').textContent = 'Gespeichert!';
+            setTimeout(() => { if (!isSaving) { ind.className = 'auto-save-indicator'; updateAutoSaveIndicator(); } }, 2000);
+        }
+
+        // ===== FIREBASE =====
+        async function loadPatients() {
             try {
-                const snapshot = await db.collection('patients').orderBy('createdAt', 'desc').get();
-                patients = [];
-                
-                snapshot.forEach(doc => {
-                    patients.push({
-                        id: doc.id,
-                        ...doc.data()
-                    });
-                });
-                
+                const snap = await db.collection('patients').orderBy('createdAt', 'desc').get();
+                patients = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                 renderPatientList();
                 updateStats();
-                
-            } catch (error) {
-                console.error('Fehler beim Laden der Patienten:', error);
-                loadMockPatients();
-            }
+            } catch (e) { console.error('Fehler', e); loadMockPatients(); }
         }
 
-        async function savePatientToFirebase(patient) {
-            try {
-                await db.collection('patients').doc(patient.id).set(patient);
-                return true;
-            } catch (error) {
-                console.error('Fehler beim Speichern des Patienten:', error);
-                return false;
-            }
+        async function savePatient(p) {
+            try { await db.collection('patients').doc(p.id).set(p); return true; } 
+            catch (e) { console.error(e); return false; }
         }
 
-        async function deletePatientFromFirebase(patientId) {
-            try {
-                await db.collection('patients').doc(patientId).delete();
-                return true;
-            } catch (error) {
-                console.error('Fehler beim Löschen des Patienten:', error);
-                return false;
-            }
-        }
-
-        // ===== PATIENTENVERWALTUNG =====
+        // ===== PATIENTEN =====
         function renderPatientList() {
             const container = document.getElementById('patientCards');
-            const emptyState = document.getElementById('emptyPatientList');
-            
-            if (patients.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state" id="emptyPatientList">
-                        <i class="fas fa-users"></i>
-                        <p>Keine Soldaten gefunden</p>
-                        <p style="font-size: 12px; margin-top: 6px;">Erstellen Sie Ihre erste Akte</p>
-                    </div>
-                `;
+            if (!patients.length) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Keine Soldaten gefunden</p></div>';
                 return;
             }
-            
             container.innerHTML = '';
-            
-            patients.forEach(patient => {
+            patients.forEach(p => {
                 const card = document.createElement('div');
-                card.className = `patient-card ${currentPatient?.id === patient.id ? 'active' : ''}`;
-                card.onclick = () => selectPatient(patient);
-                
-                const reportCount = patient.reports ? patient.reports.length : 0;
-                
+                card.className = `patient-card ${currentPatient?.id === p.id ? 'active' : ''}`;
+                card.onclick = () => selectPatient(p, card);
                 card.innerHTML = `
                     <div class="patient-header">
-                        <div class="patient-name">${patient.fullName}</div>
-                        <div class="patient-id">${patient.id}</div>
+                        <div class="patient-name">${p.fullName}</div>
+                        <div class="patient-id">${p.id}</div>
                     </div>
                     <div class="patient-details">
-                        <div>Erstellt am: ${new Date(patient.createdAt).toLocaleDateString('de-DE')}</div>
-                        <div>Letzte Untersuchung: ${patient.lastReportDate ? new Date(patient.lastReportDate).toLocaleDateString('de-DE') : '-'}</div>
+                        <div>Erstellt: ${new Date(p.createdAt).toLocaleDateString()}</div>
+                        <div>Letzte: ${p.lastReportDate ? new Date(p.lastReportDate).toLocaleDateString() : '-'}</div>
                     </div>
                     <div class="patient-report-count">
-                        <i class="fas fa-file-medical"></i>
-                        ${reportCount} Bericht${reportCount !== 1 ? 'e' : ''}
+                        <i class="fas fa-file-medical"></i> ${p.reports?.length || 0} Bericht(e)
                     </div>
                 `;
-                
                 container.appendChild(card);
             });
-            
-            updateStats();
         }
 
-        function filterPatients(searchTerm) {
-            const cards = document.querySelectorAll('.patient-card');
-            const emptyState = document.getElementById('emptyPatientList');
-            const term = searchTerm.toLowerCase();
-            
-            if (patients.length === 0) {
-                if (emptyState) emptyState.style.display = 'block';
-                return;
-            }
-            
-            let visibleCount = 0;
-            
-            cards.forEach(card => {
-                const text = card.textContent.toLowerCase();
-                if (text.includes(term)) {
-                    card.style.display = 'block';
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
+        function filterPatients(term) {
+            document.querySelectorAll('.patient-card').forEach(c => {
+                c.style.display = c.textContent.toLowerCase().includes(term.toLowerCase()) ? 'block' : 'none';
             });
-            
-            if (emptyState) {
-                emptyState.style.display = visibleCount === 0 && term !== '' ? 'block' : 'none';
-            }
         }
 
-        function selectPatient(patient) {
-            currentPatient = patient;
-            
+        function selectPatient(p, card) {
+            currentPatient = p;
             document.getElementById('patientHeader').style.display = 'flex';
-            document.getElementById('currentPatientName').textContent = patient.fullName;
-            document.getElementById('currentPatientId').textContent = patient.id;
-            document.getElementById('currentPatientDate').textContent = new Date(patient.createdAt).toLocaleDateString('de-DE');
-            
-            if (patient.reports && patient.reports.length > 0) {
-                const lastReport = patient.reports[patient.reports.length - 1];
-                document.getElementById('currentExaminer').textContent = lastReport.examiner || currentUser.name;
-            } else {
-                document.getElementById('currentExaminer').textContent = currentUser.name;
-            }
-            
-            document.querySelectorAll('.patient-card').forEach(card => {
-                card.classList.remove('active');
-            });
-            event.currentTarget.classList.add('active');
-            
+            document.getElementById('currentPatientName').textContent = p.fullName;
+            document.getElementById('currentPatientId').textContent = p.id;
+            document.getElementById('currentPatientDate').textContent = new Date(p.createdAt).toLocaleDateString();
+            document.querySelectorAll('.patient-card').forEach(c => c.classList.remove('active'));
+            if (card) card.classList.add('active');
             updateReportSelector();
-            
-            if (patient.reports && patient.reports.length > 0) {
-                loadReport(patient.reports[patient.reports.length - 1].id);
-            } else {
-                clearForm();
-            }
+            if (p.reports?.length) loadReport(p.reports[p.reports.length-1].id);
+            else clearForm();
+            resetAutoSave();
         }
 
         function updateReportSelector() {
-            const selector = document.getElementById('reportSelector');
-            selector.innerHTML = '';
-            
-            if (!currentPatient || !currentPatient.reports || currentPatient.reports.length === 0) {
-                selector.innerHTML = '<option value="">Keine Berichte vorhanden</option>';
+            const sel = document.getElementById('reportSelector');
+            sel.innerHTML = '';
+            if (!currentPatient?.reports?.length) {
+                sel.innerHTML = '<option value="">Keine Berichte</option>';
                 return;
             }
-            
-            const sortedReports = [...currentPatient.reports].sort((a, b) => 
-                new Date(b.date) - new Date(a.date)
-            );
-            
-            sortedReports.forEach(report => {
-                const option = document.createElement('option');
-                option.value = report.id;
-                option.textContent = `${new Date(report.date).toLocaleDateString('de-DE')} - ${report.examiner}`;
-                selector.appendChild(option);
+            [...currentPatient.reports].sort((a,b)=>new Date(b.date)-new Date(a.date)).forEach(r => {
+                const opt = document.createElement('option');
+                opt.value = r.id;
+                const d = r.formData?.date ? new Date(r.formData.date) : new Date(r.date);
+                opt.textContent = `${d.toLocaleDateString()} - ${r.examiner || 'Unbekannt'}`;
+                sel.appendChild(opt);
             });
-            
-            if (currentReportId) {
-                selector.value = currentReportId;
-            } else {
-                selector.value = sortedReports[0].id;
-                currentReportId = sortedReports[0].id;
+            if (currentReportId && [...sel.options].some(o => o.value === currentReportId)) {
+                sel.value = currentReportId;
+            } else if (currentPatient.reports.length) {
+                sel.value = currentPatient.reports[currentPatient.reports.length-1].id;
+                currentReportId = sel.value;
             }
         }
 
-        function loadReport(reportId) {
-            if (!currentPatient || !currentPatient.reports) return;
+        // ===== NEUER BERICHT =====
+        async function createNewReport() {
+            if (!currentPatient) { alert('Bitte Patient wählen'); return; }
             
-            const report = currentPatient.reports.find(r => r.id === reportId);
-            if (!report) return;
+            const newId = `RPT-${Date.now()}`;
+            const today = new Date().toISOString();
             
-            currentReportId = reportId;
+            // KOMPLETT LEERER BERICHT
+            const newReport = {
+                id: newId,
+                date: today,
+                examiner: '',
+                formData: {
+                    name: currentPatient.fullName,
+                    rankUnit: '',
+                    date: '',
+                    examiner: '',
+                    generalImpression: '',
+                    fitness: [],
+                    lastMeal: '',
+                    allergies: '',
+                    injuries: '',
+                    mobility: [],
+                    otherFindings: ''
+                },
+                vitals: {
+                    pulse: null, bpHigh: null, bpLow: null, temperature: null,
+                    respiration: null, oxygen: null, height: null, weight: null, bmi: null
+                },
+                answers: {}
+            };
             
-            document.getElementById('patientName').value = report.formData?.name || currentPatient.fullName || '';
-            document.getElementById('patientRankUnit').value = report.formData?.rankUnit || '';
-            document.getElementById('examinationDate').value = report.date.split('T')[0] || new Date().toISOString().split('T')[0];
-            document.getElementById('examinerName').value = report.examiner || currentUser.name;
-            document.getElementById('generalImpression').value = report.formData?.generalImpression || '';
-            document.getElementById('lastMeal').value = report.formData?.lastMeal || '';
-            document.getElementById('allergies').value = report.formData?.allergies || '';
-            document.getElementById('injuries').value = report.formData?.injuries || '';
-            document.getElementById('otherFindings').value = report.formData?.otherFindings || '';
+            if (!currentPatient.reports) currentPatient.reports = [];
+            currentPatient.reports.push(newReport);
+            currentPatient.lastReportDate = today;
+            currentReportId = newId;
             
-            document.querySelectorAll('input[name="fitness"]').forEach(cb => {
-                cb.checked = report.formData?.fitness?.includes(cb.value) || false;
-            });
+            if (await savePatient(currentPatient)) {
+                updateReportSelector();
+                loadReport(newId);
+                renderPatientList();
+            } else alert('Fehler');
+        }
+
+        function loadReport(id) {
+            if (!currentPatient?.reports) return;
+            const r = currentPatient.reports.find(r => r.id === id);
+            if (!r) return;
             
-            document.querySelectorAll('input[name="mobility"]').forEach(cb => {
-                cb.checked = report.formData?.mobility?.includes(cb.value) || false;
-            });
+            currentReportId = id;
+            document.getElementById('currentExaminerDisplay').textContent = r.examiner || '-';
             
-            if (report.vitals) {
-                document.getElementById('vitalPulse').value = report.vitals.pulse || '';
-                document.getElementById('vitalBpHigh').value = report.vitals.bpHigh || '';
-                document.getElementById('vitalBpLow').value = report.vitals.bpLow || '';
-                document.getElementById('vitalTemp').value = report.vitals.temperature || '';
-                document.getElementById('vitalRespiration').value = report.vitals.respiration || '';
-                document.getElementById('vitalOxygen').value = report.vitals.oxygen || '';
-                document.getElementById('vitalHeight').value = report.vitals.height || '';
-                document.getElementById('vitalWeight').value = report.vitals.weight || '';
+            // ALLE FELDER LADEN
+            document.getElementById('patientName').value = r.formData?.name || currentPatient.fullName;
+            document.getElementById('patientRankUnit').value = r.formData?.rankUnit || '';
+            document.getElementById('examinationDate').value = r.formData?.date || '';
+            document.getElementById('examinerName').value = r.examiner || '';
+            document.getElementById('generalImpression').value = r.formData?.generalImpression || '';
+            document.getElementById('lastMeal').value = r.formData?.lastMeal || '';
+            document.getElementById('allergies').value = r.formData?.allergies || '';
+            document.getElementById('injuries').value = r.formData?.injuries || '';
+            document.getElementById('otherFindings').value = r.formData?.otherFindings || '';
+            
+            // Checkboxen
+            document.querySelectorAll('input[name="fitness"]').forEach(cb => cb.checked = r.formData?.fitness?.includes(cb.value) || false);
+            document.querySelectorAll('input[name="mobility"]').forEach(cb => cb.checked = r.formData?.mobility?.includes(cb.value) || false);
+            
+            // Vital
+            if (r.vitals) {
+                document.getElementById('vitalPulse').value = r.vitals.pulse || '';
+                document.getElementById('vitalBpHigh').value = r.vitals.bpHigh || '';
+                document.getElementById('vitalBpLow').value = r.vitals.bpLow || '';
+                document.getElementById('vitalTemp').value = r.vitals.temperature || '';
+                document.getElementById('vitalRespiration').value = r.vitals.respiration || '';
+                document.getElementById('vitalOxygen').value = r.vitals.oxygen || '';
+                document.getElementById('vitalHeight').value = r.vitals.height || '';
+                document.getElementById('vitalWeight').value = r.vitals.weight || '';
             }
             
-            if (report.answers) {
+            // ALLE Antworten laden
+            if (r.answers) {
                 document.querySelectorAll('.question-input').forEach(input => {
-                    const question = input.getAttribute('data-question');
-                    if (question && report.answers[question]) {
-                        input.value = report.answers[question];
-                    } else {
-                        input.value = '';
+                    const q = input.getAttribute('data-question');
+                    if (q && r.answers[q] !== undefined) {
+                        input.value = r.answers[q];
                     }
                 });
+            } else {
+                document.querySelectorAll('.question-input').forEach(input => input.value = '');
             }
             
             updateAllVitalStatuses();
             calculateBMI();
+            resetAutoSave();
         }
 
         function clearForm() {
+            document.getElementById('currentExaminerDisplay').textContent = '-';
             document.getElementById('patientName').value = currentPatient?.fullName || '';
             document.getElementById('patientRankUnit').value = '';
-            document.getElementById('examinationDate').valueAsDate = new Date();
-            document.getElementById('examinerName').value = currentUser.name;
+            document.getElementById('examinationDate').value = '';
+            document.getElementById('examinerName').value = '';
             document.getElementById('generalImpression').value = '';
             document.getElementById('lastMeal').value = '';
             document.getElementById('allergies').value = '';
@@ -2174,311 +1718,30 @@
             document.getElementById('vitalHeight').value = '';
             document.getElementById('vitalWeight').value = '';
             
-            document.querySelectorAll('.question-input').forEach(input => input.value = '');
+            document.querySelectorAll('.question-input').forEach(i => i.value = '');
             
             updateAllVitalStatuses();
             calculateBMI();
-            
             currentReportId = null;
         }
 
         function switchReport() {
-            const selector = document.getElementById('reportSelector');
-            const reportId = selector.value;
-            
-            if (reportId) {
-                loadReport(reportId);
-            }
+            const id = document.getElementById('reportSelector').value;
+            if (id) loadReport(id);
         }
 
-        async function createNewReport() {
-            if (!currentPatient) {
-                alert('Bitte wählen Sie zuerst einen Patienten aus');
-                return;
-            }
+        // ===== SPEICHERN (JETZT mit ALLEN Feldern) =====
+        async function saveAssessment(isAuto = false) {
+            if (!currentPatient) { if (!isAuto) alert('Kein Patient'); return; }
             
-            const reportId = `RPT-${new Date().getTime()}`;
-            const today = new Date().toISOString();
+            const examiner = document.getElementById('examinerName').value || '';
             
-            const newReport = {
-                id: reportId,
-                date: today,
-                examiner: currentUser.name,
-                formData: {
-                    name: currentPatient.fullName,
-                    rankUnit: '',
-                    date: today.split('T')[0],
-                    examiner: currentUser.name,
-                    generalImpression: '',
-                    fitness: [],
-                    lastMeal: '',
-                    allergies: '',
-                    injuries: '',
-                    mobility: [],
-                    otherFindings: ''
-                },
-                vitals: {
-                    pulse: null,
-                    bpHigh: null,
-                    bpLow: null,
-                    temperature: null,
-                    respiration: null,
-                    oxygen: null,
-                    height: null,
-                    weight: null,
-                    bmi: null
-                },
-                answers: {}
-            };
-            
-            if (!currentPatient.reports) {
-                currentPatient.reports = [];
-            }
-            
-            currentPatient.reports.push(newReport);
-            currentPatient.lastReportDate = today;
-            currentReportId = reportId;
-            
-            const success = await savePatientToFirebase(currentPatient);
-            
-            if (success) {
-                updateReportSelector();
-                loadReport(reportId);
-                renderPatientList();
-            } else {
-                alert('Fehler beim Erstellen des Berichts');
-            }
-        }
-
-        // ===== MODAL FUNKTIONEN =====
-        function openNewPatientModal() {
-            document.getElementById('newPatientModal').classList.add('active');
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
-
-        async function createPatient() {
-            const fullName = document.getElementById('newPatientName').value.trim();
-            
-            if (!fullName) {
-                alert('Bitte geben Sie den Namen des Soldaten ein');
-                return;
-            }
-            
-            const patientId = `PAT-${new Date().getFullYear()}-${String(patients.length + 1).padStart(3, '0')}`;
-            const today = new Date().toISOString();
-            
-            const newPatient = {
-                id: patientId,
-                fullName: fullName,
-                createdAt: today,
-                lastReportDate: null,
-                reports: []
-            };
-            
-            const success = await savePatientToFirebase(newPatient);
-            
-            if (success) {
-                patients.unshift(newPatient);
-                
-                closeModal('newPatientModal');
-                renderPatientList();
-                selectPatient(newPatient);
-                
-                document.getElementById('newPatientName').value = '';
-                
-            } else {
-                alert('Fehler beim Erstellen des Patienten. Bitte versuchen Sie es erneut.');
-            }
-        }
-
-        // ===== VITALPARAMETER =====
-        function updateVitalStatus(inputId) {
-            let value, statusElement, badgeClass, statusText;
-            
-            switch(inputId) {
-                case 'vitalPulse':
-                    value = parseInt(document.getElementById('vitalPulse').value);
-                    statusElement = document.getElementById('pulseStatus');
-                    
-                    if (value) {
-                        if (value >= 60 && value <= 100) {
-                            badgeClass = 'badge-success';
-                            statusText = 'Normal';
-                        } else if (value < 60) {
-                            badgeClass = 'badge-warning';
-                            statusText = 'Niedrig';
-                        } else {
-                            badgeClass = 'badge-danger';
-                            statusText = 'Hoch';
-                        }
-                    } else {
-                        badgeClass = '';
-                        statusText = '-';
-                    }
-                    break;
-                    
-                case 'vitalBpHigh':
-                case 'vitalBpLow':
-                    const high = parseInt(document.getElementById('vitalBpHigh').value);
-                    const low = parseInt(document.getElementById('vitalBpLow').value);
-                    statusElement = document.getElementById('bpStatus');
-                    
-                    if (high && low) {
-                        if (high >= 110 && high <= 140 && low >= 60 && low <= 90) {
-                            badgeClass = 'badge-success';
-                            statusText = 'Normal';
-                        } else if (high < 110 || low < 60) {
-                            badgeClass = 'badge-warning';
-                            statusText = 'Niedrig';
-                        } else {
-                            badgeClass = 'badge-danger';
-                            statusText = 'Hoch';
-                        }
-                    } else {
-                        badgeClass = '';
-                        statusText = '-';
-                    }
-                    break;
-                    
-                case 'vitalTemp':
-                    value = parseFloat(document.getElementById('vitalTemp').value);
-                    statusElement = document.getElementById('tempStatus');
-                    
-                    if (value) {
-                        if (value >= 36.1 && value <= 37.5) {
-                            badgeClass = 'badge-success';
-                            statusText = 'Normal';
-                        } else if (value < 36) {
-                            badgeClass = 'badge-warning';
-                            statusText = 'Niedrig';
-                        } else {
-                            badgeClass = 'badge-danger';
-                            statusText = 'Fieber';
-                        }
-                    } else {
-                        badgeClass = '';
-                        statusText = '-';
-                    }
-                    break;
-                    
-                case 'vitalRespiration':
-                    value = parseInt(document.getElementById('vitalRespiration').value);
-                    statusElement = document.getElementById('respStatus');
-                    
-                    if (value) {
-                        if (value >= 12 && value <= 20) {
-                            badgeClass = 'badge-success';
-                            statusText = 'Normal';
-                        } else if (value < 12) {
-                            badgeClass = 'badge-warning';
-                            statusText = 'Niedrig';
-                        } else {
-                            badgeClass = 'badge-danger';
-                            statusText = 'Hoch';
-                        }
-                    } else {
-                        badgeClass = '';
-                        statusText = '-';
-                    }
-                    break;
-                    
-                case 'vitalOxygen':
-                    value = parseInt(document.getElementById('vitalOxygen').value);
-                    statusElement = document.getElementById('oxygenStatus');
-                    
-                    if (value) {
-                        if (value >= 95 && value <= 100) {
-                            badgeClass = 'badge-success';
-                            statusText = 'Normal';
-                        } else if (value >= 90 && value < 95) {
-                            badgeClass = 'badge-warning';
-                            statusText = 'Niedrig';
-                        } else if (value < 90) {
-                            badgeClass = 'badge-danger';
-                            statusText = 'Kritisch';
-                        }
-                    } else {
-                        badgeClass = '';
-                        statusText = '-';
-                    }
-                    break;
-                    
-                default:
-                    return;
-            }
-            
-            if (statusElement) {
-                statusElement.textContent = statusText;
-                statusElement.className = 'badge ' + badgeClass;
-            }
-        }
-
-        function updateAllVitalStatuses() {
-            ['vitalPulse', 'vitalBpHigh', 'vitalTemp', 'vitalRespiration', 'vitalOxygen'].forEach(id => {
-                updateVitalStatus(id);
-            });
-        }
-
-        function calculateBMI() {
-            const height = parseFloat(document.getElementById('vitalHeight').value) / 100;
-            const weight = parseFloat(document.getElementById('vitalWeight').value);
-            const statusElement = document.getElementById('bmiStatus');
-            
-            if (height && weight && height > 0) {
-                const bmi = weight / (height * height);
-                
-                let statusText, badgeClass;
-                if (bmi < 18.5) {
-                    statusText = 'Untergewichtig';
-                    badgeClass = 'badge-warning';
-                } else if (bmi >= 18.5 && bmi <= 24.9) {
-                    statusText = 'Normal';
-                    badgeClass = 'badge-success';
-                } else if (bmi >= 25 && bmi <= 29.9) {
-                    statusText = 'Übergewichtig';
-                    badgeClass = 'badge-warning';
-                } else {
-                    statusText = 'Adipös';
-                    badgeClass = 'badge-danger';
-                }
-                
-                statusElement.textContent = statusText;
-                statusElement.className = 'badge ' + badgeClass;
-            } else {
-                statusElement.textContent = '-';
-                statusElement.className = 'badge';
-            }
-        }
-
-        // ===== TAB VERWALTUNG =====
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-pane').forEach(tab => {
-                tab.style.display = 'none';
-            });
-            
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            document.getElementById(`${tabName}Tab`).style.display = 'block';
-            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-        }
-
-        // ===== SPEICHERN & EXPORT =====
-        async function saveAssessment() {
-            if (!currentPatient) {
-                alert('Bitte wählen Sie zuerst einen Patienten aus');
-                return;
-            }
-            
+            // ALLE Formulardaten sammeln
             const formData = {
-                name: document.getElementById('patientName').value.trim(),
+                name: document.getElementById('patientName').value.trim() || currentPatient.fullName,
                 rankUnit: document.getElementById('patientRankUnit').value.trim(),
                 date: document.getElementById('examinationDate').value,
-                examiner: document.getElementById('examinerName').value.trim(),
+                examiner: examiner,
                 generalImpression: document.getElementById('generalImpression').value.trim(),
                 fitness: Array.from(document.querySelectorAll('input[name="fitness"]:checked')).map(cb => cb.value),
                 lastMeal: document.getElementById('lastMeal').value,
@@ -2488,6 +1751,7 @@
                 otherFindings: document.getElementById('otherFindings').value.trim()
             };
             
+            // Vitaldaten
             const vitals = {
                 pulse: parseInt(document.getElementById('vitalPulse').value) || null,
                 bpHigh: parseInt(document.getElementById('vitalBpHigh').value) || null,
@@ -2498,265 +1762,369 @@
                 height: parseFloat(document.getElementById('vitalHeight').value) || null,
                 weight: parseFloat(document.getElementById('vitalWeight').value) || null
             };
-            
-            if (vitals.height && vitals.weight && vitals.height > 0) {
-                const heightInM = vitals.height / 100;
-                vitals.bmi = vitals.weight / (heightInM * heightInM);
-            } else {
-                vitals.bmi = null;
+            if (vitals.height && vitals.weight) {
+                vitals.bmi = vitals.weight / ((vitals.height/100) ** 2);
             }
             
+            // ALLE Antworten sammeln
             const answers = {};
             document.querySelectorAll('.question-input').forEach(input => {
-                const question = input.getAttribute('data-question');
-                if (question && input.value.trim()) {
-                    answers[question] = input.value.trim();
+                const q = input.getAttribute('data-question');
+                if (q) {
+                    answers[q] = input.value.trim();
                 }
             });
             
-            let report;
-            if (currentReportId && currentPatient.reports) {
-                report = currentPatient.reports.find(r => r.id === currentReportId);
-            }
-            
+            // Bericht finden oder erstellen
+            let report = currentPatient.reports?.find(r => r.id === currentReportId);
             if (!report) {
-                currentReportId = `RPT-${new Date().getTime()}`;
-                report = {
-                    id: currentReportId,
-                    date: new Date().toISOString(),
-                    examiner: formData.examiner || currentUser.name,
-                    formData: formData,
-                    vitals: vitals,
-                    answers: answers
+                currentReportId = `RPT-${Date.now()}`;
+                report = { 
+                    id: currentReportId, 
+                    date: new Date().toISOString(), 
+                    examiner, 
+                    formData, 
+                    vitals, 
+                    answers 
                 };
-                
-                if (!currentPatient.reports) {
-                    currentPatient.reports = [];
-                }
+                if (!currentPatient.reports) currentPatient.reports = [];
                 currentPatient.reports.push(report);
             } else {
+                // Bestehenden Bericht aktualisieren
+                report.date = new Date().toISOString();
+                report.examiner = examiner;
                 report.formData = formData;
                 report.vitals = vitals;
                 report.answers = answers;
-                report.date = new Date().toISOString();
             }
             
             currentPatient.lastReportDate = new Date().toISOString();
             
-            const success = await savePatientToFirebase(currentPatient);
+            const success = await savePatient(currentPatient);
             
             if (success) {
-                const saveBtn = document.querySelector('.btn-secondary');
-                const originalHTML = saveBtn.innerHTML;
-                
-                saveBtn.innerHTML = '<i class="fas fa-check"></i> Gespeichert';
-                saveBtn.style.background = 'var(--success)';
-                
-                setTimeout(() => {
-                    saveBtn.innerHTML = originalHTML;
-                    saveBtn.style.background = '';
-                }, 2000);
-                
+                document.getElementById('currentExaminerDisplay').textContent = examiner || '-';
+                if (!isAuto) {
+                    const btn = document.querySelector('.btn-secondary');
+                    const orig = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check"></i> Gespeichert';
+                    btn.style.background = '#2e7d32';
+                    setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; }, 2000);
+                }
                 updateReportSelector();
                 renderPatientList();
-                
-            } else {
-                alert('Fehler beim Speichern der Daten');
+            } else if (!isAuto) {
+                alert('Fehler beim Speichern');
             }
         }
 
-        function generateReport() {
+        // ===== LÖSCHEN =====
+        function openDeleteModal() {
             if (!currentPatient || !currentReportId) {
-                alert('Bitte wählen Sie zuerst einen Patienten und Bericht aus');
+                alert('Kein Bericht ausgewählt');
                 return;
             }
-            
-            const report = currentPatient.reports.find(r => r.id === currentReportId);
-            if (!report) return;
-            
-            alert('Berichterstellung gestartet. PDF wird in Kürze heruntergeladen.');
-            
-            setTimeout(() => {
-                const reportContent = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>MEDIZINISCHE & PSYCHOLOGISCHE BEWERTUNG - ${currentPatient.fullName}</title>
-                        <style>
-                            body { font-family: Arial, sans-serif; margin: 40px; }
-                            h1 { color: #1a237e; border-bottom: 2px solid #1a237e; padding-bottom: 10px; }
-                            h2 { color: #0d1b3e; margin-top: 30px; }
-                            .section { margin-bottom: 30px; }
-                            .vital-table { border-collapse: collapse; width: 100%; margin: 20px 0; }
-                            .vital-table th, .vital-table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-                            .vital-table th { background-color: #f5f7fa; }
-                        </style>
-                    </head>
-                    <body>
-                        <h1>MEDIZINISCHE & PSYCHOLOGISCHE BEWERTUNG</h1>
-                        <p><strong>Generiert am:</strong> ${new Date().toLocaleDateString('de-DE')}</p>
-                        
-                        <div class="section">
-                            <h2>Abschnitt 1 – Informationen</h2>
-                            <p><strong>Name des Soldaten:</strong> ${report.formData?.name || '-'}</p>
-                            <p><strong>Rang / Einheit:</strong> ${report.formData?.rankUnit || '-'}</p>
-                            <p><strong>Datum:</strong> ${report.formData?.date || '-'}</p>
-                            <p><strong>Prüfer:</strong> ${report.formData?.examiner || '-'}</p>
-                            <p><strong>Allgemeiner Eindruck:</strong> ${report.formData?.generalImpression || '-'}</p>
-                        </div>
-                        
-                        <div class="section">
-                            <h2>Vitalparameter</h2>
-                            <table class="vital-table">
-                                <tr><th>Parameter</th><th>Wert</th></tr>
-                                <tr><td>Puls (bpm)</td><td>${report.vitals?.pulse || '-'}</td></tr>
-                                <tr><td>Blutdruck (mmHg)</td><td>${report.vitals?.bpHigh && report.vitals?.bpLow ? report.vitals.bpHigh + '/' + report.vitals.bpLow : '-'}</td></tr>
-                                <tr><td>Körpertemperatur (°C)</td><td>${report.vitals?.temperature || '-'}</td></tr>
-                                <tr><td>Atemfrequenz</td><td>${report.vitals?.respiration || '-'}</td></tr>
-                                <tr><td>Sauerstoffsättigung (%)</td><td>${report.vitals?.oxygen || '-'}</td></tr>
-                                <tr><td>Größe (cm)</td><td>${report.vitals?.height || '-'}</td></tr>
-                                <tr><td>Gewicht (kg)</td><td>${report.vitals?.weight || '-'}</td></tr>
-                            </table>
-                        </div>
-                        
-                        <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd;">
-                            <p><strong>Unterschrift des Untersuchers:</strong> _________________________</p>
-                            <p><strong>Datum:</strong> ${new Date().toLocaleDateString('de-DE')}</p>
-                        </div>
-                    </body>
-                    </html>
-                `;
-                
-                const blob = new Blob([reportContent], { type: 'text/html' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `Bewertung_${currentPatient.fullName.replace(/\s+/g, '_')}_${new Date().getTime()}.html`;
-                link.click();
-                URL.revokeObjectURL(url);
-            }, 1000);
+            document.getElementById('deleteModal').classList.add('active');
         }
 
-        async function deleteAssessment() {
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('active');
+        }
+
+        async function confirmDelete() {
+            closeDeleteModal();
+            
             if (!currentPatient || !currentReportId) return;
             
-            if (confirm('Sind Sie sicher, dass Sie diesen Bericht löschen möchten?')) {
-                const reportIndex = currentPatient.reports.findIndex(r => r.id === currentReportId);
-                
-                if (reportIndex !== -1) {
-                    currentPatient.reports.splice(reportIndex, 1);
+            const idx = currentPatient.reports.findIndex(r => r.id === currentReportId);
+            if (idx === -1) return;
+            
+            currentPatient.reports.splice(idx, 1);
+            
+            if (!currentPatient.reports.length) {
+                currentPatient.lastReportDate = null;
+                currentReportId = null;
+                clearForm();
+            } else {
+                const last = currentPatient.reports[currentPatient.reports.length-1];
+                currentReportId = last.id;
+                loadReport(last.id);
+            }
+            
+            if (await savePatient(currentPatient)) {
+                updateReportSelector();
+                renderPatientList();
+            } else alert('Fehler beim Löschen');
+        }
+
+        // ===== BERICHT (JETZT mit ALLEN Feldern) =====
+        function generateReport() {
+            if (!currentPatient || !currentReportId) { alert('Kein Bericht'); return; }
+            const r = currentPatient.reports.find(r => r.id === currentReportId);
+            if (!r) return;
+            
+            const today = new Date();
+            const formattedDate = today.toLocaleDateString('de-DE');
+            
+            // HTML für den Bericht erstellen
+            let html = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Bewertung - ${currentPatient.fullName}</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Gentle+Calligraphy&display=swap" rel="stylesheet">
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 50px; line-height: 1.6; }
+                        h1 { color: #1a237e; border-bottom: 3px solid #1a237e; padding-bottom: 10px; }
+                        h2 { color: #0d1b3e; margin-top: 30px; border-left: 5px solid #1a237e; padding-left: 15px; }
+                        .info-box { background: #f5f7fa; padding: 20px; border-radius: 10px; margin: 20px 0; }
+                        .info-item { margin: 10px 0; }
+                        .label { font-weight: 600; color: #1a237e; }
+                        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                        th { background: #1a237e; color: white; padding: 10px; text-align: left; }
+                        td { border: 1px solid #ddd; padding: 10px; }
+                        tr:nth-child(even) { background: #f9f9f9; }
+                        .question-block { margin: 20px 0; page-break-inside: avoid; }
+                        .question-text { font-weight: 600; color: #0d1b3e; }
+                        .answer-text { background: #f5f7fa; padding: 15px; border-left: 4px solid #1a237e; margin-top: 5px; white-space: pre-wrap; }
+                        .signature-container { margin-top: 50px; border-top: 2px solid #1a237e; padding-top: 20px; }
+                        .signature-line { font-weight: 600; color: #1a237e; font-size: 16px; }
+                        .signature-name { font-family: 'Gentle Calligraphy', cursive; font-size: 24px; color: #1a237e; margin: 10px 0; }
+                    </style>
+                </head>
+                <body>
+                    <h1>MEDIZINISCHE & PSYCHOLOGISCHE BEWERTUNG</h1>
                     
-                    if (currentPatient.reports.length === 0) {
-                        currentPatient.lastReportDate = null;
-                        currentReportId = null;
-                        clearForm();
-                    } else {
-                        const lastReport = currentPatient.reports[currentPatient.reports.length - 1];
-                        currentReportId = lastReport.id;
-                        loadReport(lastReport.id);
+                    <div class="info-box">
+                        <div class="info-item"><span class="label">Soldat:</span> ${r.formData?.name || currentPatient.fullName}</div>
+                        <div class="info-item"><span class="label">Rang/Einheit:</span> ${r.formData?.rankUnit || '-'}</div>
+                        <div class="info-item"><span class="label">Untersuchungsdatum:</span> ${r.formData?.date ? new Date(r.formData.date).toLocaleDateString() : new Date(r.date).toLocaleDateString()}</div>
+                        <div class="info-item"><span class="label">Prüfer:</span> ${r.examiner || '-'}</div>
+                    </div>
+            `;
+            
+            // Vitalparameter
+            if (r.vitals && Object.values(r.vitals).some(v => v !== null)) {
+                html += `<h2>Vitalparameter</h2>`;
+                html += `<table>`;
+                html += `<tr><th>Parameter</th><th>Wert</th></tr>`;
+                html += `<tr><td>Puls (bpm)</td><td>${r.vitals.pulse || '-'}</td></tr>`;
+                html += `<tr><td>Blutdruck (mmHg)</td><td>${r.vitals.bpHigh && r.vitals.bpLow ? r.vitals.bpHigh + '/' + r.vitals.bpLow : '-'}</td></tr>`;
+                html += `<tr><td>Körpertemperatur (°C)</td><td>${r.vitals.temperature || '-'}</td></tr>`;
+                html += `<tr><td>Atemfrequenz</td><td>${r.vitals.respiration || '-'}</td></tr>`;
+                html += `<tr><td>Sauerstoffsättigung (%)</td><td>${r.vitals.oxygen || '-'}</td></tr>`;
+                html += `<tr><td>Größe (cm)</td><td>${r.vitals.height || '-'}</td></tr>`;
+                html += `<tr><td>Gewicht (kg)</td><td>${r.vitals.weight || '-'}</td></tr>`;
+                if (r.vitals.bmi) html += `<tr><td>BMI</td><td>${r.vitals.bmi.toFixed(1)}</td></tr>`;
+                html += `</table>`;
+            }
+            
+            // Allgemeiner Eindruck
+            if (r.formData?.generalImpression) {
+                html += `<h2>Allgemeiner Eindruck</h2>`;
+                html += `<div class="answer-text">${r.formData.generalImpression}</div>`;
+            }
+            
+            // Fitness-Eindruck
+            if (r.formData?.fitness?.length) {
+                html += `<h2>Fitness-Eindruck</h2>`;
+                html += `<div class="answer-text">${r.formData.fitness.join(', ')}</div>`;
+            }
+            
+            // Letzte Mahlzeit
+            if (r.formData?.lastMeal) {
+                html += `<h2>Letzte Mahlzeit</h2>`;
+                html += `<div class="answer-text">${r.formData.lastMeal} Stunden her</div>`;
+            }
+            
+            // Allergien
+            if (r.formData?.allergies) {
+                html += `<h2>Allergien / Medikamente</h2>`;
+                html += `<div class="answer-text">${r.formData.allergies}</div>`;
+            }
+            
+            // Verletzungen
+            if (r.formData?.injuries) {
+                html += `<h2>Aktuelle Verletzungen / Narben</h2>`;
+                html += `<div class="answer-text">${r.formData.injuries}</div>`;
+            }
+            
+            // Mobilität
+            if (r.formData?.mobility?.length) {
+                html += `<h2>Mobilität</h2>`;
+                html += `<div class="answer-text">${r.formData.mobility.join(', ')}</div>`;
+            }
+            
+            // Andere Befunde
+            if (r.formData?.otherFindings) {
+                html += `<h2>Andere Befunde</h2>`;
+                html += `<div class="answer-text">${r.formData.otherFindings}</div>`;
+            }
+            
+            // Psychologische Fragen (Abschnitt 2)
+            const psychAnswers = Object.keys(r.answers || {}).filter(k => k.startsWith('psych_')).map(k => ({ key: k, value: r.answers[k] }));
+            if (psychAnswers.length > 0) {
+                html += `<h2>Psychologische & Motivationsfragen</h2>`;
+                psychAnswers.forEach(a => {
+                    if (a.value) {
+                        html += `<div class="question-block">`;
+                        html += `<div class="question-text">Frage ${a.key.replace('psych_', '')}</div>`;
+                        html += `<div class="answer-text">${a.value}</div>`;
+                        html += `</div>`;
                     }
-                    
-                    const success = await savePatientToFirebase(currentPatient);
-                    
-                    if (success) {
-                        updateReportSelector();
-                        renderPatientList();
-                    } else {
-                        alert('Fehler beim Löschen des Berichts');
+                });
+            }
+            
+            // Medizinische Fragen (Abschnitt 3)
+            const medQuestions = [
+                { key: 'med1', text: 'Nehmen Sie regelmäßig Medikamente ein?' },
+                { key: 'med2', text: 'Haben Sie in letzter Zeit Gewichtsab-/Zunahme bemerkt?' },
+                { key: 'med3', text: 'Haben Sie in der Vergangenheit Knochenbrüche, Operationen oder schwere Verletzungen erlitten?' },
+                { key: 'med4', text: 'Wurden Sie jemals ohnmächtig oder haben Sie Bewusstseinsverluste erlebt?' },
+                { key: 'med5', text: 'Haben Sie Probleme mit dem Gleichgewicht, Schwindel oder Koordinationsstörungen?' },
+                { key: 'med6', text: 'Konsumieren Sie Alkohol oder andere psychoaktive Stoffe?' },
+                { key: 'med7', text: 'Wurden Sie jemals wegen Drogen- oder Alkoholmissbrauchs behandelt?' },
+                { key: 'med8', text: 'Gibt es in Ihrer Familie bekannte Suchterkrankungen?' }
+            ];
+            
+            const hasMedAnswers = medQuestions.some(q => r.answers?.[q.key]);
+            if (hasMedAnswers) {
+                html += `<h2>Medizinische Bewertung</h2>`;
+                medQuestions.forEach(q => {
+                    if (r.answers?.[q.key]) {
+                        html += `<div class="question-block">`;
+                        html += `<div class="question-text">${q.text}</div>`;
+                        html += `<div class="answer-text">${r.answers[q.key]}</div>`;
+                        html += `</div>`;
                     }
-                }
+                });
+            }
+            
+            // Fitnesstest (Abschnitt 4)
+            const fitMap = { 'excellent': 'Ausgezeichnet', 'good': 'Gut', 'average': 'Durchschnittlich', 'poor': 'Schwach', 'failed': 'Durchgefallen' };
+            if (r.answers?.fit1 || r.answers?.fit2 || r.answers?.fit3 || r.answers?.fit4) {
+                html += `<h2>Fitnesstest</h2>`;
+                if (r.answers.fit1) html += `<div class="question-block"><div class="question-text">1. 15x Push-Ups</div><div class="answer-text">${fitMap[r.answers.fit1] || r.answers.fit1}</div></div>`;
+                if (r.answers.fit2) html += `<div class="question-block"><div class="question-text">2. 10x Sit-Ups</div><div class="answer-text">${fitMap[r.answers.fit2] || r.answers.fit2}</div></div>`;
+                if (r.answers.fit3) html += `<div class="question-block"><div class="question-text">3. 10x Burpee</div><div class="answer-text">${fitMap[r.answers.fit3] || r.answers.fit3}</div></div>`;
+                if (r.answers.fit4) html += `<div class="question-block"><div class="question-text">4. 2 Runden rennen</div><div class="answer-text">${r.answers.fit4} Sekunden</div></div>`;
+            }
+            
+            // Situative Fragen (Abschnitt 5)
+            if (r.answers?.sit1 || r.answers?.sit2 || r.answers?.sit3) {
+                html += `<h2>Situative Fragen</h2>`;
+                if (r.answers.sit1) html += `<div class="question-block"><div class="question-text">1. Waren Sie mit den letzten Einsätzen zufrieden?</div><div class="answer-text">${r.answers.sit1}</div></div>`;
+                if (r.answers.sit2) html += `<div class="question-block"><div class="question-text">2. Gibt es bestimmte Situationen im Dienst, die Sie besonders stören?</div><div class="answer-text">${r.answers.sit2}</div></div>`;
+                if (r.answers.sit3) html += `<div class="question-block"><div class="question-text">3. Selbstreflektion des Einsatzes</div><div class="answer-text">${r.answers.sit3}</div></div>`;
+            }
+            
+            // Unterschrift
+            html += `
+                    <div class="signature-container">
+                        <div class="signature-line">Unterschrift des Untersuchers:</div>
+                        <div class="signature-name">${r.examiner || ''}</div>
+                        <div class="signature-date">Datum: ${formattedDate}</div>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            // Download
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Bewertung_${currentPatient.fullName.replace(/\s/g,'_')}.html`;
+            a.click();
+        }
+
+        // ===== VITAL =====
+        function updateVitalStatus(id) {
+            const get = i => document.getElementById(i);
+            const set = (el, cls, txt) => { if (el) { el.className = 'badge ' + cls; el.textContent = txt; } };
+            
+            if (id === 'vitalPulse') {
+                const v = parseInt(get('vitalPulse').value);
+                set(get('pulseStatus'), v ? (v>=60&&v<=100 ? 'badge-success' : v<60 ? 'badge-warning' : 'badge-danger') : '', v ? (v>=60&&v<=100 ? 'Normal' : v<60 ? 'Niedrig' : 'Hoch') : '-');
+            }
+            if (id === 'vitalBpHigh' || id === 'vitalBpLow') {
+                const h = parseInt(get('vitalBpHigh').value), l = parseInt(get('vitalBpLow').value);
+                set(get('bpStatus'), h&&l ? (h>=110&&h<=140&&l>=60&&l<=90 ? 'badge-success' : (h<110||l<60) ? 'badge-warning' : 'badge-danger') : '', h&&l ? (h>=110&&h<=140&&l>=60&&l<=90 ? 'Normal' : (h<110||l<60) ? 'Niedrig' : 'Hoch') : '-');
+            }
+            if (id === 'vitalTemp') {
+                const v = parseFloat(get('vitalTemp').value);
+                set(get('tempStatus'), v ? (v>=36.1&&v<=37.5 ? 'badge-success' : v<36 ? 'badge-warning' : 'badge-danger') : '', v ? (v>=36.1&&v<=37.5 ? 'Normal' : v<36 ? 'Niedrig' : 'Fieber') : '-');
+            }
+            if (id === 'vitalRespiration') {
+                const v = parseInt(get('vitalRespiration').value);
+                set(get('respStatus'), v ? (v>=12&&v<=20 ? 'badge-success' : v<12 ? 'badge-warning' : 'badge-danger') : '', v ? (v>=12&&v<=20 ? 'Normal' : v<12 ? 'Niedrig' : 'Hoch') : '-');
+            }
+            if (id === 'vitalOxygen') {
+                const v = parseInt(get('vitalOxygen').value);
+                set(get('oxygenStatus'), v ? (v>=95 ? 'badge-success' : v>=90 ? 'badge-warning' : 'badge-danger') : '', v ? (v>=95 ? 'Normal' : v>=90 ? 'Niedrig' : 'Kritisch') : '-');
             }
         }
 
-        // ===== STATISTIKEN =====
-        function updateStats() {
-            document.getElementById('totalPatients').textContent = patients.length;
+        function updateAllVitalStatuses() {
+            ['vitalPulse','vitalBpHigh','vitalTemp','vitalRespiration','vitalOxygen'].forEach(id => updateVitalStatus(id));
         }
 
-        // ===== MOCK-DATEN (Fallback) =====
-        function loadMockPatients() {
-            const today = new Date().toISOString();
+        function calculateBMI() {
+            const h = parseFloat(document.getElementById('vitalHeight').value)/100;
+            const w = parseFloat(document.getElementById('vitalWeight').value);
+            const s = document.getElementById('bmiStatus');
+            if (h && w && h>0) {
+                const bmi = w/(h*h);
+                let txt, cls;
+                if (bmi < 18.5) { txt = 'Untergewichtig'; cls = 'badge-warning'; }
+                else if (bmi <= 24.9) { txt = 'Normal'; cls = 'badge-success'; }
+                else if (bmi <= 29.9) { txt = 'Übergewichtig'; cls = 'badge-warning'; }
+                else { txt = 'Adipös'; cls = 'badge-danger'; }
+                s.textContent = txt; s.className = 'badge ' + cls;
+            } else { s.textContent = '-'; s.className = 'badge'; }
+        }
+
+        // ===== MODAL =====
+        function openNewPatientModal() { document.getElementById('newPatientModal').classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        async function createPatient() {
+            const name = document.getElementById('newPatientName').value.trim();
+            if (!name) { alert('Name eingeben'); return; }
             
+            const newPat = {
+                id: `PAT-${new Date().getFullYear()}-${String(patients.length+1).padStart(3,'0')}`,
+                fullName: name,
+                createdAt: new Date().toISOString(),
+                lastReportDate: null,
+                reports: []
+            };
+            
+            if (await savePatient(newPat)) {
+                patients.unshift(newPat);
+                closeModal('newPatientModal');
+                renderPatientList();
+                const cards = document.querySelectorAll('.patient-card');
+                if (cards.length) selectPatient(newPat, cards[0]);
+                document.getElementById('newPatientName').value = '';
+            } else alert('Fehler');
+        }
+
+        // ===== STATS =====
+        function updateStats() { document.getElementById('totalPatients').textContent = patients.length; }
+
+        // ===== MOCK =====
+        function loadMockPatients() {
             patients = [
-                {
-                    id: "PAT-2024-001",
-                    fullName: "Johann Kaiser",
-                    createdAt: "2024-01-15T10:00:00.000Z",
-                    lastReportDate: "2024-01-15T10:30:00.000Z",
-                    reports: [
-                        {
-                            id: "RPT-1705311000000",
-                            date: "2024-01-15T10:30:00.000Z",
-                            examiner: "Dr. Müller",
-                            formData: {
-                                name: "Johann Kaiser",
-                                rankUnit: "Sergeant / Infanterie",
-                                date: "2024-01-15",
-                                examiner: "Dr. Müller",
-                                generalImpression: "Guter Allgemeinzustand",
-                                fitness: ["athletic"],
-                                lastMeal: "2",
-                                allergies: "Keine bekannt",
-                                injuries: "Alte Narbe am linken Arm",
-                                mobility: ["normal"],
-                                otherFindings: "Keine besonderen Auffälligkeiten"
-                            },
-                            vitals: {
-                                pulse: 72,
-                                bpHigh: 120,
-                                bpLow: 80,
-                                temperature: 36.8,
-                                respiration: 16,
-                                oxygen: 98,
-                                height: 182,
-                                weight: 78,
-                                bmi: 23.5
-                            },
-                            answers: {}
-                        }
-                    ]
-                },
-                {
-                    id: "PAT-2024-002",
-                    fullName: "Sarah Müller",
-                    createdAt: "2024-01-16T09:00:00.000Z",
-                    lastReportDate: "2024-01-16T09:45:00.000Z",
-                    reports: [
-                        {
-                            id: "RPT-1705398300000",
-                            date: "2024-01-16T09:45:00.000Z",
-                            examiner: "Dr. Schmidt",
-                            formData: {
-                                name: "Sarah Müller",
-                                rankUnit: "Corporal / Militärpolizei",
-                                date: "2024-01-16",
-                                examiner: "Dr. Schmidt",
-                                generalImpression: "Normal",
-                                fitness: ["average"],
-                                lastMeal: "3",
-                                allergies: "Penicillin",
-                                injuries: "Keine",
-                                mobility: ["normal"],
-                                otherFindings: "Leichte Ermüdungserscheinungen"
-                            },
-                            vitals: {
-                                pulse: 88,
-                                bpHigh: 130,
-                                bpLow: 85,
-                                temperature: 37.2,
-                                respiration: 18,
-                                oxygen: 96,
-                                height: 168,
-                                weight: 65,
-                                bmi: 23.0
-                            },
-                            answers: {}
-                        }
-                    ]
+                { 
+                    id: 'PAT-2024-001', 
+                    fullName: 'Johann Kaiser', 
+                    createdAt: new Date().toISOString(), 
+                    lastReportDate: null, 
+                    reports: [] 
                 }
             ];
-            
             renderPatientList();
             updateStats();
         }
